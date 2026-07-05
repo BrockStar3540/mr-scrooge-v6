@@ -31,6 +31,10 @@ The excursion data splits the 24 cells into three natural classes ([ratchet prof
 | 🔵 **MEDIUM** | mixed London / off-peak | ordinary extension | **spread-aware ratchet**: profit lock cannot engage below `spread + 2p` (never lock inside the toll), trail = 0.6 × entry-ATR |
 | 🟣 **LONG** | Asia & London trenders | travel keeps **building for 4+ hours** (2.3× the first hour) | **runner ratchet**: no lock until +8p, wide 1.0 × ATR trail, winners historically held 2.5–3.5h |
 
+<p align="center">
+  <img src="docs/images/exit_mechanics.svg" alt="MFE/MAE excursion swing and how the FAST slice and LONG ratchet secure green exits" width="940"/>
+</p>
+
 And one rule for everyone: **nothing tightens or exits during the daily rollover spread blowout** (20:55–22:05 UTC, when half-spreads run 4–10× and stop fills slip up to 8.8p — we measured a "+5 pip locked win" cash out at +0.3p there once; never again).
 
 ## The pipeline
