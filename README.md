@@ -41,14 +41,14 @@ flowchart LR
     B -- "validated setup fires<br/>(conditions + side + lineage)" --> C[portfolio caps<br/>risk only, no alpha]
     B -. "no setup → no trade" .-> Z((sit out))
     C --> D[order + server-side<br/>SL/TP on fill]
-    D --> E1
-    D --> E2
-    D --> E3
     subgraph EXITS [exit class — chosen by the cell's measured geometry]
         E1[🟠 FAST slice bracket<br/>TP @ cost floor · 60m timeout]
         E2[🔵 MEDIUM ratchet<br/>engage ≥ spread+2p · 0.6×ATR trail]
         E3[🟣 LONG runner<br/>engage +8p · 1.0×ATR trail]
     end
+    D --> E1
+    D --> E2
+    D --> E3
     E1 & E2 & E3 --> F[broker fills =<br/>the only truth]
     F -- "weekly scoring vs predictions" --> B
     style E1 fill:#3a2b12,stroke:#ffb547,color:#ffb547
