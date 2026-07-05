@@ -51,7 +51,7 @@
   <polygon points="530,250 940,138 940,292 530,250" fill="#c47fff" opacity="0.07"/>
   <polyline points="530,250 940,138" fill="none" stroke="#c47fff" stroke-width="1" stroke-dasharray="2 6" opacity="0.5"/>
   <polyline points="530,250 940,292" fill="none" stroke="#c47fff" stroke-width="1" stroke-dasharray="2 6" opacity="0.5"/>
-  <text x="936" y="130" text-anchor="end" fill="#c47fff" font-size="10" opacity="0.85">projected MFE — this cell's travel builds for 4h (2.3× the first hour)</text>
+  <text x="936" y="112" text-anchor="end" fill="#c47fff" font-size="10" opacity="0.85">projected MFE — this cell's travel builds for 4h (2.3× the first hour)</text>
   <text x="936" y="306" text-anchor="end" fill="#c47fff" font-size="10" opacity="0.85">projected MAE floor</text>
   <!-- toll band -->
   <rect x="530" y="239" width="410" height="22" fill="#30363d" opacity="0.55"/>
