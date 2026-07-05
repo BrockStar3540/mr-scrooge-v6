@@ -946,6 +946,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_state(self._engine), default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/module_health"):
+                from ops import health as _health
+                body = _j.dumps(_health.snapshot(self._engine), default=str).encode()
+                ctype = "application/json"
+                code = 200
             elif self.path.startswith("/api/sysinfo"):
                 body = _j.dumps(_sysinfo(), default=str).encode()
                 ctype = "application/json"

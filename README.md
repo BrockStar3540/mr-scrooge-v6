@@ -32,7 +32,7 @@ OANDA v3 API ──> core/feed        market views: candles, pricing, spread, se
 2. **Credentials — environment only, never in the repo.** Copy `.env.example` into a chmod-600 secrets file OUTSIDE the repo (we use `~/.openclaw/secrets.env`) and export it in the service environment. The bot reads `OANDA_API_URL`, `OANDA_API_TOKEN`, `OANDA_ACCOUNT_ID`.
 3. Start on a **practice account** (`api-fxpractice.oanda.com`). The sizing default commits real margin percentages.
 4. Run: `python3 main.py --live` (or install `ops/mr-scrooge-v6.service` as a user systemd unit).
-5. Dashboard at `http://localhost:8084` — **LIVE** (positions with exit-class chips + management detail + rollover-freeze flag), **PAIRS** (per-pair indicator state), **BOOK** (all 24 cells, setup conditions with live values, class geometry tooltips), **HEALTH/SYSTEM**.
+5. Dashboard at `http://localhost:8084` — **MODULES** (module health: red/yellow/green per subsystem — loops, feed, broker, margin, exit-manager coverage, configs, calibration age, host resources), **LIVE** (positions with exit-class chips + management detail + rollover-freeze flag), **PAIRS** (per-pair indicator state), **BOOK** (all 24 cells, setup conditions with live values, class geometry tooltips), **HEALTH/SYSTEM**.
 
 ## Reading order for researchers
 1. `docs/SCROOGE_HISTORY.md` — versions V1→V6, what each learned, where its remains are archived.

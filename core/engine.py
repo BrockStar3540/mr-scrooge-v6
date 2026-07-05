@@ -63,6 +63,10 @@ class Engine:
         self.recent_events:     collections.deque = collections.deque(maxlen=40)
         self.cycle_count:       int = 0
         self.last_cycle_time:   Optional[datetime] = None
+        # Module-health heartbeats (ops/health.py)
+        self.last_manage_time:  Optional[datetime] = None
+        self.last_feed_time:    Optional[datetime] = None
+        self.feed_views_n:      int = 0
 
         # ── Cell pair modules — THE strategy source (Phase D) ─────────────────
         # Built from config/cells/<PAIR>.json.  Missing files = cells absent.
@@ -166,6 +170,7 @@ class Engine:
             i += 1
 
     def _manage(self, now: datetime) -> None:
+        self.last_manage_time = now
         """Fast path -- runs every manage_interval. Detect server-side stop hits and
         tick the ratchet for each open position using a cheap pricing() poll (no
         candle fetch). The ratchet re-locks at step_cadence_min granularity, so this
@@ -226,6 +231,8 @@ class Engine:
 
         # Step 3: full candles for signal evaluation
         views = self.feed.get_views(PAIRS)
+        self.last_feed_time = now
+        self.feed_views_n   = len(views)
 
         # ── Step 4: cells — THE strategy source ──────────────────────────────
         # Every in-session cell evaluates its setups. SHADOW setups stamp

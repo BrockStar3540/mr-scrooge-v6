@@ -482,6 +482,15 @@ body.has-ticker{padding-bottom:32px}
 .mode-MEDIUM{background:#122c3a;color:#4fc3f7;border:1px solid #1e5a7a}
 .mode-LONG{background:#26123a;color:#c47fff;border:1px solid #4e1e7a}
 .mode-LEGACY{background:var(--bg4);color:var(--fg2);border:1px solid var(--bg4)}
+.mh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;padding:12px}
+.mh-card{background:var(--bg2);border:1px solid var(--border-2);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
+.mh-dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0}
+.mh-dot.green{background:#2ecc71;box-shadow:0 0 6px #2ecc7188}
+.mh-dot.yellow{background:#f4c542;box-shadow:0 0 6px #f4c54288}
+.mh-dot.red{background:#e74c3c;box-shadow:0 0 8px #e74c3c;animation:pulse 1.5s infinite}
+.mh-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--fg1)}
+.mh-detail{font-size:11px;color:var(--fg2);margin-top:2px}
+.tag.mh-green{background:#12321f;color:#2ecc71}.tag.mh-yellow{background:#3a3212;color:#f4c542}.tag.mh-red{background:#3a1512;color:#e74c3c}
 #freeze-flag{background:#1a2b3a;color:#7fd4ff;border:1px solid #2e5a7a;animation:pulse 2s infinite}
 .bk-status{font-size:8.5px;font-weight:800;letter-spacing:.06em;margin-left:auto}
 .bk-status.ACTIVE{color:var(--pass)}.bk-status.SHADOW{color:var(--warn)}.bk-status.SUSPENDED{color:var(--fail)}
@@ -549,13 +558,14 @@ body.has-ticker{padding-bottom:32px}
 <div class="nav">
   <div class="brand">
     <div class="brand-mark"></div>
-    <div class="brand-name">SCROOGE <span class="brand-v">V5</span></div>
+    <div class="brand-name">SCROOGE <span class="brand-v">V6</span></div>
   </div>
   <button class="tab active" onclick="showTab('live',this)">LIVE</button>
   <button class="tab" onclick="showTab('pairs',this)">PAIRS</button>
   <button class="tab" onclick="showTab('cells',this)">BOOK</button>
   <button class="tab" onclick="showTab('shadow',this)">SHADOW</button>
   <button class="tab" onclick="showTab('indicators',this)">INDICATORS</button>
+  <button class="tab" onclick="showTab('modules',this)">MODULES</button>
   <button class="tab" onclick="showTab('health',this)">HEALTH</button>
   <button class="tab" onclick="showTab('system',this)">SYSTEM</button>
   <button class="tab" onclick="showTab('tune',this);loadTune()">TUNE</button>
@@ -573,6 +583,17 @@ body.has-ticker{padding-bottom:32px}
     <button class="snd-toggle" onclick="toggleStream()" title="Toggle stream mode (large hero, minimal UI)">📺 STREAM</button>
     <span id="ts" style="font-size:11px;color:var(--fg3)">—</span>
     <span id="spin">●</span>
+  </div>
+</div>
+
+<!-- ─── MODULES TAB (module health, V6) ──────────────────────────────────── -->
+<div id="tab-modules" class="pane">
+  <div class="card" style="margin:14px">
+    <div class="card-title">Module Health
+      <span id="mh-overall" class="tag">—</span>
+      <span id="mh-ts" class="muted" style="font-size:10px;margin-left:8px"></span>
+    </div>
+    <div id="mh-grid" class="mh-grid"></div>
   </div>
 </div>
 
@@ -902,6 +923,25 @@ function showTab(name, btn){
   btn.classList.add('active');
 }
 function fmt(v,d=2){return v==null?'—':Number(v).toFixed(d)}
+
+/* ── Module Health (V6) ────────────────────────────────────────────────── */
+async function pollModuleHealth(){
+  try{
+    const r=await fetch('/api/module_health'); if(!r.ok)return;
+    const d=await r.json();
+    const ov=document.getElementById('mh-overall');
+    ov.textContent=d.overall.toUpperCase();
+    ov.className='tag mh-'+d.overall;
+    document.getElementById('mh-ts').textContent='checked '+(d.ts||'').slice(11,19)+'Z';
+    document.getElementById('mh-grid').innerHTML=(d.modules||[]).map(m=>
+      `<div class="mh-card"><div class="mh-dot ${m.status}"></div>
+        <div><div class="mh-name">${m.module}</div>
+        <div class="mh-detail">${m.detail||''}</div></div></div>`).join('');
+    const navBtns=document.querySelectorAll('.tab');
+    navBtns.forEach(b=>{if(b.textContent==='MODULES'){b.style.color=d.overall==='red'?'#e74c3c':(d.overall==='yellow'?'#f4c542':'');}});
+  }catch(e){}
+}
+setInterval(pollModuleHealth,10000); pollModuleHealth();
 function fmtPips(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+n.toFixed(1)+'p'}
 function fmtDollar(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+'$'+Math.abs(n).toFixed(2)}
 function colorPips(v){if(v==null)return '';return v>=0?'pos':'neg'}
