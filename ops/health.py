@@ -96,6 +96,9 @@ def _check_margin(engine):
 
 def _check_exit_managers(engine):
     """THE safety check: every broker-open trade must have a manager."""
+    if getattr(engine, "dry_run", False):
+        return _mk("exits.managers", GREEN,
+                   "dry-run instance — broker trades belong to the live bot")
     b = _broker_probe(engine)
     if b["err"]: return _mk("exits.managers", YELLOW, "cannot compare (broker unreachable)")
     open_ids = {str(t.get("id")) for t in (b["open"] or [])}
