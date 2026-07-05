@@ -1,0 +1,444 @@
+================================================================================
+DM-06  VALIDATION SUITE — factor sweep honesty checks
+Top features: h1_ret_1bar, rsi_slope, zscore_1h, h1_ret_4bar, d_ret
+================================================================================
+
+────────────────────────────────────────────────────────────
+PAIR: AUD_JPY  (557,011 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,850  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +19.6p  trimmed=  +18.7p  CI=[19.21, 19.91]
+      balance=✓  yr-stable=8/7 ✓  wf=19.57p (1.0×)
+      perm=>0.318p ✓  net-2p=17.57p  no-news=19.57p
+    rsi_slope               span=  +12.2p  trimmed=  +11.0p  CI=[11.89, 12.57]
+      balance=✓  yr-stable=8/7 ✓  wf=13.42p (1.1×)
+      perm=>0.335p ✓  net-2p=10.23p  no-news=12.23p
+    zscore_1h               span=  +10.6p  trimmed=   +9.5p  CI=[10.24, 10.87]
+      balance=✓  yr-stable=8/7 ✓  wf=10.51p (1.0×)
+      perm=>0.323p ✓  net-2p=8.55p  no-news=10.55p
+    h1_ret_4bar             span=   +9.9p  trimmed=   +9.0p  CI=[9.54, 10.33]
+      balance=✓  yr-stable=8/7 ✓  wf=9.94p (1.0×)
+      perm=>0.361p ✓  net-2p=7.92p  no-news=9.92p
+    d_ret                   span=  +10.1p  trimmed=   +8.7p  CI=[9.79, 10.5]
+      balance=✓  yr-stable=8/7 ✓  wf=9.48p (0.93×)
+      perm=>0.332p ✓  net-2p=8.14p  no-news=10.14p
+
+  Session: LONDON  n=185,731  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +21.3p  trimmed=  +20.6p  CI=[20.92, 21.7]
+      balance=✓  yr-stable=8/7 ✓  wf=21.56p (1.01×)
+      perm=>0.349p ✓  net-2p=19.3p  no-news=20.8p
+    rsi_slope               span=  +14.4p  trimmed=  +13.1p  CI=[14.05, 14.76]
+      balance=✓  yr-stable=8/7 ✓  wf=16.16p (1.12×)
+      perm=>0.391p ✓  net-2p=12.41p  no-news=14.23p
+    zscore_1h               span=  +11.8p  trimmed=  +10.7p  CI=[11.51, 12.18]
+      balance=✓  yr-stable=8/7 ✓  wf=13.23p (1.12×)
+      perm=>0.348p ✓  net-2p=9.83p  no-news=11.45p
+    h1_ret_4bar             span=  +11.8p  trimmed=  +10.7p  CI=[11.3, 12.12]
+      balance=✓  yr-stable=8/7 ✓  wf=12.13p (1.03×)
+      perm=>0.349p ✓  net-2p=9.75p  no-news=11.46p
+    d_ret                   span=  +10.9p  trimmed=   +9.7p  CI=[10.5, 11.26]
+      balance=✓  yr-stable=8/7 ✓  wf=10.92p (1.01×)
+      perm=>0.341p ✓  net-2p=8.86p  no-news=10.62p
+
+  Session: NY  n=162,430  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +15.6p  trimmed=  +14.7p  CI=[15.23, 16.01]
+      balance=✓  yr-stable=8/7 ✓  wf=14.9p (0.95×)
+      perm=>0.349p ✓  net-2p=13.61p  no-news=15.61p
+    rsi_slope               span=   +9.2p  trimmed=   +7.8p  CI=[8.83, 9.5]
+      balance=✓  yr-stable=8/7 ✓  wf=9.69p (1.06×)
+      perm=>0.283p ✓  net-2p=7.15p  no-news=9.15p
+    zscore_1h               span=   +6.4p  trimmed=   +5.3p  CI=[6.08, 6.72]
+      balance=✓  yr-stable=8/7 ✓  wf=6.32p (0.99×)
+      perm=>0.316p ✓  net-2p=4.36p  no-news=6.36p
+    h1_ret_4bar             span=   +6.6p  trimmed=   +5.7p  CI=[6.25, 6.98]
+      balance=✓  yr-stable=8/7 ✓  wf=5.92p (0.89×)
+      perm=>0.317p ✓  net-2p=4.64p  no-news=6.64p
+    d_ret                   span=   +5.1p  trimmed=   +3.9p  CI=[4.76, 5.43]
+      balance=✓  yr-stable=8/7 ✓  wf=4.41p (0.87×)
+      perm=>0.341p ✓  net-2p=3.09p  no-news=5.09p
+
+────────────────────────────────────────────────────────────
+PAIR: AUD_USD  (554,042 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=207,865  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +12.0p  trimmed=  +11.5p  CI=[11.82, 12.26]
+      balance=✓  yr-stable=8/7 ✓  wf=13.09p (1.09×)
+      perm=>0.188p ✓  net-2p=10.03p  no-news=12.03p
+    rsi_slope               span=   +8.1p  trimmed=   +7.3p  CI=[7.86, 8.27]
+      balance=✓  yr-stable=8/7 ✓  wf=7.77p (0.97×)
+      perm=>0.232p ✓  net-2p=6.05p  no-news=8.05p
+    zscore_1h               span=   +6.6p  trimmed=   +5.9p  CI=[6.44, 6.83]
+      balance=✓  yr-stable=8/7 ✓  wf=6.21p (0.94×)
+      perm=>0.186p ✓  net-2p=4.64p  no-news=6.64p
+    h1_ret_4bar             span=   +6.5p  trimmed=   +5.7p  CI=[6.24, 6.7]
+      balance=✓  yr-stable=8/7 ✓  wf=6.45p (0.99×)
+      perm=>0.193p ✓  net-2p=4.49p  no-news=6.49p
+    d_ret                   span=   +5.7p  trimmed=   +5.0p  CI=[5.49, 5.86]
+      balance=✓  yr-stable=8/7 ✓  wf=5.52p (0.97×)
+      perm=>0.211p ✓  net-2p=3.68p  no-news=5.68p
+
+  Session: LONDON  n=185,601  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +16.4p  trimmed=  +15.9p  CI=[16.06, 16.67]
+      balance=✓  yr-stable=8/7 ✓  wf=16.47p (1.0×)
+      perm=>0.253p ✓  net-2p=14.39p  no-news=15.84p
+    rsi_slope               span=  +10.7p  trimmed=   +9.9p  CI=[10.48, 11.0]
+      balance=✓  yr-stable=8/7 ✓  wf=9.54p (0.89×)
+      perm=>0.296p ✓  net-2p=8.72p  no-news=10.2p
+    zscore_1h               span=   +9.3p  trimmed=   +8.6p  CI=[9.11, 9.58]
+      balance=✓  yr-stable=8/7 ✓  wf=8.12p (0.87×)
+      perm=>0.272p ✓  net-2p=7.34p  no-news=8.78p
+    h1_ret_4bar             span=   +9.1p  trimmed=   +8.5p  CI=[8.84, 9.37]
+      balance=✓  yr-stable=8/7 ✓  wf=9.04p (0.99×)
+      perm=>0.255p ✓  net-2p=7.11p  no-news=8.51p
+    d_ret                   span=   +8.7p  trimmed=   +7.7p  CI=[8.44, 8.99]
+      balance=✓  yr-stable=8/7 ✓  wf=8.65p (0.99×)
+      perm=>0.297p ✓  net-2p=6.72p  no-news=8.05p
+
+  Session: NY  n=160,576  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +11.8p  trimmed=  +11.1p  CI=[11.54, 12.04]
+      balance=✓  yr-stable=8/7 ✓  wf=11.3p (0.96×)
+      perm=>0.233p ✓  net-2p=9.8p  no-news=11.8p
+    rsi_slope               span=   +6.9p  trimmed=   +6.1p  CI=[6.67, 7.16]
+      balance=✓  yr-stable=8/7 ✓  wf=6.01p (0.87×)
+      perm=>0.245p ✓  net-2p=4.9p  no-news=6.9p
+    zscore_1h               span=   +5.3p  trimmed=   +4.4p  CI=[5.11, 5.51]
+      balance=✓  yr-stable=8/7 ✓  wf=5.03p (0.95×)
+      perm=>0.243p ✓  net-2p=3.31p  no-news=5.31p
+    h1_ret_4bar             span=   +5.0p  trimmed=   +4.4p  CI=[4.72, 5.2]
+      balance=✓  yr-stable=8/7 ✓  wf=5.28p (1.06×)
+      perm=>0.234p ✓  net-2p=2.96p  no-news=4.96p
+    d_ret                   span=   +4.4p  trimmed=   +3.4p  CI=[4.18, 4.61]
+      balance=✓  yr-stable=8/7 ✓  wf=3.8p (0.87×)
+      perm=>0.232p ✓  net-2p=2.39p  no-news=4.39p
+
+────────────────────────────────────────────────────────────
+PAIR: EUR_JPY  (556,144 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,672  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +21.1p  trimmed=  +20.4p  CI=[20.71, 21.58]
+      balance=✓  yr-stable=8/7 ✓  wf=19.54p (0.92×)
+      perm=>0.4p ✓  net-2p=19.14p  no-news=21.14p
+    rsi_slope               span=  +13.8p  trimmed=  +12.6p  CI=[13.32, 14.1]
+      balance=✓  yr-stable=8/7 ✓  wf=15.78p (1.15×)
+      perm=>0.332p ✓  net-2p=11.75p  no-news=13.75p
+    zscore_1h               span=  +11.0p  trimmed=   +9.9p  CI=[10.65, 11.41]
+      balance=✓  yr-stable=8/7 ✓  wf=12.56p (1.14×)
+      perm=>0.398p ✓  net-2p=9.02p  no-news=11.02p
+    h1_ret_4bar             span=  +10.9p  trimmed=  +10.1p  CI=[10.51, 11.45]
+      balance=✓  yr-stable=8/7 ✓  wf=10.6p (0.97×)
+      perm=>0.356p ✓  net-2p=8.95p  no-news=10.95p
+    d_ret                   span=  +10.6p  trimmed=   +8.3p  CI=[10.19, 11.1]
+      balance=✓  yr-stable=8/7 ✓  wf=9.42p (0.89×)
+      perm=>0.495p ✓  net-2p=8.59p  no-news=10.59p
+
+  Session: LONDON  n=185,653  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +30.2p  trimmed=  +29.2p  CI=[29.68, 30.82]
+      balance=✓  yr-stable=8/7 ✓  wf=28.02p (0.93×)
+      perm=>0.498p ✓  net-2p=28.25p  no-news=29.97p
+    rsi_slope               span=  +19.8p  trimmed=  +17.7p  CI=[19.36, 20.29]
+      balance=✓  yr-stable=8/7 ✓  wf=23.61p (1.19×)
+      perm=>0.54p ✓  net-2p=17.82p  no-news=19.46p
+    zscore_1h               span=  +18.0p  trimmed=  +16.4p  CI=[17.53, 18.56]
+      balance=✓  yr-stable=8/7 ✓  wf=20.26p (1.12×)
+      perm=>0.53p ✓  net-2p=16.04p  no-news=17.92p
+    h1_ret_4bar             span=  +16.5p  trimmed=  +15.0p  CI=[15.95, 17.09]
+      balance=✓  yr-stable=8/7 ✓  wf=15.06p (0.91×)
+      perm=>0.549p ✓  net-2p=14.54p  no-news=16.34p
+    d_ret                   span=  +16.9p  trimmed=  +14.9p  CI=[16.42, 17.45]
+      balance=✓  yr-stable=8/7 ✓  wf=15.03p (0.89×)
+      perm=>0.518p ✓  net-2p=14.94p  no-news=16.51p
+
+  Session: NY  n=161,819  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +18.0p  trimmed=  +16.8p  CI=[17.52, 18.39]
+      balance=✓  yr-stable=8/7 ✓  wf=16.6p (0.92×)
+      perm=>0.354p ✓  net-2p=15.96p  no-news=17.96p
+    rsi_slope               span=  +10.0p  trimmed=   +8.9p  CI=[9.62, 10.36]
+      balance=✓  yr-stable=8/7 ✓  wf=11.93p (1.2×)
+      perm=>0.382p ✓  net-2p=7.98p  no-news=9.98p
+    zscore_1h               span=   +7.1p  trimmed=   +6.0p  CI=[6.82, 7.46]
+      balance=✓  yr-stable=8/7 ✓  wf=8.4p (1.18×)
+      perm=>0.322p ✓  net-2p=5.13p  no-news=7.13p
+    h1_ret_4bar             span=   +6.9p  trimmed=   +5.6p  CI=[6.5, 7.31]
+      balance=✓  yr-stable=8/7 ✓  wf=6.21p (0.9×)
+      perm=>0.348p ✓  net-2p=4.91p  no-news=6.91p
+    d_ret                   span=   +5.3p  trimmed=   +3.9p  CI=[4.84, 5.67]
+      balance=✓  yr-stable=8/7 ✓  wf=4.63p (0.88×)
+      perm=>0.414p ✓  net-2p=3.27p  no-news=5.27p
+
+────────────────────────────────────────────────────────────
+PAIR: EUR_USD  (555,832 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,459  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +10.0p  trimmed=   +9.6p  CI=[9.8, 10.21]
+      balance=✓  yr-stable=8/7 ✓  wf=9.98p (1.0×)
+      perm=>0.154p ✓  net-2p=7.99p  no-news=9.99p
+    rsi_slope               span=   +6.5p  trimmed=   +6.1p  CI=[6.33, 6.71]
+      balance=✓  yr-stable=8/7 ✓  wf=6.1p (0.94×)
+      perm=>0.211p ✓  net-2p=4.52p  no-news=6.52p
+    zscore_1h               span=   +4.4p  trimmed=   +3.8p  CI=[4.23, 4.59]
+      balance=✓  yr-stable=8/7 ✓  wf=4.14p (0.94×)
+      perm=>0.177p ✓  net-2p=2.41p  no-news=4.41p
+    h1_ret_4bar             span=   +4.9p  trimmed=   +4.5p  CI=[4.71, 5.11]
+      balance=✓  yr-stable=8/7 ✓  wf=4.66p (0.95×)
+      perm=>0.168p ✓  net-2p=2.91p  no-news=4.91p
+    d_ret                   span=   +3.7p  trimmed=   +2.8p  CI=[3.5, 3.87]
+      balance=✓  yr-stable=8/7 ✓  wf=3.45p (0.94×)
+      perm=>0.181p ✓  net-2p=1.68p  no-news=3.68p
+
+  Session: LONDON  n=185,727  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +21.0p  trimmed=  +20.4p  CI=[20.66, 21.41]
+      balance=✓  yr-stable=8/7 ✓  wf=21.28p (1.01×)
+      perm=>0.373p ✓  net-2p=19.04p  no-news=20.55p
+    rsi_slope               span=  +14.0p  trimmed=  +12.8p  CI=[13.65, 14.33]
+      balance=✓  yr-stable=8/7 ✓  wf=13.57p (0.97×)
+      perm=>0.374p ✓  net-2p=11.98p  no-news=13.37p
+    zscore_1h               span=  +13.6p  trimmed=  +12.4p  CI=[13.24, 13.85]
+      balance=✓  yr-stable=8/7 ✓  wf=12.84p (0.95×)
+      perm=>0.378p ✓  net-2p=11.55p  no-news=12.89p
+    h1_ret_4bar             span=  +12.2p  trimmed=  +11.4p  CI=[11.84, 12.62]
+      balance=✓  yr-stable=8/7 ✓  wf=12.21p (1.0×)
+      perm=>0.35p ✓  net-2p=10.22p  no-news=11.73p
+    d_ret                   span=  +13.0p  trimmed=  +11.5p  CI=[12.62, 13.35]
+      balance=✓  yr-stable=8/7 ✓  wf=13.02p (1.0×)
+      perm=>0.38p ✓  net-2p=10.99p  no-news=12.26p
+
+  Session: NY  n=161,646  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +13.9p  trimmed=  +13.3p  CI=[13.64, 14.22]
+      balance=✓  yr-stable=8/7 ✓  wf=12.12p (0.87×)
+      perm=>0.238p ✓  net-2p=11.92p  no-news=13.92p
+    rsi_slope               span=   +8.3p  trimmed=   +7.5p  CI=[8.04, 8.56]
+      balance=✓  yr-stable=8/7 ✓  wf=7.67p (0.92×)
+      perm=>0.251p ✓  net-2p=6.31p  no-news=8.31p
+    zscore_1h               span=   +7.0p  trimmed=   +6.0p  CI=[6.73, 7.19]
+      balance=✓  yr-stable=8/7 ✓  wf=6.66p (0.96×)
+      perm=>0.249p ✓  net-2p=4.96p  no-news=6.96p
+    h1_ret_4bar             span=   +5.3p  trimmed=   +4.7p  CI=[5.03, 5.6]
+      balance=✓  yr-stable=8/7 ✓  wf=5.83p (1.1×)
+      perm=>0.305p ✓  net-2p=3.29p  no-news=5.29p
+    d_ret                   span=   +5.2p  trimmed=   +4.2p  CI=[4.93, 5.43]
+      balance=✓  yr-stable=8/7 ✓  wf=5.94p (1.15×)
+      perm=>0.272p ✓  net-2p=3.17p  no-news=5.17p
+
+────────────────────────────────────────────────────────────
+PAIR: GBP_USD  (555,502 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,100  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +13.2p  trimmed=  +12.6p  CI=[12.87, 13.42]
+      balance=✓  yr-stable=8/7 ✓  wf=12.96p (0.99×)
+      perm=>0.25p ✓  net-2p=11.15p  no-news=13.15p
+    rsi_slope               span=   +8.8p  trimmed=   +8.0p  CI=[8.53, 9.05]
+      balance=✓  yr-stable=8/7 ✓  wf=7.59p (0.86×)
+      perm=>0.264p ✓  net-2p=6.79p  no-news=8.79p
+    zscore_1h               span=   +6.4p  trimmed=   +5.6p  CI=[6.13, 6.64]
+      balance=✓  yr-stable=8/7 ✓  wf=4.96p (0.78×)
+      perm=>0.259p ✓  net-2p=4.38p  no-news=6.38p
+    h1_ret_4bar             span=   +6.7p  trimmed=   +6.0p  CI=[6.43, 6.97]
+      balance=✓  yr-stable=8/7 ✓  wf=6.24p (0.93×)
+      perm=>0.268p ✓  net-2p=4.68p  no-news=6.68p
+    d_ret                   span=   +5.2p  trimmed=   +4.1p  CI=[4.97, 5.49]
+      balance=✓  yr-stable=8/7 ✓  wf=5.91p (1.13×)
+      perm=>0.236p ✓  net-2p=3.23p  no-news=5.23p
+
+  Session: LONDON  n=185,734  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +28.2p  trimmed=  +27.5p  CI=[27.73, 28.64]
+      balance=✓  yr-stable=8/7 ✓  wf=29.57p (1.05×)
+      perm=>0.476p ✓  net-2p=26.2p  no-news=27.6p
+    rsi_slope               span=  +18.4p  trimmed=  +17.1p  CI=[18.03, 18.82]
+      balance=✓  yr-stable=8/7 ✓  wf=16.57p (0.9×)
+      perm=>0.405p ✓  net-2p=16.42p  no-news=17.92p
+    zscore_1h               span=  +18.1p  trimmed=  +16.8p  CI=[17.65, 18.46]
+      balance=✓  yr-stable=8/7 ✓  wf=15.92p (0.88×)
+      perm=>0.529p ✓  net-2p=16.08p  no-news=17.47p
+    h1_ret_4bar             span=  +16.6p  trimmed=  +15.3p  CI=[16.11, 17.05]
+      balance=✓  yr-stable=8/7 ✓  wf=17.49p (1.06×)
+      perm=>0.468p ✓  net-2p=14.57p  no-news=16.12p
+    d_ret                   span=  +17.8p  trimmed=  +16.2p  CI=[17.25, 18.19]
+      balance=✓  yr-stable=8/7 ✓  wf=17.53p (0.99×)
+      perm=>0.485p ✓  net-2p=15.76p  no-news=17.2p
+
+  Session: NY  n=161,668  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +19.4p  trimmed=  +18.3p  CI=[19.03, 19.86]
+      balance=✓  yr-stable=8/7 ✓  wf=17.99p (0.93×)
+      perm=>0.348p ✓  net-2p=17.44p  no-news=19.44p
+    rsi_slope               span=  +12.6p  trimmed=  +11.0p  CI=[12.24, 13.01]
+      balance=✓  yr-stable=8/7 ✓  wf=10.03p (0.79×)
+      perm=>0.337p ✓  net-2p=10.63p  no-news=12.63p
+    zscore_1h               span=   +9.0p  trimmed=   +7.9p  CI=[8.68, 9.36]
+      balance=✓  yr-stable=8/7 ✓  wf=7.95p (0.88×)
+      perm=>0.329p ✓  net-2p=7.01p  no-news=9.01p
+    h1_ret_4bar             span=   +7.8p  trimmed=   +6.6p  CI=[7.37, 8.14]
+      balance=✓  yr-stable=8/7 ✓  wf=7.46p (0.96×)
+      perm=>0.342p ✓  net-2p=5.75p  no-news=7.75p
+    d_ret                   span=   +7.1p  trimmed=   +5.5p  CI=[6.69, 7.45]
+      balance=✓  yr-stable=8/7 ✓  wf=6.39p (0.9×)
+      perm=>0.348p ✓  net-2p=5.07p  no-news=7.07p
+
+────────────────────────────────────────────────────────────
+PAIR: USD_CAD  (555,437 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,099  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +10.8p  trimmed=  +10.4p  CI=[10.58, 11.02]
+      balance=✓  yr-stable=8/7 ✓  wf=10.86p (1.0×)
+      perm=>0.212p ✓  net-2p=8.81p  no-news=10.81p
+    rsi_slope               span=   +7.1p  trimmed=   +6.5p  CI=[6.94, 7.31]
+      balance=✓  yr-stable=8/7 ✓  wf=5.85p (0.82×)
+      perm=>0.189p ✓  net-2p=5.12p  no-news=7.12p
+    zscore_1h               span=   +4.8p  trimmed=   +4.3p  CI=[4.65, 5.02]
+      balance=✓  yr-stable=8/7 ✓  wf=3.82p (0.79×)
+      perm=>0.192p ✓  net-2p=2.84p  no-news=4.84p
+    h1_ret_4bar             span=   +5.7p  trimmed=   +5.0p  CI=[5.5, 5.92]
+      balance=✓  yr-stable=8/7 ✓  wf=5.46p (0.95×)
+      perm=>0.244p ✓  net-2p=3.72p  no-news=5.72p
+    d_ret                   span=   +4.0p  trimmed=   +3.5p  CI=[3.83, 4.23]
+      balance=✓  yr-stable=8/7 ✓  wf=3.18p (0.79×)
+      perm=>0.191p ✓  net-2p=2.04p  no-news=4.04p
+
+  Session: LONDON  n=185,709  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +22.3p  trimmed=  +21.5p  CI=[21.88, 22.64]
+      balance=✓  yr-stable=8/7 ✓  wf=22.03p (0.99×)
+      perm=>0.366p ✓  net-2p=20.27p  no-news=21.72p
+    rsi_slope               span=  +14.8p  trimmed=  +13.7p  CI=[14.49, 15.17]
+      balance=✓  yr-stable=8/7 ✓  wf=13.45p (0.91×)
+      perm=>0.335p ✓  net-2p=12.8p  no-news=14.05p
+    zscore_1h               span=  +13.8p  trimmed=  +12.7p  CI=[13.43, 14.07]
+      balance=✓  yr-stable=8/7 ✓  wf=12.04p (0.88×)
+      perm=>0.348p ✓  net-2p=11.75p  no-news=13.07p
+    h1_ret_4bar             span=  +13.0p  trimmed=  +12.4p  CI=[12.64, 13.38]
+      balance=✓  yr-stable=8/7 ✓  wf=14.4p (1.11×)
+      perm=>0.362p ✓  net-2p=11.02p  no-news=12.62p
+    d_ret                   span=  +13.2p  trimmed=  +11.6p  CI=[12.78, 13.53]
+      balance=✓  yr-stable=8/7 ✓  wf=13.66p (1.04×)
+      perm=>0.366p ✓  net-2p=11.16p  no-news=12.47p
+
+  Session: NY  n=161,629  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +17.3p  trimmed=  +16.6p  CI=[16.94, 17.59]
+      balance=✓  yr-stable=8/7 ✓  wf=17.44p (1.01×)
+      perm=>0.266p ✓  net-2p=15.26p  no-news=17.26p
+    rsi_slope               span=  +10.1p  trimmed=   +9.3p  CI=[9.81, 10.47]
+      balance=✓  yr-stable=8/7 ✓  wf=8.89p (0.88×)
+      perm=>0.308p ✓  net-2p=8.11p  no-news=10.11p
+    zscore_1h               span=   +8.4p  trimmed=   +7.7p  CI=[8.14, 8.7]
+      balance=✓  yr-stable=8/7 ✓  wf=7.5p (0.89×)
+      perm=>0.34p ✓  net-2p=6.44p  no-news=8.44p
+    h1_ret_4bar             span=   +6.7p  trimmed=   +5.9p  CI=[6.36, 7.06]
+      balance=✓  yr-stable=8/7 ✓  wf=7.63p (1.14×)
+      perm=>0.338p ✓  net-2p=4.71p  no-news=6.71p
+    d_ret                   span=   +7.1p  trimmed=   +6.1p  CI=[6.77, 7.41]
+      balance=✓  yr-stable=8/7 ✓  wf=8.26p (1.16×)
+      perm=>0.29p ✓  net-2p=5.11p  no-news=7.11p
+
+────────────────────────────────────────────────────────────
+PAIR: USD_CHF  (550,072 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=204,752  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=   +8.1p  trimmed=   +7.9p  CI=[7.93, 8.28]
+      balance=✓  yr-stable=8/7 ✓  wf=8.41p (1.04×)
+      perm=>0.15p ✓  net-2p=6.1p  no-news=8.1p
+    rsi_slope               span=   +5.3p  trimmed=   +5.0p  CI=[5.16, 5.48]
+      balance=✓  yr-stable=8/7 ✓  wf=5.29p (1.0×)
+      perm=>0.158p ✓  net-2p=3.3p  no-news=5.3p
+    zscore_1h               span=   +3.7p  trimmed=   +3.3p  CI=[3.52, 3.81]
+      balance=✓  yr-stable=8/7 ✓  wf=3.51p (0.96×)
+      perm=>0.149p ✓  net-2p=1.67p  no-news=3.67p
+    h1_ret_4bar             span=   +4.4p  trimmed=   +4.2p  CI=[4.26, 4.62]
+      balance=✓  yr-stable=8/7 ✓  wf=4.28p (0.96×)
+      perm=>0.14p ✓  net-2p=2.44p  no-news=4.44p
+    d_ret                   span=   +3.1p  trimmed=   +2.4p  CI=[2.91, 3.24]
+      balance=✓  yr-stable=8/7 ✓  wf=3.08p (1.0×)
+      perm=>0.144p ✓  net-2p=1.08p  no-news=3.08p
+
+  Session: LONDON  n=185,646  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +18.5p  trimmed=  +17.9p  CI=[18.25, 18.83]
+      balance=✓  yr-stable=8/7 ✓  wf=18.17p (0.98×)
+      perm=>0.322p ✓  net-2p=16.54p  no-news=18.2p
+    rsi_slope               span=  +12.5p  trimmed=  +11.6p  CI=[12.24, 12.8]
+      balance=✓  yr-stable=8/7 ✓  wf=12.12p (0.97×)
+      perm=>0.338p ✓  net-2p=10.54p  no-news=11.85p
+    zscore_1h               span=  +11.8p  trimmed=  +10.8p  CI=[11.52, 12.1]
+      balance=✓  yr-stable=8/7 ✓  wf=11.27p (0.96×)
+      perm=>0.317p ✓  net-2p=9.79p  no-news=11.2p
+    h1_ret_4bar             span=  +10.7p  trimmed=   +9.9p  CI=[10.44, 11.05]
+      balance=✓  yr-stable=8/7 ✓  wf=10.77p (1.0×)
+      perm=>0.258p ✓  net-2p=8.73p  no-news=10.29p
+    d_ret                   span=  +11.9p  trimmed=  +10.4p  CI=[11.57, 12.16]
+      balance=✓  yr-stable=8/7 ✓  wf=11.12p (0.94×)
+      perm=>0.267p ✓  net-2p=9.87p  no-news=11.19p
+
+  Session: NY  n=159,674  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +11.5p  trimmed=  +10.9p  CI=[11.25, 11.72]
+      balance=✓  yr-stable=8/7 ✓  wf=11.11p (0.97×)
+      perm=>0.223p ✓  net-2p=9.48p  no-news=11.48p
+    rsi_slope               span=   +6.8p  trimmed=   +6.0p  CI=[6.57, 7.0]
+      balance=✓  yr-stable=8/7 ✓  wf=6.67p (0.98×)
+      perm=>0.218p ✓  net-2p=4.78p  no-news=6.78p
+    zscore_1h               span=   +5.6p  trimmed=   +5.0p  CI=[5.39, 5.81]
+      balance=✓  yr-stable=8/7 ✓  wf=5.78p (1.03×)
+      perm=>0.219p ✓  net-2p=3.6p  no-news=5.6p
+    h1_ret_4bar             span=   +4.7p  trimmed=   +4.1p  CI=[4.45, 4.92]
+      balance=✓  yr-stable=8/7 ✓  wf=5.63p (1.2×)
+      perm=>0.214p ✓  net-2p=2.68p  no-news=4.68p
+    d_ret                   span=   +3.8p  trimmed=   +3.1p  CI=[3.61, 4.07]
+      balance=✓  yr-stable=8/7 ✓  wf=4.29p (1.12×)
+      perm=>0.195p ✓  net-2p=1.84p  no-news=3.84p
+
+────────────────────────────────────────────────────────────
+PAIR: USD_JPY  (556,104 total M5 bars)
+────────────────────────────────────────────────────────────
+
+  Session: ASIA  n=208,657  2019-01-01 → 2026-06-18  years=8
+    h1_ret_1bar             span=  +21.2p  trimmed=  +20.7p  CI=[20.8, 21.67]
+      balance=✓  yr-stable=8/7 ✓  wf=18.08p (0.85×)
+      perm=>0.369p ✓  net-2p=19.25p  no-news=21.25p
+    rsi_slope               span=  +12.6p  trimmed=  +11.4p  CI=[12.23, 12.95]
+      balance=✓  yr-stable=8/7 ✓  wf=15.13p (1.2×)
+      perm=>0.313p ✓  net-2p=10.6p  no-news=12.6p
+    zscore_1h               span=  +10.5p  trimmed=   +9.1p  CI=[10.17, 10.85]
+      balance=✓  yr-stable=8/7 ✓  wf=12.92p (1.23×)
+      perm=>0.378p ✓  net-2p=8.51p  no-news=10.51p
+    h1_ret_4bar             span=  +11.4p  trimmed=  +10.6p  CI=[10.94, 11.81]
+      balance=✓  yr-stable=8/7 ✓  wf=9.37p (0.82×)
+      perm=>0.367p ✓  net-2p=9.42p  no-news=11.42p
+    d_ret                   span=  +10.4p  trimmed=   +8.5p  CI=[9.96, 10.87]
+      balance=✓  yr-stable=8/7 ✓  wf=8.67p (0.83×)
+      perm=>0.363p ✓  net-2p=8.43p  no-news=10.43p
+
+  Session: LONDON  n=185,723  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +28.5p  trimmed=  +26.5p  CI=[27.93, 29.09]
+      balance=✓  yr-stable=8/7 ✓  wf=24.35p (0.85×)
+      perm=>0.439p ✓  net-2p=26.51p  no-news=27.49p
+    rsi_slope               span=  +17.7p  trimmed=  +15.1p  CI=[17.21, 18.22]
+      balance=✓  yr-stable=8/7 ✓  wf=22.03p (1.25×)
+      perm=>0.447p ✓  net-2p=15.69p  no-news=16.43p
+    zscore_1h               span=  +16.3p  trimmed=  +13.9p  CI=[15.89, 16.77]
+      balance=✓  yr-stable=8/7 ✓  wf=19.78p (1.21×)
+      perm=>0.457p ✓  net-2p=14.33p  no-news=15.26p
+    h1_ret_4bar             span=  +16.4p  trimmed=  +14.5p  CI=[15.85, 16.96]
+      balance=✓  yr-stable=8/7 ✓  wf=13.74p (0.84×)
+      perm=>0.454p ✓  net-2p=14.39p  no-news=15.54p
+    d_ret                   span=  +17.7p  trimmed=  +14.6p  CI=[17.18, 18.21]
+      balance=✓  yr-stable=8/7 ✓  wf=14.28p (0.81×)
+      perm=>0.43p ✓  net-2p=15.72p  no-news=16.76p
+
+  Session: NY  n=161,724  2019-01-02 → 2026-06-17  years=8
+    h1_ret_1bar             span=  +16.1p  trimmed=  +15.2p  CI=[15.64, 16.48]
+      balance=✓  yr-stable=8/7 ✓  wf=14.0p (0.87×)
+      perm=>0.354p ✓  net-2p=14.07p  no-news=16.07p
+    rsi_slope               span=   +8.7p  trimmed=   +7.4p  CI=[8.39, 9.11]
+      balance=✓  yr-stable=8/7 ✓  wf=10.95p (1.25×)
+      perm=>0.367p ✓  net-2p=6.73p  no-news=8.73p
+    zscore_1h               span=   +7.1p  trimmed=   +5.8p  CI=[6.67, 7.37]
+      balance=✓  yr-stable=8/7 ✓  wf=8.47p (1.2×)
+      perm=>0.332p ✓  net-2p=5.06p  no-news=7.06p
+    h1_ret_4bar             span=   +7.0p  trimmed=   +5.9p  CI=[6.52, 7.37]
+      balance=✓  yr-stable=8/7 ✓  wf=5.92p (0.85×)
+      perm=>0.397p ✓  net-2p=4.95p  no-news=6.95p
+    d_ret                   span=   +5.6p  trimmed=   +4.1p  CI=[5.2, 6.05]
+      balance=✓  yr-stable=8/7 ✓  wf=4.57p (0.81×)
+      perm=>0.303p ✓  net-2p=3.61p  no-news=5.61p

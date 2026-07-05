@@ -1,0 +1,422 @@
+==========================================================================================
+DM-07  DIRECTION-SPLIT FACTOR SWEEP
+  Rows split by sign(h1_ret_1bar): UP context vs DOWN context
+  Key test: if |span| GROWS when split by direction → direction-conditional signal
+  RSI direction-inversion: rsi14 span should FLIP sign between UP and DOWN contexts
+==========================================================================================
+
+──────────────────────────────────────────────────────────────────────
+PAIR: AUD_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,850  n_up=106,789  n_down=100,686
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +19.6p       —        —   
+  rsi_slope                  +12.2p     +5.6p     +6.7p  
+  zscore_1h                  +10.6p     +4.2p     +6.7p  
+  h1_ret_4bar                 +9.9p     +4.0p     +6.6p  
+  d_ret                      +10.1p     +7.8p     +9.2p  
+  rsi14                       +7.5p     +2.2p     +5.4p  
+  ema20_1h_dist_pct           +8.8p     +3.9p     +6.3p  
+  pdh_dist_pips               +8.8p     +4.8p     +9.7p  
+  pdl_dist_pips               +8.9p     +7.9p     +7.4p  
+  htf_pct_20                  +1.2p     -0.7p     +2.8p  ← INVERSION
+  adr_consumed                -2.2p     +2.6p     -6.6p  ← INVERSION
+  bb_pos                      -0.1p     -7.9p     -6.9p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,731  n_up=94,563  n_down=90,172
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +21.3p       —        —   
+  rsi_slope                  +14.4p     +6.8p     +7.5p  
+  zscore_1h                  +11.8p     +4.3p     +7.0p  
+  h1_ret_4bar                +11.8p     +4.8p     +7.6p  
+  d_ret                      +10.9p     +7.0p    +10.3p  
+  rsi14                       +8.0p     +2.5p     +5.0p  
+  ema20_1h_dist_pct           +9.3p     +3.2p     +5.4p  
+  pdh_dist_pips               +9.0p     +4.5p     +9.5p  
+  pdl_dist_pips               +9.0p     +6.8p     +6.9p  
+  htf_pct_20                  +2.5p     -0.6p     +4.4p  ← INVERSION
+  adr_consumed                -1.2p     +4.9p     -6.9p  ← INVERSION
+  bb_pos                      +0.3p     -8.4p     -7.7p  ← AMPLIFIES
+
+  Session: NY  n_all=162,430  n_up=82,876  n_down=78,000
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +15.6p       —        —   
+  rsi_slope                   +9.1p     +4.1p     +6.0p  
+  zscore_1h                   +6.4p     +1.9p     +4.7p  
+  h1_ret_4bar                 +6.6p     +2.4p     +5.0p  
+  d_ret                       +5.1p     +3.2p     +5.7p  
+  rsi14                       +3.7p     +0.4p     +3.1p  
+  ema20_1h_dist_pct           +5.1p     +1.5p     +4.2p  
+  pdh_dist_pips               +4.1p     +1.4p     +4.8p  
+  pdl_dist_pips               +4.6p     +3.3p     +4.8p  
+  htf_pct_20                  +1.8p     +0.1p     +3.1p  ← AMPLIFIES
+  adr_consumed                -0.8p     +2.3p     -3.6p  ← INVERSION
+  bb_pos                      -1.0p     -6.2p     -5.9p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: AUD_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=207,865  n_up=105,155  n_down=100,753
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +12.0p       —        —   
+  rsi_slope                   +8.1p     +3.6p     +4.6p  
+  zscore_1h                   +6.6p     +2.4p     +3.8p  
+  h1_ret_4bar                 +6.5p     +3.0p     +4.2p  
+  d_ret                       +5.7p     +3.8p     +5.1p  
+  rsi14                       +4.3p     +1.4p     +2.9p  
+  ema20_1h_dist_pct           +5.2p     +2.0p     +3.7p  
+  pdh_dist_pips               +4.3p     +2.5p     +4.4p  
+  pdl_dist_pips               +4.9p     +4.1p     +4.2p  
+  htf_pct_20                  +0.7p     +0.1p     +1.0p  ← AMPLIFIES
+  adr_consumed                -1.0p     +1.9p     -3.3p  ← INVERSION
+  bb_pos                      -0.6p     -5.3p     -5.0p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,601  n_up=92,218  n_down=91,897
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +16.4p       —        —   
+  rsi_slope                  +10.7p     +5.3p     +5.9p  
+  zscore_1h                   +9.3p     +5.0p     +5.5p  
+  h1_ret_4bar                 +9.1p     +5.0p     +6.0p  
+  d_ret                       +8.7p     +6.9p     +7.5p  
+  rsi14                       +6.5p     +2.9p     +3.6p  
+  ema20_1h_dist_pct           +8.1p     +3.4p     +4.6p  
+  pdh_dist_pips               +7.1p     +4.7p     +6.6p  
+  pdl_dist_pips               +7.5p     +6.5p     +6.0p  
+  htf_pct_20                  +2.0p     +1.3p     +2.1p  
+  adr_consumed                -0.5p     +3.7p     -4.3p  ← INVERSION
+  bb_pos                      -0.2p     -6.8p     -5.9p  ← AMPLIFIES
+
+  Session: NY  n_all=160,576  n_up=79,749  n_down=78,707
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +11.8p       —        —   
+  rsi_slope                   +6.9p     +3.5p     +4.0p  
+  zscore_1h                   +5.3p     +2.7p     +3.0p  
+  h1_ret_4bar                 +5.0p     +2.4p     +3.0p  
+  d_ret                       +4.4p     +3.8p     +2.9p  
+  rsi14                       +2.6p     +1.2p     +1.4p  
+  ema20_1h_dist_pct           +4.0p     +2.2p     +2.4p  
+  pdh_dist_pips               +4.1p     +3.1p     +3.5p  
+  pdl_dist_pips               +3.5p     +3.2p     +2.0p  
+  htf_pct_20                  +1.3p     +1.2p     +1.4p  
+  adr_consumed                -0.5p     +1.8p     -2.5p  ← INVERSION
+  bb_pos                      -0.7p     -4.5p     -4.6p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: EUR_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,672  n_up=105,845  n_down=101,178
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +21.1p       —        —   
+  rsi_slope                  +13.8p     +6.3p     +7.5p  
+  zscore_1h                  +11.0p     +5.3p     +6.5p  
+  h1_ret_4bar                +10.9p     +5.8p     +6.4p  
+  d_ret                      +10.6p     +8.2p     +9.9p  
+  rsi14                       +7.2p     +2.7p     +4.4p  
+  ema20_1h_dist_pct           +9.3p     +5.0p     +5.5p  
+  pdh_dist_pips               +9.0p     +5.5p    +10.3p  
+  pdl_dist_pips               +9.0p     +8.0p     +7.3p  
+  htf_pct_20                  +2.2p     -0.1p     +3.6p  ← INVERSION
+  adr_consumed                -0.3p     +4.3p     -5.5p  ← INVERSION
+  bb_pos                      -0.5p     -8.4p     -7.2p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,653  n_up=95,103  n_down=89,830
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +30.2p       —        —   
+  rsi_slope                  +19.8p     +9.7p    +11.3p  
+  zscore_1h                  +18.0p     +8.2p     +9.5p  
+  h1_ret_4bar                +16.5p     +7.2p    +10.0p  
+  d_ret                      +16.9p    +12.0p    +15.2p  
+  rsi14                      +12.4p     +4.3p     +7.4p  
+  ema20_1h_dist_pct          +15.0p     +6.2p     +9.5p  
+  pdh_dist_pips              +15.5p     +9.1p    +15.3p  
+  pdl_dist_pips              +14.4p    +10.8p    +12.9p  
+  htf_pct_20                  +2.8p     +1.0p     +3.1p  
+  adr_consumed                -2.0p     +6.5p    -10.4p  ← INVERSION
+  bb_pos                      +0.7p    -11.1p     -9.7p  ← AMPLIFIES
+
+  Session: NY  n_all=161,819  n_up=84,384  n_down=76,151
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +18.0p       —        —   
+  rsi_slope                  +10.0p     +4.8p     +5.7p  
+  zscore_1h                   +7.1p     +2.8p     +4.3p  
+  h1_ret_4bar                 +6.9p     +2.9p     +4.5p  
+  d_ret                       +5.3p     +3.0p     +6.0p  
+  rsi14                       +3.8p     +0.9p     +3.8p  
+  ema20_1h_dist_pct           +4.6p     +1.0p     +4.0p  
+  pdh_dist_pips               +3.9p     +1.0p     +6.5p  ← AMPLIFIES
+  pdl_dist_pips               +4.3p     +2.9p     +4.6p  
+  htf_pct_20                  +1.9p     +0.5p     +2.4p  ← AMPLIFIES
+  adr_consumed                -0.0p     +3.5p     -3.7p  ← INVERSION
+  bb_pos                      -1.9p     -7.5p     -7.3p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: EUR_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,459  n_up=103,802  n_down=102,031
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +10.0p       —        —   
+  rsi_slope                   +6.5p     +3.3p     +3.4p  
+  zscore_1h                   +4.4p     +2.1p     +2.4p  
+  h1_ret_4bar                 +4.9p     +2.6p     +3.0p  
+  d_ret                       +3.7p     +3.0p     +3.4p  
+  rsi14                       +2.3p     +1.2p     +1.1p  
+  ema20_1h_dist_pct           +3.1p     +1.4p     +1.9p  
+  pdh_dist_pips               +2.9p     +1.8p     +3.3p  
+  pdl_dist_pips               +3.3p     +2.9p     +2.8p  
+  htf_pct_20                  +1.5p     +1.7p     +0.7p  
+  adr_consumed                -0.1p     +1.3p     -1.4p  ← INVERSION
+  bb_pos                      -0.6p     -4.2p     -4.2p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,727  n_up=91,422  n_down=93,573
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +21.0p       —        —   
+  rsi_slope                  +14.0p     +7.9p     +7.5p  
+  zscore_1h                  +13.6p     +7.2p     +7.5p  
+  h1_ret_4bar                +12.2p     +6.4p     +6.8p  
+  d_ret                      +13.0p    +10.5p    +10.4p  
+  rsi14                       +9.5p     +4.5p     +4.6p  
+  ema20_1h_dist_pct          +11.6p     +6.8p     +6.8p  
+  pdh_dist_pips              +11.4p     +9.0p     +9.9p  
+  pdl_dist_pips              +11.1p     +9.7p     +8.6p  
+  htf_pct_20                  +2.5p     +2.2p     +1.7p  
+  adr_consumed                +0.0p     +5.0p     -5.0p  ← INVERSION
+  bb_pos                      -0.7p     -8.6p     -7.8p  ← AMPLIFIES
+
+  Session: NY  n_all=161,646  n_up=80,751  n_down=79,335
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +13.9p       —        —   
+  rsi_slope                   +8.3p     +3.2p     +4.8p  
+  zscore_1h                   +7.0p     +3.5p     +3.9p  
+  h1_ret_4bar                 +5.3p     +2.2p     +4.2p  
+  d_ret                       +5.2p     +4.3p     +4.2p  
+  rsi14                       +3.6p     +2.0p     +2.0p  
+  ema20_1h_dist_pct           +4.7p     +2.2p     +3.1p  
+  pdh_dist_pips               +4.3p     +3.4p     +3.7p  
+  pdl_dist_pips               +4.2p     +3.7p     +3.1p  
+  htf_pct_20                  +0.8p     +0.4p     +0.9p  
+  adr_consumed                +0.3p     +3.2p     -2.8p  ← INVERSION
+  bb_pos                      -1.1p     -5.5p     -5.5p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: GBP_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,100  n_up=102,540  n_down=103,517
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +13.2p       —        —   
+  rsi_slope                   +8.8p     +3.9p     +4.5p  
+  zscore_1h                   +6.4p     +3.0p     +3.8p  
+  h1_ret_4bar                 +6.7p     +3.5p     +4.2p  
+  d_ret                       +5.2p     +4.5p     +4.5p  
+  rsi14                       +3.6p     +1.3p     +2.2p  
+  ema20_1h_dist_pct           +4.1p     +1.9p     +2.7p  
+  pdh_dist_pips               +4.0p     +2.6p     +4.1p  
+  pdl_dist_pips               +4.2p     +4.7p     +3.0p  
+  htf_pct_20                  +0.8p     -0.8p     +1.9p  ← INVERSION
+  adr_consumed                -1.1p     +1.1p     -2.9p  ← INVERSION
+  bb_pos                      -0.6p     -5.9p     -5.3p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,734  n_up=92,840  n_down=92,378
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +28.2p       —        —   
+  rsi_slope                  +18.4p     +9.1p     +9.2p  
+  zscore_1h                  +18.1p     +8.8p     +9.5p  
+  h1_ret_4bar                +16.6p     +9.2p     +8.8p  
+  d_ret                      +17.8p    +13.7p    +15.3p  
+  rsi14                      +13.0p     +5.2p     +6.3p  
+  ema20_1h_dist_pct          +15.7p     +7.3p     +8.9p  
+  pdh_dist_pips              +15.9p    +11.6p    +13.5p  
+  pdl_dist_pips              +15.7p    +12.6p    +12.7p  
+  htf_pct_20                  +3.3p     +1.9p     +3.4p  
+  adr_consumed                -0.6p     +8.1p     -8.2p  ← INVERSION
+  bb_pos                      -0.4p    -11.8p    -11.1p  ← AMPLIFIES
+
+  Session: NY  n_all=161,668  n_up=81,636  n_down=78,836
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +19.4p       —        —   
+  rsi_slope                  +12.6p     +5.8p     +6.2p  
+  zscore_1h                   +9.0p     +5.1p     +5.3p  
+  h1_ret_4bar                 +7.8p     +3.5p     +4.8p  
+  d_ret                       +7.1p     +5.7p     +6.1p  
+  rsi14                       +5.2p     +2.3p     +2.8p  
+  ema20_1h_dist_pct           +6.4p     +3.2p     +4.4p  
+  pdh_dist_pips               +5.9p     +4.3p     +5.6p  
+  pdl_dist_pips               +5.9p     +5.7p     +4.4p  
+  htf_pct_20                  +2.0p     +0.6p     +3.0p  ← AMPLIFIES
+  adr_consumed                +0.5p     +3.9p     -3.6p  ← INVERSION
+  bb_pos                      -1.6p     -7.6p     -7.8p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_CAD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,099  n_up=103,302  n_down=102,657
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +10.8p       —        —   
+  rsi_slope                   +7.1p     +4.0p     +3.5p  
+  zscore_1h                   +4.8p     +3.0p     +2.7p  
+  h1_ret_4bar                 +5.7p     +3.5p     +3.3p  
+  d_ret                       +4.0p     +3.5p     +3.4p  
+  rsi14                       +2.8p     +1.6p     +1.0p  
+  ema20_1h_dist_pct           +3.7p     +2.5p     +1.8p  
+  pdh_dist_pips               +3.2p     +2.0p     +3.5p  
+  pdl_dist_pips               +3.4p     +3.5p     +2.6p  
+  htf_pct_20                  +1.0p     +1.5p     +0.1p  ← AMPLIFIES
+  adr_consumed                +0.2p     +2.2p     -1.8p  ← INVERSION
+  bb_pos                      -0.6p     -4.7p     -4.5p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,709  n_up=93,361  n_down=91,304
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +22.3p       —        —   
+  rsi_slope                  +14.8p     +7.4p     +7.9p  
+  zscore_1h                  +13.8p     +6.9p     +7.4p  
+  h1_ret_4bar                +13.0p     +8.5p     +7.2p  
+  d_ret                      +13.2p    +11.1p    +10.7p  
+  rsi14                       +9.7p     +4.3p     +4.8p  
+  ema20_1h_dist_pct          +12.1p     +6.6p     +6.3p  
+  pdh_dist_pips              +11.1p     +8.7p     +9.7p  
+  pdl_dist_pips              +11.4p     +9.9p     +7.9p  
+  htf_pct_20                  +2.8p     +4.5p     -0.4p  ← INVERSION
+  adr_consumed                -0.3p     +5.3p     -5.9p  ← INVERSION
+  bb_pos                      +0.1p     -7.8p     -8.7p  ← AMPLIFIES
+
+  Session: NY  n_all=161,629  n_up=78,650  n_down=81,758
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +17.3p       —        —   
+  rsi_slope                  +10.1p     +4.5p     +4.3p  
+  zscore_1h                   +8.4p     +4.7p     +3.1p  
+  h1_ret_4bar                 +6.7p     +4.2p     +3.3p  
+  d_ret                       +7.1p     +6.1p     +5.2p  
+  rsi14                       +4.3p     +2.3p     +1.9p  
+  ema20_1h_dist_pct           +6.4p     +4.2p     +3.3p  
+  pdh_dist_pips               +6.0p     +4.3p     +5.0p  
+  pdl_dist_pips               +5.8p     +5.7p     +3.6p  
+  htf_pct_20                  +0.7p     +2.1p     -0.7p  ← INVERSION
+  adr_consumed                +0.1p     +3.8p     -3.4p  ← INVERSION
+  bb_pos                      -1.2p     -7.1p     -7.0p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_CHF
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=204,752  n_up=102,267  n_down=99,581
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                 +8.1p       —        —   
+  rsi_slope                   +5.3p     +2.5p     +3.1p  
+  zscore_1h                   +3.7p     +1.2p     +2.6p  
+  h1_ret_4bar                 +4.4p     +2.0p     +3.3p  
+  d_ret                       +3.1p     +2.9p     +2.5p  
+  rsi14                       +2.3p     +0.7p     +1.6p  
+  ema20_1h_dist_pct           +2.8p     +0.9p     +2.0p  
+  pdh_dist_pips               +2.7p     +2.1p     +2.6p  
+  pdl_dist_pips               +2.4p     +2.5p     +1.7p  
+  htf_pct_20                  +1.2p     +0.4p     +1.6p  ← AMPLIFIES
+  adr_consumed                -0.6p     +0.7p     -1.8p  ← INVERSION
+  bb_pos                      -0.6p     -3.9p     -3.6p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,646  n_up=92,148  n_down=92,452
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +18.5p       —        —   
+  rsi_slope                  +12.5p     +5.4p     +6.3p  
+  zscore_1h                  +11.8p     +6.1p     +6.6p  
+  h1_ret_4bar                +10.7p     +5.4p     +6.0p  
+  d_ret                      +11.9p     +8.6p    +10.0p  
+  rsi14                       +8.9p     +3.2p     +4.9p  
+  ema20_1h_dist_pct          +10.6p     +4.8p     +5.8p  
+  pdh_dist_pips              +10.3p     +6.5p     +9.7p  
+  pdl_dist_pips              +10.3p     +7.7p     +8.5p  
+  htf_pct_20                  +2.2p     +0.8p     +2.4p  
+  adr_consumed                -0.9p     +5.3p     -6.4p  ← INVERSION
+  bb_pos                      -0.3p     -7.4p     -7.5p  ← AMPLIFIES
+
+  Session: NY  n_all=159,674  n_up=79,490  n_down=78,699
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +11.5p       —        —   
+  rsi_slope                   +6.8p     +3.2p     +3.3p  
+  zscore_1h                   +5.6p     +3.2p     +2.9p  
+  h1_ret_4bar                 +4.7p     +2.8p     +2.5p  
+  d_ret                       +3.9p     +3.1p     +3.4p  
+  rsi14                       +3.0p     +1.3p     +1.6p  
+  ema20_1h_dist_pct           +3.6p     +2.1p     +1.9p  
+  pdh_dist_pips               +3.1p     +1.8p     +2.6p  
+  pdl_dist_pips               +3.4p     +3.1p     +2.5p  
+  htf_pct_20                  +0.8p     -0.1p     +1.6p  ← INVERSION
+  adr_consumed                -0.3p     +2.5p     -3.0p  ← INVERSION
+  bb_pos                      -1.5p     -5.3p     -5.1p  ← AMPLIFIES
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  n_all=208,657  n_up=104,863  n_down=102,296
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +21.2p       —        —   
+  rsi_slope                  +12.6p     +6.7p     +5.9p  
+  zscore_1h                  +10.5p     +5.3p     +5.7p  
+  h1_ret_4bar                +11.4p     +5.4p     +6.5p  
+  d_ret                      +10.4p     +8.2p     +8.9p  
+  rsi14                       +7.9p     +2.4p     +5.6p  
+  ema20_1h_dist_pct           +9.0p     +5.0p     +5.3p  
+  pdh_dist_pips               +8.8p     +5.7p     +9.3p  
+  pdl_dist_pips               +8.8p     +7.8p     +6.8p  
+  htf_pct_20                  +2.8p     +0.2p     +4.0p  ← AMPLIFIES
+  adr_consumed                -0.2p     +3.9p     -4.3p  ← INVERSION
+  bb_pos                      -0.0p     -7.7p     -7.3p  ← AMPLIFIES
+
+  Session: LONDON  n_all=185,723  n_up=95,511  n_down=88,940
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +28.5p       —        —   
+  rsi_slope                  +17.7p     +9.1p    +10.4p  
+  zscore_1h                  +16.3p     +7.6p     +9.8p  
+  h1_ret_4bar                +16.4p     +7.9p    +11.4p  
+  d_ret                      +17.7p    +13.4p    +15.5p  
+  rsi14                      +12.2p     +4.9p     +7.6p  
+  ema20_1h_dist_pct          +15.1p     +7.7p    +10.7p  
+  pdh_dist_pips              +15.4p    +10.5p    +15.7p  
+  pdl_dist_pips              +15.0p    +12.2p    +12.2p  
+  htf_pct_20                  +3.6p     -0.1p     +6.3p  ← INVERSION
+  adr_consumed                -3.3p     +6.0p    -11.7p  ← INVERSION
+  bb_pos                      +0.9p     -9.5p     -8.2p  ← AMPLIFIES
+
+  Session: NY  n_all=161,724  n_up=83,202  n_down=76,970
+  Feature                       ALL    UP ctx    DN ctx                  note
+  ------------------------------------------------------------------------
+  h1_ret_1bar                +16.1p       —        —   
+  rsi_slope                   +8.7p     +5.0p     +4.5p  
+  zscore_1h                   +7.1p     +3.0p     +4.8p  
+  h1_ret_4bar                 +7.0p     +3.0p     +6.1p  
+  d_ret                       +5.6p     +3.4p     +6.4p  
+  rsi14                       +3.9p     +0.2p     +4.4p  
+  ema20_1h_dist_pct           +5.0p     +0.8p     +5.2p  
+  pdh_dist_pips               +4.8p     +1.6p     +6.5p  ← AMPLIFIES
+  pdl_dist_pips               +4.5p     +3.5p     +5.1p  
+  htf_pct_20                  +2.9p     +0.2p     +4.6p  ← AMPLIFIES
+  adr_consumed                -0.6p     +2.9p     -4.2p  ← INVERSION
+  bb_pos                      -1.5p     -7.2p     -6.6p  ← AMPLIFIES

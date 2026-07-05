@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.log
+data/*
+!data/.gitkeep
+.env
+*.env
+!.env.example
+journal*
+nohup.out

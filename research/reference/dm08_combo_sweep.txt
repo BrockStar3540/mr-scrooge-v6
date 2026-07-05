@@ -1,0 +1,437 @@
+==========================================================================================
+DM-08  COMBO SWEEP — 2-factor interaction grids (5×5 quintiles)
+  supra_tr = A5×B5 corner mean − (marg_A5 + marg_B5 − overall)
+  Positive supra = factors amplify each other beyond additive sum
+==========================================================================================
+
+── CROSS-CELL SUMMARY (sorted by median |supra_tr|) ──
+Combo                                tier  med|supra|  max|supra|   n_cells  hypothesis
+------------------------------------------------------------------------------------------
+h1_ret_1bar_x_atr_5m                    1       +1.32p       +3.64p        24  momentum × vol (amplifier)
+h1_ret_4bar_x_atr_1h                    2       +1.06p       +2.14p        24  4H momentum × hourly vol
+h1_ret_1bar_x_h1_ret_4bar               1       +1.02p       +2.57p        24  multi-TF momentum agreement
+rsi_slope_x_rsi14                       1       +0.82p       +1.70p        24  RSI velocity × level
+d_ret_x_adr_consumed                    1       +0.72p       +4.45p        24  trend × range exhaustion
+d_ret_x_pdl_dist_pips                   2       +0.70p       +2.22p        24  daily trend × PDL proximity
+h1_ret_1bar_x_pdh_dist_pips             1       +0.69p       +1.24p        24  momentum × resistance proximity
+h1_ret_1bar_x_zscore_1h                 2       +0.63p       +1.91p        24  momentum × Z-score
+d_ret_x_ema20_1h_dist_pct               1       +0.61p       +1.84p        24  trend × pullback depth
+rsi_slope_x_zscore_1h                   2       +0.61p       +1.61p        24  RSI vel × Z-score agreement
+htf_pct_60_x_d_ret                      2       +0.41p       +1.21p        24  slow HTF × daily
+htf_pct_20_x_d_ret                      1       +0.38p       +1.05p        24  HTF × daily alignment
+
+──────────────────────────────────────────────────────────────────────
+PAIR: AUD_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +1.83p       +0.43p         16.43p       +8.39p   208,838
+  h1_ret_1bar_x_h1_ret_4bar                 +1.30p       -2.42p         16.89p       +8.07p   208,802
+  htf_pct_60_x_d_ret                        +0.96p       -0.74p           9.1p       +4.70p   202,373
+  h1_ret_4bar_x_atr_1h                      +0.84p       +0.83p          8.66p       +4.42p   208,802
+  d_ret_x_adr_consumed                      +0.81p       +0.63p          9.54p       +4.84p   208,742
+  rsi_slope_x_zscore_1h                     +0.61p       -1.35p         12.91p       +5.91p   208,742
+  htf_pct_20_x_d_ret                        +0.51p       -0.25p          8.82p       +3.98p   206,693
+  rsi_slope_x_rsi14                         +0.51p       -1.66p         13.52p       +5.97p   208,802
+  d_ret_x_pdl_dist_pips                     +0.45p       -0.65p           nanp       +4.16p   208,742
+  h1_ret_1bar_x_zscore_1h                   +0.35p       -1.59p         16.08p       +7.53p   208,742
+  h1_ret_1bar_x_pdh_dist_pips               +0.23p       -2.27p         19.74p       +9.25p   208,742
+  d_ret_x_ema20_1h_dist_pct                 +0.03p       -1.94p         11.92p       +5.44p   208,742
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +2.66p       +2.80p         11.22p       +5.61p   185,635
+  h1_ret_4bar_x_atr_1h                      +1.56p       +0.98p         10.62p       +5.67p   185,731
+  d_ret_x_ema20_1h_dist_pct                 +0.99p       -0.68p         10.15p       +4.99p   185,635
+  d_ret_x_pdl_dist_pips                     +0.87p       +3.01p           nanp       +4.88p   185,635
+  rsi_slope_x_rsi14                         +0.85p       -1.65p         15.96p       +7.31p   185,731
+  h1_ret_1bar_x_h1_ret_4bar                 +0.71p       -2.59p         18.73p       +8.87p   185,731
+  htf_pct_60_x_d_ret                        -0.71p       +0.31p          9.76p       +3.44p   179,971
+  h1_ret_1bar_x_atr_5m                      +0.57p       -0.03p         17.16p       +8.28p   185,731
+  rsi_slope_x_zscore_1h                     +0.39p       -1.02p         14.44p       +6.71p   185,635
+  h1_ret_1bar_x_pdh_dist_pips               +0.09p       -1.99p         20.87p       +9.78p   185,635
+  h1_ret_1bar_x_zscore_1h                   +0.03p       -1.85p         17.78p       +8.41p   185,635
+  htf_pct_20_x_d_ret                        +0.02p       -0.22p          9.06p       +4.34p   183,811
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +2.55p       +1.29p          14.3p       +7.33p   162,430
+  h1_ret_4bar_x_atr_1h                      +0.88p       +0.82p          6.19p       +3.29p   162,430
+  h1_ret_1bar_x_h1_ret_4bar                 +0.68p       -2.19p         13.04p       +6.27p   162,430
+  d_ret_x_adr_consumed                      +0.64p       -1.57p          6.29p       +1.99p   162,346
+  rsi_slope_x_zscore_1h                     +0.63p       -0.55p          9.24p       +4.66p   162,406
+  d_ret_x_pdl_dist_pips                     +0.47p       +0.43p           nanp       +2.02p   162,346
+  htf_pct_60_x_d_ret                        +0.40p       -1.40p          5.64p       +2.09p   157,390
+  d_ret_x_ema20_1h_dist_pct                 -0.39p       -0.56p          4.22p       +1.96p   162,346
+  rsi_slope_x_rsi14                         +0.37p       -1.29p          9.84p       +4.56p   162,430
+  htf_pct_20_x_d_ret                        +0.27p       -1.53p          5.66p       +2.05p   160,750
+  h1_ret_1bar_x_zscore_1h                   +0.22p       -1.54p         12.28p       +5.96p   162,406
+  h1_ret_1bar_x_pdh_dist_pips               +0.19p       -2.59p         14.78p       +6.58p   162,346
+
+──────────────────────────────────────────────────────────────────────
+PAIR: AUD_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_4bar_x_atr_1h                      +0.82p       +0.79p          6.37p       +3.44p   207,817
+  d_ret_x_pdl_dist_pips                     +0.80p       +1.26p           nanp       +2.47p   207,757
+  h1_ret_1bar_x_pdh_dist_pips               +0.63p       -1.22p         12.61p       +6.18p   207,757
+  h1_ret_1bar_x_h1_ret_4bar                 +0.62p       -1.38p         10.75p       +5.19p   207,817
+  rsi_slope_x_zscore_1h                     +0.61p       -0.92p          8.51p       +4.24p   207,757
+  h1_ret_1bar_x_atr_5m                      +0.59p       +0.22p          9.77p       +5.20p   207,853
+  rsi_slope_x_rsi14                         +0.47p       -1.17p           9.1p       +4.35p   207,817
+  d_ret_x_adr_consumed                      +0.47p       -0.27p          5.09p       +2.41p   207,757
+  h1_ret_1bar_x_zscore_1h                   +0.47p       -1.34p         10.68p       +5.04p   207,757
+  d_ret_x_ema20_1h_dist_pct                 +0.42p       -0.99p          7.45p       +3.56p   207,757
+  htf_pct_20_x_d_ret                        +0.16p       -0.32p          5.05p       +2.51p   205,724
+  htf_pct_60_x_d_ret                        -0.03p       -0.54p          5.27p       +2.31p   201,428
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +1.75p       +1.45p          9.13p       +4.67p   185,505
+  h1_ret_4bar_x_atr_1h                      +1.24p       +0.63p          8.73p       +4.23p   185,601
+  rsi_slope_x_rsi14                         +1.06p       -0.95p         12.07p       +5.80p   185,601
+  d_ret_x_pdl_dist_pips                     +0.75p       +1.90p           nanp       +3.67p   185,505
+  h1_ret_1bar_x_h1_ret_4bar                 +0.70p       -1.50p         14.01p       +6.72p   185,601
+  h1_ret_1bar_x_zscore_1h                   +0.63p       -0.78p         13.61p       +6.61p   185,505
+  rsi_slope_x_zscore_1h                     +0.62p       -0.56p          11.1p       +5.38p   185,505
+  h1_ret_1bar_x_pdh_dist_pips               +0.19p       -1.26p         16.28p       +7.66p   185,505
+  htf_pct_60_x_d_ret                        -0.18p       -0.64p          7.76p       +2.87p   179,841
+  h1_ret_1bar_x_atr_5m                      -0.14p       +0.23p         12.44p       +5.76p   185,601
+  d_ret_x_ema20_1h_dist_pct                 +0.09p       -1.60p          8.59p       +4.02p   185,505
+  htf_pct_20_x_d_ret                        -0.09p       -0.41p          7.18p       +3.21p   183,681
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +2.20p       +0.66p         11.13p       +5.58p   160,576
+  h1_ret_1bar_x_pdh_dist_pips               +1.05p       -1.11p         11.73p       +5.88p   160,492
+  d_ret_x_ema20_1h_dist_pct                 +0.75p       +0.67p          3.59p       +1.89p   160,492
+  h1_ret_1bar_x_zscore_1h                   +0.75p       -0.96p          9.71p       +4.70p   160,552
+  htf_pct_60_x_d_ret                        +0.59p       +0.10p          4.46p       +2.18p   155,597
+  rsi_slope_x_rsi14                         +0.55p       -1.33p          7.96p       +3.59p   160,576
+  h1_ret_1bar_x_h1_ret_4bar                 +0.52p       -1.12p          9.65p       +4.54p   160,576
+  rsi_slope_x_zscore_1h                     +0.52p       -0.91p          7.39p       +3.54p   160,552
+  d_ret_x_adr_consumed                      +0.46p       +0.36p          3.69p       +1.91p   160,492
+  h1_ret_4bar_x_atr_1h                      +0.40p       +0.55p          4.49p       +1.85p   160,576
+  htf_pct_20_x_d_ret                        +0.38p       -0.35p          4.19p       +1.85p   158,905
+  d_ret_x_pdl_dist_pips                     +0.26p       +0.70p           nanp       +1.92p   160,492
+
+──────────────────────────────────────────────────────────────────────
+PAIR: EUR_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +1.91p       -0.30p          9.62p       +5.15p   208,564
+  h1_ret_1bar_x_h1_ret_4bar                 +1.87p       -1.69p         17.56p       +8.61p   208,624
+  rsi_slope_x_rsi14                         +1.70p       -1.45p         15.52p       +7.48p   208,636
+  h1_ret_1bar_x_atr_5m                      +1.55p       +0.78p         17.52p       +8.41p   208,660
+  h1_ret_1bar_x_zscore_1h                   +1.50p       -0.82p         17.24p       +8.68p   208,564
+  h1_ret_4bar_x_atr_1h                      +1.39p       +1.34p          9.85p       +4.76p   208,624
+  d_ret_x_ema20_1h_dist_pct                 +1.38p       -1.35p         12.89p       +6.43p   208,564
+  rsi_slope_x_zscore_1h                     +1.36p       -1.38p         14.16p       +6.89p   208,564
+  htf_pct_60_x_d_ret                        +1.21p       -0.37p          8.99p       +4.80p   202,220
+  htf_pct_20_x_d_ret                        +1.05p       -0.86p          9.36p       +4.62p   206,523
+  h1_ret_1bar_x_pdh_dist_pips               +0.90p       -2.86p         21.96p      +10.19p   208,564
+  d_ret_x_pdl_dist_pips                     +0.74p       +0.68p           nanp       +4.45p   208,564
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +2.47p       +2.78p         17.69p       +8.22p   185,557
+  h1_ret_1bar_x_h1_ret_4bar                 +2.27p       -2.94p         26.27p      +13.28p   185,653
+  h1_ret_4bar_x_atr_1h                      +1.45p       +1.06p         15.01p       +7.09p   185,653
+  d_ret_x_pdl_dist_pips                     +1.42p       +2.14p           nanp       +7.48p   185,557
+  d_ret_x_ema20_1h_dist_pct                 +1.38p       -0.95p         16.05p       +8.06p   185,557
+  h1_ret_1bar_x_atr_5m                      +1.24p       -0.74p         24.21p      +12.07p   185,653
+  h1_ret_1bar_x_zscore_1h                   +1.20p       -2.33p         25.49p      +12.98p   185,557
+  h1_ret_1bar_x_pdh_dist_pips               +1.12p       -3.72p         31.91p      +15.54p   185,557
+  rsi_slope_x_rsi14                         +0.80p       -2.25p         21.01p       +9.96p   185,653
+  rsi_slope_x_zscore_1h                     -0.55p       -2.73p         19.87p       +9.74p   185,557
+  htf_pct_20_x_d_ret                        -0.48p       -0.99p         16.39p       +6.26p   183,733
+  htf_pct_60_x_d_ret                        -0.41p       +0.05p         14.89p       +6.36p   179,893
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +3.49p       +1.66p         17.69p       +8.90p   161,819
+  h1_ret_4bar_x_atr_1h                      +1.49p       +0.43p          6.41p       +3.77p   161,819
+  h1_ret_1bar_x_h1_ret_4bar                 +1.30p       -1.60p         14.61p       +7.38p   161,819
+  rsi_slope_x_rsi14                         +1.19p       -1.35p         11.51p       +5.73p   161,819
+  d_ret_x_ema20_1h_dist_pct                 -0.87p       -1.88p          7.19p       +2.12p   161,735
+  rsi_slope_x_zscore_1h                     +0.85p       -0.97p         10.48p       +5.15p   161,795
+  htf_pct_20_x_d_ret                        -0.53p       -0.56p          4.48p       +2.08p   160,140
+  htf_pct_60_x_d_ret                        -0.52p       -0.25p          4.07p       +1.81p   156,788
+  d_ret_x_pdl_dist_pips                     +0.35p       +0.70p           nanp       +2.23p   161,735
+  h1_ret_1bar_x_zscore_1h                   +0.30p       -1.00p          13.4p       +6.55p   161,795
+  d_ret_x_adr_consumed                      +0.16p       +0.44p          3.81p       +2.29p   161,735
+  h1_ret_1bar_x_pdh_dist_pips               -0.08p       -2.31p         15.89p       +7.18p   161,735
+
+──────────────────────────────────────────────────────────────────────
+PAIR: EUR_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  rsi_slope_x_rsi14                         +0.75p       -0.65p          7.52p       +3.90p   208,423
+  h1_ret_1bar_x_atr_5m                      +0.71p       +0.15p          8.28p       +4.46p   208,447
+  d_ret_x_pdl_dist_pips                     +0.65p       +0.43p           nanp       +1.66p   208,351
+  d_ret_x_ema20_1h_dist_pct                 +0.61p       -0.32p          5.33p       +2.79p   208,351
+  h1_ret_4bar_x_atr_1h                      +0.60p       +0.32p          4.59p       +2.49p   208,411
+  h1_ret_1bar_x_pdh_dist_pips               +0.54p       -0.99p         10.04p       +5.08p   208,351
+  h1_ret_1bar_x_h1_ret_4bar                 +0.43p       -1.13p          8.37p       +4.18p   208,411
+  rsi_slope_x_zscore_1h                     +0.43p       -0.73p          6.82p       +3.44p   208,351
+  htf_pct_60_x_d_ret                        +0.42p       -0.28p          4.11p       +2.18p   201,999
+  d_ret_x_adr_consumed                      -0.24p       -0.25p          3.49p       +1.23p   208,351
+  h1_ret_1bar_x_zscore_1h                   +0.14p       -0.64p          7.97p       +4.10p   208,351
+  htf_pct_20_x_d_ret                        +0.07p       -0.26p           3.5p       +1.74p   206,308
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +2.48p       +1.79p         13.71p       +6.86p   185,631
+  rsi_slope_x_zscore_1h                     +1.61p       +0.04p         13.97p       +7.01p   185,631
+  rsi_slope_x_rsi14                         +1.57p       -0.97p         15.11p       +7.66p   185,727
+  d_ret_x_pdl_dist_pips                     +1.32p       +2.26p           nanp       +5.53p   185,631
+  h1_ret_4bar_x_atr_1h                      +1.31p       +0.77p         10.72p       +5.44p   185,727
+  d_ret_x_ema20_1h_dist_pct                 +1.21p       -1.20p         13.22p       +6.51p   185,631
+  h1_ret_1bar_x_pdh_dist_pips               +1.15p       -1.62p         22.41p      +11.31p   185,631
+  h1_ret_1bar_x_h1_ret_4bar                 +0.99p       -1.74p         18.09p       +8.93p   185,727
+  h1_ret_1bar_x_zscore_1h                   +0.63p       -1.06p         17.18p       +8.49p   185,631
+  htf_pct_60_x_d_ret                        -0.41p       -0.69p         10.46p       +4.51p   179,967
+  h1_ret_1bar_x_atr_5m                      +0.34p       -0.50p         16.19p       +7.82p   185,727
+  htf_pct_20_x_d_ret                        +0.29p       -0.59p         10.78p       +5.22p   183,807
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +3.05p       +1.80p         13.45p       +6.82p   161,646
+  d_ret_x_pdl_dist_pips                     +1.26p       +0.75p           nanp       +2.52p   161,562
+  rsi_slope_x_rsi14                         +1.12p       -0.98p          9.47p       +4.71p   161,646
+  rsi_slope_x_zscore_1h                     +0.95p       -0.86p          8.96p       +4.35p   161,622
+  d_ret_x_adr_consumed                      +0.79p       +0.39p          4.26p       +2.53p   161,562
+  d_ret_x_ema20_1h_dist_pct                 -0.74p       +0.15p          3.99p       +2.09p   161,562
+  h1_ret_1bar_x_pdh_dist_pips               +0.74p       -1.08p         13.24p       +6.52p   161,562
+  htf_pct_20_x_d_ret                        +0.54p       -0.14p          5.02p       +2.54p   159,971
+  h1_ret_1bar_x_h1_ret_4bar                 +0.49p       -1.19p         11.31p       +5.40p   161,646
+  h1_ret_1bar_x_zscore_1h                   +0.38p       -0.76p         10.96p       +5.34p   161,622
+  h1_ret_4bar_x_atr_1h                      +0.25p       +0.79p          4.56p       +2.14p   161,646
+  htf_pct_60_x_d_ret                        +0.23p       -0.41p          5.05p       +2.22p   156,628
+
+──────────────────────────────────────────────────────────────────────
+PAIR: GBP_USD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_pdl_dist_pips                     +2.01p       +1.29p           nanp       +2.28p   207,992
+  d_ret_x_ema20_1h_dist_pct                 +1.27p       -0.63p          7.67p       +3.93p   207,992
+  h1_ret_1bar_x_h1_ret_4bar                 +0.98p       -1.13p         11.29p       +5.51p   208,052
+  h1_ret_4bar_x_atr_1h                      +0.77p       +0.28p          5.94p       +3.19p   208,052
+  h1_ret_1bar_x_atr_5m                      +0.76p       +0.08p         10.81p       +5.42p   208,088
+  rsi_slope_x_rsi14                         +0.64p       -0.46p          9.35p       +4.70p   208,052
+  h1_ret_1bar_x_pdh_dist_pips               +0.51p       -1.11p         13.16p       +6.28p   207,992
+  rsi_slope_x_zscore_1h                     +0.41p       -0.63p          8.86p       +4.27p   207,992
+  h1_ret_1bar_x_zscore_1h                   +0.40p       -0.92p         11.12p       +5.28p   207,992
+  htf_pct_20_x_d_ret                        -0.37p       -0.31p          4.94p       +1.63p   205,949
+  htf_pct_60_x_d_ret                        +0.18p       -0.02p          5.42p       +2.23p   201,716
+  d_ret_x_adr_consumed                      -0.16p       -0.36p          4.68p       +1.61p   207,992
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +4.45p       +2.21p         18.96p       +9.55p   185,638
+  h1_ret_4bar_x_atr_1h                      +2.14p       +0.92p         16.11p       +8.05p   185,734
+  h1_ret_1bar_x_h1_ret_4bar                 +1.24p       -2.53p          25.0p      +12.27p   185,734
+  rsi_slope_x_zscore_1h                     +1.13p       +0.24p          18.7p       +9.21p   185,638
+  rsi_slope_x_rsi14                         +1.09p       -0.96p         19.59p       +9.65p   185,734
+  h1_ret_1bar_x_pdh_dist_pips               +1.08p       -1.83p         29.73p      +14.76p   185,638
+  h1_ret_1bar_x_zscore_1h                   +0.79p       -2.18p         24.29p      +11.82p   185,638
+  htf_pct_60_x_d_ret                        -0.73p       -1.57p         15.78p       +5.83p   179,974
+  h1_ret_1bar_x_atr_5m                      +0.62p       -0.76p         22.92p      +11.18p   185,734
+  htf_pct_20_x_d_ret                        +0.38p       -1.01p         15.32p       +7.52p   183,814
+  d_ret_x_pdl_dist_pips                     -0.30p       +3.71p           nanp       +7.64p   185,638
+  d_ret_x_ema20_1h_dist_pct                 -0.01p       -1.63p          17.3p       +8.41p   185,638
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +3.64p       +1.74p         19.11p       +9.67p   161,668
+  h1_ret_1bar_x_h1_ret_4bar                 +1.15p       -1.67p         15.96p       +7.87p   161,668
+  h1_ret_1bar_x_zscore_1h                   +1.14p       -0.61p         15.48p       +7.89p   161,644
+  rsi_slope_x_rsi14                         +0.76p       -1.33p         12.94p       +6.23p   161,668
+  htf_pct_20_x_d_ret                        +0.65p       -0.57p          6.29p       +3.27p   159,992
+  h1_ret_1bar_x_pdh_dist_pips               +0.60p       -2.20p         18.59p       +8.68p   161,584
+  h1_ret_4bar_x_atr_1h                      +0.58p       +0.87p          7.23p       +3.61p   161,668
+  d_ret_x_ema20_1h_dist_pct                 +0.57p       -0.96p          5.75p       +2.94p   161,584
+  rsi_slope_x_zscore_1h                     +0.33p       -1.32p         12.16p       +5.73p   161,644
+  htf_pct_60_x_d_ret                        -0.22p       -0.97p          6.96p       +2.43p   156,650
+  d_ret_x_pdl_dist_pips                     +0.10p       +0.54p           nanp       +3.14p   161,584
+  d_ret_x_adr_consumed                      +0.02p       +1.27p          5.38p       +2.97p   161,584
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_CAD
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_pdl_dist_pips                     +1.06p       +1.48p           nanp       +1.74p   207,991
+  h1_ret_1bar_x_pdh_dist_pips               +0.80p       -0.71p         10.77p       +5.57p   207,991
+  h1_ret_1bar_x_h1_ret_4bar                 +0.76p       -0.76p          9.58p       +4.76p   208,051
+  h1_ret_4bar_x_atr_1h                      +0.69p       +0.63p          5.44p       +2.47p   208,051
+  rsi_slope_x_rsi14                         +0.65p       -0.23p           7.7p       +4.08p   208,063
+  d_ret_x_ema20_1h_dist_pct                 +0.62p       -0.25p          5.79p       +3.06p   207,991
+  h1_ret_1bar_x_atr_5m                      +0.52p       +0.10p          9.05p       +4.24p   208,087
+  d_ret_x_adr_consumed                      -0.50p       -0.11p          3.48p       +1.48p   207,991
+  rsi_slope_x_zscore_1h                     +0.48p       -0.23p          7.22p       +3.65p   207,991
+  h1_ret_1bar_x_zscore_1h                   +0.47p       -0.12p          8.76p       +4.51p   207,991
+  htf_pct_60_x_d_ret                        +0.46p       +0.19p          4.58p       +2.03p   201,884
+  htf_pct_20_x_d_ret                        +0.12p       -0.14p          3.91p       +1.60p   206,161
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +4.25p       +2.14p          14.5p       +7.27p   185,613
+  h1_ret_1bar_x_h1_ret_4bar                 +2.26p       -0.84p         18.55p       +9.48p   185,709
+  h1_ret_4bar_x_atr_1h                      +1.75p       +0.95p         12.32p       +5.94p   185,709
+  d_ret_x_ema20_1h_dist_pct                 +1.51p       -1.18p         14.16p       +7.15p   185,613
+  h1_ret_1bar_x_atr_5m                      +1.40p       +0.78p         17.89p       +8.65p   185,709
+  h1_ret_1bar_x_pdh_dist_pips               +1.22p       -1.86p         23.31p      +11.62p   185,613
+  h1_ret_1bar_x_zscore_1h                   +1.07p       -1.16p         17.89p       +8.88p   185,613
+  htf_pct_60_x_d_ret                        +0.86p       -0.02p         10.87p       +5.64p   180,142
+  htf_pct_20_x_d_ret                        +0.69p       -0.36p         11.15p       +5.81p   183,981
+  rsi_slope_x_rsi14                         +0.56p       -1.13p         14.85p       +7.14p   185,709
+  rsi_slope_x_zscore_1h                     +0.39p       -0.24p         13.46p       +6.51p   185,613
+  d_ret_x_pdl_dist_pips                     -0.27p       +0.77p           nanp       +5.74p   185,613
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +2.96p       +1.96p         16.83p       +8.56p   161,629
+  rsi_slope_x_zscore_1h                     +1.49p       +0.02p         10.35p       +5.48p   161,605
+  d_ret_x_pdl_dist_pips                     +1.49p       +1.49p           nanp       +3.01p   161,545
+  h1_ret_1bar_x_h1_ret_4bar                 +1.43p       -1.19p         14.57p       +7.49p   161,629
+  h1_ret_4bar_x_atr_1h                      +1.36p       +0.27p          6.37p       +3.47p   161,629
+  h1_ret_1bar_x_pdh_dist_pips               +1.24p       -1.45p         16.98p       +8.62p   161,545
+  rsi_slope_x_rsi14                         +1.12p       -0.32p         10.53p       +5.48p   161,629
+  h1_ret_1bar_x_zscore_1h                   +1.08p       -0.59p         14.05p       +7.23p   161,605
+  htf_pct_20_x_d_ret                        +0.80p       -0.07p          6.54p       +3.17p   160,117
+  htf_pct_60_x_d_ret                        +0.53p       +0.12p          6.56p       +3.05p   156,779
+  d_ret_x_adr_consumed                      -0.43p       +0.03p          7.81p       +2.75p   161,545
+  d_ret_x_ema20_1h_dist_pct                 +0.38p       -0.08p          5.83p       +2.82p   161,545
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_CHF
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_pdh_dist_pips               +0.64p       -0.76p          8.58p       +4.08p   204,646
+  d_ret_x_pdl_dist_pips                     +0.64p       +1.41p           nanp       +1.15p   204,646
+  h1_ret_4bar_x_atr_1h                      +0.43p       +0.42p           4.2p       +1.90p   204,706
+  d_ret_x_ema20_1h_dist_pct                 +0.36p       -0.55p          4.54p       +2.03p   204,646
+  h1_ret_1bar_x_atr_5m                      +0.33p       -0.04p          6.79p       +3.07p   204,742
+  h1_ret_1bar_x_h1_ret_4bar                 +0.32p       -0.68p          7.09p       +3.26p   204,706
+  rsi_slope_x_rsi14                         +0.18p       -0.39p          5.83p       +2.65p   204,658
+  rsi_slope_x_zscore_1h                     +0.17p       -0.35p          5.46p       +2.55p   204,646
+  htf_pct_20_x_d_ret                        +0.16p       -0.22p          2.79p       +1.15p   202,625
+  htf_pct_60_x_d_ret                        -0.16p       -0.31p          2.93p       +0.96p   198,635
+  d_ret_x_adr_consumed                      -0.12p       +0.15p           2.9p       +0.96p   204,646
+  h1_ret_1bar_x_zscore_1h                   -0.01p       -0.62p          6.66p       +3.01p   204,646
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +2.74p       +1.96p         12.36p       +6.16p   185,550
+  h1_ret_1bar_x_h1_ret_4bar                 +1.69p       -0.92p         15.98p       +8.08p   185,646
+  h1_ret_4bar_x_atr_1h                      +1.39p       +0.76p          9.87p       +4.98p   185,646
+  h1_ret_1bar_x_pdh_dist_pips               +0.90p       -2.01p         20.04p       +9.87p   185,550
+  h1_ret_1bar_x_zscore_1h                   +0.79p       -1.01p         15.48p       +7.44p   185,550
+  d_ret_x_ema20_1h_dist_pct                 +0.54p       -1.56p         11.78p       +5.50p   185,550
+  htf_pct_20_x_d_ret                        -0.54p       -0.02p          9.45p       +4.04p   183,727
+  rsi_slope_x_rsi14                         +0.44p       -1.44p         13.08p       +6.20p   185,646
+  rsi_slope_x_zscore_1h                     -0.40p       -1.31p          12.3p       +5.70p   185,550
+  htf_pct_60_x_d_ret                        +0.29p       -0.20p         10.57p       +4.49p   179,888
+  h1_ret_1bar_x_atr_5m                      +0.21p       -0.93p         15.11p       +7.10p   185,646
+  d_ret_x_pdl_dist_pips                     +0.15p       -0.14p           nanp       +5.06p   185,550
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +1.92p       +1.37p         11.21p       +5.55p   159,674
+  h1_ret_1bar_x_h1_ret_4bar                 +1.05p       -1.10p          9.87p       +4.93p   159,674
+  rsi_slope_x_zscore_1h                     +0.97p       -0.67p          7.39p       +3.61p   159,650
+  rsi_slope_x_rsi14                         +0.86p       -1.06p           8.1p       +3.79p   159,674
+  h1_ret_1bar_x_zscore_1h                   +0.71p       -0.50p          9.19p       +4.51p   159,650
+  d_ret_x_pdl_dist_pips                     +0.61p       +0.90p           nanp       +1.53p   159,590
+  h1_ret_4bar_x_atr_1h                      +0.50p       +0.27p          3.94p       +2.19p   159,674
+  h1_ret_1bar_x_pdh_dist_pips               +0.36p       -1.00p         10.55p       +4.95p   159,590
+  htf_pct_20_x_d_ret                        +0.29p       -0.52p          3.65p       +1.54p   158,004
+  d_ret_x_ema20_1h_dist_pct                 -0.12p       -0.40p          3.19p       +1.38p   159,590
+  htf_pct_60_x_d_ret                        -0.12p       -0.29p          3.49p       +1.19p   154,707
+  d_ret_x_adr_consumed                      +0.00p       -0.87p          4.75p       +1.49p   159,590
+
+──────────────────────────────────────────────────────────────────────
+PAIR: USD_JPY
+──────────────────────────────────────────────────────────────────────
+
+  Session: ASIA
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_pdl_dist_pips                     +2.22p       +0.94p           nanp       +4.25p   208,549
+  d_ret_x_adr_consumed                      +2.17p       +0.76p          9.51p       +5.22p   208,549
+  h1_ret_1bar_x_atr_5m                      +1.95p       +0.06p         18.09p       +8.57p   208,645
+  h1_ret_1bar_x_h1_ret_4bar                 +1.89p       -1.45p         17.81p       +8.64p   208,609
+  h1_ret_4bar_x_atr_1h                      +1.63p       +0.89p          9.69p       +4.70p   208,609
+  h1_ret_1bar_x_zscore_1h                   +1.39p       -0.58p         17.25p       +8.43p   208,549
+  d_ret_x_ema20_1h_dist_pct                 +1.38p       -1.65p         12.62p       +6.03p   208,549
+  htf_pct_60_x_d_ret                        +1.05p       -0.86p          9.44p       +4.68p   202,408
+  h1_ret_1bar_x_pdh_dist_pips               +1.02p       -2.14p         21.38p      +10.26p   208,549
+  rsi_slope_x_rsi14                         +0.86p       -1.94p          14.8p       +6.67p   208,621
+  htf_pct_20_x_d_ret                        +0.72p       -1.44p          9.26p       +4.14p   206,505
+  rsi_slope_x_zscore_1h                     +0.64p       -1.01p         13.38p       +6.40p   208,549
+
+  Session: LONDON
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  d_ret_x_adr_consumed                      +2.75p       +2.47p         17.22p       +7.88p   185,627
+  h1_ret_1bar_x_h1_ret_4bar                 +2.57p       -3.35p         24.26p      +11.85p   185,723
+  h1_ret_1bar_x_zscore_1h                   +1.91p       -1.79p         23.16p      +11.55p   185,627
+  d_ret_x_ema20_1h_dist_pct                 +1.84p       -1.15p         15.81p       +7.97p   185,627
+  d_ret_x_pdl_dist_pips                     +1.69p       +1.65p           nanp       +7.75p   185,627
+  h1_ret_4bar_x_atr_1h                      +1.30p       +0.45p         14.77p       +6.64p   185,723
+  rsi_slope_x_rsi14                         +1.13p       -2.23p         20.02p       +9.55p   185,723
+  rsi_slope_x_zscore_1h                     +0.91p       -1.66p         18.15p       +8.71p   185,627
+  h1_ret_1bar_x_pdh_dist_pips               +0.90p       -4.59p         29.78p      +13.82p   185,627
+  h1_ret_1bar_x_atr_5m                      +0.85p       -0.79p         21.52p      +10.61p   185,723
+  htf_pct_20_x_d_ret                        -0.02p       -0.27p          13.3p       +6.37p   183,803
+  htf_pct_60_x_d_ret                        +0.02p       +0.60p         13.38p       +6.27p   180,155
+
+  Session: NY
+  Combo                                  supra_tr    supra_bl   corner_span   top_right         n
+  --------------------------------------------------------------------------------------
+  h1_ret_1bar_x_atr_5m                      +2.74p       +1.55p         15.57p       +7.86p   161,724
+  rsi_slope_x_rsi14                         +1.12p       -1.48p         10.74p       +5.51p   161,724
+  rsi_slope_x_zscore_1h                     +1.04p       -1.21p         10.19p       +5.13p   161,700
+  htf_pct_60_x_d_ret                        -0.86p       -1.75p          7.01p       +1.79p   156,859
+  h1_ret_4bar_x_atr_1h                      +0.67p       +0.57p          6.42p       +3.20p   161,724
+  htf_pct_20_x_d_ret                        -0.55p       -2.03p          6.67p       +2.04p   160,046
+  h1_ret_1bar_x_h1_ret_4bar                 +0.41p       -2.28p         13.63p       +6.49p   161,724
+  d_ret_x_adr_consumed                      +0.24p       -0.43p          5.05p       +2.63p   161,640
+  d_ret_x_ema20_1h_dist_pct                 -0.15p       -0.42p         10.06p       +2.32p   161,640
+  h1_ret_1bar_x_zscore_1h                   +0.10p       -2.37p         13.53p       +6.24p   161,700
+  d_ret_x_pdl_dist_pips                     +0.07p       -0.22p           nanp       +2.28p   161,640
+  h1_ret_1bar_x_pdh_dist_pips               +0.03p       -2.87p         15.34p       +6.73p   161,640

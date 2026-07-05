@@ -1,0 +1,155 @@
+{
+  "schema": "v1",
+  "account": {
+    "max_concurrent_trades": 4,
+    "margin_pct_per_trade": 0.2,
+    "max_per_currency_direction": 1
+  },
+  "defaults": {
+    "enabled": true,
+    "min_direction_score": 0.25,
+    "min_dir_certainty": 0.3,
+    "min_mom_certainty": 0.25,
+    "cooldown_after_sl_min": 0.0,
+    "profile_shadow_enabled": true,
+    "calibration_log_enabled": true
+  },
+  "per_pair": {
+    "USD_CHF": {
+      "enabled": false,
+      "_note": "2026-07-01 Brock: kill USD_CHF entirely \u2014 loses both directions (-1071 USD broker-confirmed)"
+    },
+    "USD_CAD": {
+      "min_dir_certainty": 0.25,
+      "_note": "2026-07-02 Brock: floor 0.30->0.25 so inverted ny cell (d_cert ~0.24-0.27) can fire and generate forward data"
+    }
+  },
+  "_note": "Per-cell disable list. 10 cells total as of 2026-06-21 broker-validation session. 5 added 2026-06-21 from Master Matrix research/sessions/2026-06-21_master_matrix/. EUR_JPY/london/short added after broker validation (-5.73p fwd 1H n=4 + matrix -0.0003). 4 more added per Brock 2026-06-21: EUR_JPY/ny/long (-6.27p fwd n=3 + matrix -0.005), USD_CHF/ny/long (-2.42p fwd n=5 + matrix -0.001), AUD_JPY/london/short (-1.23p fwd n=3 + matrix -0.003), AUD_JPY/ny/long (matrix -0.0004 + realized -$136/trade n=3 manual closes; weakest broker forward evidence \u2014 flag to re-evaluate after clean trades accumulate). See research/sessions/2026-06-21_broker_validation/. | inverted_shadow_cells (2026-06-21): GBP_USD/ny + EUR_JPY/ny log their signal stream (rising edge) as SHADOW_INVERT; disabled for real trading but research/sessions/2026-06-21_percell_exhaustion/ shows inverting them is +2.5-3.0p net of spread (n=4-10) + walk-forward-stable NY fade. Measure forward on ~30 NY signals before promoting disabled->inverted-active. | 4 more disabled 2026-06-21 (inversion analysis): EUR_USD/london/long (-13.55p n=2; opp EUR_USD/london/short is confirmed winner), USD_JPY/ny/short (-17.80p n=2; ML conflict + broker+momentum=fade, inversion unconfirmed n=1), AUD_USD/asia/short (-3.38p n=4; both sides of AUD_USD/asia negative, no edge in cell), AUD_USD/asia/long (-1.10p n=2; same). Total disabled: 14. | inverted_live_cells (2026-06-22T01:30Z, commit-pending): AUD_JPY/asia (both directions) \u2014 Brock-flagged after live signal direction was observed reversed (trade_id=9114 short -18.80p; trade_id=9118 long +5.50p inverse confirmed). Playmaker pick_best flips trade direction when cell is in this list; SIGNAL log shows INVERTED_LIVE signal_dir=X trade_dir=Y for traceability. Net: bot signal long \u2192 trades short; bot signal short \u2192 trades long. Currently OPEN AUD_JPY long trade 9124 NOT closed (entered before this rule landed). | 2026-06-22T04:25Z: USD_JPY/asia added to inverted_live_cells (same Brock call as AUD_JPY/asia \u2014 live signal direction reversed; broker forward USD_JPY/asia/short was -1.78p n=6). Total inverted_live: 2 cells. | 2026-06-22T04:35Z TEST MODE: Brock added 7 more cells to inverted_live_cells: EUR_USD/london+ny, GBP_USD/london+ny, USD_CHF/london+ny, USD_CAD/ny. Brock-explicit: running a test on whether the inversion thesis holds at scale. Total inverted_live: 9 cells (covering all sessions for GBP_USD/USD_CHF/USD_CAD/EUR_USD plus AUD_JPY/asia + USD_JPY/asia). NOTE: USD_CAD/ny/long was historical STAR winner (+6.61p n=7) \u2014 flipping it kills that historical edge if inversion is wrong. Test will reveal which thesis holds. Disabled cells stay disabled (they do not reach pick_best). | 2026-06-23T05:45Z: random_pick=true (Brock). pick_best now randomizes among actionable candidates instead of max-composite. Combined with new CYCLE log dump (every scan emits all 8 pairs state) for backtest data collection \u2014 accumulate 24-48h then evaluate alternative rankings (vortex-aligned, etc) honestly. | 2026-06-23T07:30Z: AUD_JPY/asia REMOVED from inverted_live (Brock). 6 trades since 06-22: 5/6 long (signal was short, flipped to long), realized -46.10p over 5 closed (40% WR), 9241 currently open -16p. Matrix said AUD_JPY/asia/short was a CONFIRMED WINNER (+1.80p n=6 historical) \u2014 by inverting we were taking the historically-losing long side and dropping the historically-winning short side. Reverting. 9241 (open long) left running under existing exit logic. | 2026-06-23T07:50Z: per_cell_mom_cert_max AUD_JPY/asia=0.50 (Brock reframe). Block trades where m_cert > 0.50; low m_cert predicts BIG directional move, high m_cert predicts small contained move. Cell edge is in big-move tail. New per-cell ceiling mechanism (separate from global MIN_MOM_CERTAINTY=0.25 floor). Hot-reloadable. | 2026-06-23T08:00Z: per_cell_mom_cert_min GBP_USD/ny=0.40 (Brock obs). Reverse of AUD_JPY/asia pattern: in GBP_USD/ny, high m_cert correlates with bigger MFE (9148/9159/9170/9176/9186 = m_cert 0.39-0.84 producing MFE 8.4-13.8p; only the 0.39 trade produced the smallest MFE 8.4p). Block low-cert trades, keep high-conviction ones. New per_cell_mom_cert_min mechanism mirrors the ceiling. | 2026-06-23T20:50Z: USD_JPY/london added to inverted_live_cells + per_cell_mom_cert_min[USD_JPY/london]=0.50 (Brock explicit). Backtest on 2026 V5-actionable bars (n=2510) said natural direction was +7.06p/65.8% WR; Brock overrode based on recent live observation. Watching. | 2026-06-23T21:15Z: per_cell_willr_range[EUR_JPY/ny/short]=[-85,-7] (Brock willr-only choice from EUR_JPY 2026 backtest). Baseline n=1999 V5-actionable bars +6.95p/64.8% WR -> willr filter alone n=1360 +8.48p/70.2% WR (best single rule). Cpos filter [0.06,0.60] alone HURT (n=1549 +6.33p/63.2%) \u2014 small-sample artifact, not shipped. Combined cpos+willr filter only marginal (+0.33p/+2.8pp WR). m_cert SWEET SPOT inside KEEP: 0.55-0.70 gave n=229 +11.82p/78% WR \u2014 future narrowing candidate. | 2026-06-23T22:30Z: per_cell_kc_up_range[AUD_USD/london/short]=[-15,0] (Brock obs from per-trade deep-dive, validated on 2026 backtest n=1120 V5-actionable). Baseline +2.86p/65% WR; KEEP filter +4.22p/69% WR; deep-below kc_up<-20 was LOSING (-4.02p/54% WR n=155). New mirror mechanism to per_cell_willr_range. | 2026-06-24T06:00Z: inverted_live_cells += EUR_JPY/ny (Brock call from per-trade deep-dive: 9 trades n=3 days, 3 big losses had MFE only +1.8-4.7p but MAE -19 to -22; inverted these would be huge runners with shallow drawdown. Other 6 wins still flip but ratchet protects (inv MFE mostly >7.5 or grinds). No filter wired yet \u2014 n=3 too small. Just flip the firing pin like other inverted cells. | 2026-06-24T06:30Z: per_cell_mom_cert_max[AUD_USD/london]=0.50 (Brock obs from per-trade deep-dive on 11 AUD_USD trades last 7 days, n=7 london). Keep set m_cert<0.5 (n=4): 4W/0L +37.45p, MFE 10.8-15.7p, hold 52-173m -- ratchet engages cleanly. Block set m_cert>=0.5 (n=3): 2 long-hold wins (9142 1019m / 9279 158m) + 1 open underwater (9353 789m). Brock call: ones it blocks held for hours with no edge, just luck. Mirrors AUD_JPY/asia mechanism. | 2026-06-24T06:50Z: NEW MECHANISM per_cell_dir_cert_min FLOOR on d_cert; first use GBP_USD/ny=0.52 (Brock obs, deep-dive 11 inverted trades: both n=2 losses had d_cert 0.49/0.50; 8 of 9 winners >= 0.54; clean gap 0.51-0.53). Filter blocks both losses, costs 1 winner (9159 +7.45p) \u2014 net +31.45p over n=11. | 2026-06-25T19:50Z: USD_CHF/ny + USD_CHF/london REMOVED from inverted_live_cells + per_cell_dir_cert range [0.35, 0.55] applied to both. Brock call from USD_CHF deep-dive (n=8): flip all current trades (currently inverted longs) back to natural shorts -- current MAE becomes MFE, captures the directional asymmetry. d_cert filter mid-zone [0.35, 0.55] -- extremes go either way, middle = consistent edge. NEW mechanism per_cell_dir_cert_max wired this commit (mirror of min). | 2026-06-25T21:30Z: Removed 4 conflicting disabled_cells entries: USD_CAD/ny/short, EUR_JPY/ny/long, EUR_USD/london/long, EUR_USD/ny/long. Each conflicted with an inverted_live_cells entry on the same pair/session -- the inverted trade direction was being blocked by the disable, deadlocking the cell. EUR_JPY/ny was just flipped 2h ago and would never have fired. EUR_USD both cells deadlocked since 06-22 inversion. USD_CAD/ny same since 06-22. The disables were added under the old V5 thesis when those slots had no edge; the inversions now route to those slots as a NEW set of trades (different source bars), so the historical edge data does not apply. | 2026-06-25T22:00Z: REVERTED fb6d90b 4-disable removal. Re-added USD_CAD/ny/short, EUR_JPY/ny/long, EUR_USD/london/long, EUR_USD/ny/long. My deadlock framing in fb6d90b was wrong -- the disabled_cells check uses V5 NATIVE direction (before inversion), so disables only block V5's native-direction signals, not the inverted-trade direction. The 4 disables were mostly no-ops in practice (V5 wasn't producing strong signals in those directions anyway), but leaving them removed creates confusing semantics. Reverting restores the original conservative posture. | 2026-06-25T22:30Z: Cleaned up inverted_shadow_cells -- removed cells already in inverted_live_cells (duplicate observation). Removed: GBP_USD/ny, EUR_JPY/ny. inverted_shadow_cells: 2 -> 0. | 2026-06-26T21:10Z: RE-INVERTED USD_CHF/ny + USD_CHF/london after 2-trade native era produced 0W/2L -$696 (9462/9471 both full SL hits on shorts, price ran up = LONG would have won). 4-trade inverted era was ~breakeven by comparison. Inversion thesis re-validated. Also dropped per_cell_dir_cert_min for both (was 0.35) since the floor isn't helping; kept the 0.55 ceiling. Net per-cell rules: d_cert <= 0.55 only. | 2026-06-27T03:35Z: AUD_JPY/asia FLIPPED to inverted_live + d_cert ceiling 0.65. 9441 fired native long this morning, price went down, full SL hit -18.95p. The 3 most recent native era: 2W (shorts) / 1L (long) but the L was a big -19. Inversion test: V5's occasional wrong-direction longs now flip to shorts. d_cert <= 0.65 added per Brock observation of the sweet spot. AUD_JPY/asia inverted ONCE before (06-22) and was reverted 06-23 because the inverted shorts bled -66p. Different setup this time -- inversion now with the m_cert <= 0.50 ceiling already in place + the new d_cert ceiling. Hot-reload, no restart.",
+  "disabled_cells": [
+    [
+      "USD_CHF",
+      "london",
+      "short"
+    ],
+    [
+      "EUR_JPY",
+      "london",
+      "short"
+    ],
+    [
+      "USD_CHF",
+      "ny",
+      "long"
+    ],
+    [
+      "AUD_JPY",
+      "london",
+      "short"
+    ],
+    [
+      "AUD_JPY",
+      "ny",
+      "long"
+    ],
+    [
+      "USD_JPY",
+      "ny",
+      "short"
+    ],
+    [
+      "USD_CAD",
+      "ny",
+      "short"
+    ],
+    [
+      "EUR_JPY",
+      "ny",
+      "long"
+    ],
+    [
+      "EUR_USD",
+      "london",
+      "long"
+    ],
+    [
+      "EUR_USD",
+      "ny",
+      "long"
+    ],
+    [
+      "EUR_JPY",
+      "ny",
+      "short"
+    ],
+    [
+      "AUD_JPY",
+      "asia",
+      "long"
+    ]
+  ],
+  "inverted_shadow_cells": [],
+  "inverted_live_cells": [
+    [
+      "USD_JPY",
+      "asia"
+    ],
+    [
+      "GBP_USD",
+      "ny"
+    ],
+    [
+      "USD_CAD",
+      "ny"
+    ]
+  ],
+  "random_pick": true,
+  "per_cell_mom_cert_max": {
+    "AUD_JPY/asia": 0.5,
+    "AUD_USD/london": 0.5
+  },
+  "per_cell_mom_cert_min": {
+    "GBP_USD/ny": 0.4,
+    "USD_JPY/london": 0.5
+  },
+  "per_cell_willr_range": {
+    "EUR_JPY/ny/short": [
+      -100.0,
+      -75.0
+    ]
+  },
+  "per_cell_kc_up_range": {
+    "AUD_USD/london/short": [
+      -15.0,
+      0.0
+    ]
+  },
+  "per_cell_dir_cert_min": {
+    "GBP_USD/ny": 0.52,
+    "USD_JPY/asia": 0.49
+  },
+  "per_cell_dir_cert_max": {
+    "USD_CHF/london": 0.55
+  },
+  "inverted_live_directions": [
+    [
+      "USD_CAD",
+      "london",
+      "long"
+    ]
+  ],
+  "per_cell_aroon_range": {
+    "USD_CAD/london/short": [
+      -100.0,
+      -85.0
+    ]
+  },
+  "_note_2026-07-02": "2026-07-02 Brock MAE-flip doctrine: london longs flipped to short (MAE 32p vs MFE 2.8p, n=2); aroon<=-85 floor on native london shorts (separates dead 9724 aroon -57 from winners -86; rival separators kc_up<=-32, efi<=-0.9 tracked)",
+  "_note_eurjpy_willr": "2026-07-02 Brock MAE-flip doctrine: ny/short willr KEEP window [-85,-7]->[-100,-75] (exhaustion-only for the INVERTED regime; live n=6 split: willr<=-80 -> +16.4p combined, willr -30..-49 -> three full -20p stops; rival separator efi<=-15 tracked; old window was fit pre-inversion on native backtests)",
+  "_note_2026-07-02_panel": "Panel-consensus de-inversion, non-locked cells only (Brock: do what you think is best): un-inverted EUR_USD london+ny (restores broker-confirmed star london/short +6.31p fwd n=7, muted since 06-22), GBP_USD london (inverted 06-22 on zero evidence, 0 trades ever), EUR_JPY ny (cell disabled below). Disabled EUR_JPY/ny/short (chop veto: both directions lose, MAE/MFE ~1.6x both ways, native -17.5p/9 + inverted -44.8p/6) and AUD_JPY/asia/long (native n=3 -25.4p, inversion-era -95.8p). KEPT: USD_CAD/ny + USD_JPY/asia inversions (Brock call / n too small), GBP_USD/ny + all locked cells untouched. USD_JPY/london change PENDING explicit Brock override (locked cell). Inversion mechanism deprecated for new cells; future flips only via MAE-flip doctrine >=3x asymmetry n>=6 same-engine.",
+  "_note_2026-07-02_risk_cap": "2026-07-02 panel-unanimous: max_per_currency_direction=1 \u2014 cap concurrent same-direction exposure per CURRENCY (engine held 3 long-yen-pair positions into a JPY crash = one macro bet at 3x size). A position exposes two currencies with opposite signs: long BASE_QUOTE = long BASE + short QUOTE. Candidate blocked in pick_best if opening it would push any (currency, sign) count past the cap. Portfolio-level like max_concurrent_trades \u2014 applied after per-cell governance, locked cells ARE subject to it. Hot-reloaded via _pm_load.",
+  "_note_2026-07-02_profile_shadow": "2026-07-02 profile_shadow: defaults.profile_shadow_enabled=true \u2014 engine stamps every scanned bar through a SECOND direction stack built from the 2026-audit corrected profile assignment (research/sessions/2026-06-21_v5_2026_audit/data/config_2026_per_cell.json, most cells -> reversion; 6-month retrospective replay won 6/6 months, +2.3-3.2p mean fwd/call) and logs one SHADOW_PROFILE line per pair per cycle on bias-disagreement-or-either-nonblock. LOGGING ONLY \u2014 execution unchanged; locked cells unaffected. Scorer: research/tools/profile_shadow_score.py --since YYYY-MM-DD. Set false to skip entirely (hot-reload via _pm_load, no restart).",
+  "_note_2026-07-03_usdjpy_london": "2026-07-03 Brock EXPLICIT lock override (\"ok, do both\"): USD_JPY/london un-inverted + native long re-enabled = natural direction restored. Basis: live inverted -24.4p/5 vs natural backtest +7.06p/65.8pct; lock baseline was cross-regime contaminated (2 of 4 trades pre-inversion); biggest replay mover under corrected profiles (+4.57p/call). mom_cert_min 0.50 kept. Panel-unanimous.",
+  "_note_2026-07-03_audusd_ny": "2026-07-03 taint repair: AUD_USD/ny long+short RE-ENABLED. The disable (06-21) rested solely on tainted ML dAUC -0.032 from leaky parquets with zero live trades; clean re-derivation shows dAUC -0.0022 = noise. Evidence-gone -> cell returns to default enabled state, judged forward on broker truth (n>=20 constitution).",
+  "_note_2026-07-03_hygiene": "2026-07-03: removed stale USD_CHF/london inversion entry (pair killed 07-01 via enabled=false; entry was dead code, flagged by conformance sweep)",
+  "_note_2026-07-03_calibration": "2026-07-03 per-cell calibration LOG-ONLY wiring: modules/signals/calibration.py loaded from config/cell_calibration.json (48 cells, 8 pairs). Engine emits CAL lines once per pair/session per scan cycle for cells not killed, comparing artifact projected_mfe vs live expected_pips + dead-risk separators. Kill-switch: defaults.calibration_log_enabled (hot-reload, no restart). NO gating, NO change to entries or exits -- observation window only."
+}

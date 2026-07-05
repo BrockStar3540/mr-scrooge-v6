@@ -1,0 +1,139 @@
+{
+  "pair": "AUD_JPY",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3216,
+        "dead_rate_60m": 0.3239,
+        "ev_gross_long": -0.541,
+        "ev_gross_short": -0.07,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "was locked \ud83d\udd12; phaseA verdict NOT-RE-EXPRESSIBLE (m_cert ceiling never binding in natural era; 1W/4L n=5, no raw separator); re-enters via monthly discovery only. Alternative flagged for Brock: short ungated + 15-trade requalification. Structural: tier=1 ev_gross_long=-0.541 ev_gross_short=-0.07."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3307,
+        "dead_rate_60m": 0.295,
+        "ev_gross_long": 0.159,
+        "ev_gross_short": -0.642,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.289,
+        "dead_rate_60m": 0.3765,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "regime_short_240",
+          "side": "short",
+          "class": "LEAN",
+          "status": "ACTIVE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": null,
+              "max": 3.604874,
+              "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 4.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_5m_monthly_mean",
+              "lte": 2.836,
+              "action": "suspend",
+              "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": -0.07,
+            "drift": "STABLE",
+            "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
+            "n_floor_status": "shadow-only-session-disabled"
+          },
+          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short."
+        },
+        {
+          "id": "timing_lean_30",
+          "side": "long",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.617985,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 5.0,
+            "sl_pips": 6.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean q_yzv_m5 sign=positive (corr=0.0609, AUC=0.5297). lean confirmer dropped (q_yzv_m5 not on live feed (queued feed-extension)); side=long retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.617985 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+        }
+      ],
+      "notes": "2 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
+    }
+  }
+}

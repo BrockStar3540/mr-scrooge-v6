@@ -1,0 +1,134 @@
+{
+  "pair": "AUD_USD",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2798,
+        "dead_rate_60m": 0.5974,
+        "ev_gross_long": -3.927,
+        "ev_gross_short": -3.731,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.927 ev_gross_short=-3.731, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.3233,
+        "dead_rate_60m": 0.4995,
+        "ev_gross_long": -1.755,
+        "ev_gross_short": -3.158,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "kc_up_short_lean",
+          "side": "short",
+          "class": "LEAN",
+          "status": "ACTIVE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -15.0,
+              "max": 0.0,
+              "note": "Price within [-15, 0] pips of KC upper band; near/below upper KC. Clean-data re-derivation (2026-07-03): KEEP n=8391 -0.054p 49.2% WR vs BLOCKED -1.110p 47.9% WR. Fresh stump: -13.6459 (gt) WR=49.6%. Broker-validated: 6W 1L on live AUD_USD/london/short trades. phaseA (2026-07-04): survives raw re-derivation unchanged.",
+              "lineage": "rederivation-2026-07-03/v5_rederivation_REPORT.md item-3b; broker-validation-6W1L-2026-07; phaseA_gate_rederivation-2026-07-04 CELL 4"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": -0.054,
+            "drift": "STABLE",
+            "source": "rederivation-2026-07-03/v5_rederivation_REPORT.md item-3b; phaseA_gate_rederivation 2026-07-04 (INSUFFICIENT DATA verdict; kc_up gate survives raw)",
+            "n_floor_status": "broker-validated-6W1L"
+          },
+          "notes": "phaseA: kc_up [-15,0] survives raw re-derivation; m_cert long gate dropped (both lock-era long wins would have passed \u2014 no regression). kc_up_dist_pips in [-15, 0] is broker-validated (6W1L) raw gate. Side: short. No vwap long setup emitted (q_vwap_dist_pips_m5 not on live feed). Log m_cert-equivalent stamps on every london long fire; re-derive after 10 longs."
+        }
+      ],
+      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2455,
+        "dead_rate_60m": 0.5539,
+        "ev_gross_long": -6.169,
+        "ev_gross_short": -3.743,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "control_atrconc_60",
+          "side": "short",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "atr_conc",
+              "min": 0.1776,
+              "max": 0.241631,
+              "note": "Absolute 2026 bounds \u2014 CONTROL formula, not rolling. Source: formula_shadow.py REGISTRY entry.",
+              "lineage": "formula-shadow-registry-2026-07-04/modules/signals/formula_shadow.py; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 3.0,
+            "sl_pips": 4.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "evidence": {
+            "ev_seq": -0.5,
+            "drift": "STABLE",
+            "source": "formula-history-2026-07-04/verdict_table.csv",
+            "holdout_months_positive": 2
+          },
+          "notes": "CONTROL formula: deep-OOS failed validation. 2026 convergence ev=+0.394 is a 2026-pocket artifact. atr_conc in [p13.9, p35.5] abs=[0.177600, 0.241631]. Stamps emitted for live falsification. Source: formula_shadow.py REGISTRY + ~/v5-formula-history/ verdict_table.csv.",
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          }
+        }
+      ],
+      "notes": "0 ACTIVE, 1 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+    }
+  }
+}

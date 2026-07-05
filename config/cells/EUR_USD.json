@@ -1,0 +1,46 @@
+{
+  "pair": "EUR_USD",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2298,
+        "dead_rate_60m": 0.6925,
+        "ev_gross_long": -5.489,
+        "ev_gross_short": -4.507,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.3367,
+        "dead_rate_60m": 0.4192,
+        "ev_gross_long": -1.371,
+        "ev_gross_short": -1.141,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2664,
+        "dead_rate_60m": 0.5052,
+        "ev_gross_long": -5.196,
+        "ev_gross_short": -3.193,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.196 ev_gross_short=-3.193, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    }
+  }
+}

@@ -1,0 +1,3757 @@
+{
+  "AUD_JPY/asia/long": {
+    "cell": "AUD_JPY/asia/long",
+    "pair": "AUD_JPY",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.300000000000125,
+      "mfe_60m_p50": 6.799999999999784,
+      "mfe_60m_p75": 12.099999999999511,
+      "mfe_60m_p90": 19.50000000000074,
+      "mfe_240m_p50": 15.30000000000058,
+      "atr_regression": {
+        "slope": 0.3704789998589517,
+        "intercept": 2.4366132861379466,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12326
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.1999999999996476,
+      "winner_mae_p75": 6.799999999999784,
+      "winner_mae_p90": 12.23999999999962,
+      "n_winners": 4077,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.38865781474964006,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.6015390656578312,
+          "drift": "PERSISTENT",
+          "threshold": 111.72876625734378,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.56413175333418,
+            114.82954338670454
+          ],
+          "p_dead_above_threshold": 0.46680531115021595,
+          "p_dead_below_threshold": 0.3105103183490642
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.6007682241728856,
+          "drift": "PERSISTENT",
+          "threshold": 111.72668305622061,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.57353796232381,
+            114.82122805959564
+          ],
+          "p_dead_above_threshold": 0.46568549032154855,
+          "p_dead_below_threshold": 0.3116301391777316
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "ema5",
+      "sign": "negative",
+      "corr": -0.08372505433417435,
+      "auc": 0.4595013073129518,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        104.56413175333418,
+        114.82954338670454
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12502,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/ema5:PERSISTENT",
+        "dir/ema20:PERSISTENT",
+        "dir/bb_mid:PERSISTENT",
+        "dir/ema50:PERSISTENT",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_5bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_JPY/asia/short": {
+    "cell": "AUD_JPY/asia/short",
+    "pair": "AUD_JPY",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.0000000000001137,
+      "mfe_60m_p50": 6.60000000000025,
+      "mfe_60m_p75": 12.900000000000489,
+      "mfe_60m_p90": 20.999999999999375,
+      "mfe_240m_p50": 14.699999999999136,
+      "atr_regression": {
+        "slope": 0.4038961892854132,
+        "intercept": 2.406979909350399,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12267
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.3999999999991815,
+      "winner_mae_p75": 6.700000000000728,
+      "winner_mae_p90": 11.840000000000552,
+      "n_winners": 4187,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4101743721004639,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5529887682488586,
+          "drift": "REGIME",
+          "threshold": -7.7999999999988745,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -183.1000000000003,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.44878987017150185,
+          "p_dead_below_threshold": 0.3717068497525148
+        },
+        {
+          "feature": "zscore_1h",
+          "dead_auc": 0.5262427899475621,
+          "drift": "REGIME",
+          "threshold": 0.1203420705668739,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -3.6079891583305153,
+            3.1807662419079796
+          ],
+          "p_dead_above_threshold": 0.4352978859705317,
+          "p_dead_below_threshold": 0.38510706295941194
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "ema5",
+      "sign": "positive",
+      "corr": 0.08372505433417435,
+      "auc": 0.5404986926870482,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        104.56413175333418,
+        114.82954338670454
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12502,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/ema5:PERSISTENT",
+        "dir/ema20:PERSISTENT",
+        "dir/bb_mid:PERSISTENT",
+        "dir/ema50:PERSISTENT",
+        "dist/range_5bar:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_JPY/london/long": {
+    "cell": "AUD_JPY/london/long",
+    "pair": "AUD_JPY",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.499999999999659,
+      "mfe_60m_p50": 7.099999999999795,
+      "mfe_60m_p75": 13.100000000000023,
+      "mfe_60m_p90": 20.37999999999965,
+      "mfe_240m_p50": 16.59999999999968,
+      "atr_regression": {
+        "slope": 0.48410463261461567,
+        "intercept": 0.6424878118830186,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10743
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.4000000000006025,
+      "winner_mae_p75": 6.799999999999784,
+      "winner_mae_p90": 12.199999999999989,
+      "n_winners": 3831,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.3728283849618531,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10879,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_JPY/london/short": {
+    "cell": "AUD_JPY/london/short",
+    "pair": "AUD_JPY",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.3999999999991815,
+      "mfe_60m_p50": 7.000000000000739,
+      "mfe_60m_p75": 12.899999999999068,
+      "mfe_60m_p90": 21.410000000001084,
+      "mfe_240m_p50": 14.000000000000057,
+      "atr_regression": {
+        "slope": 0.4005228765549309,
+        "intercept": 2.763908059706597,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10720
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.4000000000006025,
+      "winner_mae_p75": 6.9000000000002615,
+      "winner_mae_p90": 12.600000000000477,
+      "n_winners": 3757,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.38137696479455835,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.544925915301383,
+          "drift": "PERSISTENT",
+          "threshold": 111.711095602061,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.6386869862413,
+            114.73857781230835
+          ],
+          "p_dead_above_threshold": 0.42618128332414046,
+          "p_dead_below_threshold": 0.3365808823529412
+        },
+        {
+          "feature": "bb_mid",
+          "dead_auc": 0.5444185874109195,
+          "drift": "PERSISTENT",
+          "threshold": 111.71549999999999,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.67394999999999,
+            114.7261
+          ],
+          "p_dead_above_threshold": 0.42452656738371025,
+          "p_dead_below_threshold": 0.3382352941176471
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10879,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_JPY/ny/long": {
+    "cell": "AUD_JPY/ny/long",
+    "pair": "AUD_JPY",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.9999999999986926,
+      "mfe_60m_p50": 6.399999999999295,
+      "mfe_60m_p75": 12.199999999999989,
+      "mfe_60m_p90": 20.599999999998886,
+      "mfe_240m_p50": 12.000000000000455,
+      "atr_regression": {
+        "slope": 0.411155907820228,
+        "intercept": 1.2665293584621615,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13762
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.7999999999996703,
+      "winner_mae_p75": 8.399999999998897,
+      "winner_mae_p90": 15.800000000000125,
+      "n_winners": 4425,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.42218080149114634,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.5761625219581278,
+          "drift": "PERSISTENT",
+          "threshold": 111.71247186146813,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.59781888493752,
+            114.88568206146367
+          ],
+          "p_dead_above_threshold": 0.48881560080298253,
+          "p_dead_below_threshold": 0.35555555555555557
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_yzv_m5",
+      "sign": "positive",
+      "corr": 0.06091324493320838,
+      "auc": 0.529713552958639,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        7.774860834366956e-05,
+        0.0018418194774392877
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13949,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/rsi_slope:REGIME",
+        "dir/ema_cross_pips:REGIME",
+        "dir/q_macd_m5:REGIME",
+        "dir/q_yzv_m5:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_JPY/ny/short": {
+    "cell": "AUD_JPY/ny/short",
+    "pair": "AUD_JPY",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.7999999999998693,
+      "mfe_60m_p50": 6.099999999999284,
+      "mfe_60m_p75": 11.599999999999966,
+      "mfe_60m_p90": 20.720000000000667,
+      "mfe_240m_p50": 12.000000000000455,
+      "atr_regression": {
+        "slope": 0.3764876938750287,
+        "intercept": 2.28615571668559,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13759
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.000000000000625,
+      "winner_mae_p75": 8.699999999998909,
+      "winner_mae_p90": 16.30000000000109,
+      "n_winners": 4154,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.43788085167395513,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "bb_mid",
+          "dead_auc": 0.5563760089506512,
+          "drift": "PERSISTENT",
+          "threshold": 111.70279999999998,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.6308,
+            114.86905000000002
+          ],
+          "p_dead_above_threshold": 0.4879552624032119,
+          "p_dead_below_threshold": 0.3878136200716846
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.5562642907618652,
+          "drift": "PERSISTENT",
+          "threshold": 111.70716278943011,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            104.6306382332504,
+            114.84856448375466
+          ],
+          "p_dead_above_threshold": 0.4889589905362776,
+          "p_dead_below_threshold": 0.3868100358422939
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_yzv_m5",
+      "sign": "negative",
+      "corr": -0.06091324493320838,
+      "auc": 0.47028644704136097,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        7.774860834366956e-05,
+        0.0018418194774392877
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13949,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/rsi_slope:REGIME",
+        "dir/ema_cross_pips:REGIME",
+        "dir/q_macd_m5:REGIME",
+        "dir/q_yzv_m5:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/asia/long": {
+    "cell": "AUD_USD/asia/long",
+    "pair": "AUD_USD",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.9000000000002348,
+      "mfe_60m_p50": 4.100000000000215,
+      "mfe_60m_p75": 7.600000000000939,
+      "mfe_60m_p90": 12.099999999999334,
+      "mfe_240m_p50": 9.500000000000064,
+      "atr_regression": {
+        "slope": 0.3075498050253537,
+        "intercept": 1.94197323695577,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12143
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.60000000000049,
+      "winner_mae_p75": 3.6999999999998145,
+      "winner_mae_p90": 7.000000000000339,
+      "n_winners": 1887,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.588150289017341,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5547997625483005,
+          "drift": "REGIME",
+          "threshold": -5.0000000000005596,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -76.89999999999974,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6251410153102337,
+          "p_dead_below_threshold": 0.5514317709166533
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_ht_dcperiod_m5",
+      "sign": "positive",
+      "corr": 0.0625071771104424,
+      "auc": 0.5326469479067949,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        11.631045576901771,
+        45.847513086229824
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12456,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_yzv_m5:REGIME",
+        "dir/d_high:REGIME",
+        "dir/q_ht_dcperiod_m5:PERSISTENT",
+        "dist/q_yzv_m5:REGIME",
+        "dist/atr_5m:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/asia/short": {
+    "cell": "AUD_USD/asia/short",
+    "pair": "AUD_USD",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.9000000000002348,
+      "mfe_60m_p50": 4.299999999999304,
+      "mfe_60m_p75": 8.00000000000023,
+      "mfe_60m_p90": 12.699999999999934,
+      "mfe_240m_p50": 9.500000000000064,
+      "atr_regression": {
+        "slope": 0.39128330686890117,
+        "intercept": 1.1243106976693777,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12128
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.7000000000000348,
+      "winner_mae_p75": 3.7999999999993594,
+      "winner_mae_p90": 7.000000000000339,
+      "n_winners": 2083,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5694444444444444,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5747327552732393,
+          "drift": "REGIME",
+          "threshold": -5.0000000000005596,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -76.89999999999974,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6232070910556003,
+          "p_dead_below_threshold": 0.5160774276115822
+        },
+        {
+          "feature": "q_mfi",
+          "dead_auc": 0.5261475499884213,
+          "drift": "REGIME",
+          "threshold": 50.45381702680858,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            3.0911202089026517,
+            100.0
+          ],
+          "p_dead_above_threshold": 0.5918432883750803,
+          "p_dead_below_threshold": 0.5470456005138086
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_ht_dcperiod_m5",
+      "sign": "negative",
+      "corr": -0.0625071771104424,
+      "auc": 0.46735305209320516,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        11.631045576901771,
+        45.847513086229824
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12456,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_yzv_m5:REGIME",
+        "dir/d_high:REGIME",
+        "dir/q_ht_dcperiod_m5:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/atr_1h:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/london/long": {
+    "cell": "AUD_USD/london/long",
+    "pair": "AUD_USD",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.4000000000001798,
+      "mfe_60m_p50": 5.149999999999877,
+      "mfe_60m_p75": 9.399999999999409,
+      "mfe_60m_p90": 14.499999999999513,
+      "mfe_240m_p50": 12.100000000000444,
+      "atr_regression": {
+        "slope": 0.5637143303933358,
+        "intercept": 0.21949140341053397,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10596
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.100000000000435,
+      "winner_mae_p75": 4.300000000000415,
+      "winner_mae_p90": 7.500000000000284,
+      "n_winners": 2386,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5007371913011427,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5734973920408436,
+          "drift": "PERSISTENT",
+          "threshold": -5.891188533702629,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -36.134754910794875,
+            60.46673525757162
+          ],
+          "p_dead_above_threshold": 0.5578695171396978,
+          "p_dead_below_threshold": 0.44360486546258754
+        },
+        {
+          "feature": "pdh_dist",
+          "dead_auc": 0.5435209085759881,
+          "drift": "PERSISTENT",
+          "threshold": -29.39999999999998,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -194.19999999999993,
+            140.69999999999916
+          ],
+          "p_dead_above_threshold": 0.5438628824179874,
+          "p_dead_below_threshold": 0.4576115001842978
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_vwap_dist_pips_m5",
+      "sign": "negative",
+      "corr": -0.11840424568966926,
+      "auc": 0.4664291669412885,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -58.66955961282949,
+        60.369841582395
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10852,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_vwap_dist_pips_m5:PERSISTENT",
+        "dir/ema20_1h_dist:PERSISTENT",
+        "dir/ema50_dist_pct:PERSISTENT",
+        "dir/ema_cross_pips:PERSISTENT",
+        "dir/q_macd_m5:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/london/short": {
+    "cell": "AUD_USD/london/short",
+    "pair": "AUD_USD",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.300000000000635,
+      "mfe_60m_p50": 5.0000000000005596,
+      "mfe_60m_p75": 9.199999999999209,
+      "mfe_60m_p90": 14.399999999999968,
+      "mfe_240m_p50": 10.600000000000609,
+      "atr_regression": {
+        "slope": 0.4938840357357397,
+        "intercept": 0.7589291898060528,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10610
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.100000000000435,
+      "winner_mae_p75": 4.3999999999999595,
+      "winner_mae_p90": 7.669999999999871,
+      "n_winners": 2284,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5081091043125691,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5391858225793453,
+          "drift": "PERSISTENT",
+          "threshold": -5.891188533702629,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -36.134754910794875,
+            60.46673525757162
+          ],
+          "p_dead_above_threshold": 0.5460744563214154,
+          "p_dead_below_threshold": 0.4701437523037228
+        },
+        {
+          "feature": "pdh_dist",
+          "dead_auc": 0.5175142927848905,
+          "drift": "PERSISTENT",
+          "threshold": -29.39999999999998,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -194.19999999999993,
+            140.69999999999916
+          ],
+          "p_dead_above_threshold": 0.5300405455215629,
+          "p_dead_below_threshold": 0.48617766310357535
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_vwap_dist_pips_m5",
+      "sign": "positive",
+      "corr": 0.11840424568966926,
+      "auc": 0.5335708330587116,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -58.66955961282949,
+        60.369841582395
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10852,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_vwap_dist_pips_m5:PERSISTENT",
+        "dir/ema20_1h_dist:PERSISTENT",
+        "dir/ema50_dist_pct:PERSISTENT",
+        "dir/ema_cross_pips:PERSISTENT",
+        "dir/q_macd_m5:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/ny/long": {
+    "cell": "AUD_USD/ny/long",
+    "pair": "AUD_USD",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.9999999999997797,
+      "mfe_60m_p50": 4.20000000000087,
+      "mfe_60m_p75": 8.599999999999719,
+      "mfe_60m_p90": 15.510000000000392,
+      "mfe_240m_p50": 7.399999999999629,
+      "atr_regression": {
+        "slope": 0.4419778329577432,
+        "intercept": 0.8354718889178914,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13600
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.9000000000001247,
+      "winner_mae_p75": 6.099999999999994,
+      "winner_mae_p90": 10.700000000000154,
+      "n_winners": 2759,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5688205275641487,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.6461305908831659,
+          "drift": "REGIME",
+          "threshold": -6.199999999999539,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -111.99999999999987,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6726327944572749,
+          "p_dead_below_threshold": 0.4658554044380816
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.6372829049134336,
+          "drift": "REGIME",
+          "threshold": -6.261646275194099,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -86.86474429903667,
+            22.951636931149988
+          ],
+          "p_dead_above_threshold": 0.6761069580218516,
+          "p_dead_below_threshold": 0.46154951847060516
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13913,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_up_dist_pips:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dir/ema20_dist_pct:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "AUD_USD/ny/short": {
+    "cell": "AUD_USD/ny/short",
+    "pair": "AUD_USD",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.100000000000435,
+      "mfe_60m_p50": 4.500000000000615,
+      "mfe_60m_p75": 8.699999999999264,
+      "mfe_60m_p90": 15.100000000000113,
+      "mfe_240m_p50": 8.799999999999919,
+      "atr_regression": {
+        "slope": 0.40300002288581305,
+        "intercept": 1.540381956713639,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13592
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.80000000000058,
+      "winner_mae_p75": 6.000000000000449,
+      "winner_mae_p90": 10.599999999999499,
+      "n_winners": 2858,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5491267160209876,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5829717216559293,
+          "drift": "REGIME",
+          "threshold": -6.199999999999539,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -111.99999999999987,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6172055427251733,
+          "p_dead_below_threshold": 0.4816034359341446
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5802435310309371,
+          "drift": "REGIME",
+          "threshold": -6.261646275194099,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -86.86474429903667,
+            22.951636931149988
+          ],
+          "p_dead_above_threshold": 0.6157274295572168,
+          "p_dead_below_threshold": 0.48253557567917205
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13913,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_up_dist_pips:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dir/ema20_dist_pct:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/asia/long": {
+    "cell": "EUR_JPY/asia/long",
+    "pair": "EUR_JPY",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.0000000000001137,
+      "mfe_60m_p50": 6.399999999999295,
+      "mfe_60m_p75": 11.50000000000091,
+      "mfe_60m_p90": 19.10000000000025,
+      "mfe_240m_p50": 15.049999999999386,
+      "atr_regression": {
+        "slope": 0.3813647712671326,
+        "intercept": 1.5340381067385271,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12336
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.499999999999659,
+      "winner_mae_p75": 7.400000000001228,
+      "winner_mae_p90": 13.700000000000045,
+      "n_winners": 3776,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.409375,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.6081454942941209,
+          "drift": "REGIME",
+          "threshold": 184.37826138526827,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            180.97224492132068,
+            187.92221583710452
+          ],
+          "p_dead_above_threshold": 0.4908653846153846,
+          "p_dead_below_threshold": 0.3278846153846154
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.6070173009561017,
+          "drift": "REGIME",
+          "threshold": 184.36803327359212,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            181.0920330924574,
+            187.8855361012241
+          ],
+          "p_dead_above_threshold": 0.4892628205128205,
+          "p_dead_below_threshold": 0.3294871794871795
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12480,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dist/range_5bar:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/asia/short": {
+    "cell": "EUR_JPY/asia/short",
+    "pair": "EUR_JPY",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.899999999999636,
+      "mfe_60m_p50": 6.19999999999834,
+      "mfe_60m_p75": 11.800000000002342,
+      "mfe_60m_p90": 21.100000000001273,
+      "mfe_240m_p50": 13.700000000000045,
+      "atr_regression": {
+        "slope": 0.48261353810487606,
+        "intercept": 0.525085370235745,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12312
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.499999999999659,
+      "winner_mae_p75": 7.400000000001228,
+      "winner_mae_p90": 13.100000000000023,
+      "n_winners": 3823,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4306891025641026,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "bb_mid",
+          "dead_auc": 0.5730620755118406,
+          "drift": "REGIME",
+          "threshold": 184.365425,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            181.02545,
+            187.89475
+          ],
+          "p_dead_above_threshold": 0.49038461538461536,
+          "p_dead_below_threshold": 0.37099358974358976
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12480,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dist/range_5bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/london/long": {
+    "cell": "EUR_JPY/london/long",
+    "pair": "EUR_JPY",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 4.099999999999682,
+      "mfe_60m_p50": 8.400000000000318,
+      "mfe_60m_p75": 15.199999999998681,
+      "mfe_60m_p90": 23.100000000002296,
+      "mfe_240m_p50": 17.500000000001137,
+      "atr_regression": {
+        "slope": 0.36049959399919546,
+        "intercept": 4.05391360302388,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10753
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.200000000000159,
+      "winner_mae_p75": 8.400000000000318,
+      "winner_mae_p90": 15.000000000000568,
+      "n_winners": 4573,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.32034910427193386,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "d_low",
+          "dead_auc": 0.5721989790526942,
+          "drift": "PERSISTENT",
+          "threshold": 183.793,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            180.808,
+            187.105
+          ],
+          "p_dead_above_threshold": 0.37601177336276675,
+          "p_dead_below_threshold": 0.26481923288676823
+        },
+        {
+          "feature": "ema5",
+          "dead_auc": 0.570200574287705,
+          "drift": "PERSISTENT",
+          "threshold": 184.38385807285977,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            180.9318516076938,
+            187.8993551107222
+          ],
+          "p_dead_above_threshold": 0.3699007717750827,
+          "p_dead_below_threshold": 0.27080654051074776
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10885,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/london/short": {
+    "cell": "EUR_JPY/london/short",
+    "pair": "EUR_JPY",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.8999999999987267,
+      "mfe_60m_p50": 8.400000000000318,
+      "mfe_60m_p75": 15.199999999998681,
+      "mfe_60m_p90": 25.020000000000167,
+      "mfe_240m_p50": 15.900000000000603,
+      "atr_regression": {
+        "slope": 0.43773755755963,
+        "intercept": 3.8393139108838685,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10749
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.300000000000637,
+      "winner_mae_p75": 8.500000000000796,
+      "winner_mae_p90": 15.199999999998681,
+      "n_winners": 4572,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.3267799724391364,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.5541406989477664,
+          "drift": "PERSISTENT",
+          "threshold": 184.38385807285977,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            180.9318516076938,
+            187.8993551107222
+          ],
+          "p_dead_above_threshold": 0.3636530687247336,
+          "p_dead_below_threshold": 0.28991365056035273
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.5529063179437066,
+          "drift": "PERSISTENT",
+          "threshold": 184.3777659813035,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            180.99983178454787,
+            187.88652274952813
+          ],
+          "p_dead_above_threshold": 0.3599779492833517,
+          "p_dead_below_threshold": 0.2935880948006614
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10885,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/ny/long": {
+    "cell": "EUR_JPY/ny/long",
+    "pair": "EUR_JPY",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.300000000001546,
+      "mfe_60m_p50": 6.799999999998363,
+      "mfe_60m_p75": 12.000000000000455,
+      "mfe_60m_p90": 19.499999999999318,
+      "mfe_240m_p50": 12.20000000000141,
+      "atr_regression": {
+        "slope": 0.30816066785435914,
+        "intercept": 2.8600078477924065,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13797
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.8000000000010914,
+      "winner_mae_p75": 7.699999999999818,
+      "winner_mae_p90": 13.800000000000523,
+      "n_winners": 4470,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.38549645643925834,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": {
+      "feature": "pdh",
+      "sign": "negative",
+      "corr": -0.0626474982200575,
+      "auc": 0.47872868684003356,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        182.182,
+        187.954
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13969,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdh:PERSISTENT",
+        "dir/q_willr_m5:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_JPY/ny/short": {
+    "cell": "EUR_JPY/ny/short",
+    "pair": "EUR_JPY",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.100000000000591,
+      "mfe_60m_p50": 6.499999999999773,
+      "mfe_60m_p75": 11.599999999998545,
+      "mfe_60m_p90": 19.599999999999795,
+      "mfe_240m_p50": 12.000000000000455,
+      "atr_regression": {
+        "slope": 0.34075954802672154,
+        "intercept": 2.7747533684788834,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13776
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.200000000000159,
+      "winner_mae_p75": 8.099999999998886,
+      "winner_mae_p90": 14.399999999997704,
+      "n_winners": 4214,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4038943374615219,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": {
+      "feature": "pdh",
+      "sign": "positive",
+      "corr": 0.0626474982200575,
+      "auc": 0.5212713131599664,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        182.182,
+        187.954
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13969,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdh:PERSISTENT",
+        "dir/q_willr_m5:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/asia/long": {
+    "cell": "EUR_USD/asia/long",
+    "pair": "EUR_USD",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.5999999999993797,
+      "mfe_60m_p50": 3.4000000000000696,
+      "mfe_60m_p75": 6.399999999999739,
+      "mfe_60m_p90": 10.499999999999954,
+      "mfe_240m_p50": 8.00000000000134,
+      "atr_regression": {
+        "slope": 0.26171112671952346,
+        "intercept": 1.5460358590482555,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12088
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.5999999999993797,
+      "winner_mae_p75": 3.60000000000138,
+      "winner_mae_p90": 6.800000000000139,
+      "n_winners": 1337,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.6724817107484524,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_obv",
+          "dead_auc": 0.5594100298101383,
+          "drift": "REGIME",
+          "threshold": 379770.0,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            320078.0,
+            434351.0
+          ],
+          "p_dead_above_threshold": 0.7052580800771828,
+          "p_dead_below_threshold": 0.6397106109324758
+        },
+        {
+          "feature": "h1_ret_4bar",
+          "dead_auc": 0.5360808163147932,
+          "drift": "PERSISTENT",
+          "threshold": -0.9000000000014552,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -99.59999999999968,
+            97.80000000000122
+          ],
+          "p_dead_above_threshold": 0.6984460990611848,
+          "p_dead_below_threshold": 0.6468615237182559
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "atr_conc",
+      "sign": "positive",
+      "corr": 0.07872955343850119,
+      "auc": 0.5316705378768994,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.062098741660181395,
+        0.7214282868023065
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12439,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/atr_conc:PERSISTENT",
+        "dir/h1_ret_4bar:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/bb_std:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/asia/short": {
+    "cell": "EUR_USD/asia/short",
+    "pair": "EUR_USD",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.7999999999984695,
+      "mfe_60m_p50": 3.8000000000004697,
+      "mfe_60m_p75": 6.700000000001705,
+      "mfe_60m_p90": 10.499999999999954,
+      "mfe_240m_p50": 8.699999999999264,
+      "atr_regression": {
+        "slope": 0.36029547150040314,
+        "intercept": 0.47992639659293257,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12131
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.40000000000029,
+      "winner_mae_p75": 3.60000000000138,
+      "winner_mae_p90": 7.099999999999884,
+      "n_winners": 1359,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.6344561459924432,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_obv",
+          "dead_auc": 0.5492275112523577,
+          "drift": "REGIME",
+          "threshold": 379770.0,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            320078.0,
+            434351.0
+          ],
+          "p_dead_above_threshold": 0.6579835986493006,
+          "p_dead_below_threshold": 0.6109324758842444
+        },
+        {
+          "feature": "pdl",
+          "dead_auc": 0.5173464767544165,
+          "drift": "REGIME",
+          "threshold": 1.16296,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            1.13246,
+            1.19062
+          ],
+          "p_dead_above_threshold": 0.6477457022380798,
+          "p_dead_below_threshold": 0.621393272756257
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "atr_conc",
+      "sign": "negative",
+      "corr": -0.07872955343850119,
+      "auc": 0.4683294621231006,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.062098741660181395,
+        0.7214282868023065
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12439,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/atr_conc:PERSISTENT",
+        "dir/h1_ret_4bar:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/bb_std:REGIME",
+        "dist/bb_width:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/london/long": {
+    "cell": "EUR_USD/london/long",
+    "pair": "EUR_USD",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.7999999999983594,
+      "mfe_60m_p50": 5.899999999998684,
+      "mfe_60m_p75": 10.600000000000609,
+      "mfe_60m_p90": 16.80000000000126,
+      "mfe_240m_p50": 12.599999999998168,
+      "atr_regression": {
+        "slope": 0.5640433720590534,
+        "intercept": 1.1663585979468465,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10648
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.500000000000835,
+      "winner_mae_p75": 5.199999999998539,
+      "winner_mae_p90": 9.40000000000163,
+      "n_winners": 2879,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4505292222733548,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10865,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/london/short": {
+    "cell": "EUR_USD/london/short",
+    "pair": "EUR_USD",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.7999999999983594,
+      "mfe_60m_p50": 5.800000000000249,
+      "mfe_60m_p75": 10.499999999999954,
+      "mfe_60m_p90": 16.599999999999948,
+      "mfe_240m_p50": 12.900000000000134,
+      "atr_regression": {
+        "slope": 0.5038365650129182,
+        "intercept": 1.5930361788170426,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10677
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.300000000001745,
+      "winner_mae_p75": 5.025000000000723,
+      "winner_mae_p90": 9.200000000000319,
+      "n_winners": 2884,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4483202945237,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10865,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dist/range_5bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/ny/long": {
+    "cell": "EUR_USD/ny/long",
+    "pair": "EUR_USD",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.100000000000435,
+      "mfe_60m_p50": 4.699999999999704,
+      "mfe_60m_p75": 9.200000000000319,
+      "mfe_60m_p90": 16.399999999998638,
+      "mfe_240m_p50": 7.900000000000684,
+      "atr_regression": {
+        "slope": 0.4637068254734403,
+        "intercept": 0.7815975713357544,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13619
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.2999999999994145,
+      "winner_mae_p75": 6.699999999999484,
+      "winner_mae_p90": 11.519999999999557,
+      "n_winners": 3029,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5386770092652445,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.6348978047641289,
+          "drift": "REGIME",
+          "threshold": -7.600000000000939,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -115.49999999999949,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6361135244714741,
+          "p_dead_below_threshold": 0.4427818155907083
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.6151556385904822,
+          "drift": "REGIME",
+          "threshold": -7.504811659304611,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -75.0811316326394,
+            43.217537765394276
+          ],
+          "p_dead_above_threshold": 0.6295072547047837,
+          "p_dead_below_threshold": 0.44785981039931055
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_stochrsi_m5",
+      "sign": "negative",
+      "corr": -0.09432415487281226,
+      "auc": 0.45887832632120856,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        2.2003140050704437e-12,
+        100.0000000000032
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13923,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_stochrsi_m5:PERSISTENT",
+        "dir/q_willr_m5:PERSISTENT",
+        "dir/q_fisher_m5:REGIME",
+        "dir/ema5_dist_pips:REGIME",
+        "dir/ret_30m:REGIME",
+        "dist/atr_5m:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "EUR_USD/ny/short": {
+    "cell": "EUR_USD/ny/short",
+    "pair": "EUR_USD",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.4000000000001798,
+      "mfe_60m_p50": 5.00000000000167,
+      "mfe_60m_p75": 9.599999999998499,
+      "mfe_60m_p90": 16.300000000000203,
+      "mfe_240m_p50": 9.600000000000719,
+      "atr_regression": {
+        "slope": 0.34279784189106927,
+        "intercept": 2.5990203520329977,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13638
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.8999999999990145,
+      "winner_mae_p75": 6.399999999999739,
+      "winner_mae_p90": 11.129999999998992,
+      "n_winners": 3228,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5100912159735689,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5723338699531088,
+          "drift": "REGIME",
+          "threshold": -7.600000000000939,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -115.49999999999949,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.5696495800752969,
+          "p_dead_below_threshold": 0.4514749893116717
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5672711920394597,
+          "drift": "REGIME",
+          "threshold": -7.504811659304611,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -75.0811316326394,
+            43.217537765394276
+          ],
+          "p_dead_above_threshold": 0.564574055451803,
+          "p_dead_below_threshold": 0.4556162022407354
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_stochrsi_m5",
+      "sign": "positive",
+      "corr": 0.09432415487281226,
+      "auc": 0.5411216736787914,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        2.2003140050704437e-12,
+        100.0000000000032
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13923,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_stochrsi_m5:PERSISTENT",
+        "dir/q_willr_m5:PERSISTENT",
+        "dir/q_fisher_m5:REGIME",
+        "dir/ema5_dist_pips:REGIME",
+        "dir/ret_30m:REGIME",
+        "dist/atr_5m:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/asia/long": {
+    "cell": "GBP_USD/asia/long",
+    "pair": "GBP_USD",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.9999999999997797,
+      "mfe_60m_p50": 4.3999999999999595,
+      "mfe_60m_p75": 8.20000000000043,
+      "mfe_60m_p90": 13.199999999999878,
+      "mfe_240m_p50": 11.000000000001009,
+      "atr_regression": {
+        "slope": 0.24741212192561327,
+        "intercept": 2.0298495472329243,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12186
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.8999999999991246,
+      "winner_mae_p75": 4.00000000000178,
+      "winner_mae_p90": 7.500000000000284,
+      "n_winners": 2170,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.557784911717496,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_kurtosis_m5",
+          "dead_auc": 0.5488666518690674,
+          "drift": "REGIME",
+          "threshold": -0.08138911684131386,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -1.9239736623842563,
+            21.241806148921224
+          ],
+          "p_dead_above_threshold": 0.5910112359550562,
+          "p_dead_below_threshold": 0.5245585874799358
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "trend_4h",
+      "sign": "negative",
+      "corr": -0.07504221946560063,
+      "auc": 0.4636357950662462,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -1.0,
+        1.0
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12460,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/trend_4h:PERSISTENT",
+        "dir/adr_consumed:REGIME",
+        "dir/range_5bar:PERSISTENT",
+        "dist/range_5bar:PERSISTENT",
+        "dist/range_12bar:PERSISTENT",
+        "dist/atr_5m:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/asia/short": {
+    "cell": "GBP_USD/asia/short",
+    "pair": "GBP_USD",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.1999999999988695,
+      "mfe_60m_p50": 4.699999999999704,
+      "mfe_60m_p75": 8.60000000000083,
+      "mfe_60m_p90": 13.399999999998968,
+      "mfe_240m_p50": 11.200000000000099,
+      "atr_regression": {
+        "slope": 0.34409252904416476,
+        "intercept": 0.6023882529830438,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12205
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.80000000000069,
+      "winner_mae_p75": 3.9999999999995595,
+      "winner_mae_p90": 7.599999999999385,
+      "n_winners": 2318,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5371589085072231,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_mfi",
+          "dead_auc": 0.52936348795243,
+          "drift": "REGIME",
+          "threshold": 49.96789287435452,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -1.5205614545266144e-12,
+            100.0
+          ],
+          "p_dead_above_threshold": 0.5590690208667737,
+          "p_dead_below_threshold": 0.5152487961476726
+        },
+        {
+          "feature": "q_stochrsi_m5",
+          "dead_auc": 0.5266815724152818,
+          "drift": "REGIME",
+          "threshold": 49.59181263950734,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -2.612428791811302e-12,
+            99.999999999998
+          ],
+          "p_dead_above_threshold": 0.5584269662921348,
+          "p_dead_below_threshold": 0.5158908507223114
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "trend_4h",
+      "sign": "positive",
+      "corr": 0.07504221946560063,
+      "auc": 0.5363642049337538,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -1.0,
+        1.0
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 12460,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/trend_4h:PERSISTENT",
+        "dir/adr_consumed:REGIME",
+        "dir/range_5bar:PERSISTENT",
+        "dist/atr_5m:REGIME",
+        "dist/range_12bar:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/london/long": {
+    "cell": "GBP_USD/london/long",
+    "pair": "GBP_USD",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.7999999999982492,
+      "mfe_60m_p50": 8.099999999999774,
+      "mfe_60m_p75": 14.600000000000168,
+      "mfe_60m_p90": 22.899999999999032,
+      "mfe_240m_p50": 18.700000000000383,
+      "atr_regression": {
+        "slope": 0.6751474285211286,
+        "intercept": 0.0831079342678347,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10717
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.6999999999998145,
+      "winner_mae_p75": 7.300000000001194,
+      "winner_mae_p90": 12.340000000000027,
+      "n_winners": 4427,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.3370074400661339,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5407744002701824,
+          "drift": "REGIME",
+          "threshold": -9.099999999999664,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -92.80000000000176,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.36892488954344627,
+          "p_dead_below_threshold": 0.30522456461961506
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5372031823472723,
+          "drift": "REGIME",
+          "threshold": -8.340806668025724,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -56.64306903982119,
+            83.18100210657597
+          ],
+          "p_dead_above_threshold": 0.36009553555024804,
+          "p_dead_below_threshold": 0.3139235855988244
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "ema5",
+      "sign": "negative",
+      "corr": -0.06298266697105478,
+      "auc": 0.4820251630495017,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        1.3150812386415618,
+        1.3839961272490808
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10887,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_up_dist_pips:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dir/ema5:PERSISTENT",
+        "dir/q_macd_m5:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/london/short": {
+    "cell": "GBP_USD/london/short",
+    "pair": "GBP_USD",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.60000000000138,
+      "mfe_60m_p50": 7.800000000000029,
+      "mfe_60m_p75": 14.125000000000941,
+      "mfe_60m_p90": 21.900000000001363,
+      "mfe_240m_p50": 17.199999999999438,
+      "atr_regression": {
+        "slope": 0.47711043005438575,
+        "intercept": 2.6194195324309337,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10732
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.5999999999991594,
+      "winner_mae_p75": 7.399999999999629,
+      "winner_mae_p90": 12.799999999999478,
+      "n_winners": 4280,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.35602094240837695,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5389968240972942,
+          "drift": "PERSISTENT",
+          "threshold": 525929.3194573177,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            423875.5370213365,
+            611830.461345834
+          ],
+          "p_dead_above_threshold": 0.3997795333455815,
+          "p_dead_below_threshold": 0.31227038941954444
+        },
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5301957310486146,
+          "drift": "REGIME",
+          "threshold": -9.099999999999664,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -92.80000000000176,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.3751840942562592,
+          "p_dead_below_threshold": 0.3369385884509624
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "ema5",
+      "sign": "positive",
+      "corr": 0.06298266697105478,
+      "auc": 0.5179748369504983,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        1.3150812386415618,
+        1.3839961272490808
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10887,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_up_dist_pips:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dir/ema5:PERSISTENT",
+        "dir/q_macd_m5:REGIME",
+        "dist/range_5bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/ny/long": {
+    "cell": "GBP_USD/ny/long",
+    "pair": "GBP_USD",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.900000000001235,
+      "mfe_60m_p50": 6.300000000001305,
+      "mfe_60m_p75": 12.399999999999078,
+      "mfe_60m_p90": 21.500000000000963,
+      "mfe_240m_p50": 10.200000000000209,
+      "atr_regression": {
+        "slope": 0.4295338039013525,
+        "intercept": 1.532134248738788,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13695
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.500000000000615,
+      "winner_mae_p75": 8.999999999999009,
+      "winner_mae_p90": 15.600000000000058,
+      "n_winners": 4456,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4232258064516129,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.6069488567431038,
+          "drift": "REGIME",
+          "threshold": -9.700000000001374,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -136.60000000000005,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.5012193372543394,
+          "p_dead_below_threshold": 0.34532167932368535
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.592435278146592,
+          "drift": "REGIME",
+          "threshold": -9.84847337869521,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -81.8728091940768,
+            43.75731147487238
+          ],
+          "p_dead_above_threshold": 0.494910394265233,
+          "p_dead_below_threshold": 0.3515412186379928
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13950,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdl:PERSISTENT",
+        "dir/q_adl:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "GBP_USD/ny/short": {
+    "cell": "GBP_USD/ny/short",
+    "pair": "GBP_USD",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.20000000000098,
+      "mfe_60m_p50": 6.6000000000010495,
+      "mfe_60m_p75": 12.624999999999996,
+      "mfe_60m_p90": 21.48999999999886,
+      "mfe_240m_p50": 12.399999999999078,
+      "atr_regression": {
+        "slope": 0.27119824460430775,
+        "intercept": 4.70396952390278,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13732
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.9999999999995595,
+      "winner_mae_p75": 8.60000000000083,
+      "winner_mae_p90": 15.600000000000058,
+      "n_winners": 4621,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.3982078853046595,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5586179034818312,
+          "drift": "REGIME",
+          "threshold": -9.700000000001374,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -136.60000000000005,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.44240424616267393,
+          "p_dead_below_threshold": 0.354062186559679
+        },
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.5534063876905856,
+          "drift": "REGIME",
+          "threshold": -9.84847337869521,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -81.8728091940768,
+            43.75731147487238
+          ],
+          "p_dead_above_threshold": 0.43569892473118277,
+          "p_dead_below_threshold": 0.3607168458781362
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13950,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdl:PERSISTENT",
+        "dir/q_adl:REGIME",
+        "dir/q_kc_up_dist_pips:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/asia/long": {
+    "cell": "USD_CAD/asia/long",
+    "pair": "USD_CAD",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.6000000000016001,
+      "mfe_60m_p50": 3.4000000000000696,
+      "mfe_60m_p75": 5.999999999999339,
+      "mfe_60m_p90": 9.289999999998875,
+      "mfe_240m_p50": 7.900000000000684,
+      "atr_regression": {
+        "slope": 0.36229633120890065,
+        "intercept": 0.13929541855721617,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12142
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.2000000000000899,
+      "winner_mae_p75": 2.9999999999996696,
+      "winner_mae_p90": 5.689999999999748,
+      "n_winners": 992,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.6851135814403093,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5460399424954157,
+          "drift": "REGIME",
+          "threshold": 30819.461504248415,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -27418.393547685355,
+            129675.9017869667
+          ],
+          "p_dead_above_threshold": 0.7153214113098115,
+          "p_dead_below_threshold": 0.6549057515708071
+        },
+        {
+          "feature": "q_tsi_m5",
+          "dead_auc": 0.5409723773158581,
+          "drift": "REGIME",
+          "threshold": 2.093260230671847,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -67.54444961568666,
+            58.637758810552555
+          ],
+          "p_dead_above_threshold": 0.7103270501047205,
+          "p_dead_below_threshold": 0.6599001127758982
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12414,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/range_5bar:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_12bar:REGIME",
+        "dist/range_5bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/asia/short": {
+    "cell": "USD_CAD/asia/short",
+    "pair": "USD_CAD",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.40000000000029,
+      "mfe_60m_p50": 3.1000000000003247,
+      "mfe_60m_p75": 5.699999999999594,
+      "mfe_60m_p90": 8.999999999999009,
+      "mfe_240m_p50": 6.800000000000139,
+      "atr_regression": {
+        "slope": 0.3141528214011941,
+        "intercept": 0.4624728837476715,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12071
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.1999999999989797,
+      "winner_mae_p75": 2.500000000000835,
+      "winner_mae_p90": 4.5799999999993695,
+      "n_winners": 923,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.708313194780087,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "htf_pct_60",
+          "dead_auc": 0.5773148175629776,
+          "drift": "REGIME",
+          "threshold": -0.001076582867783893,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -0.04352203755176132,
+            0.026774622251755087
+          ],
+          "p_dead_above_threshold": 0.756260162601626,
+          "p_dead_below_threshold": 0.6612388250319284
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5705292110388956,
+          "drift": "REGIME",
+          "threshold": 30819.461504248415,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -27418.393547685355,
+            129675.9017869667
+          ],
+          "p_dead_above_threshold": 0.7544707588206864,
+          "p_dead_below_threshold": 0.6621556307394877
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12414,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/range_5bar:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/range_5bar:REGIME",
+        "dist/q_yzv_m5:REGIME",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/london/long": {
+    "cell": "USD_CAD/london/long",
+    "pair": "USD_CAD",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.4000000000001798,
+      "mfe_60m_p50": 5.1000000000001044,
+      "mfe_60m_p75": 9.00000000000123,
+      "mfe_60m_p90": 13.400000000001189,
+      "mfe_240m_p50": 12.600000000000389,
+      "atr_regression": {
+        "slope": 0.40587123902636574,
+        "intercept": 2.160823702892726,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10659
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.7999999999984695,
+      "winner_mae_p75": 3.9999999999995595,
+      "winner_mae_p90": 7.500000000000284,
+      "n_winners": 2177,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5029029582526956,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.5398363407335566,
+          "drift": "PERSISTENT",
+          "threshold": 1.3747304849029707,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            1.350122994286007,
+            1.4245592423016513
+          ],
+          "p_dead_above_threshold": 0.5347465437788018,
+          "p_dead_below_threshold": 0.4710652414301511
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.5396184712800633,
+          "drift": "PERSISTENT",
+          "threshold": 1.374722239962376,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            1.3510847533769357,
+            1.4243215418451531
+          ],
+          "p_dead_above_threshold": 0.5330875576036866,
+          "p_dead_below_threshold": 0.47272392185772205
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10851,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/london/short": {
+    "cell": "USD_CAD/london/short",
+    "pair": "USD_CAD",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.4000000000001798,
+      "mfe_60m_p50": 5.1000000000001044,
+      "mfe_60m_p75": 9.200000000000319,
+      "mfe_60m_p90": 14.300000000000423,
+      "mfe_240m_p50": 11.399999999999189,
+      "atr_regression": {
+        "slope": 0.542220849979193,
+        "intercept": 0.9317225224491246,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10632
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.900000000001345,
+      "winner_mae_p75": 3.9999999999995595,
+      "winner_mae_p90": 6.900000000000794,
+      "n_winners": 2283,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5038245323011704,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 10851,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/ny/long": {
+    "cell": "USD_CAD/ny/long",
+    "pair": "USD_CAD",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.5999999999992696,
+      "mfe_60m_p50": 5.399999999999849,
+      "mfe_60m_p75": 9.899999999998244,
+      "mfe_60m_p90": 15.799999999999148,
+      "mfe_240m_p50": 9.600000000000719,
+      "atr_regression": {
+        "slope": 0.4056649440509258,
+        "intercept": 2.1534236081943545,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13698
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.80000000000058,
+      "winner_mae_p75": 5.9000000000009045,
+      "winner_mae_p90": 10.000000000001119,
+      "n_winners": 3342,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.486494232284875,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_obv",
+          "dead_auc": 0.5706656244162771,
+          "drift": "REGIME",
+          "threshold": 250337.0,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            184029.0,
+            352209.0
+          ],
+          "p_dead_above_threshold": 0.5391229578675838,
+          "p_dead_below_threshold": 0.4338730477145723
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5670254539655962,
+          "drift": "REGIME",
+          "threshold": 30702.17673209217,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -26526.744189088582,
+            128749.55636855698
+          ],
+          "p_dead_above_threshold": 0.5270851246775581,
+          "p_dead_below_threshold": 0.4459091560395472
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_willr_m5",
+      "sign": "negative",
+      "corr": -0.0644883833598433,
+      "auc": 0.449126401189447,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -100.0,
+        -0.0
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13957,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_lo_dist_pips:REGIME",
+        "dir/bb_std:REGIME",
+        "dir/bb_width:REGIME",
+        "dir/q_willr_m5:PERSISTENT",
+        "dist/range_12bar:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CAD/ny/short": {
+    "cell": "USD_CAD/ny/short",
+    "pair": "USD_CAD",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.4000000000001798,
+      "mfe_60m_p50": 5.00000000000167,
+      "mfe_60m_p75": 9.300000000000974,
+      "mfe_60m_p90": 16.099999999998893,
+      "mfe_240m_p50": 8.20000000000043,
+      "atr_regression": {
+        "slope": 0.37993630394134187,
+        "intercept": 2.3623991424105792,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13654
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.80000000000058,
+      "winner_mae_p75": 6.199999999998429,
+      "winner_mae_p90": 10.600000000000609,
+      "n_winners": 3047,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5099233359604499,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5705840537482529,
+          "drift": "REGIME",
+          "threshold": 30702.17673209217,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -26526.744189088582,
+            128749.55636855698
+          ],
+          "p_dead_above_threshold": 0.5586127830323875,
+          "p_dead_below_threshold": 0.46124086545350335
+        },
+        {
+          "feature": "htf_pct_60",
+          "dead_auc": 0.5652412434768247,
+          "drift": "PERSISTENT",
+          "threshold": -0.001076582867783893,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -0.04352203755176132,
+            0.026774622251755087
+          ],
+          "p_dead_above_threshold": 0.5555878928987195,
+          "p_dead_below_threshold": 0.4656316160903317
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_willr_m5",
+      "sign": "positive",
+      "corr": 0.0644883833598433,
+      "auc": 0.550873598810553,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -100.0,
+        -0.0
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13957,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_dc_lo_dist_pips:REGIME",
+        "dir/bb_std:REGIME",
+        "dir/bb_width:REGIME",
+        "dir/q_willr_m5:PERSISTENT",
+        "dist/range_12bar:REGIME",
+        "dist/bb_std:REGIME"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/asia/long": {
+    "cell": "USD_CHF/asia/long",
+    "pair": "USD_CHF",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.40000000000029,
+      "mfe_60m_p50": 3.0999999999992145,
+      "mfe_60m_p75": 5.399999999999849,
+      "mfe_60m_p90": 8.299999999999974,
+      "mfe_240m_p50": 7.099999999999884,
+      "atr_regression": {
+        "slope": 0.36752243897212356,
+        "intercept": 0.176444547570902,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12037
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.2499999999998623,
+      "winner_mae_p75": 2.9999999999996696,
+      "winner_mae_p90": 5.619999999999963,
+      "n_winners": 760,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.7258168356671495,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12426,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/adr_consumed:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/asia/short": {
+    "cell": "USD_CHF/asia/short",
+    "pair": "USD_CHF",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.2999999999996348,
+      "mfe_60m_p50": 2.80000000000058,
+      "mfe_60m_p75": 5.20000000000076,
+      "mfe_60m_p90": 8.299999999999974,
+      "mfe_240m_p50": 6.800000000000139,
+      "atr_regression": {
+        "slope": 0.2736293450819847,
+        "intercept": 1.0864373793372262,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 11970
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.100000000000545,
+      "winner_mae_p75": 2.6999999999999247,
+      "winner_mae_p90": 5.740000000000076,
+      "n_winners": 777,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.7416706904876871,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "d_low",
+          "dead_auc": 0.5297511337454569,
+          "drift": "REGIME",
+          "threshold": 0.78402,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            0.76038,
+            0.80933
+          ],
+          "p_dead_above_threshold": 0.7505268276868212,
+          "p_dead_below_threshold": 0.7329391081988174
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5275066794305988,
+          "drift": "REGIME",
+          "threshold": 152907.62948606926,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            123566.6865826324,
+            213177.1558276385
+          ],
+          "p_dead_above_threshold": 0.7555126347980042,
+          "p_dead_below_threshold": 0.72782874617737
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12426,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/adr_consumed:REGIME",
+        "dist/atr_5m:REGIME",
+        "dist/q_yzv_m5:REGIME"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/london/long": {
+    "cell": "USD_CHF/london/long",
+    "pair": "USD_CHF",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.2999999999995246,
+      "mfe_60m_p50": 4.899999999999904,
+      "mfe_60m_p75": 8.700000000000374,
+      "mfe_60m_p90": 13.300000000000534,
+      "mfe_240m_p50": 10.999999999999899,
+      "atr_regression": {
+        "slope": 0.4635016397390332,
+        "intercept": 1.7623804215742425,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10599
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.7000000000000348,
+      "winner_mae_p75": 3.5000000000001696,
+      "winner_mae_p90": 6.300000000000194,
+      "n_winners": 2055,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5231293770733505,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "ema5",
+          "dead_auc": 0.5433242535563878,
+          "drift": "PERSISTENT",
+          "threshold": 0.7868585671395784,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            0.7639465304819437,
+            0.8134274267696312
+          ],
+          "p_dead_above_threshold": 0.551787688905271,
+          "p_dead_below_threshold": 0.49447106524143014
+        },
+        {
+          "feature": "ema20",
+          "dead_auc": 0.5431201925899829,
+          "drift": "PERSISTENT",
+          "threshold": 0.7868751841772992,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            0.7647445351439703,
+            0.8129373217788513
+          ],
+          "p_dead_above_threshold": 0.5497604128271286,
+          "p_dead_below_threshold": 0.49649834131957243
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "pdh",
+      "sign": "negative",
+      "corr": -0.08279533848573999,
+      "auc": 0.46529475123948166,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.7688,
+        0.81396
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10852,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdh:PERSISTENT",
+        "dir/d_low:PERSISTENT",
+        "dir/d_high:PERSISTENT",
+        "dir/d_close:PERSISTENT",
+        "dir/pdl:PERSISTENT",
+        "dist/atr_1h:REGIME"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/london/short": {
+    "cell": "USD_CHF/london/short",
+    "pair": "USD_CHF",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.2999999999995246,
+      "mfe_60m_p50": 4.999999999999449,
+      "mfe_60m_p75": 8.899999999999464,
+      "mfe_60m_p90": 13.999999999999568,
+      "mfe_240m_p50": 10.699999999999044,
+      "atr_regression": {
+        "slope": 0.5159200843034282,
+        "intercept": 1.4833737372647429,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10601
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 1.7000000000000348,
+      "winner_mae_p75": 3.7999999999993594,
+      "winner_mae_p90": 6.599999999999939,
+      "n_winners": 2198,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5139144858090674,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": {
+      "feature": "pdh",
+      "sign": "positive",
+      "corr": 0.08279533848573999,
+      "auc": 0.5347052487605185,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.7688,
+        0.81396
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10852,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/pdh:PERSISTENT",
+        "dir/d_low:PERSISTENT",
+        "dir/d_high:PERSISTENT",
+        "dir/d_close:PERSISTENT",
+        "dir/pdl:PERSISTENT",
+        "dist/atr_1h:REGIME"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/ny/long": {
+    "cell": "USD_CHF/ny/long",
+    "pair": "USD_CHF",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.1999999999999797,
+      "mfe_60m_p50": 4.3999999999999595,
+      "mfe_60m_p75": 7.999999999999119,
+      "mfe_60m_p90": 13.099999999999335,
+      "mfe_240m_p50": 8.099999999999774,
+      "atr_regression": {
+        "slope": 0.29436186685978,
+        "intercept": 2.6888653646730423,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13520
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.300000000000635,
+      "winner_mae_p75": 5.0000000000005596,
+      "winner_mae_p90": 8.499999999999064,
+      "n_winners": 2393,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5689257390050468,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.5999805130485741,
+          "drift": "REGIME",
+          "threshold": -5.600000000000049,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -60.99999999999994,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.646810369938829,
+          "p_dead_below_threshold": 0.49257567104511707
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.542814585133211,
+          "drift": "PERSISTENT",
+          "threshold": 152602.10974302562,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            123926.44958945116,
+            213374.5915419243
+          ],
+          "p_dead_above_threshold": 0.6015861571737563,
+          "p_dead_below_threshold": 0.5362653208363374
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_stochrsi_m5",
+      "sign": "negative",
+      "corr": -0.07148644453640293,
+      "auc": 0.4666823686462173,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -3.028688411177427e-13,
+        100.00000000000061
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13870,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_stochrsi_m5:PERSISTENT",
+        "dir/ema5_dist_pips:PERSISTENT",
+        "dir/q_willr_m5:REGIME",
+        "dir/ret_15m:PERSISTENT"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_CHF/ny/short": {
+    "cell": "USD_CHF/ny/short",
+    "pair": "USD_CHF",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 1.9000000000002348,
+      "mfe_60m_p50": 4.100000000000215,
+      "mfe_60m_p75": 7.824999999999916,
+      "mfe_60m_p90": 13.799999999999368,
+      "mfe_240m_p50": 7.000000000000339,
+      "atr_regression": {
+        "slope": 0.41026125560278714,
+        "intercept": 1.4347412008517795,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13532
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 2.4000000000001798,
+      "winner_mae_p75": 4.999999999999449,
+      "winner_mae_p90": 8.500000000000174,
+      "n_winners": 2417,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.5851478010093727,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_dc_up_dist_pips",
+          "dead_auc": 0.560522343468439,
+          "drift": "REGIME",
+          "threshold": -5.600000000000049,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -60.99999999999994,
+            0.0
+          ],
+          "p_dead_above_threshold": 0.6299155257792018,
+          "p_dead_below_threshold": 0.5412621359223301
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.5307520981397131,
+          "drift": "PERSISTENT",
+          "threshold": 152602.10974302562,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            123926.44958945116,
+            213374.5915419243
+          ],
+          "p_dead_above_threshold": 0.6014419610670512,
+          "p_dead_below_threshold": 0.5688536409516943
+        }
+      ]
+    },
+    "direction_lean": {
+      "feature": "q_stochrsi_m5",
+      "sign": "positive",
+      "corr": 0.07148644453640293,
+      "auc": 0.5333176313537827,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        -3.028688411177427e-13,
+        100.00000000000061
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 13870,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/q_stochrsi_m5:PERSISTENT",
+        "dir/ema5_dist_pips:PERSISTENT",
+        "dir/q_willr_m5:REGIME",
+        "dir/ret_15m:PERSISTENT"
+      ],
+      "killed_pair": true,
+      "killed_note": "USD_CHF killed 2026-07-01 \u2014 calibration data only, not a wiring candidate",
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/asia/long": {
+    "cell": "USD_JPY/asia/long",
+    "pair": "USD_JPY",
+    "session": "asia",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.7999999999991587,
+      "mfe_60m_p50": 6.000000000000227,
+      "mfe_60m_p75": 11.7999999999995,
+      "mfe_60m_p90": 19.200000000000728,
+      "mfe_240m_p50": 13.899999999998158,
+      "atr_regression": {
+        "slope": 0.43021968460782234,
+        "intercept": 0.7910321222640375,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12277
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.6000000000001364,
+      "winner_mae_p75": 7.799999999997453,
+      "winner_mae_p90": 14.19999999999959,
+      "n_winners": 3773,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.43857257417802725,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.6695110870063778,
+          "drift": "REGIME",
+          "threshold": 2957544.10908265,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            2613707.8814333417,
+            3483994.6338287024
+          ],
+          "p_dead_above_threshold": 0.5676022453889334,
+          "p_dead_below_threshold": 0.3095429029671211
+        },
+        {
+          "feature": "q_obv",
+          "dead_auc": 0.6689609736027836,
+          "drift": "REGIME",
+          "threshold": 1455684.5,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            1159648.0,
+            1680636.0
+          ],
+          "p_dead_above_threshold": 0.5741780272654371,
+          "p_dead_below_threshold": 0.30296712109061746
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12470,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/trend_4h:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/asia/short": {
+    "cell": "USD_JPY/asia/short",
+    "pair": "USD_JPY",
+    "session": "asia",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.400000000000091,
+      "mfe_60m_p50": 5.500000000000682,
+      "mfe_60m_p75": 11.599999999999255,
+      "mfe_60m_p90": 21.000000000000796,
+      "mfe_240m_p50": 13.100000000000023,
+      "atr_regression": {
+        "slope": 0.4717146775714475,
+        "intercept": 0.7320614473309206,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 12212
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.999999999999204,
+      "winner_mae_p75": 8.29999999999984,
+      "winner_mae_p90": 14.300000000000068,
+      "n_winners": 3610,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4748195669607057,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_obv",
+          "dead_auc": 0.6608711396753957,
+          "drift": "REGIME",
+          "threshold": 1455684.5,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            1159648.0,
+            1680636.0
+          ],
+          "p_dead_above_threshold": 0.6056134723336006,
+          "p_dead_below_threshold": 0.3440256615878107
+        },
+        {
+          "feature": "q_adl",
+          "dead_auc": 0.6524575021722492,
+          "drift": "REGIME",
+          "threshold": 2957544.10908265,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            2613707.8814333417,
+            3483994.6338287024
+          ],
+          "p_dead_above_threshold": 0.6032076984763433,
+          "p_dead_below_threshold": 0.34643143544506816
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 12470,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/trend_4h:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/london/long": {
+    "cell": "USD_JPY/london/long",
+    "pair": "USD_JPY",
+    "session": "london",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.099999999997749,
+      "mfe_60m_p50": 6.799999999998363,
+      "mfe_60m_p75": 13.100000000000023,
+      "mfe_60m_p90": 21.60000000000082,
+      "mfe_240m_p50": 14.6000000000015,
+      "atr_regression": {
+        "slope": 0.45079981289022575,
+        "intercept": 1.2864687215227697,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10740
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.200000000000159,
+      "winner_mae_p75": 9.200000000001296,
+      "winner_mae_p90": 16.899999999998272,
+      "n_winners": 3700,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.39300827966881324,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": {
+      "feature": "atr_h1_relative",
+      "sign": "negative",
+      "corr": -0.1275523868812462,
+      "auc": 0.47225477248063374,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.5610349923340545,
+        3.3749990085574773
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10870,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/atr_h1_relative:PERSISTENT",
+        "dir/d_high:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/london/short": {
+    "cell": "USD_JPY/london/short",
+    "pair": "USD_JPY",
+    "session": "london",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.0000000000001137,
+      "mfe_60m_p50": 7.00000000000216,
+      "mfe_60m_p75": 13.79999999999768,
+      "mfe_60m_p90": 24.199999999999022,
+      "mfe_240m_p50": 14.6000000000015,
+      "atr_regression": {
+        "slope": 0.5237863956634301,
+        "intercept": 1.8042060642613365,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 10709
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.200000000000159,
+      "winner_mae_p75": 8.699999999998909,
+      "winner_mae_p90": 15.099999999999056,
+      "n_winners": 3918,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.3927322907083717,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": {
+      "feature": "atr_h1_relative",
+      "sign": "positive",
+      "corr": 0.1275523868812462,
+      "auc": 0.5277452275193664,
+      "drift": "PERSISTENT",
+      "live_feed_range": [
+        0.5610349923340545,
+        3.3749990085574773
+      ]
+    },
+    "metadata": {
+      "n_2026_bars": 10870,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [
+        "dir/atr_h1_relative:PERSISTENT",
+        "dir/d_high:PERSISTENT"
+      ],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/ny/long": {
+    "cell": "USD_JPY/ny/long",
+    "pair": "USD_JPY",
+    "session": "ny",
+    "direction": "long",
+    "distance_calibration": {
+      "mfe_60m_p25": 3.0000000000001137,
+      "mfe_60m_p50": 6.400000000002137,
+      "mfe_60m_p75": 12.5,
+      "mfe_60m_p90": 21.100000000001273,
+      "mfe_240m_p50": 13.599999999999568,
+      "atr_regression": {
+        "slope": 0.2964052267784147,
+        "intercept": 3.439536923433753,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13727
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 3.999999999999204,
+      "winner_mae_p75": 9.000000000000341,
+      "winner_mae_p90": 16.899999999998272,
+      "n_winners": 4543,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.41319469343850845,
+      "dead_threshold_pips": 5.0,
+      "separators": [
+        {
+          "feature": "q_kc_up_dist_pips",
+          "dead_auc": 0.652124096556796,
+          "drift": "REGIME",
+          "threshold": -7.647154005636025,
+          "threshold_basis": "median of 2026-session bars",
+          "live_feed_range": [
+            -115.18142952598396,
+            58.09867341769461
+          ],
+          "p_dead_above_threshold": 0.5410212277682157,
+          "p_dead_below_threshold": 0.28538649075003586
+        }
+      ]
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13945,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  },
+  "USD_JPY/ny/short": {
+    "cell": "USD_JPY/ny/short",
+    "pair": "USD_JPY",
+    "session": "ny",
+    "direction": "short",
+    "distance_calibration": {
+      "mfe_60m_p25": 2.5000000000005684,
+      "mfe_60m_p50": 5.799999999999272,
+      "mfe_60m_p75": 11.700000000001864,
+      "mfe_60m_p90": 22.20000000000084,
+      "mfe_240m_p50": 10.900000000000887,
+      "atr_regression": {
+        "slope": 0.42210539004078684,
+        "intercept": 1.285971907388447,
+        "formula": "projected_mfe = clip(slope * atr_1h + intercept, mfe_60m_p25, mfe_60m_p90)",
+        "n_fit": 13708
+      }
+    },
+    "adverse_calibration": {
+      "winner_mae_p50": 4.599999999999227,
+      "winner_mae_p75": 9.799999999998477,
+      "winner_mae_p90": 16.50000000000091,
+      "n_winners": 4115,
+      "anchor_bias_note": "MAE values understated by ~2.7p (anchor-validation finding 2026-07-03); add 2.7p for conservative stop calc. NOT baked in.",
+      "mae_sign_convention": "stored_positive \u2014 original parquet stores mae_*_60 as negative; abs() applied here"
+    },
+    "dead_entry": {
+      "base_rate_dead": 0.4574399426317677,
+      "dead_threshold_pips": 5.0,
+      "separators": []
+    },
+    "direction_lean": null,
+    "metadata": {
+      "n_2026_bars": 13945,
+      "months_fit": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "drift_flags": [],
+      "killed_pair": false,
+      "killed_note": null,
+      "lineage": "truth-matrix-2026-07-monthly-refit"
+    }
+  }
+}

@@ -1,0 +1,4 @@
+oandapyV20>=0.6.3
+pandas>=2.0
+numpy>=1.25
+requests>=2.31

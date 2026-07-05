@@ -1,0 +1,934 @@
+====================================================================================================
+DM-09  INDICATOR SWEEP — RAW (net_60m) vs RATCHET EXIT (2.5p trail, engage after 60min)
+
+  span_raw  = D10−D1 on net_60m (pure indicator, no exit management)
+  span_rl   = D10−D1 on net_ratchet_long  (enter LONG,  ratchet trail)
+  span_rs   = D1−D10 on net_ratchet_short (enter SHORT, ratchet trail; positive = good short in D1)
+  ratio_rl  = span_rl / span_raw   (>1 = ratchet amplifies LONG signal; <1 = ratchet mutes it)
+  ratio_rs  = span_rs / |span_raw| (>1 = ratchet amplifies SHORT signal)
+
+  D1/D5/D10 columns show mean pips per decile for each label
+====================================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: AUD_JPY
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,813)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +19.6p     +10.5p     +13.3p     0.54×     0.68×  ← LONG muted
+                          raw:  D1=  -10.2p  D5=   -0.0p  D10=   +9.4p
+                          long: D1=   +6.3p  D5=   +4.4p  D10=  +16.9p
+                          shrt: D1=  +19.5p  D5=   +4.7p  D10=   +6.2p
+  rsi_slope                  +12.2p      +6.3p      +8.8p     0.52×     0.72×  ← LONG muted
+                          raw:  D1=   -6.4p  D5=   +0.0p  D10=   +5.8p
+                          long: D1=   +5.7p  D5=   +5.7p  D10=  +12.0p
+                          shrt: D1=  +14.1p  D5=   +5.9p  D10=   +5.3p
+  zscore_1h                  +10.6p      +4.5p      +9.0p     0.43×     0.85×  ← LONG muted
+  d_ret                      +10.2p      +4.5p      +6.1p     0.44×     0.60×  ← LONG muted
+  h1_ret_4bar                 +9.9p      +4.1p      +8.7p     0.42×     0.88×  ← LONG muted
+  pdl_dist_pips               +8.9p      +5.8p      +3.6p     0.65×     0.41×  
+  pdh_dist_pips               +8.8p      +0.9p      +8.9p     0.10×     1.01×  ← LONG muted
+  ema20_1h_dist_pct           +8.8p      +3.2p      +8.6p     0.36×     0.97×  ← LONG muted
+  rsi14                       +7.5p      +2.0p      +7.9p     0.27×     1.06×  ← LONG muted
+  adr_consumed                -2.2p      +5.0p      -7.8p    -2.34×    -3.61×  ← LONG muted
+                          raw:  D1=   +0.3p  D5=   +0.4p  D10=   -1.8p
+                          long: D1=   +4.9p  D5=   +6.0p  D10=  +10.0p
+                          shrt: D1=   +4.8p  D5=   +6.0p  D10=  +12.5p
+  htf_pct_20                  +1.2p      -2.4p      +3.9p    -1.90×     3.17×  ← LONG muted SHORT amplified
+  htf_pct_60                  +0.9p      -2.4p      +3.3p    -2.66×     3.68×  ← LONG muted SHORT amplified
+  atr_5m                      +0.3p     +12.0p     -12.4p    43.68×   -45.21×  ← LONG amplified
+  ema_cross_pips              -0.3p      -1.4p      +2.1p     5.41×     8.10×  ← LONG amplified SHORT amplified
+  bb_pos                      -0.2p      -1.8p      +0.7p    11.47×     4.72×  ← LONG amplified SHORT amplified
+                          raw:  D1=   -0.0p  D5=   +0.2p  D10=   -0.2p
+                          long: D1=   +8.4p  D5=   +6.3p  D10=   +6.6p
+                          shrt: D1=   +8.4p  D5=   +6.4p  D10=   +7.7p
+  rvol_5bar                   +0.1p      +9.6p     -10.0p    70.88×   -73.28×  ← LONG amplified
+  atr_1h                      +0.1p     +11.9p     -12.8p    90.53×   -97.61×  ← LONG amplified
+  rvol_12bar                  -0.0p     +10.4p     -11.1p  -521.65×  -552.70×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,731)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +21.3p     +11.1p     +13.9p     0.52×     0.65×  ← LONG muted
+                          raw:  D1=  -11.2p  D5=   -0.3p  D10=  +10.1p
+                          long: D1=   +7.0p  D5=   +4.9p  D10=  +18.1p
+                          shrt: D1=  +20.7p  D5=   +5.6p  D10=   +6.8p
+  rsi_slope                  +14.4p      +7.6p      +9.5p     0.53×     0.66×  ← LONG muted
+                          raw:  D1=   -7.6p  D5=   +0.4p  D10=   +6.8p
+                          long: D1=   +5.7p  D5=   +6.5p  D10=  +13.3p
+                          shrt: D1=  +15.2p  D5=   +6.4p  D10=   +5.6p
+  zscore_1h                  +11.8p      +4.6p      +9.5p     0.39×     0.80×  ← LONG muted
+  h1_ret_4bar                +11.7p      +4.8p      +9.0p     0.41×     0.77×  ← LONG muted
+  d_ret                      +10.9p      +3.2p      +7.4p     0.29×     0.68×  ← LONG muted
+  ema20_1h_dist_pct           +9.3p      +2.8p      +8.3p     0.30×     0.90×  ← LONG muted
+  pdh_dist_pips               +9.0p      -0.4p      +9.1p    -0.04×     1.02×  ← LONG muted
+  pdl_dist_pips               +9.0p      +4.3p      +4.3p     0.48×     0.48×  ← LONG muted
+  rsi14                       +8.0p      +2.0p      +7.3p     0.25×     0.91×  ← LONG muted
+  htf_pct_20                  +2.5p      -3.0p      +5.0p    -1.23×     2.03×  ← LONG muted SHORT amplified
+  adr_consumed                -1.2p      +6.8p      -8.3p    -5.47×    -6.67×  ← LONG muted
+                          raw:  D1=   -0.1p  D5=   +0.3p  D10=   -1.4p
+                          long: D1=   +4.9p  D5=   +6.7p  D10=  +11.6p
+                          shrt: D1=   +5.1p  D5=   +6.9p  D10=  +13.4p
+  htf_pct_60                  +0.9p      -2.2p      +2.3p    -2.55×     2.71×  ← LONG muted SHORT amplified
+  atr_1h                      -0.5p     +12.9p     -13.6p   -27.04×   -28.54×  ← LONG muted
+  bb_pos                      +0.3p      -1.7p      +0.6p    -4.73×     1.76×  ← LONG muted SHORT amplified
+                          raw:  D1=   -0.5p  D5=   +0.2p  D10=   -0.1p
+                          long: D1=   +8.9p  D5=   +7.3p  D10=   +7.2p
+                          shrt: D1=   +9.1p  D5=   +7.3p  D10=   +8.5p
+  rvol_12bar                  -0.3p     +11.4p     -11.7p   -32.53×   -33.39×  ← LONG muted
+  rvol_5bar                   -0.3p     +10.3p     -10.6p   -32.82×   -33.90×  ← LONG muted
+  atr_5m                      -0.3p     +13.2p     -13.7p   -45.33×   -47.17×  ← LONG muted
+  ema_cross_pips              +0.0p      -2.0p      +2.1p  -1012.50×  1067.00×  ← LONG muted SHORT amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=162,430)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +15.6p      +7.6p     +10.9p     0.48×     0.70×  ← LONG muted
+                          raw:  D1=   -8.0p  D5=   +0.1p  D10=   +7.6p
+                          long: D1=   +5.7p  D5=   +2.8p  D10=  +13.3p
+                          shrt: D1=  +15.9p  D5=   +3.1p  D10=   +5.0p
+  rsi_slope                   +9.1p      +3.9p      +7.2p     0.43×     0.78×  ← LONG muted
+                          raw:  D1=   -4.8p  D5=   -0.0p  D10=   +4.4p
+                          long: D1=   +5.2p  D5=   +3.7p  D10=   +9.1p
+                          shrt: D1=  +11.4p  D5=   +4.1p  D10=   +4.2p
+  h1_ret_4bar                 +6.6p      +2.0p      +6.3p     0.30×     0.95×  ← LONG muted
+  zscore_1h                   +6.4p      +1.3p      +6.6p     0.21×     1.04×  ← LONG muted
+  d_ret                       +5.1p      +0.3p      +4.7p     0.06×     0.92×  ← LONG muted
+  ema20_1h_dist_pct           +5.1p      +0.2p      +6.2p     0.04×     1.23×  ← LONG muted SHORT amplified
+  pdl_dist_pips               +4.6p      +1.6p      +2.7p     0.34×     0.59×  ← LONG muted
+  pdh_dist_pips               +4.1p      -2.1p      +6.0p    -0.51×     1.46×  ← LONG muted SHORT amplified
+  rsi14                       +3.7p      -0.7p      +5.3p    -0.18×     1.42×  ← LONG muted SHORT amplified
+  htf_pct_20                  +1.8p      -2.8p      +4.8p    -1.53×     2.62×  ← LONG muted SHORT amplified
+  htf_pct_60                  +1.7p      -2.1p      +3.8p    -1.26×     2.26×  ← LONG muted SHORT amplified
+  ema_cross_pips              -1.1p      -2.4p      +1.6p     2.11×     1.41×  ← LONG amplified SHORT amplified
+  bb_pos                      -1.0p      -2.4p      +0.4p     2.32×     0.42×  ← LONG amplified
+                          raw:  D1=   +0.8p  D5=   +0.1p  D10=   -0.3p
+                          long: D1=   +6.9p  D5=   +4.6p  D10=   +4.5p
+                          shrt: D1=   +6.2p  D5=   +4.9p  D10=   +5.7p
+  adr_consumed                -0.8p      +4.9p      -6.1p    -5.83×    -7.33×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   +0.0p  D10=   -0.7p
+                          long: D1=   +3.5p  D5=   +4.3p  D10=   +8.3p
+                          shrt: D1=   +3.5p  D5=   +4.5p  D10=   +9.6p
+  atr_1h                      +0.7p     +10.6p     -10.7p    15.50×   -15.64×  ← LONG amplified
+  rvol_12bar                  +0.3p     +10.8p     -10.9p    32.17×   -32.55×  ← LONG amplified
+  atr_5m                      +0.3p     +11.7p     -12.0p    46.21×   -47.10×  ← LONG amplified
+  rvol_5bar                   +0.2p      +9.9p     -10.1p    46.28×   -47.40×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: AUD_USD
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=207,828)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +12.0p      +6.9p      +8.0p     0.58×     0.67×  ← LONG muted
+                          raw:  D1=   -6.1p  D5=   +0.2p  D10=   +6.0p
+                          long: D1=   +3.2p  D5=   +2.8p  D10=  +10.2p
+                          shrt: D1=  +11.0p  D5=   +2.8p  D10=   +3.0p
+  rsi_slope                   +8.1p      +4.5p      +5.8p     0.56×     0.72×  ← LONG muted
+                          raw:  D1=   -4.0p  D5=   -0.1p  D10=   +4.0p
+                          long: D1=   +2.8p  D5=   +3.3p  D10=   +7.3p
+                          shrt: D1=   +8.2p  D5=   +3.5p  D10=   +2.4p
+  zscore_1h                   +6.6p      +3.3p      +5.2p     0.50×     0.79×  ← LONG muted
+  h1_ret_4bar                 +6.5p      +3.2p      +5.3p     0.49×     0.81×  ← LONG muted
+  d_ret                       +5.7p      +2.8p      +3.8p     0.49×     0.67×  ← LONG muted
+  ema20_1h_dist_pct           +5.2p      +2.4p      +4.6p     0.47×     0.89×  ← LONG muted
+  pdl_dist_pips               +4.9p      +4.2p      +1.7p     0.86×     0.34×  
+  pdh_dist_pips               +4.3p      +1.0p      +4.2p     0.23×     0.97×  ← LONG muted
+  rsi14                       +4.3p      +1.8p      +4.0p     0.43×     0.94×  ← LONG muted
+  adr_consumed                -1.0p      +2.5p      -4.0p    -2.45×    -3.96×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   +0.3p  D10=   -0.9p
+                          long: D1=   +2.8p  D5=   +4.0p  D10=   +5.3p
+                          shrt: D1=   +2.7p  D5=   +3.8p  D10=   +6.7p
+  atr_5m                      +0.8p      +7.1p      -6.4p     8.66×    -7.88×  ← LONG amplified
+  rvol_12bar                  +0.8p      +6.5p      -5.9p     8.16×    -7.32×  ← LONG amplified
+  htf_pct_60                  +0.8p      -0.7p      +1.6p    -0.86×     2.00×  ← LONG muted SHORT amplified
+  htf_pct_20                  +0.7p      -0.5p      +1.7p    -0.71×     2.36×  ← LONG muted SHORT amplified
+  bb_pos                      -0.6p      -1.2p      -0.2p     2.12×    -0.32×  ← LONG amplified
+                          raw:  D1=   +0.3p  D5=   +0.2p  D10=   -0.3p
+                          long: D1=   +4.9p  D5=   +3.9p  D10=   +3.7p
+                          shrt: D1=   +4.4p  D5=   +3.7p  D10=   +4.6p
+  atr_1h                      +0.5p      +6.8p      -6.6p    14.31×   -13.73×  ← LONG amplified
+  rvol_5bar                   +0.4p      +5.8p      -5.5p    14.18×   -13.36×  ← LONG amplified
+  ema_cross_pips              -0.4p      -0.7p      +0.9p     1.93×     2.51×  ← LONG amplified SHORT amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,601)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +16.4p      +9.4p      +9.8p     0.57×     0.60×  ← LONG muted
+                          raw:  D1=   -8.5p  D5=   -0.1p  D10=   +7.9p
+                          long: D1=   +4.2p  D5=   +3.5p  D10=  +13.6p
+                          shrt: D1=  +14.1p  D5=   +3.9p  D10=   +4.3p
+  rsi_slope                  +10.7p      +6.4p      +6.3p     0.60×     0.59×  ← LONG muted
+                          raw:  D1=   -5.6p  D5=   -0.4p  D10=   +5.1p
+                          long: D1=   +3.7p  D5=   +4.5p  D10=  +10.1p
+                          shrt: D1=  +10.3p  D5=   +5.0p  D10=   +4.0p
+  zscore_1h                   +9.3p      +5.0p      +6.0p     0.54×     0.64×  ← LONG muted
+  h1_ret_4bar                 +9.1p      +4.9p      +5.8p     0.53×     0.64×  ← LONG muted
+  d_ret                       +8.7p      +3.8p      +4.8p     0.44×     0.55×  ← LONG muted
+  ema20_1h_dist_pct           +8.1p      +4.1p      +5.4p     0.50×     0.66×  ← LONG muted
+  pdl_dist_pips               +7.5p      +5.2p      +2.6p     0.69×     0.34×  
+  pdh_dist_pips               +7.1p      +1.8p      +5.2p     0.26×     0.73×  ← LONG muted
+  rsi14                       +6.5p      +3.0p      +4.6p     0.46×     0.71×  ← LONG muted
+  htf_pct_20                  +2.0p      -0.2p      +1.9p    -0.08×     0.95×  ← LONG muted
+  htf_pct_60                  +0.6p      -0.7p      +1.1p    -1.14×     1.84×  ← LONG muted SHORT amplified
+  adr_consumed                -0.5p      +4.2p      -4.8p    -8.17×    -9.35×  ← LONG muted
+                          raw:  D1=   -0.1p  D5=   +0.1p  D10=   -0.6p
+                          long: D1=   +3.3p  D5=   +5.4p  D10=   +7.6p
+                          shrt: D1=   +3.5p  D5=   +5.2p  D10=   +8.3p
+  atr_1h                      -0.4p      +8.9p      -9.3p   -24.00×   -24.98×  ← LONG muted
+  rvol_12bar                  -0.2p      +8.1p      -8.2p   -32.53×   -32.86×  ← LONG muted
+  bb_pos                      -0.2p      -0.9p      -0.6p     3.98×    -2.52×  ← LONG amplified
+                          raw:  D1=   -0.1p  D5=   +0.0p  D10=   -0.4p
+                          long: D1=   +6.1p  D5=   +5.1p  D10=   +5.2p
+                          shrt: D1=   +5.6p  D5=   +5.2p  D10=   +6.2p
+  ema_cross_pips              +0.2p      -0.3p      +0.6p    -1.42×     2.56×  ← LONG muted SHORT amplified
+  atr_5m                      -0.2p      +9.0p      -9.0p   -50.44×   -50.65×  ← LONG muted
+  rvol_5bar                   -0.2p      +7.3p      -7.2p   -41.93×   -41.69×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=160,576)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +11.8p      +6.2p      +7.4p     0.53×     0.63×  ← LONG muted
+                          raw:  D1=   -6.0p  D5=   -0.2p  D10=   +5.8p
+                          long: D1=   +3.5p  D5=   +1.7p  D10=   +9.7p
+                          shrt: D1=  +10.7p  D5=   +1.9p  D10=   +3.3p
+  rsi_slope                   +6.9p      +3.7p      +4.5p     0.53×     0.65×  ← LONG muted
+                          raw:  D1=   -3.4p  D5=   -0.2p  D10=   +3.5p
+                          long: D1=   +3.2p  D5=   +2.3p  D10=   +6.9p
+                          shrt: D1=   +7.4p  D5=   +2.5p  D10=   +2.9p
+  zscore_1h                   +5.3p      +2.5p      +3.5p     0.47×     0.66×  ← LONG muted
+  h1_ret_4bar                 +5.0p      +2.4p      +3.2p     0.48×     0.66×  ← LONG muted
+  d_ret                       +4.4p      +1.8p      +2.4p     0.40×     0.54×  ← LONG muted
+  pdh_dist_pips               +4.1p      +0.2p      +3.6p     0.05×     0.88×  ← LONG muted
+  ema20_1h_dist_pct           +4.0p      +1.3p      +3.0p     0.33×     0.76×  ← LONG muted
+  pdl_dist_pips               +3.5p      +2.1p      +0.9p     0.62×     0.26×  
+  rsi14                       +2.6p      +0.8p      +1.9p     0.32×     0.76×  ← LONG muted
+  htf_pct_20                  +1.3p      -0.6p      +1.6p    -0.47×     1.27×  ← LONG muted SHORT amplified
+  htf_pct_60                  +0.8p      -0.7p      +1.1p    -0.87×     1.47×  ← LONG muted SHORT amplified
+  bb_pos                      -0.7p      -1.3p      -0.5p     1.80×    -0.71×  ← LONG amplified
+                          raw:  D1=   +0.4p  D5=   -0.0p  D10=   -0.3p
+                          long: D1=   +4.6p  D5=   +2.9p  D10=   +3.2p
+                          shrt: D1=   +3.7p  D5=   +3.1p  D10=   +4.2p
+  ema_cross_pips              -0.6p      -1.0p      +0.3p     1.68×     0.46×  ← LONG amplified
+  adr_consumed                -0.5p      +3.5p      -3.9p    -6.67×    -7.48×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   +0.0p  D10=   -0.4p
+                          long: D1=   +1.8p  D5=   +3.0p  D10=   +5.3p
+                          shrt: D1=   +1.9p  D5=   +3.0p  D10=   +5.8p
+  rvol_12bar                  -0.5p      +7.9p      -8.5p   -17.07×   -18.32×  ← LONG muted
+  rvol_5bar                   -0.3p      +7.3p      -7.8p   -21.34×   -22.77×  ← LONG muted
+  atr_5m                      -0.3p      +8.2p      -8.8p   -24.39×   -26.04×  ← LONG muted
+  atr_1h                      -0.3p      +7.0p      -7.4p   -27.26×   -29.16×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: EUR_JPY
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,635)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +21.1p     +12.1p     +14.4p     0.57×     0.68×  ← LONG muted
+                          raw:  D1=  -10.9p  D5=   -0.4p  D10=  +10.3p
+                          long: D1=   +7.9p  D5=   +4.5p  D10=  +20.0p
+                          shrt: D1=  +22.4p  D5=   +5.2p  D10=   +8.0p
+  rsi_slope                  +13.8p      +7.5p      +9.9p     0.55×     0.72×  ← LONG muted
+                          raw:  D1=   -7.2p  D5=   -0.1p  D10=   +6.6p
+                          long: D1=   +6.5p  D5=   +5.9p  D10=  +14.0p
+                          shrt: D1=  +16.2p  D5=   +6.5p  D10=   +6.3p
+  zscore_1h                  +11.0p      +5.3p      +9.1p     0.48×     0.82×  ← LONG muted
+  h1_ret_4bar                +10.9p      +5.9p      +8.5p     0.54×     0.77×  ← LONG muted
+  d_ret                      +10.6p      +4.5p      +6.3p     0.43×     0.59×  ← LONG muted
+  ema20_1h_dist_pct           +9.3p      +3.7p      +8.9p     0.40×     0.95×  ← LONG muted
+  pdh_dist_pips               +9.0p      +0.2p      +9.4p     0.02×     1.04×  ← LONG muted
+  pdl_dist_pips               +9.0p      +6.5p      +2.8p     0.73×     0.31×  
+  rsi14                       +7.2p      +2.2p      +7.8p     0.30×     1.08×  ← LONG muted
+  htf_pct_20                  +2.2p      -1.2p      +3.4p    -0.56×     1.55×  ← LONG muted SHORT amplified
+  htf_pct_60                  +1.1p      -0.6p      +1.3p    -0.52×     1.17×  ← LONG muted
+  ema_cross_pips              -0.8p      -0.9p      +0.8p     1.04×     0.99×  
+  bb_pos                      -0.5p      -1.8p      +0.5p     4.00×     1.01×  ← LONG amplified
+                          raw:  D1=   +0.2p  D5=   +0.1p  D10=   -0.2p
+                          long: D1=   +9.7p  D5=   +6.9p  D10=   +7.8p
+                          shrt: D1=   +9.4p  D5=   +7.3p  D10=   +8.9p
+  adr_consumed                -0.3p      +6.6p      -7.6p   -23.29×   -26.84×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   -0.1p  D10=   -0.2p
+                          long: D1=   +5.4p  D5=   +7.0p  D10=  +12.0p
+                          shrt: D1=   +5.5p  D5=   +7.5p  D10=  +13.2p
+  rvol_5bar                   +0.3p     +12.7p     -13.1p    48.15×   -49.71×  ← LONG amplified
+  atr_5m                      +0.2p     +15.3p     -16.4p    85.90×   -92.41×  ← LONG amplified
+  rvol_12bar                  -0.2p     +13.5p     -14.6p   -77.08×   -83.29×  ← LONG muted
+  atr_1h                      -0.1p     +14.8p     -16.4p  -187.82×  -207.28×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,653)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +30.2p     +16.0p     +18.8p     0.53×     0.62×  ← LONG muted
+                          raw:  D1=  -15.2p  D5=   -0.9p  D10=  +15.0p
+                          long: D1=  +10.4p  D5=   +6.8p  D10=  +26.4p
+                          shrt: D1=  +28.8p  D5=   +8.3p  D10=   +9.9p
+  rsi_slope                  +19.8p     +10.0p     +13.2p     0.51×     0.67×  ← LONG muted
+                          raw:  D1=  -10.5p  D5=   +0.0p  D10=   +9.4p
+                          long: D1=   +8.4p  D5=   +9.1p  D10=  +18.4p
+                          shrt: D1=  +21.1p  D5=   +9.5p  D10=   +7.9p
+  zscore_1h                  +18.0p      +8.3p     +12.6p     0.46×     0.70×  ← LONG muted
+  d_ret                      +16.9p      +5.4p     +10.6p     0.32×     0.62×  ← LONG muted
+  h1_ret_4bar                +16.5p      +7.1p     +12.4p     0.43×     0.75×  ← LONG muted
+  pdh_dist_pips              +15.5p      +1.5p     +13.2p     0.10×     0.86×  ← LONG muted
+  ema20_1h_dist_pct          +15.0p      +5.5p     +12.0p     0.37×     0.80×  ← LONG muted
+  pdl_dist_pips              +14.4p      +7.4p      +6.0p     0.51×     0.42×  ← LONG muted
+  rsi14                      +12.4p      +4.2p     +10.1p     0.34×     0.81×  ← LONG muted
+  htf_pct_20                  +2.8p      -0.2p      +2.4p    -0.09×     0.87×  ← LONG muted
+  adr_consumed                -2.0p      +8.9p     -11.6p    -4.45×    -5.81×  ← LONG muted
+                          raw:  D1=   +0.2p  D5=   +0.6p  D10=   -1.7p
+                          long: D1=   +7.4p  D5=  +10.3p  D10=  +16.3p
+                          shrt: D1=   +7.4p  D5=   +9.9p  D10=  +19.0p
+  htf_pct_60                  +1.4p      +0.5p      -0.0p     0.31×    -0.01×  ← LONG muted
+  bb_pos                      +0.7p      -2.0p      +0.8p    -2.78×     1.07×  ← LONG muted
+                          raw:  D1=   -0.5p  D5=   +0.1p  D10=   +0.2p
+                          long: D1=  +12.8p  D5=  +10.5p  D10=  +10.9p
+                          shrt: D1=  +12.8p  D5=  +10.8p  D10=  +12.1p
+  atr_5m                      +0.7p     +18.1p     -18.6p    26.59×   -27.21×  ← LONG amplified
+  atr_1h                      -0.5p     +17.6p     -19.2p   -33.72×   -36.82×  ← LONG muted
+  rvol_12bar                  +0.3p     +15.8p     -16.0p    48.39×   -49.00×  ← LONG amplified
+  ema_cross_pips              +0.2p      -2.1p      +2.7p   -12.26×    15.64×  ← LONG muted SHORT amplified
+  rvol_5bar                   +0.0p     +14.1p     -14.6p  4695.67×  -4870.33×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=161,819)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +18.0p      +9.1p     +12.3p     0.51×     0.69×  ← LONG muted
+                          raw:  D1=   -8.9p  D5=   +0.2p  D10=   +9.0p
+                          long: D1=   +7.1p  D5=   +3.6p  D10=  +16.2p
+                          shrt: D1=  +18.6p  D5=   +3.6p  D10=   +6.3p
+  rsi_slope                  +10.0p      +4.9p      +7.2p     0.49×     0.73×  ← LONG muted
+                          raw:  D1=   -5.3p  D5=   +0.0p  D10=   +4.7p
+                          long: D1=   +6.2p  D5=   +4.7p  D10=  +11.1p
+                          shrt: D1=  +13.1p  D5=   +4.9p  D10=   +5.8p
+  zscore_1h                   +7.1p      +2.7p      +6.5p     0.37×     0.91×  ← LONG muted
+  h1_ret_4bar                 +6.9p      +2.7p      +6.4p     0.39×     0.92×  ← LONG muted
+  d_ret                       +5.3p      +0.2p      +5.3p     0.03×     1.01×  ← LONG muted
+  ema20_1h_dist_pct           +4.6p      +0.4p      +5.9p     0.09×     1.29×  ← LONG muted SHORT amplified
+  pdl_dist_pips               +4.3p      +1.4p      +2.8p     0.32×     0.66×  ← LONG muted
+  pdh_dist_pips               +3.9p      -2.6p      +6.9p    -0.66×     1.75×  ← LONG muted SHORT amplified
+  rsi14                       +3.8p      +0.3p      +4.6p     0.09×     1.23×  ← LONG muted SHORT amplified
+  bb_pos                      -1.9p      -2.7p      -0.2p     1.42×    -0.10×  ← LONG amplified
+                          raw:  D1=   +1.2p  D5=   +0.3p  D10=   -0.7p
+                          long: D1=   +8.4p  D5=   +5.8p  D10=   +5.7p
+                          shrt: D1=   +7.1p  D5=   +5.8p  D10=   +7.3p
+  htf_pct_20                  +1.9p      -0.9p      +2.9p    -0.49×     1.57×  ← LONG muted SHORT amplified
+  htf_pct_60                  +1.6p      +0.1p      +1.6p     0.05×     0.98×  ← LONG muted
+  atr_1h                      +1.0p     +12.6p     -12.6p    12.26×   -12.26×  ← LONG amplified
+  ema_cross_pips              -1.0p      -1.9p      +1.8p     1.88×     1.76×  ← LONG amplified SHORT amplified
+  rvol_12bar                  +0.5p     +12.6p     -12.8p    24.37×   -24.82×  ← LONG amplified
+  rvol_5bar                   +0.4p     +11.4p     -11.6p    26.29×   -26.80×  ← LONG amplified
+  atr_5m                      -0.1p     +14.1p     -15.0p  -153.29×  -162.56×  ← LONG muted
+  adr_consumed                -0.0p      +6.3p      -6.8p  -204.23×  -218.52×  ← LONG muted
+                          raw:  D1=   +0.4p  D5=   +0.6p  D10=   +0.3p
+                          long: D1=   +4.3p  D5=   +5.8p  D10=  +10.6p
+                          shrt: D1=   +4.3p  D5=   +5.7p  D10=  +11.1p
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: EUR_USD
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,422)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +10.0p      +6.4p      +6.5p     0.64×     0.65×  
+                          raw:  D1=   -4.8p  D5=   -0.4p  D10=   +5.2p
+                          long: D1=   +2.8p  D5=   +1.7p  D10=   +9.2p
+                          shrt: D1=   +9.2p  D5=   +2.2p  D10=   +2.7p
+  rsi_slope                   +6.5p      +3.9p      +4.5p     0.59×     0.69×  ← LONG muted
+                          raw:  D1=   -3.2p  D5=   +0.0p  D10=   +3.3p
+                          long: D1=   +2.5p  D5=   +2.3p  D10=   +6.3p
+                          shrt: D1=   +6.8p  D5=   +2.5p  D10=   +2.2p
+  h1_ret_4bar                 +4.9p      +3.2p      +3.5p     0.66×     0.71×  
+  zscore_1h                   +4.4p      +3.1p      +3.3p     0.70×     0.74×  
+  d_ret                       +3.7p      +1.9p      +2.4p     0.51×     0.65×  ← LONG muted
+  pdl_dist_pips               +3.3p      +3.2p      +1.0p     0.98×     0.29×  
+  ema20_1h_dist_pct           +3.1p      +2.6p      +2.4p     0.83×     0.77×  
+  pdh_dist_pips               +2.9p      +0.6p      +3.2p     0.20×     1.09×  ← LONG muted
+  rsi14                       +2.3p      +2.1p      +1.8p     0.91×     0.75×  
+  htf_pct_20                  +1.5p      +1.9p      +0.1p     1.27×     0.07×  ← LONG amplified
+  htf_pct_60                  +1.3p      +1.8p      -0.3p     1.37×    -0.22×  ← LONG amplified
+  atr_5m                      +0.8p      +7.6p      -6.6p     9.25×    -7.99×  ← LONG amplified
+  atr_1h                      +0.7p      +6.6p      -5.7p     9.41×    -8.09×  ← LONG amplified
+  bb_pos                      -0.6p      -0.7p      -0.7p     1.08×    -1.04×  
+                          raw:  D1=   +0.3p  D5=   +0.1p  D10=   -0.3p
+                          long: D1=   +3.9p  D5=   +2.9p  D10=   +3.2p
+                          shrt: D1=   +3.2p  D5=   +2.8p  D10=   +3.9p
+  rvol_12bar                  +0.6p      +7.0p      -6.2p    11.32×   -10.10×  ← LONG amplified
+  ema_cross_pips              -0.5p      +0.3p      -0.2p    -0.55×    -0.34×  ← LONG muted
+  rvol_5bar                   +0.4p      +6.3p      -5.8p    17.02×   -15.73×  ← LONG amplified
+  adr_consumed                -0.1p      +2.3p      -2.2p   -31.46×   -30.05×  ← LONG muted
+                          raw:  D1=   +0.0p  D5=   +0.2p  D10=   -0.1p
+                          long: D1=   +2.1p  D5=   +3.1p  D10=   +4.4p
+                          shrt: D1=   +2.1p  D5=   +3.0p  D10=   +4.3p
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,727)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +21.0p     +12.4p     +12.2p     0.59×     0.58×  ← LONG muted
+                          raw:  D1=  -10.5p  D5=   -0.3p  D10=  +10.5p
+                          long: D1=   +6.0p  D5=   +5.1p  D10=  +18.4p
+                          shrt: D1=  +18.4p  D5=   +5.7p  D10=   +6.1p
+  rsi_slope                  +14.0p      +8.0p      +8.5p     0.57×     0.61×  ← LONG muted
+                          raw:  D1=   -7.1p  D5=   -1.0p  D10=   +6.9p
+                          long: D1=   +5.3p  D5=   +6.0p  D10=  +13.3p
+                          shrt: D1=  +13.7p  D5=   +7.2p  D10=   +5.2p
+  zscore_1h                  +13.5p      +8.1p      +8.0p     0.60×     0.59×  
+  d_ret                      +13.0p      +6.6p      +6.1p     0.51×     0.47×  ← LONG muted
+  h1_ret_4bar                +12.2p      +7.4p      +7.2p     0.60×     0.59×  
+  ema20_1h_dist_pct          +11.6p      +7.1p      +6.6p     0.61×     0.57×  
+  pdh_dist_pips              +11.4p      +4.5p      +6.6p     0.40×     0.57×  ← LONG muted
+  pdl_dist_pips              +11.1p      +7.3p      +3.5p     0.66×     0.32×  
+  rsi14                       +9.5p      +6.3p      +4.9p     0.67×     0.52×  
+  htf_pct_20                  +2.5p      +2.1p      +0.4p     0.84×     0.14×  
+  htf_pct_60                  +1.1p      +0.6p      +0.2p     0.54×     0.16×  ← LONG muted
+  bb_pos                      -0.7p      -1.1p      -1.2p     1.62×    -1.66×  ← LONG amplified
+                          raw:  D1=   +0.3p  D5=   -0.1p  D10=   -0.4p
+                          long: D1=   +8.6p  D5=   +7.1p  D10=   +7.4p
+                          shrt: D1=   +7.4p  D5=   +7.3p  D10=   +8.6p
+  atr_5m                      +0.2p     +11.3p     -10.7p    49.44×   -47.01×  ← LONG amplified
+  rvol_5bar                   +0.2p      +9.5p      -8.7p    50.70×   -46.43×  ← LONG amplified
+  ema_cross_pips              -0.2p      +0.2p      -0.1p    -1.11×    -0.54×  ← LONG muted
+  atr_1h                      +0.1p     +11.7p     -11.3p   128.93×  -123.93×  ← LONG amplified
+  rvol_12bar                  -0.0p     +10.3p      -9.8p  -218.60×  -208.51×  ← LONG muted
+  adr_consumed                +0.0p      +6.4p      -6.3p   169.29×  -165.58×  ← LONG amplified
+                          raw:  D1=   -0.1p  D5=   -0.1p  D10=   -0.0p
+                          long: D1=   +4.6p  D5=   +7.0p  D10=  +11.0p
+                          shrt: D1=   +4.8p  D5=   +7.2p  D10=  +11.1p
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=161,646)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +13.9p      +7.8p      +8.0p     0.56×     0.57×  ← LONG muted
+                          raw:  D1=   -6.9p  D5=   +0.1p  D10=   +7.0p
+                          long: D1=   +4.3p  D5=   +2.2p  D10=  +12.1p
+                          shrt: D1=  +12.3p  D5=   +2.1p  D10=   +4.3p
+  rsi_slope                   +8.3p      +4.6p      +5.1p     0.56×     0.61×  ← LONG muted
+                          raw:  D1=   -4.3p  D5=   +0.1p  D10=   +4.0p
+                          long: D1=   +4.1p  D5=   +2.8p  D10=   +8.7p
+                          shrt: D1=   +9.2p  D5=   +2.6p  D10=   +4.1p
+  zscore_1h                   +7.0p      +3.9p      +4.2p     0.56×     0.61×  ← LONG muted
+  h1_ret_4bar                 +5.3p      +2.9p      +3.4p     0.55×     0.65×  ← LONG muted
+  d_ret                       +5.2p      +3.0p      +2.1p     0.59×     0.41×  ← LONG muted
+  ema20_1h_dist_pct           +4.7p      +2.4p      +2.9p     0.52×     0.62×  ← LONG muted
+  pdh_dist_pips               +4.3p      +1.4p      +2.9p     0.34×     0.67×  ← LONG muted
+  pdl_dist_pips               +4.3p      +3.5p      +0.6p     0.81×     0.15×  
+  rsi14                       +3.6p      +2.5p      +1.8p     0.69×     0.48×  
+  bb_pos                      -1.1p      -1.3p      -1.1p     1.17×    -0.96×  
+                          raw:  D1=   +0.7p  D5=   +0.0p  D10=   -0.4p
+                          long: D1=   +5.4p  D5=   +3.7p  D10=   +4.1p
+                          shrt: D1=   +4.1p  D5=   +3.7p  D10=   +5.2p
+  htf_pct_20                  +0.8p      +1.5p      -0.9p     1.77×    -1.08×  ← LONG amplified
+  rvol_12bar                  -0.7p      +9.4p     -10.3p   -14.06×   -15.44×  ← LONG muted
+  atr_5m                      -0.6p      +9.8p     -10.8p   -17.87×   -19.53×  ← LONG muted
+  htf_pct_60                  +0.5p      +0.7p      -0.4p     1.38×    -0.80×  ← LONG amplified
+  rvol_5bar                   -0.5p      +8.7p      -9.5p   -17.54×   -19.16×  ← LONG muted
+  ema_cross_pips              -0.5p      -0.3p      +0.1p     0.59×     0.16×  ← LONG muted
+  adr_consumed                +0.3p      +5.0p      -4.8p    17.62×   -17.04×  ← LONG amplified
+                          raw:  D1=   +0.1p  D5=   -0.4p  D10=   +0.4p
+                          long: D1=   +2.2p  D5=   +3.6p  D10=   +7.2p
+                          shrt: D1=   +2.0p  D5=   +4.0p  D10=   +6.8p
+  atr_1h                      +0.1p      +8.0p      -8.2p    67.28×   -69.13×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: GBP_USD
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,063)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +13.2p      +7.9p      +8.7p     0.60×     0.66×  
+                          raw:  D1=   -6.7p  D5=   -0.4p  D10=   +6.5p
+                          long: D1=   +4.5p  D5=   +2.9p  D10=  +12.4p
+                          shrt: D1=  +13.1p  D5=   +3.5p  D10=   +4.4p
+  rsi_slope                   +8.8p      +5.5p      +5.8p     0.62×     0.66×  
+                          raw:  D1=   -4.5p  D5=   -0.3p  D10=   +4.3p
+                          long: D1=   +3.9p  D5=   +3.6p  D10=   +9.3p
+                          shrt: D1=   +9.7p  D5=   +4.0p  D10=   +3.9p
+  h1_ret_4bar                 +6.7p      +4.0p      +5.1p     0.60×     0.77×  ← LONG muted
+  zscore_1h                   +6.4p      +3.8p      +5.1p     0.60×     0.80×  
+  d_ret                       +5.2p      +2.8p      +3.0p     0.53×     0.57×  ← LONG muted
+  pdl_dist_pips               +4.2p      +4.2p      +0.9p     1.00×     0.21×  
+  ema20_1h_dist_pct           +4.1p      +2.6p      +3.6p     0.64×     0.88×  
+  pdh_dist_pips               +4.1p      +1.2p      +3.7p     0.28×     0.92×  ← LONG muted
+  rsi14                       +3.7p      +2.3p      +3.3p     0.62×     0.89×  
+  htf_pct_60                  +1.6p      -1.6p      +3.7p    -0.99×     2.25×  ← LONG muted SHORT amplified
+  adr_consumed                -1.1p      +2.0p      -3.4p    -1.84×    -3.14×  ← LONG muted
+                          raw:  D1=   +0.2p  D5=   -0.0p  D10=   -0.9p
+                          long: D1=   +4.0p  D5=   +4.4p  D10=   +6.0p
+                          shrt: D1=   +3.8p  D5=   +4.5p  D10=   +7.2p
+  ema_cross_pips              -0.8p      -0.5p      +0.4p     0.58×     0.52×  ← LONG muted
+  htf_pct_20                  +0.8p      -1.2p      +2.6p    -1.58×     3.48×  ← LONG muted SHORT amplified
+  rvol_12bar                  +0.6p      +9.1p      -8.5p    15.13×   -14.13×  ← LONG amplified
+  bb_pos                      -0.6p      -0.9p      -0.4p     1.49×    -0.74×  ← LONG amplified
+                          raw:  D1=   +0.1p  D5=   +0.1p  D10=   -0.5p
+                          long: D1=   +5.8p  D5=   +4.5p  D10=   +4.9p
+                          shrt: D1=   +5.5p  D5=   +4.4p  D10=   +5.9p
+  rvol_5bar                   +0.5p      +8.5p      -8.0p    16.86×   -16.03×  ← LONG amplified
+  atr_5m                      +0.5p      +9.4p      -8.9p    20.21×   -19.23×  ← LONG amplified
+  atr_1h                      +0.3p      +7.7p      -7.5p    23.22×   -22.59×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,734)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +28.2p     +16.3p     +16.7p     0.58×     0.59×  ← LONG muted
+                          raw:  D1=  -14.3p  D5=   -1.3p  D10=  +13.9p
+                          long: D1=   +8.9p  D5=   +7.7p  D10=  +25.2p
+                          shrt: D1=  +25.6p  D5=   +9.1p  D10=   +8.9p
+  rsi_slope                  +18.4p     +10.6p     +11.1p     0.58×     0.60×  ← LONG muted
+                          raw:  D1=   -9.3p  D5=   -0.3p  D10=   +9.1p
+                          long: D1=   +7.9p  D5=  +10.2p  D10=  +18.5p
+                          shrt: D1=  +18.8p  D5=  +10.8p  D10=   +7.7p
+  zscore_1h                  +18.1p     +10.0p     +11.3p     0.55×     0.63×  ← LONG muted
+  d_ret                      +17.8p      +8.1p      +8.8p     0.46×     0.49×  ← LONG muted
+  h1_ret_4bar                +16.6p      +9.5p      +9.9p     0.57×     0.60×  ← LONG muted
+  pdh_dist_pips              +15.9p      +5.5p      +9.5p     0.35×     0.60×  ← LONG muted
+  ema20_1h_dist_pct          +15.7p      +8.7p      +9.5p     0.56×     0.61×  ← LONG muted
+  pdl_dist_pips              +15.7p      +9.4p      +5.6p     0.60×     0.36×  ← LONG muted
+  rsi14                      +13.0p      +6.7p      +8.6p     0.52×     0.66×  ← LONG muted
+  htf_pct_20                  +3.3p      -1.1p      +4.0p    -0.34×     1.23×  ← LONG muted SHORT amplified
+  htf_pct_60                  +1.2p      -4.5p      +5.1p    -3.73×     4.16×  ← LONG muted SHORT amplified
+  ema_cross_pips              +1.0p      -0.2p      +1.2p    -0.22×     1.20×  ← LONG muted
+  adr_consumed                -0.6p      +7.7p      -8.2p   -13.38×   -14.18×  ← LONG muted
+                          raw:  D1=   +0.0p  D5=   +0.0p  D10=   -0.6p
+                          long: D1=   +8.2p  D5=  +10.2p  D10=  +16.0p
+                          shrt: D1=   +8.2p  D5=  +10.2p  D10=  +16.4p
+  atr_5m                      -0.5p     +14.7p     -14.7p   -30.29×   -30.36×  ← LONG muted
+  bb_pos                      -0.4p      -1.5p      -1.2p     3.53×    -2.71×  ← LONG amplified
+                          raw:  D1=   +0.1p  D5=   +0.0p  D10=   -0.4p
+                          long: D1=  +12.6p  D5=  +11.0p  D10=  +11.0p
+                          shrt: D1=  +11.2p  D5=  +10.9p  D10=  +12.4p
+  rvol_5bar                   +0.1p     +12.0p     -11.5p    81.44×   -78.55×  ← LONG amplified
+  atr_1h                      +0.1p     +15.9p     -15.3p   152.84×  -147.12×  ← LONG amplified
+  rvol_12bar                  +0.0p     +13.7p     -13.3p   472.35×  -459.55×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=161,668)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +19.4p     +11.1p     +10.8p     0.57×     0.56×  ← LONG muted
+                          raw:  D1=   -9.5p  D5=   -0.1p  D10=  +10.0p
+                          long: D1=   +6.5p  D5=   +3.5p  D10=  +17.6p
+                          shrt: D1=  +17.5p  D5=   +3.6p  D10=   +6.6p
+  rsi_slope                  +12.6p      +7.2p      +7.0p     0.57×     0.56×  ← LONG muted
+                          raw:  D1=   -6.5p  D5=   +0.1p  D10=   +6.1p
+                          long: D1=   +5.8p  D5=   +4.5p  D10=  +13.0p
+                          shrt: D1=  +13.2p  D5=   +4.5p  D10=   +6.2p
+  zscore_1h                   +9.0p      +5.2p      +5.5p     0.58×     0.61×  ← LONG muted
+  h1_ret_4bar                 +7.8p      +4.1p      +5.3p     0.53×     0.68×  ← LONG muted
+  d_ret                       +7.1p      +3.3p      +3.8p     0.46×     0.54×  ← LONG muted
+  ema20_1h_dist_pct           +6.4p      +3.2p      +4.8p     0.50×     0.75×  ← LONG muted
+  pdl_dist_pips               +5.9p      +4.4p      +1.6p     0.75×     0.27×  
+  pdh_dist_pips               +5.9p      +1.5p      +4.7p     0.25×     0.79×  ← LONG muted
+  rsi14                       +5.2p      +2.7p      +3.8p     0.51×     0.73×  ← LONG muted
+  htf_pct_20                  +2.0p      -1.0p      +3.0p    -0.53×     1.54×  ← LONG muted SHORT amplified
+  bb_pos                      -1.6p      -1.7p      -1.5p     1.11×    -0.94×  
+                          raw:  D1=   +1.1p  D5=   +0.3p  D10=   -0.4p
+                          long: D1=   +8.4p  D5=   +5.9p  D10=   +6.6p
+                          shrt: D1=   +6.4p  D5=   +5.6p  D10=   +7.9p
+  htf_pct_60                  +1.4p      -2.0p      +3.2p    -1.41×     2.27×  ← LONG muted SHORT amplified
+  atr_1h                      +0.6p     +12.2p     -11.8p    20.57×   -19.93×  ← LONG amplified
+  adr_consumed                +0.5p      +6.0p      -5.8p    13.24×   -12.74×  ← LONG amplified
+                          raw:  D1=   +0.1p  D5=   +0.2p  D10=   +0.6p
+                          long: D1=   +4.6p  D5=   +5.6p  D10=  +10.6p
+                          shrt: D1=   +4.4p  D5=   +5.5p  D10=  +10.2p
+  ema_cross_pips              -0.2p      -0.5p      +0.9p     2.43×     4.34×  ← LONG amplified SHORT amplified
+  atr_5m                      +0.2p     +14.2p     -14.6p    76.55×   -78.47×  ← LONG amplified
+  rvol_5bar                   -0.1p     +12.2p     -12.8p  -115.39×  -121.20×  ← LONG muted
+  rvol_12bar                  +0.0p     +13.3p     -13.7p   370.56×  -380.94×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: USD_CAD
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,062)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +10.8p      +7.1p      +6.2p     0.65×     0.57×  
+                          raw:  D1=   -5.4p  D5=   -0.2p  D10=   +5.4p
+                          long: D1=   +2.9p  D5=   +2.1p  D10=  +10.0p
+                          shrt: D1=   +9.3p  D5=   +2.4p  D10=   +3.1p
+  rsi_slope                   +7.1p      +4.8p      +4.0p     0.67×     0.56×  
+                          raw:  D1=   -3.7p  D5=   -0.1p  D10=   +3.4p
+                          long: D1=   +2.3p  D5=   +2.9p  D10=   +7.1p
+                          shrt: D1=   +6.6p  D5=   +3.0p  D10=   +2.6p
+  h1_ret_4bar                 +5.7p      +4.2p      +2.9p     0.73×     0.51×  
+  zscore_1h                   +4.8p      +3.8p      +2.5p     0.78×     0.52×  
+  d_ret                       +4.0p      +2.5p      +2.3p     0.62×     0.56×  
+  ema20_1h_dist_pct           +3.7p      +3.1p      +1.7p     0.84×     0.46×  
+  pdl_dist_pips               +3.4p      +3.4p      +0.6p     0.99×     0.17×  
+  pdh_dist_pips               +3.3p      +0.7p      +3.5p     0.22×     1.06×  ← LONG muted
+  rsi14                       +2.8p      +2.5p      +1.3p     0.89×     0.46×  
+  htf_pct_20                  +1.0p      +2.3p      -0.9p     2.21×    -0.85×  ← LONG amplified
+  rvol_12bar                  -0.7p      +6.1p      -6.8p    -8.56×    -9.57×  ← LONG muted
+  atr_5m                      -0.6p      +6.7p      -7.3p   -11.54×   -12.52×  ← LONG muted
+  bb_pos                      -0.6p      -0.7p      -0.8p     1.23×    -1.46×  ← LONG amplified
+                          raw:  D1=   +0.4p  D5=   -0.0p  D10=   -0.2p
+                          long: D1=   +4.4p  D5=   +3.4p  D10=   +3.7p
+                          shrt: D1=   +3.5p  D5=   +3.3p  D10=   +4.3p
+  rvol_5bar                   -0.5p      +5.5p      -6.1p   -10.82×   -11.89×  ← LONG muted
+  atr_1h                      -0.5p      +6.5p      -7.1p   -13.82×   -15.26×  ← LONG muted
+  htf_pct_60                  +0.5p      +3.0p      -2.6p     6.54×    -5.74×  ← LONG amplified
+  ema_cross_pips              -0.3p      +0.4p      -0.6p    -1.30×    -1.91×  ← LONG muted
+  adr_consumed                +0.2p      +2.5p      -2.2p    15.31×   -13.51×  ← LONG amplified
+                          raw:  D1=   -0.2p  D5=   +0.0p  D10=   -0.0p
+                          long: D1=   +2.7p  D5=   +3.3p  D10=   +5.1p
+                          shrt: D1=   +2.8p  D5=   +3.2p  D10=   +5.0p
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,709)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +22.3p     +12.9p     +12.6p     0.58×     0.56×  ← LONG muted
+                          raw:  D1=  -11.0p  D5=   -0.4p  D10=  +11.3p
+                          long: D1=   +6.7p  D5=   +5.1p  D10=  +19.6p
+                          shrt: D1=  +19.2p  D5=   +5.6p  D10=   +6.7p
+  rsi_slope                  +14.8p      +8.2p      +8.8p     0.55×     0.60×  ← LONG muted
+                          raw:  D1=   -7.6p  D5=   -0.6p  D10=   +7.2p
+                          long: D1=   +5.8p  D5=   +6.3p  D10=  +13.9p
+                          shrt: D1=  +14.4p  D5=   +7.0p  D10=   +5.6p
+  zscore_1h                  +13.8p      +8.2p      +7.7p     0.59×     0.56×  ← LONG muted
+  d_ret                      +13.2p      +6.4p      +6.4p     0.49×     0.48×  ← LONG muted
+  h1_ret_4bar                +13.0p      +8.0p      +7.3p     0.61×     0.56×  
+  ema20_1h_dist_pct          +12.1p      +7.7p      +6.2p     0.64×     0.52×  
+  pdl_dist_pips              +11.4p      +7.5p      +3.5p     0.66×     0.31×  
+  pdh_dist_pips              +11.1p      +3.4p      +7.3p     0.30×     0.66×  ← LONG muted
+  rsi14                       +9.7p      +5.8p      +5.0p     0.60×     0.52×  
+  htf_pct_20                  +2.8p      +4.8p      -1.8p     1.72×    -0.65×  ← LONG amplified
+  htf_pct_60                  +1.7p      +6.1p      -4.5p     3.59×    -2.66×  ← LONG amplified
+  atr_1h                      -0.9p     +12.7p     -13.4p   -14.71×   -15.53×  ← LONG muted
+  rvol_5bar                   -0.9p     +10.6p     -11.2p   -12.45×   -13.18×  ← LONG muted
+  rvol_12bar                  -0.8p     +11.9p     -12.6p   -15.16×   -15.98×  ← LONG muted
+  atr_5m                      -0.4p     +13.2p     -13.5p   -31.55×   -32.33×  ← LONG muted
+  adr_consumed                -0.3p      +5.8p      -6.1p   -22.80×   -23.67×  ← LONG muted
+                          raw:  D1=   +0.3p  D5=   +0.3p  D10=   +0.0p
+                          long: D1=   +5.4p  D5=   +7.3p  D10=  +11.2p
+                          shrt: D1=   +5.0p  D5=   +7.0p  D10=  +11.1p
+  bb_pos                      +0.1p      -0.6p      -1.1p    -6.56×   -11.20×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   +0.1p  D10=   +0.2p
+                          long: D1=   +8.6p  D5=   +7.4p  D10=   +7.9p
+                          shrt: D1=   +7.6p  D5=   +7.3p  D10=   +8.7p
+  ema_cross_pips              -0.1p      +0.9p      -0.6p   -14.55×    -9.55×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=161,629)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +17.3p      +9.7p      +9.8p     0.56×     0.57×  ← LONG muted
+                          raw:  D1=   -8.4p  D5=   -0.3p  D10=   +8.9p
+                          long: D1=   +5.6p  D5=   +2.9p  D10=  +15.3p
+                          shrt: D1=  +15.0p  D5=   +3.3p  D10=   +5.2p
+  rsi_slope                  +10.1p      +5.8p      +5.9p     0.58×     0.59×  ← LONG muted
+                          raw:  D1=   -4.9p  D5=   -0.5p  D10=   +5.2p
+                          long: D1=   +5.3p  D5=   +3.8p  D10=  +11.1p
+                          shrt: D1=  +10.9p  D5=   +4.3p  D10=   +4.9p
+  zscore_1h                   +8.4p      +5.3p      +4.4p     0.62×     0.52×  
+  d_ret                       +7.1p      +3.7p      +2.9p     0.53×     0.41×  ← LONG muted
+  h1_ret_4bar                 +6.7p      +3.8p      +3.9p     0.57×     0.58×  ← LONG muted
+  ema20_1h_dist_pct           +6.4p      +4.1p      +2.9p     0.64×     0.45×  
+  pdh_dist_pips               +6.0p      +1.3p      +4.2p     0.21×     0.69×  ← LONG muted
+  pdl_dist_pips               +5.8p      +4.8p      +0.6p     0.82×     0.10×  
+  rsi14                       +4.3p      +3.0p      +1.8p     0.70×     0.42×  
+  bb_pos                      -1.2p      -1.3p      -1.6p     1.04×    -1.35×  
+                          raw:  D1=   +0.5p  D5=   -0.1p  D10=   -0.7p
+                          long: D1=   +6.9p  D5=   +5.1p  D10=   +5.6p
+                          shrt: D1=   +5.4p  D5=   +5.0p  D10=   +7.1p
+  ema_cross_pips              -1.0p      -0.2p      -0.8p     0.23×    -0.81×  ← LONG muted
+  htf_pct_60                  +0.8p      +4.3p      -3.7p     5.06×    -4.33×  ← LONG amplified
+  htf_pct_20                  +0.7p      +2.7p      -2.4p     4.05×    -3.67×  ← LONG amplified
+  rvol_5bar                   +0.4p     +10.7p     -10.2p    25.23×   -23.87×  ← LONG amplified
+  atr_1h                      +0.3p     +10.4p     -10.1p    37.96×   -36.72×  ← LONG amplified
+  rvol_12bar                  +0.2p     +11.7p     -11.4p    66.50×   -64.90×  ← LONG amplified
+  atr_5m                      -0.1p     +12.5p     -12.5p  -127.39×  -127.55×  ← LONG muted
+  adr_consumed                +0.1p      +5.4p      -5.5p    61.22×   -61.93×  ← LONG amplified
+                          raw:  D1=   -0.2p  D5=   -0.2p  D10=   -0.2p
+                          long: D1=   +3.3p  D5=   +5.1p  D10=   +8.7p
+                          shrt: D1=   +3.5p  D5=   +5.3p  D10=   +8.9p
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: USD_CHF
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=204,715)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                 +8.1p      +5.0p      +5.5p     0.62×     0.68×  
+                          raw:  D1=   -4.3p  D5=   -0.0p  D10=   +3.8p
+                          long: D1=   +2.0p  D5=   +1.4p  D10=   +7.0p
+                          shrt: D1=   +7.5p  D5=   +1.6p  D10=   +2.1p
+  rsi_slope                   +5.3p      +3.4p      +3.5p     0.65×     0.66×  
+                          raw:  D1=   -2.9p  D5=   -0.1p  D10=   +2.4p
+                          long: D1=   +1.7p  D5=   +1.9p  D10=   +5.1p
+                          shrt: D1=   +5.3p  D5=   +2.0p  D10=   +1.9p
+  h1_ret_4bar                 +4.4p      +2.5p      +3.4p     0.57×     0.76×  ← LONG muted
+  zscore_1h                   +3.7p      +2.2p      +3.0p     0.61×     0.82×  
+  d_ret                       +3.1p      +1.8p      +2.0p     0.58×     0.66×  ← LONG muted
+  ema20_1h_dist_pct           +2.8p      +1.3p      +2.7p     0.47×     0.97×  ← LONG muted
+  pdh_dist_pips               +2.7p      +0.7p      +2.9p     0.26×     1.08×  ← LONG muted
+  pdl_dist_pips               +2.4p      +2.2p      +1.1p     0.93×     0.45×  
+  rsi14                       +2.3p      +0.9p      +2.3p     0.39×     1.02×  ← LONG muted
+  htf_pct_20                  +1.2p      -0.5p      +2.2p    -0.43×     1.82×  ← LONG muted SHORT amplified
+  htf_pct_60                  +0.8p      -0.8p      +1.7p    -1.07×     2.31×  ← LONG muted SHORT amplified
+  adr_consumed                -0.6p      +1.7p      -2.6p    -2.75×    -4.16×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   +0.1p  D10=   -0.5p
+                          long: D1=   +1.7p  D5=   +2.4p  D10=   +3.4p
+                          shrt: D1=   +1.6p  D5=   +2.2p  D10=   +4.1p
+  atr_5m                      -0.6p      +4.7p      -5.5p    -8.01×    -9.50×  ← LONG muted
+  bb_pos                      -0.5p      -0.9p      -0.4p     1.68×    -0.72×  ← LONG amplified
+                          raw:  D1=   +0.2p  D5=   +0.1p  D10=   -0.3p
+                          long: D1=   +3.3p  D5=   +2.3p  D10=   +2.4p
+                          shrt: D1=   +2.7p  D5=   +2.2p  D10=   +3.1p
+  rvol_5bar                   -0.5p      +4.1p      -4.8p    -7.88×    -9.21×  ← LONG muted
+  rvol_12bar                  -0.5p      +4.3p      -5.1p    -8.65×   -10.14×  ← LONG muted
+  atr_1h                      -0.4p      +4.2p      -4.8p   -11.38×   -12.93×  ← LONG muted
+  ema_cross_pips              -0.3p      -0.7p      +0.6p     2.16×     1.78×  ← LONG amplified SHORT amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,646)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +18.5p     +10.6p     +11.0p     0.57×     0.59×  ← LONG muted
+                          raw:  D1=   -9.3p  D5=   -0.3p  D10=   +9.2p
+                          long: D1=   +4.8p  D5=   +4.3p  D10=  +15.4p
+                          shrt: D1=  +15.7p  D5=   +4.9p  D10=   +4.7p
+  rsi_slope                  +12.5p      +7.3p      +7.5p     0.58×     0.60×  ← LONG muted
+                          raw:  D1=   -6.4p  D5=   -0.5p  D10=   +6.2p
+                          long: D1=   +4.2p  D5=   +5.1p  D10=  +11.5p
+                          shrt: D1=  +11.8p  D5=   +5.9p  D10=   +4.2p
+  d_ret                      +11.9p      +6.1p      +6.2p     0.51×     0.53×  ← LONG muted
+  zscore_1h                  +11.8p      +6.7p      +7.4p     0.57×     0.63×  ← LONG muted
+  h1_ret_4bar                +10.7p      +6.1p      +6.6p     0.56×     0.62×  ← LONG muted
+  ema20_1h_dist_pct          +10.6p      +5.8p      +6.5p     0.55×     0.61×  ← LONG muted
+  pdl_dist_pips              +10.3p      +6.2p      +4.4p     0.60×     0.42×  
+  pdh_dist_pips              +10.3p      +3.8p      +6.6p     0.36×     0.64×  ← LONG muted
+  rsi14                       +8.9p      +4.6p      +5.9p     0.51×     0.67×  ← LONG muted
+  htf_pct_20                  +2.2p      -0.5p      +2.8p    -0.23×     1.25×  ← LONG muted SHORT amplified
+  htf_pct_60                  +0.9p      -0.6p      +1.3p    -0.68×     1.44×  ← LONG muted SHORT amplified
+  adr_consumed                -0.9p      +5.2p      -6.2p    -5.92×    -7.02×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   -0.2p  D10=   -0.8p
+                          long: D1=   +4.0p  D5=   +5.8p  D10=   +9.3p
+                          shrt: D1=   +3.9p  D5=   +6.2p  D10=  +10.1p
+  rvol_12bar                  -0.4p      +7.4p      -8.1p   -17.62×   -19.22×  ← LONG muted
+  atr_5m                      -0.4p      +8.3p      -9.0p   -21.67×   -23.69×  ← LONG muted
+  bb_pos                      -0.3p      -1.1p      -0.6p     3.73×    -2.21×  ← LONG amplified
+                          raw:  D1=   +0.1p  D5=   +0.1p  D10=   -0.2p
+                          long: D1=   +7.2p  D5=   +6.0p  D10=   +6.1p
+                          shrt: D1=   +6.6p  D5=   +6.0p  D10=   +7.2p
+  ema_cross_pips              +0.2p      -0.1p      +0.5p    -0.61×     2.36×  ← LONG muted SHORT amplified
+  rvol_5bar                   -0.1p      +6.8p      -7.1p   -48.58×   -51.17×  ← LONG muted
+  atr_1h                      -0.1p      +9.2p      -9.6p   -89.95×   -94.27×  ← LONG muted
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=159,674)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +11.5p      +6.5p      +6.8p     0.57×     0.59×  ← LONG muted
+                          raw:  D1=   -5.7p  D5=   -0.2p  D10=   +5.8p
+                          long: D1=   +3.2p  D5=   +1.9p  D10=   +9.7p
+                          shrt: D1=   +9.8p  D5=   +2.3p  D10=   +3.0p
+  rsi_slope                   +6.8p      +3.8p      +4.1p     0.56×     0.61×  ← LONG muted
+                          raw:  D1=   -3.4p  D5=   -0.1p  D10=   +3.4p
+                          long: D1=   +3.1p  D5=   +2.5p  D10=   +6.9p
+                          shrt: D1=   +7.0p  D5=   +2.7p  D10=   +2.9p
+  zscore_1h                   +5.6p      +2.9p      +3.5p     0.51×     0.63×  ← LONG muted
+  h1_ret_4bar                 +4.7p      +2.5p      +2.8p     0.54×     0.59×  ← LONG muted
+  d_ret                       +3.8p      +1.7p      +2.0p     0.43×     0.53×  ← LONG muted
+  ema20_1h_dist_pct           +3.7p      +1.9p      +2.1p     0.51×     0.57×  ← LONG muted
+  pdl_dist_pips               +3.4p      +2.2p      +0.9p     0.66×     0.26×  
+  pdh_dist_pips               +3.1p      +0.5p      +2.4p     0.16×     0.78×  ← LONG muted
+  rsi14                       +3.0p      +1.2p      +1.9p     0.40×     0.63×  ← LONG muted
+  bb_pos                      -1.5p      -1.6p      -1.2p     1.06×    -0.79×  
+                          raw:  D1=   +0.7p  D5=   -0.0p  D10=   -0.8p
+                          long: D1=   +4.6p  D5=   +3.1p  D10=   +3.0p
+                          shrt: D1=   +3.3p  D5=   +3.1p  D10=   +4.5p
+  htf_pct_20                  +0.8p      -1.0p      +1.4p    -1.26×     1.81×  ← LONG muted SHORT amplified
+  atr_5m                      +0.6p      +7.8p      -7.2p    13.19×   -12.27×  ← LONG amplified
+  rvol_12bar                  +0.6p      +7.3p      -6.8p    12.78×   -11.81×  ← LONG amplified
+  ema_cross_pips              -0.5p      -0.4p      -0.4p     0.74×    -0.71×  
+  rvol_5bar                   +0.4p      +6.7p      -6.3p    15.54×   -14.63×  ← LONG amplified
+  atr_1h                      +0.4p      +6.7p      -6.2p    17.86×   -16.67×  ← LONG amplified
+  adr_consumed                -0.3p      +3.3p      -3.9p   -10.83×   -12.60×  ← LONG muted
+                          raw:  D1=   +0.1p  D5=   -0.1p  D10=   -0.2p
+                          long: D1=   +2.1p  D5=   +3.2p  D10=   +5.5p
+                          shrt: D1=   +1.9p  D5=   +3.3p  D10=   +5.8p
+  htf_pct_60                  +0.3p      -0.6p      +0.7p    -2.16×     2.41×  ← LONG muted SHORT amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+────────────────────────────────────────────────────────────────────────────────
+PAIR: USD_JPY
+────────────────────────────────────────────────────────────────────────────────
+
+  Session: ASIA  (n=208,620)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +21.3p     +12.0p     +14.2p     0.57×     0.67×  ← LONG muted
+                          raw:  D1=  -11.0p  D5=   -0.4p  D10=  +10.3p
+                          long: D1=   +7.8p  D5=   +3.5p  D10=  +19.8p
+                          shrt: D1=  +22.1p  D5=   +4.1p  D10=   +8.0p
+  rsi_slope                  +12.6p      +7.4p      +8.5p     0.59×     0.67×  ← LONG muted
+                          raw:  D1=   -6.5p  D5=   -0.3p  D10=   +6.1p
+                          long: D1=   +5.7p  D5=   +5.7p  D10=  +13.1p
+                          shrt: D1=  +14.5p  D5=   +6.1p  D10=   +6.0p
+  h1_ret_4bar                +11.4p      +5.6p      +8.6p     0.49×     0.76×  ← LONG muted
+  zscore_1h                  +10.5p      +5.0p      +8.3p     0.47×     0.79×  ← LONG muted
+  d_ret                      +10.4p      +4.1p      +6.3p     0.39×     0.60×  ← LONG muted
+  ema20_1h_dist_pct           +9.0p      +3.2p      +8.7p     0.36×     0.97×  ← LONG muted
+  pdl_dist_pips               +8.8p      +6.7p      +2.4p     0.76×     0.27×  
+  pdh_dist_pips               +8.8p      -0.9p     +10.3p    -0.10×     1.17×  ← LONG muted
+  rsi14                       +7.9p      +1.8p      +8.5p     0.23×     1.07×  ← LONG muted
+  htf_pct_20                  +2.8p      -3.4p      +6.1p    -1.22×     2.18×  ← LONG muted SHORT amplified
+  htf_pct_60                  +2.4p      -3.1p      +5.0p    -1.32×     2.08×  ← LONG muted SHORT amplified
+  rvol_12bar                  -1.0p     +14.5p     -16.5p   -13.86×   -15.73×  ← LONG muted
+  atr_5m                      -1.0p     +15.7p     -17.8p   -16.07×   -18.24×  ← LONG muted
+  rvol_5bar                   -0.9p     +13.6p     -15.2p   -14.78×   -16.55×  ← LONG muted
+  atr_1h                      -0.5p     +15.8p     -17.4p   -33.65×   -37.19×  ← LONG muted
+  adr_consumed                -0.2p      +7.4p      -8.2p   -29.91×   -33.04×  ← LONG muted
+                          raw:  D1=   -0.0p  D5=   +0.2p  D10=   -0.3p
+                          long: D1=   +4.2p  D5=   +6.6p  D10=  +11.7p
+                          shrt: D1=   +4.5p  D5=   +6.7p  D10=  +12.7p
+  bb_pos                      -0.0p      -1.5p      +0.5p    36.49×    13.07×  ← LONG amplified SHORT amplified
+                          raw:  D1=   +0.1p  D5=   -0.1p  D10=   +0.1p
+                          long: D1=   +8.8p  D5=   +6.2p  D10=   +7.3p
+                          shrt: D1=   +8.5p  D5=   +6.6p  D10=   +7.9p
+  ema_cross_pips              -0.0p      -1.0p      +1.6p    76.54×   120.00×  ← LONG amplified SHORT amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: LONDON  (n=185,723)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +28.5p     +14.3p     +18.3p     0.50×     0.64×  ← LONG muted
+                          raw:  D1=  -14.7p  D5=   +0.1p  D10=  +13.8p
+                          long: D1=  +10.0p  D5=   +5.2p  D10=  +24.3p
+                          shrt: D1=  +27.6p  D5=   +5.6p  D10=   +9.4p
+  d_ret                      +17.7p      +4.8p     +11.6p     0.27×     0.65×  ← LONG muted
+  rsi_slope                  +17.7p      +8.7p     +11.8p     0.49×     0.67×  ← LONG muted
+                          raw:  D1=   -9.3p  D5=   +0.4p  D10=   +8.4p
+                          long: D1=   +7.7p  D5=   +7.8p  D10=  +16.4p
+                          shrt: D1=  +19.2p  D5=   +8.0p  D10=   +7.3p
+  h1_ret_4bar                +16.4p      +6.5p     +12.0p     0.40×     0.73×  ← LONG muted
+  zscore_1h                  +16.3p      +6.3p     +11.9p     0.39×     0.73×  ← LONG muted
+  pdh_dist_pips              +15.4p      +0.4p     +14.1p     0.03×     0.92×  ← LONG muted
+  ema20_1h_dist_pct          +15.1p      +4.7p     +11.6p     0.31×     0.77×  ← LONG muted
+  pdl_dist_pips              +15.0p      +6.1p      +7.6p     0.41×     0.51×  ← LONG muted
+  rsi14                      +12.2p      +3.1p      +9.7p     0.26×     0.80×  ← LONG muted
+  htf_pct_20                  +3.6p      -3.7p      +6.0p    -1.04×     1.67×  ← LONG muted SHORT amplified
+  adr_consumed                -3.3p      +9.0p     -13.1p    -2.75×    -4.00×  ← LONG muted
+                          raw:  D1=   +0.4p  D5=   +0.3p  D10=   -2.9p
+                          long: D1=   +5.0p  D5=   +8.6p  D10=  +14.0p
+                          shrt: D1=   +5.1p  D5=   +8.6p  D10=  +18.2p
+  ema_cross_pips              +1.0p      -2.5p      +3.4p    -2.62×     3.49×  ← LONG muted SHORT amplified
+  bb_pos                      +0.9p      -1.9p      +1.0p    -2.12×     1.15×  ← LONG muted
+                          raw:  D1=   -0.5p  D5=   +0.3p  D10=   +0.4p
+                          long: D1=  +11.0p  D5=   +8.7p  D10=   +9.1p
+                          shrt: D1=  +11.2p  D5=   +9.0p  D10=  +10.1p
+  atr_5m                      +0.3p     +19.0p     -20.0p    72.37×   -76.42×  ← LONG amplified
+  htf_pct_60                  +0.3p      -4.4p      +3.2p   -17.68×    12.67×  ← LONG muted SHORT amplified
+  atr_1h                      -0.2p     +18.9p     -20.5p  -123.79×  -133.86×  ← LONG muted
+  rvol_5bar                   -0.1p     +15.9p     -16.8p  -189.14×  -200.05×  ← LONG muted
+  rvol_12bar                  +0.0p     +17.2p     -18.0p   465.95×  -486.08×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+  Session: NY  (n=161,724)
+  Feature                  span_raw    span_rl    span_rs   ratio_rl   ratio_rs  note
+  ------------------------------------------------------------------------------------------
+  h1_ret_1bar                +16.1p      +8.4p     +11.1p     0.52×     0.69×  ← LONG muted
+                          raw:  D1=   -7.9p  D5=   -0.3p  D10=   +8.1p
+                          long: D1=   +7.1p  D5=   +2.5p  D10=  +15.5p
+                          shrt: D1=  +17.5p  D5=   +2.9p  D10=   +6.5p
+  rsi_slope                   +8.7p      +4.5p      +6.3p     0.52×     0.72×  ← LONG muted
+                          raw:  D1=   -4.0p  D5=   -0.2p  D10=   +4.7p
+                          long: D1=   +5.7p  D5=   +3.9p  D10=  +10.2p
+                          shrt: D1=  +11.3p  D5=   +4.5p  D10=   +5.0p
+  zscore_1h                   +7.1p      +2.1p      +7.0p     0.30×     0.98×  ← LONG muted
+  h1_ret_4bar                 +6.9p      +1.6p      +7.1p     0.23×     1.02×  ← LONG muted
+  d_ret                       +5.6p      -0.7p      +6.2p    -0.12×     1.11×  ← LONG muted
+  ema20_1h_dist_pct           +5.0p      -0.3p      +6.8p    -0.06×     1.36×  ← LONG muted SHORT amplified
+  pdh_dist_pips               +4.8p      -2.9p      +8.0p    -0.60×     1.66×  ← LONG muted SHORT amplified
+  pdl_dist_pips               +4.5p      +0.7p      +3.8p     0.15×     0.84×  ← LONG muted
+  rsi14                       +3.9p      -0.6p      +5.8p    -0.15×     1.48×  ← LONG muted SHORT amplified
+  htf_pct_20                  +2.9p      -3.2p      +6.3p    -1.08×     2.14×  ← LONG muted SHORT amplified
+  htf_pct_60                  +1.6p      -3.2p      +4.5p    -2.01×     2.82×  ← LONG muted SHORT amplified
+  bb_pos                      -1.5p      -2.4p      +0.1p     1.55×     0.04×  ← LONG amplified
+                          raw:  D1=   +0.9p  D5=   -0.0p  D10=   -0.6p
+                          long: D1=   +7.6p  D5=   +4.8p  D10=   +5.2p
+                          shrt: D1=   +6.7p  D5=   +5.2p  D10=   +6.6p
+  rvol_12bar                  +0.6p     +13.6p     -13.7p    22.04×   -22.17×  ← LONG amplified
+  adr_consumed                -0.6p      +6.8p      -7.8p   -11.78×   -13.49×  ← LONG muted
+                          raw:  D1=   +0.3p  D5=   +0.1p  D10=   -0.2p
+                          long: D1=   +3.0p  D5=   +4.7p  D10=   +9.8p
+                          shrt: D1=   +2.9p  D5=   +4.8p  D10=  +10.7p
+  rvol_5bar                   +0.6p     +12.4p     -12.5p    22.30×   -22.43×  ← LONG amplified
+  atr_1h                      +0.4p     +12.8p     -13.5p    28.91×   -30.46×  ← LONG amplified
+  ema_cross_pips              +0.3p      -1.8p      +2.8p    -7.23×    10.96×  ← LONG muted SHORT amplified
+  atr_5m                      +0.2p     +14.8p     -15.4p    79.47×   -82.91×  ← LONG amplified
+  trend_1h                       —          —          —        —         —    
+  trend_4h                       —          —          —        —         —    
+
+
+================================================================================
+CROSS-CELL SUMMARY — median ratio_rl and ratio_rs across all 24 (pair×session) cells
+================================================================================
+Feature                 med span_raw  med span_rl  med span_rs  med ratio_rl  med ratio_rs
+--------------------------------------------------------------------------------
+h1_ret_1bar                  +17.6p         +9.5p        +11.0p         0.57×         0.63×
+rsi_slope                    +10.4p         +6.1p         +7.1p         0.56×         0.66×
+zscore_1h                     +8.7p         +4.6p         +6.5p         0.53×         0.71×
+h1_ret_4bar                   +7.3p         +4.1p         +6.3p         0.54×         0.72×
+d_ret                         +7.1p         +3.2p         +5.1p         0.45×         0.58×
+ema20_1h_dist_pct             +6.4p         +3.1p         +6.1p         0.48×         0.77×
+pdh_dist_pips                 +6.0p         +0.8p         +6.3p         0.21×         0.92×
+pdl_dist_pips                 +5.9p         +4.4p         +2.7p         0.66×         0.33×
+rsi14                         +4.8p         +2.2p         +4.8p         0.42×         0.78×
+htf_pct_20                    +1.9p         -0.8p         +2.5p        -0.48×         1.54×
+htf_pct_60                    +1.0p         -0.7p         +1.5p        -0.93×         1.92×
+bb_pos                        -0.6p         -1.4p         -0.5p         1.52×        -0.73×
+adr_consumed                  -0.5p         +5.3p         -6.1p        -5.65×       -12.67×
+ema_cross_pips                -0.3p         -0.6p         +0.7p         0.40×         1.59×
+atr_1h                        +0.1p        +11.2p        -11.0p        10.83×       -28.85×
+rvol_5bar                     +0.1p         +9.7p        -10.0p        14.86×       -25.33×
+atr_5m                        +0.0p        +11.9p        -12.2p         0.32×       -31.35×
+rvol_12bar                    +0.0p        +10.6p        -11.0p        -0.20×       -23.49×
+trend_1h                         —            —            —            —            —
+trend_4h                         —            —            —            —            —

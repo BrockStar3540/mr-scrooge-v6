@@ -1,0 +1,13 @@
+[Unit]
+Description=Mr. Scrooge V6 Trading Platform
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/mr-scrooge-v6
+ExecStart=/usr/bin/python3 main.py --live
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

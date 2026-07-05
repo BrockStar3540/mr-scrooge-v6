@@ -1,0 +1,32 @@
+V5 SMOKE NIGHTLY — 2026-06-19
+  closed trades: 9
+  wins:          8/9  (89%)
+
+  per-bucket WR:
+    AUD_JPY/asia     4/4  (100%)
+    AUD_USD/asia     2/2  (100%)
+    USD_JPY/asia     2/3  (67%)
+
+  per-direction-feature accuracy today (across all trades):
+    h1_ret_1bar             9/9  (100%)
+    zscore_1h               8/9  (89%)
+    h1_ret_4bar             8/9  (89%)
+    d_ret                   1/9  (11%)
+    ema20_1h_dist_pct       9/9  (100%)
+    pdh_dist_pips           7/9  (78%)
+    pdl_dist_pips           1/9  (11%)
+    pdl_dist_atr_pct        1/9  (11%)
+    pdh_dist_atr_pct        7/9  (78%)
+    htf_pct_20              7/9  (78%)
+    htf_pct_60              1/9  (11%)
+    ema20_dist_pct          1/9  (11%)
+    bb_pos                  1/9  (11%)
+    zscore_5m               2/9  (22%)
+    ema5_dist_pips          2/9  (22%)
+    ret_5m                  3/8  (38%)
+    ret_15m                 1/9  (11%)
+    ret_1h                  1/9  (11%)
+    ret_30m                 0/9  (0%)
+    ema50_dist_pct          1/9  (11%)
+    close_pos_daily         3/9  (33%)
+    ema_cross_pips          1/9  (11%)

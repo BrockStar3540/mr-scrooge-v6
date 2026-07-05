@@ -1,0 +1,23 @@
+========================================================================
+DM-05  RATCHET LABEL CORRELATION REPORT
+  spearman(net_60m, net_ratchet) >= 0.70 → sweep applies to V4 directly
+========================================================================
+
+Pair                n   r(60m,RL)   ρ(60m,RL)   r(60m,RS)   ρ(60m,RS)   pass?
+------------------------------------------------------------------------
+AUD_JPY       556,974      +0.609      +0.648      -0.648      -0.626   ✗ LOW
+AUD_USD       554,005      +0.639      +0.657      -0.632      -0.654   ✗ LOW
+EUR_JPY       556,107      +0.580      +0.618      -0.650      -0.590   ✗ LOW
+EUR_USD       555,795      +0.629      +0.614      -0.632      -0.616   ✗ LOW
+GBP_USD       555,465      +0.630      +0.608      -0.625      -0.607   ✗ LOW
+USD_CAD       555,400      +0.631      +0.627      -0.633      -0.628   ✗ LOW
+USD_CHF       550,035      +0.628      +0.637      -0.646      -0.639   ✗ LOW
+USD_JPY       556,067      +0.572      +0.597      -0.635      -0.567   ✗ LOW
+
+NOTE: rl=ratchet_long, rs=ratchet_short, r=pearson, ρ=spearman
+  ratchet_long: enter long at bar close, trail 2.5p after 60min, re-lock q60min
+  ratchet_short: symmetric short
+  net_60m: fixed 60-min forward return (the label used in dm_04 sweep)
+
+If sweep's momentum factors (h1_ret_1bar, rsi_slope) have the same decile shape
+on ratchet_long as on net_60m, the sweep findings transfer to V4's ratchet system.

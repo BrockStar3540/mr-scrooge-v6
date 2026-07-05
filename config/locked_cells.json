@@ -1,0 +1,303 @@
+{
+  "_doc": "LOCKED cells = validated / dialed-in. Audits MUST tag these with the lock indicator. The monitor alerts if a locked cell's POST-LOCK performance degrades, so Brock is warned BEFORE it bleeds and can edit it. Do NOT auto-change locked cells or propose changes to them unless the monitor flags degradation. See memory feedback_locked_cells.",
+  "lock_date": "2026-07-01",
+  "source": "OANDA broker CSV audit 2026-06-22..07-01 (research/sessions/2026-07-01_cell_audit_throughput)",
+  "alert_rules": {
+    "min_wr_pct": 50,
+    "alert_net_pips_below": 0.0,
+    "consecutive_losses": 3
+  },
+  "cells": [
+    {
+      "pair": "GBP_USD",
+      "session": "ny",
+      "dir": "short",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 14,
+        "w": 12,
+        "l": 2,
+        "wr": 86,
+        "net_pips": 42.4,
+        "net_usd": 261.51,
+        "dates": "06-22->06-30"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.344607+00:00",
+        "governance": {
+          "inverted_live": true,
+          "inverted_directions": [],
+          "disabled_long": false,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": 0.52,
+          "dir_cert_max": null,
+          "mom_cert_min": 0.4,
+          "mom_cert_max": null,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": null,
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "6d8cf4219be6d1b762b5b14e572d584af685aee9fc25f08d1b81ec248c1d3a5a"
+      }
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "london",
+      "dir": "short",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 7,
+        "w": 6,
+        "l": 1,
+        "wr": 86,
+        "net_pips": 30.2,
+        "net_usd": 599.21,
+        "dates": "06-22->06-24"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.374560+00:00",
+        "governance": {
+          "inverted_live": false,
+          "inverted_directions": [],
+          "disabled_long": false,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": null,
+          "dir_cert_max": null,
+          "mom_cert_min": null,
+          "mom_cert_max": 0.5,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": [
+            -15.0,
+            0.0
+          ],
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "7a5f17be3d2402c3bc1d31c178d12961d0cae4a2658d01e6a4ef0c022402f5f4"
+      }
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "london",
+      "dir": "long",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 4,
+        "w": 4,
+        "l": 0,
+        "wr": 100,
+        "net_pips": 24.9,
+        "net_usd": 127.78,
+        "dates": "06-22->06-26"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.397526+00:00",
+        "governance": {
+          "inverted_live": false,
+          "inverted_directions": [],
+          "disabled_long": false,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": null,
+          "dir_cert_max": null,
+          "mom_cert_min": 0.5,
+          "mom_cert_max": null,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": null,
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "4ae2de1c4a795aed79cb6055bb112e378965a920c9b711a3ad7e3b9b43e433e8"
+      }
+    },
+    {
+      "pair": "AUD_USD",
+      "session": "london",
+      "dir": "long",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 2,
+        "w": 2,
+        "l": 0,
+        "wr": 100,
+        "net_pips": 12.6,
+        "net_usd": 257.59,
+        "dates": "06-25->06-26"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.418469+00:00",
+        "governance": {
+          "inverted_live": false,
+          "inverted_directions": [],
+          "disabled_long": false,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": null,
+          "dir_cert_max": null,
+          "mom_cert_min": null,
+          "mom_cert_max": 0.5,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": [
+            -15.0,
+            0.0
+          ],
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "7a5f17be3d2402c3bc1d31c178d12961d0cae4a2658d01e6a4ef0c022402f5f4"
+      }
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "asia",
+      "dir": "long",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 2,
+        "w": 2,
+        "l": 0,
+        "wr": 100,
+        "net_pips": 9.7,
+        "net_usd": 51.04,
+        "dates": "06-25->06-26"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.439812+00:00",
+        "governance": {
+          "inverted_live": true,
+          "inverted_directions": [],
+          "disabled_long": false,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": 0.49,
+          "dir_cert_max": null,
+          "mom_cert_min": null,
+          "mom_cert_max": null,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": null,
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "40606d1ef0f6d6953c9032190bd57f16faf31b113d68df911f1455b48c2d6bbb"
+      }
+    },
+    {
+      "pair": "AUD_JPY",
+      "session": "asia",
+      "dir": "short",
+      "locked": "2026-07-01",
+      "baseline": {
+        "n": 5,
+        "w": 4,
+        "l": 1,
+        "wr": 80,
+        "net_pips": 8.0,
+        "net_usd": 63.12,
+        "dates": "06-22->07-01"
+      },
+      "snapshot": {
+        "taken": "2026-07-03T07:50:16.459663+00:00",
+        "governance": {
+          "inverted_live": false,
+          "inverted_directions": [],
+          "disabled_long": true,
+          "disabled_short": false,
+          "session_enabled": true,
+          "min_direction_score": 0.25,
+          "min_dir_certainty": 0.3,
+          "min_mom_certainty": 0.25,
+          "dir_cert_min": null,
+          "dir_cert_max": null,
+          "mom_cert_min": null,
+          "mom_cert_max": 0.5,
+          "willr_range_long": null,
+          "willr_range_short": null,
+          "kc_up_range_long": null,
+          "kc_up_range_short": null,
+          "aroon_range_long": null,
+          "aroon_range_short": null,
+          "cooldown_after_sl_min": 0.0,
+          "initial_sl_pips": 20.0
+        },
+        "throttle": {
+          "max_opens_per_session": 2
+        },
+        "code_fingerprint": "cca838ec811dec6a8890fd8a06a70a84dd7d3da4930cab74f1586476decf48f6"
+      }
+    }
+  ],
+  "lock_ts": "2026-07-01T06:29:20Z",
+  "overrides": [
+    {
+      "pair": "USD_JPY",
+      "session": "london",
+      "field": "inverted_live",
+      "value": false,
+      "approved_by": "brock",
+      "date": "2026-07-03",
+      "note": "Brock explicit override (ok, do both): restore natural direction; inverted live -24.4p/5 vs +7.06p natural backtest; baseline was cross-regime contaminated"
+    },
+    {
+      "pair": "USD_JPY",
+      "session": "london",
+      "field": "disabled_long",
+      "value": false,
+      "approved_by": "brock",
+      "date": "2026-07-03",
+      "note": "Brock explicit override (ok, do both): restore natural direction; inverted live -24.4p/5 vs +7.06p natural backtest; baseline was cross-regime contaminated"
+    }
+  ]
+}

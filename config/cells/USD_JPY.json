@@ -1,0 +1,192 @@
+{
+  "pair": "USD_JPY",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.2748,
+        "dead_rate_60m": 0.3983,
+        "ev_gross_long": -1.349,
+        "ev_gross_short": -1.204,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "kc_breakout_long",
+          "side": "long",
+          "class": "LEAN",
+          "status": "ACTIVE",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "kc_up_dist_pips",
+              "min": 0.0,
+              "max": null,
+              "note": "kc_up_dist_pips >= 0 (open-top range): price at/above KC upper band = breakout regime. Blocks 3/4 losses (9517=-0.5, 9539=-12.1, 9692=-19.4) incl 9692 which d_cert>=0.49 passed. Known false-negative: 9813 (kc_up=-35, won +8.3p). Alternative candidate: atr_5m >= 0.04 (blocks same 3 losses).",
+              "lineage": "phaseA_gate_rederivation-2026-07-04 CELL 2 (raw feature search)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "wr": 0.8,
+            "drift": "STABLE",
+            "source": "phaseA_gate_rederivation 2026-07-04 (RE-EXPRESSIBLE; beats old d_cert gate 80% vs 71.4% keep-WR, n=9)",
+            "n_floor_status": "small-n-hypothesis (keep-set n=5 of n=9 journal)"
+          },
+          "notes": "phaseA RE-EXPRESSIBLE verdict: kc_up>=0 replaces d_cert>=0.49 (tighter: fewer fires, higher WR, catches the loss cert gate missed). Side long via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis."
+        }
+      ],
+      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.2873,
+        "dead_rate_60m": 0.3138,
+        "ev_gross_long": -0.838,
+        "ev_gross_short": -0.297,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "timing_lean_30",
+          "side": "long",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.521932,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.521932) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m USD_JPY/london/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "pct_window_days": 90,
+              "pct_lo": 75.0,
+              "pct_hi": 100.0,
+              "resolved": [
+                1.107572,
+                3.374999
+              ],
+              "resolved_at": "2026-07-04",
+              "note": "Direction lean confirmer (rolling-percentile form): atr_h1_relative >= p75 \u2014 lean evidence 'atr_h1_relative HIGH' sign=negative drift=PERSISTENT. resolved lo = p75 of 2026 london-session bars (n=10870); resolved hi = observed 2026 max Monthly refit re-resolves; engine reads 'resolved'.",
+              "lineage": "cell-calibration-2026-07/direction_lean (atr_h1_relative HIGH, PERSISTENT); regime-edges-2026-07; resolved 2026-07-04 from Mini qtl-discovery-8yr/features/USD_JPY_features.parquet"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean atr_h1_relative sign=negative (corr=-0.1276, AUC=0.4723). Lean confirmer: atr_h1_relative >= p75 (rolling-percentile form). atr_5m boundary p75=6.521932 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | SIDE OVERRIDE: short -> long per Brock direction-persistence order 2026-07-04 (lock-era 4W/0L +24.9p, config/locked_cells.json); the atr conditions stay as vol-energy gates; revisit at n>=20 same-engine trades."
+        }
+      ],
+      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.2676,
+        "dead_rate_60m": 0.382,
+        "ev_gross_long": -0.894,
+        "ev_gross_short": -2.582,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "control_atr5m_60",
+          "side": "long",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 2.703442,
+              "max": 6.33182,
+              "note": "Absolute 2026 bounds \u2014 CONTROL formula, not rolling. Source: formula_shadow.py REGISTRY entry.",
+              "lineage": "formula-shadow-registry-2026-07-04/modules/signals/formula_shadow.py; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 3.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "evidence": {
+            "ev_seq": -1.0,
+            "drift": "STABLE",
+            "source": "formula-history-2026-07-04/verdict_table.csv",
+            "holdout_months_positive": 2
+          },
+          "notes": "CONTROL formula: deep-OOS negative (2019-2025), sequential loss. 2026 convergence ev=+1.199 is a 2026-pocket artifact. atr_5m in [p16.8, p70.4] abs=[2.703442, 6.331820]. Stamps emitted for live falsification. Source: formula_shadow.py REGISTRY + ~/v5-formula-history/ verdict_table.csv.",
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          }
+        }
+      ],
+      "notes": "0 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+    }
+  }
+}

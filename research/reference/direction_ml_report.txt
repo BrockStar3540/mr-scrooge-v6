@@ -1,0 +1,323 @@
+======================================================================
+DIRECTION + MOMENTUM MATRIX — per (pair × session)
+======================================================================
+
+──────────────────────────────────────────────────
+PAIR: AUD_JPY
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.610  mae=7.3p  n=40885
+  net_60m: mean=+0.1  p10=-13.5  p50=+0.4  p90=+13.6  std=13.6
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1165 | D1=-10.2p  D2=-3.9p  D3=-2.2p  D4=-1.3p  D5=-0.0p
+    trend_4h                       imp=0.0879
+    ret_1h                         imp=0.0799 | D1=+0.0p  D2=-0.1p  D3=+0.1p  D4=+0.1p  D5=+0.2p
+    bb_pos                         imp=0.0634 | D1=-0.0p  D2=+0.1p  D3=-0.1p  D4=+0.1p  D5=+0.2p
+    ema20_dist_pct                 imp=0.0556 | D1=+0.1p  D2=-0.0p  D3=+0.2p  D4=+0.0p  D5=+0.1p
+    close_pos_daily                imp=0.0314 | D1=-0.4p  D2=-0.6p  D3=-0.0p  D4=+0.1p  D5=+0.2p
+    zscore_5m                      imp=0.0305 | D1=-0.0p  D2=+0.1p  D3=-0.1p  D4=+0.1p  D5=+0.2p
+
+  Session: LONDON
+  OOS: corr=0.657  mae=7.4p  n=36288
+  net_60m: mean=+0.0  p10=-14.6  p50=+0.3  p90=+14.4  std=14.0
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1219 | D1=-11.2p  D2=-5.1p  D3=-3.0p  D4=-1.4p  D5=-0.3p
+    trend_4h                       imp=0.0843
+    ret_1h                         imp=0.0817 | D1=-0.1p  D2=-0.2p  D3=-0.2p  D4=-0.1p  D5=-0.0p
+    ema20_dist_pct                 imp=0.0743 | D1=-0.1p  D2=-0.3p  D3=-0.1p  D4=-0.0p  D5=+0.2p
+    bb_pos                         imp=0.0727 | D1=-0.5p  D2=-0.1p  D3=-0.0p  D4=-0.1p  D5=+0.2p
+    ret_30m                        imp=0.0472 | D1=-0.1p  D2=-0.2p  D3=+0.0p  D4=+0.2p  D5=+0.1p
+    ema5_dist_pips                 imp=0.0308 | D1=-0.2p  D2=+0.1p  D3=+0.2p  D4=+0.2p  D5=-0.0p
+
+  Session: NY
+  OOS: corr=0.599  mae=6.1p  n=31738
+  net_60m: mean=+0.1  p10=-9.8  p50=+0.3  p90=+10.2  std=11.2
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1048 | D1=-8.0p  D2=-2.4p  D3=-1.3p  D4=-0.8p  D5=+0.1p
+    ret_1h                         imp=0.0771 | D1=+0.3p  D2=+0.7p  D3=+0.3p  D4=+0.1p  D5=+0.0p
+    bb_pos                         imp=0.0716 | D1=+0.8p  D2=+0.5p  D3=+0.2p  D4=+0.2p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0546 | D1=+0.4p  D2=+0.5p  D3=+0.5p  D4=+0.3p  D5=+0.1p
+    trend_4h                       imp=0.0508
+    ema5_dist_pips                 imp=0.0442 | D1=+0.5p  D2=+0.4p  D3=+0.5p  D4=+0.1p  D5=+0.1p
+    ret_30m                        imp=0.0389 | D1=+0.5p  D2=+0.4p  D3=+0.3p  D4=+0.1p  D5=+0.1p
+
+──────────────────────────────────────────────────
+PAIR: AUD_USD
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.627  mae=4.1p  n=40886
+  net_60m: mean=+0.1  p10=-9.0  p50=+0.2  p90=+9.2  std=8.6
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1128 | D1=-6.1p  D2=-2.8p  D3=-1.9p  D4=-0.6p  D5=+0.2p
+    trend_4h                       imp=0.0815
+    ret_1h                         imp=0.0795 | D1=+0.4p  D2=+0.1p  D3=+0.1p  D4=+0.2p  D5=-0.0p
+    bb_pos                         imp=0.0726 | D1=+0.2p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.2p
+    zscore_5m                      imp=0.0608 | D1=+0.2p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.2p
+    ema20_dist_pct                 imp=0.0481 | D1=+0.4p  D2=+0.1p  D3=+0.1p  D4=+0.1p  D5=+0.1p
+    close_pos_daily                imp=0.0320 | D1=+0.3p  D2=-0.0p  D3=-0.3p  D4=+0.1p  D5=+0.4p
+
+  Session: LONDON
+  OOS: corr=0.648  mae=4.9p  n=36288
+  net_60m: mean=-0.1  p10=-11.5  p50=+0.0  p90=+11.2  std=10.6
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1330 | D1=-8.5p  D2=-3.8p  D3=-2.4p  D4=-1.0p  D5=-0.1p
+    ret_1h                         imp=0.0966 | D1=-0.2p  D2=-0.1p  D3=+0.0p  D4=+0.0p  D5=+0.1p
+    trend_4h                       imp=0.0889
+    bb_pos                         imp=0.0785 | D1=-0.1p  D2=-0.1p  D3=-0.1p  D4=+0.1p  D5=+0.0p
+    ema20_dist_pct                 imp=0.0543 | D1=-0.1p  D2=+0.0p  D3=+0.0p  D4=-0.0p  D5=-0.0p
+    ret_30m                        imp=0.0392 | D1=-0.1p  D2=-0.0p  D3=+0.0p  D4=-0.0p  D5=+0.0p
+    ema5_dist_pips                 imp=0.0330 | D1=+0.0p  D2=-0.1p  D3=+0.1p  D4=+0.0p  D5=-0.1p
+
+  Session: NY
+  OOS: corr=0.636  mae=3.7p  n=31744
+  net_60m: mean=-0.0  p10=-7.5  p50=+0.1  p90=+7.4  std=8.2
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0993 | D1=-6.0p  D2=-2.3p  D3=-1.0p  D4=-0.5p  D5=-0.2p
+    ret_1h                         imp=0.0687 | D1=+0.0p  D2=+0.1p  D3=+0.3p  D4=+0.1p  D5=+0.1p
+    bb_pos                         imp=0.0632 | D1=+0.4p  D2=+0.4p  D3=-0.0p  D4=-0.1p  D5=-0.0p
+    ema20_dist_pct                 imp=0.0567 | D1=+0.1p  D2=+0.2p  D3=+0.3p  D4=+0.2p  D5=+0.1p
+    ema5_dist_pips                 imp=0.0538 | D1=+0.1p  D2=+0.3p  D3=+0.2p  D4=+0.2p  D5=+0.0p
+    trend_4h                       imp=0.0528
+    ret_30m                        imp=0.0408 | D1=+0.0p  D2=+0.2p  D3=+0.3p  D4=+0.2p  D5=+0.0p
+
+──────────────────────────────────────────────────
+PAIR: EUR_JPY
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.604  mae=8.4p  n=40880
+  net_60m: mean=+0.0  p10=-14.6  p50=+0.3  p90=+14.6  std=15.7
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0967 | D1=-10.9p  D2=-4.3p  D3=-2.4p  D4=-0.9p  D5=-0.4p
+    trend_4h                       imp=0.0793
+    ret_1h                         imp=0.0665 | D1=+0.4p  D2=+0.1p  D3=+0.0p  D4=-0.0p  D5=-0.1p
+    ema20_dist_pct                 imp=0.0649 | D1=+0.6p  D2=+0.1p  D3=-0.1p  D4=+0.0p  D5=+0.2p
+    zscore_5m                      imp=0.0444 | D1=+0.2p  D2=+0.3p  D3=-0.1p  D4=+0.1p  D5=+0.1p
+    bb_pos                         imp=0.0421 | D1=+0.2p  D2=+0.3p  D3=-0.1p  D4=+0.1p  D5=+0.1p
+    ema_cross_pips                 imp=0.0330 | D1=+0.6p  D2=-0.1p  D3=-0.1p  D4=-0.0p  D5=-0.0p
+
+  Session: LONDON
+  OOS: corr=0.669  mae=9.5p  n=36288
+  net_60m: mean=+0.1  p10=-19.8  p50=+0.4  p90=+20.1  std=19.1
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1277 | D1=-15.2p  D2=-6.7p  D3=-3.6p  D4=-2.2p  D5=-0.9p
+    trend_4h                       imp=0.0856
+    ret_1h                         imp=0.0843 | D1=-0.5p  D2=+0.2p  D3=+0.2p  D4=-0.3p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0726 | D1=-0.5p  D2=-0.3p  D3=+0.1p  D4=+0.1p  D5=+0.3p
+    bb_pos                         imp=0.0720 | D1=-0.5p  D2=-0.2p  D3=+0.1p  D4=+0.2p  D5=+0.1p
+    ret_30m                        imp=0.0450 | D1=-0.4p  D2=+0.0p  D3=+0.3p  D4=-0.0p  D5=+0.0p
+    ema50_dist_pct                 imp=0.0342 | D1=-0.3p  D2=-0.5p  D3=-0.1p  D4=+0.1p  D5=+0.3p
+
+  Session: NY
+  OOS: corr=0.554  mae=7.1p  n=31724
+  net_60m: mean=+0.3  p10=-11.0  p50=+0.4  p90=+11.8  std=13.0
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1006 | D1=-8.9p  D2=-2.9p  D3=-1.3p  D4=-0.8p  D5=+0.2p
+    ret_1h                         imp=0.0760 | D1=+0.9p  D2=+0.8p  D3=+0.7p  D4=+0.5p  D5=+0.3p
+    bb_pos                         imp=0.0691 | D1=+1.2p  D2=+0.9p  D3=+0.4p  D4=+0.5p  D5=+0.3p
+    ema20_dist_pct                 imp=0.0560 | D1=+0.9p  D2=+1.0p  D3=+0.9p  D4=+0.5p  D5=+0.3p
+    ema5_dist_pips                 imp=0.0491 | D1=+1.1p  D2=+0.9p  D3=+0.6p  D4=+0.3p  D5=+0.2p
+    ret_30m                        imp=0.0424 | D1=+0.9p  D2=+0.8p  D3=+0.7p  D4=+0.4p  D5=+0.1p
+    trend_4h                       imp=0.0382
+
+──────────────────────────────────────────────────
+PAIR: EUR_USD
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.594  mae=4.6p  n=40890
+  net_60m: mean=+0.0  p10=-7.4  p50=+0.0  p90=+7.6  std=7.5
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1053 | D1=-4.8p  D2=-2.0p  D3=-1.3p  D4=-0.6p  D5=-0.4p
+    ret_1h                         imp=0.0826 | D1=+0.5p  D2=+0.1p  D3=+0.1p  D4=+0.1p  D5=+0.0p
+    trend_4h                       imp=0.0727
+    bb_pos                         imp=0.0579 | D1=+0.3p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0480 | D1=+0.6p  D2=+0.1p  D3=+0.1p  D4=+0.0p  D5=-0.0p
+    zscore_5m                      imp=0.0451 | D1=+0.3p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.1p
+    ret_30m                        imp=0.0419 | D1=+0.4p  D2=+0.3p  D3=+0.1p  D4=+0.0p  D5=-0.1p
+
+  Session: LONDON
+  OOS: corr=0.647  mae=6.9p  n=36288
+  net_60m: mean=-0.1  p10=-14.5  p50=-0.2  p90=+14.4  std=13.5
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1473 | D1=-10.5p  D2=-4.8p  D3=-2.9p  D4=-1.8p  D5=-0.3p
+    trend_4h                       imp=0.1041
+    ret_1h                         imp=0.0948 | D1=-0.0p  D2=-0.1p  D3=-0.1p  D4=+0.1p  D5=-0.2p
+    bb_pos                         imp=0.0751 | D1=+0.3p  D2=-0.1p  D3=-0.1p  D4=-0.1p  D5=-0.1p
+    ema20_dist_pct                 imp=0.0726 | D1=+0.2p  D2=-0.0p  D3=+0.0p  D4=-0.2p  D5=-0.2p
+    ret_30m                        imp=0.0431 | D1=+0.1p  D2=+0.1p  D3=+0.1p  D4=-0.0p  D5=-0.1p
+    ema50_dist_pct                 imp=0.0327 | D1=+0.2p  D2=-0.1p  D3=-0.1p  D4=+0.0p  D5=-0.2p
+
+  Session: NY
+  OOS: corr=0.612  mae=5.0p  n=31757
+  net_60m: mean=+0.1  p10=-8.7  p50=+0.2  p90=+8.6  std=9.3
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1104 | D1=-7.0p  D2=-2.7p  D3=-1.2p  D4=-0.6p  D5=+0.1p
+    bb_pos                         imp=0.0791 | D1=+0.7p  D2=+0.4p  D3=+0.2p  D4=+0.1p  D5=+0.0p
+    ret_1h                         imp=0.0788 | D1=+0.2p  D2=+0.2p  D3=+0.4p  D4=+0.3p  D5=+0.2p
+    ema5_dist_pips                 imp=0.0524 | D1=+0.5p  D2=+0.2p  D3=+0.3p  D4=+0.3p  D5=+0.3p
+    ema20_dist_pct                 imp=0.0405 | D1=+0.3p  D2=+0.2p  D3=+0.3p  D4=+0.3p  D5=+0.3p
+    trend_4h                       imp=0.0394
+    ret_30m                        imp=0.0352 | D1=+0.3p  D2=+0.2p  D3=+0.4p  D4=+0.4p  D5=+0.2p
+
+──────────────────────────────────────────────────
+PAIR: GBP_USD
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.598  mae=5.3p  n=40887
+  net_60m: mean=-0.1  p10=-10.3  p50=+0.0  p90=+10.2  std=10.4
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0949 | D1=-6.7p  D2=-3.1p  D3=-1.7p  D4=-1.0p  D5=-0.4p
+    ret_1h                         imp=0.0809 | D1=+0.3p  D2=+0.0p  D3=-0.0p  D4=+0.1p  D5=-0.1p
+    trend_4h                       imp=0.0725
+    ema20_dist_pct                 imp=0.0546 | D1=+0.5p  D2=+0.0p  D3=+0.0p  D4=-0.0p  D5=-0.1p
+    bb_pos                         imp=0.0480 | D1=+0.1p  D2=+0.2p  D3=+0.1p  D4=+0.0p  D5=+0.1p
+    trend_1h                       imp=0.0469
+    zscore_5m                      imp=0.0406 | D1=+0.1p  D2=+0.2p  D3=+0.1p  D4=+0.0p  D5=+0.1p
+
+  Session: LONDON
+  OOS: corr=0.665  mae=8.3p  n=36288
+  net_60m: mean=+0.0  p10=-20.3  p50=+0.0  p90=+20.3  std=18.5
+  Top features (raw EV curve — decile means, no threshold imposed):
+    trend_4h                       imp=0.1204
+    h1_ret_1bar                    imp=0.1194 | D1=-14.3p  D2=-7.2p  D3=-3.8p  D4=-1.9p  D5=-1.3p
+    bb_pos                         imp=0.0783 | D1=+0.1p  D2=+0.0p  D3=+0.0p  D4=+0.2p  D5=+0.0p
+    ema20_dist_pct                 imp=0.0744 | D1=-0.3p  D2=+0.2p  D3=+0.2p  D4=+0.2p  D5=+0.1p
+    ret_1h                         imp=0.0732 | D1=-0.2p  D2=+0.1p  D3=+0.2p  D4=+0.2p  D5=+0.0p
+    ret_30m                        imp=0.0489 | D1=+0.1p  D2=+0.2p  D3=+0.1p  D4=+0.1p  D5=-0.0p
+    ema50_dist_pct                 imp=0.0390 | D1=-0.4p  D2=+0.1p  D3=+0.4p  D4=+0.1p  D5=-0.1p
+
+  Session: NY
+  OOS: corr=0.651  mae=5.6p  n=31717
+  net_60m: mean=+0.1  p10=-11.9  p50=+0.2  p90=+11.8  std=13.0
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1070 | D1=-9.5p  D2=-4.0p  D3=-1.8p  D4=-0.6p  D5=-0.1p
+    bb_pos                         imp=0.0770 | D1=+1.1p  D2=+0.4p  D3=+0.2p  D4=+0.3p  D5=+0.3p
+    ret_1h                         imp=0.0581 | D1=+0.3p  D2=+0.4p  D3=+0.6p  D4=+0.4p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0561 | D1=+0.4p  D2=+0.5p  D3=+0.5p  D4=+0.5p  D5=+0.3p
+    ema5_dist_pips                 imp=0.0533 | D1=+0.9p  D2=+0.4p  D3=+0.4p  D4=+0.4p  D5=+0.1p
+    trend_4h                       imp=0.0428
+    ret_30m                        imp=0.0401 | D1=+0.7p  D2=+0.5p  D3=+0.4p  D4=+0.3p  D5=+0.2p
+
+──────────────────────────────────────────────────
+PAIR: USD_CAD
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.625  mae=3.9p  n=40886
+  net_60m: mean=+0.0  p10=-8.4  p50=+0.0  p90=+8.3  std=8.1
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0980 | D1=-5.5p  D2=-2.5p  D3=-1.3p  D4=-0.6p  D5=-0.2p
+    bb_pos                         imp=0.0918 | D1=+0.4p  D2=+0.2p  D3=+0.0p  D4=+0.1p  D5=-0.0p
+    trend_4h                       imp=0.0740
+    ret_1h                         imp=0.0708 | D1=+0.2p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.1p
+    zscore_5m                      imp=0.0608 | D1=+0.4p  D2=+0.2p  D3=+0.0p  D4=+0.1p  D5=-0.0p
+    ema20_dist_pct                 imp=0.0454 | D1=+0.2p  D2=+0.1p  D3=+0.1p  D4=+0.1p  D5=+0.1p
+    ema5_dist_pips                 imp=0.0394 | D1=+0.1p  D2=+0.2p  D3=+0.1p  D4=+0.1p  D5=+0.1p
+
+  Session: LONDON
+  OOS: corr=0.646  mae=6.2p  n=36288
+  net_60m: mean=+0.1  p10=-14.7  p50=+0.1  p90=+15.1  std=14.3
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1187 | D1=-11.0p  D2=-4.7p  D3=-2.9p  D4=-1.2p  D5=-0.4p
+    trend_4h                       imp=0.1153
+    ret_1h                         imp=0.0767 | D1=-0.1p  D2=+0.3p  D3=+0.1p  D4=+0.3p  D5=+0.0p
+    ema20_dist_pct                 imp=0.0745 | D1=+0.0p  D2=+0.1p  D3=+0.3p  D4=+0.1p  D5=+0.2p
+    bb_pos                         imp=0.0665 | D1=+0.1p  D2=+0.2p  D3=+0.2p  D4=+0.0p  D5=+0.1p
+    ema50_dist_pct                 imp=0.0430 | D1=+0.2p  D2=+0.2p  D3=+0.1p  D4=+0.1p  D5=+0.2p
+    zscore_5m                      imp=0.0382 | D1=+0.1p  D2=+0.2p  D3=+0.2p  D4=+0.0p  D5=+0.1p
+
+  Session: NY
+  OOS: corr=0.630  mae=5.1p  n=31743
+  net_60m: mean=-0.1  p10=-11.0  p50=-0.2  p90=+11.1  std=11.3
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1013 | D1=-8.4p  D2=-3.8p  D3=-1.9p  D4=-1.2p  D5=-0.3p
+    bb_pos                         imp=0.0928 | D1=+0.6p  D2=+0.3p  D3=+0.2p  D4=-0.0p  D5=-0.1p
+    trend_1h                       imp=0.0913
+    ema5_dist_pips                 imp=0.0575 | D1=+0.5p  D2=+0.4p  D3=+0.1p  D4=+0.1p  D5=-0.1p
+    ema20_dist_pct                 imp=0.0496 | D1=+0.5p  D2=+0.2p  D3=+0.2p  D4=+0.1p  D5=-0.0p
+    ret_1h                         imp=0.0477 | D1=+0.3p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.0p
+    trend_4h                       imp=0.0454
+
+──────────────────────────────────────────────────
+PAIR: USD_CHF
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.587  mae=3.6p  n=40880
+  net_60m: mean=-0.0  p10=-6.6  p50=+0.1  p90=+6.4  std=6.4
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0908 | D1=-4.3p  D2=-1.9p  D3=-1.0p  D4=-0.5p  D5=-0.0p
+    trend_4h                       imp=0.0735
+    bb_pos                         imp=0.0706 | D1=+0.2p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.1p
+    ret_1h                         imp=0.0626 | D1=+0.3p  D2=+0.1p  D3=+0.1p  D4=+0.1p  D5=+0.0p
+    zscore_5m                      imp=0.0542 | D1=+0.2p  D2=+0.1p  D3=+0.2p  D4=+0.1p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0460 | D1=+0.3p  D2=+0.1p  D3=+0.0p  D4=+0.1p  D5=+0.1p
+    close_pos_daily                imp=0.0423 | D1=-0.1p  D2=-0.1p  D3=+0.2p  D4=+0.1p  D5=+0.0p
+
+  Session: LONDON
+  OOS: corr=0.656  mae=5.6p  n=36288
+  net_60m: mean=-0.0  p10=-12.9  p50=+0.1  p90=+12.7  std=11.8
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1456 | D1=-9.3p  D2=-4.5p  D3=-2.8p  D4=-1.6p  D5=-0.3p
+    trend_4h                       imp=0.1076
+    ret_1h                         imp=0.0873 | D1=-0.3p  D2=-0.1p  D3=+0.1p  D4=-0.0p  D5=+0.1p
+    bb_pos                         imp=0.0819 | D1=+0.1p  D2=-0.1p  D3=-0.2p  D4=+0.2p  D5=+0.1p
+    ema20_dist_pct                 imp=0.0616 | D1=-0.2p  D2=-0.1p  D3=+0.0p  D4=+0.1p  D5=+0.1p
+    ret_30m                        imp=0.0542 | D1=-0.0p  D2=-0.1p  D3=+0.2p  D4=+0.0p  D5=+0.0p
+    d_ret                          imp=0.0391 | D1=-6.0p  D2=-3.2p  D3=-1.8p  D4=-1.0p  D5=-0.3p
+
+  Session: NY
+  OOS: corr=0.645  mae=3.9p  n=31685
+  net_60m: mean=-0.1  p10=-7.7  p50=-0.1  p90=+7.6  std=7.8
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1042 | D1=-5.7p  D2=-2.4p  D3=-1.2p  D4=-0.9p  D5=-0.2p
+    bb_pos                         imp=0.0888 | D1=+0.7p  D2=+0.3p  D3=+0.3p  D4=+0.2p  D5=-0.0p
+    zscore_5m                      imp=0.0651 | D1=+0.7p  D2=+0.3p  D3=+0.3p  D4=+0.2p  D5=-0.0p
+    ema5_dist_pips                 imp=0.0596 | D1=+0.8p  D2=+0.3p  D3=+0.2p  D4=+0.1p  D5=-0.0p
+    ret_1h                         imp=0.0539 | D1=+0.8p  D2=+0.3p  D3=+0.3p  D4=-0.0p  D5=-0.1p
+    ema20_dist_pct                 imp=0.0500 | D1=+0.7p  D2=+0.4p  D3=+0.3p  D4=+0.1p  D5=-0.1p
+    ret_30m                        imp=0.0402 | D1=+0.7p  D2=+0.3p  D3=+0.1p  D4=+0.1p  D5=-0.0p
+
+──────────────────────────────────────────────────
+PAIR: USD_JPY
+──────────────────────────────────────────────────
+
+  Session: ASIA
+  OOS: corr=0.592  mae=9.0p  n=40884
+  net_60m: mean=-0.0  p10=-13.8  p50=+0.2  p90=+13.7  std=14.9
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0976 | D1=-11.0p  D2=-4.2p  D3=-2.3p  D4=-1.1p  D5=-0.4p
+    bb_pos                         imp=0.0732 | D1=+0.1p  D2=-0.1p  D3=-0.2p  D4=-0.3p  D5=-0.1p
+    ret_1h                         imp=0.0689 | D1=-0.2p  D2=-0.3p  D3=-0.1p  D4=-0.1p  D5=+0.0p
+    trend_4h                       imp=0.0551
+    zscore_5m                      imp=0.0545 | D1=+0.1p  D2=-0.1p  D3=-0.2p  D4=-0.3p  D5=-0.1p
+    ema20_dist_pct                 imp=0.0455 | D1=-0.1p  D2=-0.1p  D3=-0.2p  D4=+0.0p  D5=-0.1p
+    close_pos_daily                imp=0.0419 | D1=-0.8p  D2=-0.4p  D3=-0.0p  D4=+0.4p  D5=+0.3p
+
+  Session: LONDON
+  OOS: corr=0.663  mae=9.8p  n=36288
+  net_60m: mean=+0.2  p10=-16.6  p50=+0.4  p90=+17.4  std=18.4
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.1129 | D1=-14.7p  D2=-5.2p  D3=-2.9p  D4=-1.3p  D5=+0.1p
+    ret_1h                         imp=0.0889 | D1=-0.9p  D2=+0.2p  D3=+0.3p  D4=+0.2p  D5=-0.0p
+    trend_4h                       imp=0.0798
+    ema20_dist_pct                 imp=0.0744 | D1=-1.0p  D2=+0.3p  D3=+0.1p  D4=+0.2p  D5=+0.2p
+    bb_pos                         imp=0.0502 | D1=-0.5p  D2=+0.0p  D3=-0.2p  D4=+0.2p  D5=+0.3p
+    d_ret                          imp=0.0354 | D1=-9.0p  D2=-3.8p  D3=-2.4p  D4=-0.7p  D5=-0.2p
+    ret_30m                        imp=0.0332 | D1=-0.7p  D2=+0.3p  D3=+0.3p  D4=+0.2p  D5=+0.1p
+
+  Session: NY
+  OOS: corr=0.571  mae=7.4p  n=31738
+  net_60m: mean=+0.2  p10=-10.2  p50=+0.2  p90=+11.0  std=12.7
+  Top features (raw EV curve — decile means, no threshold imposed):
+    h1_ret_1bar                    imp=0.0772 | D1=-7.9p  D2=-2.7p  D3=-1.3p  D4=-0.7p  D5=-0.3p
+    bb_pos                         imp=0.0658 | D1=+0.9p  D2=+0.8p  D3=+0.5p  D4=+0.3p  D5=-0.0p
+    ret_1h                         imp=0.0649 | D1=+1.2p  D2=+0.6p  D3=+0.3p  D4=+0.2p  D5=-0.1p
+    zscore_5m                      imp=0.0492 | D1=+0.9p  D2=+0.8p  D3=+0.5p  D4=+0.3p  D5=-0.0p
+    ema5_dist_pips                 imp=0.0408 | D1=+1.2p  D2=+0.4p  D3=+0.4p  D4=+0.2p  D5=-0.0p
+    ema20_dist_pct                 imp=0.0404 | D1=+0.9p  D2=+0.8p  D3=+0.7p  D4=+0.3p  D5=-0.1p
+    trend_4h                       imp=0.0399

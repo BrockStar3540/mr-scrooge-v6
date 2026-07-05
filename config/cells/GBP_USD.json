@@ -1,0 +1,278 @@
+{
+  "pair": "GBP_USD",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.2993,
+        "dead_rate_60m": 0.558,
+        "ev_gross_long": -2.784,
+        "ev_gross_short": -1.803,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "timing_lean_30",
+          "side": "short",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 3.676957,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (3.676957) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m GBP_USD/asia/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean trend_4h sign=negative (corr=-0.0750, AUC=0.4636). lean confirmer dropped (trend_4h [-1,1] = full feature range, always-true no-op); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=3.676957 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+        }
+      ],
+      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3147,
+        "dead_rate_60m": 0.2359,
+        "ev_gross_long": 0.403,
+        "ev_gross_short": -0.037,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "rvol_low_240",
+          "side": "long",
+          "class": "FORMULA",
+          "status": "ACTIVE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rvol_5bar",
+              "pct_window_days": 90,
+              "pct_lo": 4.8,
+              "pct_hi": 25.2,
+              "resolved": [
+                0.670362,
+                0.861514
+              ],
+              "resolved_at": "2026-07-04T04:20:49.522289Z",
+              "note": "Rolling-pct band [p4.8, p25.2] of rvol_5bar in GBP_USD london-session bars, trailing 90d. Engine reads 'resolved'; monthly refit updates resolved values. 2026 absolute fallback: [0.371479, 0.669169].",
+              "lineage": "formula-rolling-pct-2026-07-04/config/formula_rolling_pct.json; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 4.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.5
+          },
+          "evidence": {
+            "ev_seq": 0.35,
+            "oos_years_positive": 7,
+            "drift": "STABLE",
+            "source": "formula-history-2026-07-04/verdict_table.csv",
+            "n_floor_status": "deep-oos-passed",
+            "holdout_months_positive": 2
+          },
+          "notes": "PRIMARY formula: rvol_5bar rolling-pct band [p4.8, p25.2]. Deep OOS: 7/7 years positive, sequential +0.35p, STABLE drift. Rolling pct bounds from config/formula_rolling_pct.json (updated monthly). 2026 absolute fallback: [0.371479, 0.669169]. Geo: SL=12, trig=10, trail=1.5 (best_cell from convergence study). Source: research/sessions/2026-07-04_range_harvest + ~/v5-formula-history/ on Mini (verdict_table.csv).",
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_h1_relative_monthly_mean",
+              "gte": null,
+              "action": "size_down"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          }
+        },
+        {
+          "id": "timing_lean_30",
+          "side": "short",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 5.766878,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (5.766878) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m GBP_USD/london/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 20.0,
+            "trigger_pips": 4.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean ema5 sign=negative (corr=-0.0630, AUC=0.4820). lean confirmer dropped (ema5 = price level, AUC at noise floor); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=5.766878 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+        }
+      ],
+      "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.28,
+        "dead_rate_60m": 0.355,
+        "ev_gross_long": -2.789,
+        "ev_gross_short": -0.567,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "control_rvol_60",
+          "side": "short",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "rvol_5bar",
+              "min": 0.371479,
+              "max": 0.669169,
+              "note": "Absolute 2026 bounds \u2014 CONTROL formula, not rolling. Source: formula_shadow.py REGISTRY entry.",
+              "lineage": "formula-shadow-registry-2026-07-04/modules/signals/formula_shadow.py; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 4.0,
+            "sl_pips": 5.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "evidence": {
+            "ev_seq": -1.0,
+            "drift": "STABLE",
+            "source": "formula-history-2026-07-04/verdict_table.csv",
+            "holdout_months_positive": 2
+          },
+          "notes": "CONTROL formula: deep-OOS negative (2019-2025), sequential loss. 2026 convergence ev=+0.914 is a 2026-pocket artifact. rvol_5bar in [p4.8, p25.2] abs=[0.371479, 0.669169]. Stamps emitted for live falsification. Source: formula_shadow.py REGISTRY + ~/v5-formula-history/ verdict_table.csv.",
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          }
+        },
+        {
+          "id": "willr_recovery_short",
+          "side": "short",
+          "class": "LEAN",
+          "status": "ACTIVE",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "willr_m5",
+              "min": -50.0,
+              "max": 0.0,
+              "note": "willr_m5 >= -50 (willr bounded [-100, 0], so [-50, 0] IS a range). Blocks extreme-oversold shorts (countertrend risk): loss tid 9640 (willr=-73.1) blocked; keep 6 -> 5W/1L 83.3% WR vs base 71.4% (+11.9pp) on n=7 recoverable. Equivalent alternative: kc_up >= -10.",
+              "lineage": "phaseA_gate_rederivation-2026-07-04 CELL 1 (raw feature search)"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 4.0,
+            "sl_pips": 5.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "wr": 0.833,
+            "drift": "STABLE",
+            "source": "phaseA_gate_rederivation 2026-07-04 (PARTIAL verdict; n=7 recoverable + 14 broker)",
+            "n_floor_status": "small-n-hypothesis (n=7 journal; broker 12W/2L +42.4p)"
+          },
+          "notes": "phaseA PARTIAL verdict: willr>=-50 replaces cert gate. m_cert>=0.40 DROPPED (never binding). Second loss (9636) not separable by any raw feature at n=7. Side short via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis."
+        }
+      ],
+      "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+    }
+  }
+}

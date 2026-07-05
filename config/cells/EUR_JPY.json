@@ -1,0 +1,90 @@
+{
+  "pair": "EUR_JPY",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3052,
+        "dead_rate_60m": 0.3653,
+        "ev_gross_long": -0.677,
+        "ev_gross_short": -0.401,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.313,
+        "dead_rate_60m": 0.2095,
+        "ev_gross_long": 0.346,
+        "ev_gross_short": 0.661,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.3291,
+        "dead_rate_60m": 0.3521,
+        "ev_gross_long": -1.53,
+        "ev_gross_short": -0.824,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
+      },
+      "setups": [
+        {
+          "id": "timing_lean_30",
+          "side": "short",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.787983,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.787983) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m EUR_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 5.0,
+            "sl_pips": 6.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean pdh sign=negative (corr=-0.0626, AUC=0.4787). lean confirmer dropped (pdh = absolute price band (182-188), setup-killer on drift); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.787983 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+        }
+      ],
+      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "GBP_USD/london/long": {
+    "rvol_5bar": [
+      0.670362,
+      0.861514
+    ],
+    "updated": "2026-07-04T04:20:49.522289Z",
+    "window_days": 90,
+    "n_bars": 4588,
+    "window_end": "2026-07-03 07:00:00",
+    "note": "p4.8/p25.2 of rvol_5bar, GBP_USD london-session bars, trailing 90d. Regenerated monthly by v5_monthly_refit (formula-health section, to be added) or manually."
+  }
+}
