@@ -1,6 +1,11 @@
 # Configuration
 
-Two hot-reloaded JSON files drive runtime behavior. Both are read on every engine cycle so changes apply immediately — no restart.
+Three layers of hot-reloaded config drive runtime behavior. The most important
+is **`config/cells/<PAIR>.json`** — per-(pair × session) setups with conditions,
+side, sizing, and a per-setup `exit` block (`mode` bracket/ratchet, `tp_pips`,
+`timeout_min`, `entry_cutoff_utc`, `trigger_pips`, ATR trail `trail_mult/min/max`,
+`_class` FAST/MEDIUM/LONG). Setup exit params OVERRIDE the global exit config.
+The two global JSON files below remain as defaults/fallbacks. Both are read on every engine cycle so changes apply immediately — no restart.
 
 ## `config/exit_config.json`
 

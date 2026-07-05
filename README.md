@@ -34,6 +34,9 @@ OANDA v3 API ──> core/feed        market views: candles, pricing, spread, se
 4. Run: `python3 main.py --live` (or install `ops/mr-scrooge-v6.service` as a user systemd unit).
 5. Dashboard at `http://localhost:8084` — **MODULES** (module health: red/yellow/green per subsystem — loops, feed, broker, margin, exit-manager coverage, configs, calibration age, host resources), **LIVE** (positions with exit-class chips + management detail + rollover-freeze flag), **PAIRS** (per-pair indicator state), **BOOK** (all 24 cells, setup conditions with live values, class geometry tooltips), **HEALTH/SYSTEM**.
 
+## Docs
+[SETUP](docs/SETUP.md) · [ARCHITECTURE](docs/ARCHITECTURE.md) · [MODULES](docs/MODULES.md) · [CONFIGURATION](docs/CONFIGURATION.md) · [RATCHET & exit classes](docs/RATCHET.md) · [DEPLOYMENT](docs/DEPLOYMENT.md) · [AUDIT ledger](docs/AUDIT_TODO.md)
+
 ## Reading order for researchers
 1. `docs/SCROOGE_HISTORY.md` — versions V1→V6, what each learned, where its remains are archived.
 2. `docs/PAPER_cost_aware_exit_classes_2026-07-05.md` — the measurement arc behind the exit book (transaction costs, slippage, conversion, fill probabilities, excursion classes).

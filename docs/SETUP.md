@@ -1,6 +1,6 @@
-# Mr. Scrooge V5 — Setup Manual
+# Mr. Scrooge V6 — Setup Manual
 
-Complete guide to installing, configuring, and running V5 from scratch on a new machine.
+Complete guide to installing, configuring, and running V6 from scratch on a new machine.
 
 ---
 
@@ -8,7 +8,7 @@ Complete guide to installing, configuring, and running V5 from scratch on a new 
 
 **This is the single most important operational requirement.**
 
-V5 holds open OANDA positions that are actively managed every 20 minutes by the ratchet engine.
+V6 holds open OANDA positions that are actively managed every 5 seconds by the exit managers.
 If the host machine sleeps, shuts down, or loses network connectivity:
 
 - **Stop-losses stop moving.** The ratchet engine cannot advance the SL on a profitable trade.
@@ -38,12 +38,12 @@ The bot runs comfortably on 1 vCPU, 1 GB RAM (t3.micro on EC2 works, but t3.smal
 ## 1. Clone the Repo
 
 ```bash
-git clone https://github.com/BrockStar3540/mr-scrooge-v5.git
-cd mr-scrooge-v5
+git clone https://github.com/BrockStar3540/mr-scrooge-v6.git
+cd mr-scrooge-v6
 ```
 
 > Private repo — you will need to authenticate with GitHub (token or SSH key).
-> Generate a fine-grained Personal Access Token at https://github.com/settings/tokens with read access to `mr-scrooge-v5`.
+> Generate a fine-grained Personal Access Token at https://github.com/settings/tokens with read access to `mr-scrooge-v6`.
 
 ---
 
@@ -152,7 +152,7 @@ print('Accounts found:', [a['id'] for a in resp['accounts']])
 Before any live trading, run the bot in dry-run mode. It will fetch live OANDA market data and compute signals — but will **not place any orders**.
 
 ```bash
-cd mr-scrooge-v5
+cd mr-scrooge-v6
 source mr_burns_env/bin/activate
 python main.py
 ```
@@ -180,7 +180,7 @@ The `--live` flag enables order execution. The engine will:
 2. Score direction + momentum for all 8 pairs
 3. Place a market order if the best candidate clears all gate floors
 4. Set a server-side stop-loss at −15 pips on fill
-5. Run the ratchet every 20 minutes to advance the SL on profitable trades
+5. Tick the exit managers every 5 seconds (ratchet trail advances / bracket timeouts)
 
 > **Start during a low-volatility session** (Asia or early London) for the first live run so you can observe the first few signal cycles before a trade fires.
 
@@ -195,7 +195,7 @@ Running via systemd ensures the bot restarts automatically after a crash or OS r
 ```bash
 mkdir -p ~/.config/systemd/user
 
-cat > ~/.config/systemd/user/mr-scrooge-v5.service << 'EOF'
+cat > ~/.config/systemd/user/mr-scrooge-v6.service << 'EOF'
 [Unit]
 Description=Mr. Scrooge V5 Trading Platform (LIVE)
 After=network-online.target
@@ -203,7 +203,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/ubuntu/mr-scrooge-v5
+WorkingDirectory=/home/ubuntu/mr-scrooge-v6
 ExecStart=/home/ubuntu/mr_burns_env/bin/python3 main.py --live
 Restart=always
 RestartSec=15
@@ -218,15 +218,15 @@ WantedBy=default.target
 EOF
 ```
 
-> Adjust `WorkingDirectory` and `ExecStart` paths if your install is not at `/home/ubuntu/mr-scrooge-v5`.
+> Adjust `WorkingDirectory` and `ExecStart` paths if your install is not at `/home/ubuntu/mr-scrooge-v6`.
 
 ### 8b. Enable and start
 
 ```bash
 systemctl --user daemon-reload
-systemctl --user enable mr-scrooge-v5    # start on boot
-systemctl --user start mr-scrooge-v5     # start now
-systemctl --user status mr-scrooge-v5    # confirm running
+systemctl --user enable mr-scrooge-v6    # start on boot
+systemctl --user start mr-scrooge-v6     # start now
+systemctl --user status mr-scrooge-v6    # confirm running
 ```
 
 ### 8c. Enable lingering (EC2 / Linux — required for user services to survive logout)
@@ -261,8 +261,8 @@ EC2 is the recommended always-on host. The production instance uses `t3.small` o
 sudo apt update && sudo apt install -y python3.12 python3.12-venv python3-pip git
 
 # 2. Clone repo
-git clone https://github.com/BrockStar3540/mr-scrooge-v5.git
-cd mr-scrooge-v5
+git clone https://github.com/BrockStar3540/mr-scrooge-v6.git
+cd mr-scrooge-v6
 
 # 3. Venv + install
 python3.12 -m venv ~/mr_burns_env
@@ -276,10 +276,10 @@ chmod 600 ~/.openclaw/secrets.env
 
 # 5. Service
 mkdir -p ~/.config/systemd/user
-cp ops/mr-scrooge-v5.service ~/.config/systemd/user/  # (or create manually — see Section 8)
+cp ops/mr-scrooge-v6.service ~/.config/systemd/user/  # (or create manually — see Section 8)
 systemctl --user daemon-reload
 loginctl enable-linger $USER
-systemctl --user enable --now mr-scrooge-v5
+systemctl --user enable --now mr-scrooge-v6
 ```
 
 ---
@@ -360,19 +360,19 @@ Initial SL: **−15p** from entry (placed server-side by OANDA at order fill). T
 
 ```bash
 # Follow live logs
-journalctl --user -u mr-scrooge-v5 -f -o cat
+journalctl --user -u mr-scrooge-v6 -f -o cat
 
 # Last 100 lines
-journalctl --user -u mr-scrooge-v5 -n 100 --no-pager
+journalctl --user -u mr-scrooge-v6 -n 100 --no-pager
 
 # Service status
-systemctl --user status mr-scrooge-v5
+systemctl --user status mr-scrooge-v6
 
 # Restart
-systemctl --user restart mr-scrooge-v5
+systemctl --user restart mr-scrooge-v6
 
 # Stop (positions remain open on OANDA, ratchet pauses)
-systemctl --user stop mr-scrooge-v5
+systemctl --user stop mr-scrooge-v6
 ```
 
 **What RECOVERED means in logs**: on every restart, V5 reads OANDA's current open trades and reconstructs the ratchet state from the existing server-side stop-loss. `RECOVERED EUR_JPY short | entry=X | sl_locked=-15.0` means V5 has taken over management of that trade. The SL never retreats on restart.
@@ -383,9 +383,9 @@ systemctl --user stop mr-scrooge-v5
 
 ```bash
 # On EC2
-cd mr-scrooge-v5
+cd mr-scrooge-v6
 git pull origin main
-systemctl --user restart mr-scrooge-v5
+systemctl --user restart mr-scrooge-v6
 ```
 
 The ratchet config can be updated without restarting (just edit `config/exit_config.json`). Code changes require a restart.
@@ -434,10 +434,10 @@ Session windows (UTC):
 
 ```bash
 # Start / stop / restart
-systemctl --user start|stop|restart mr-scrooge-v5
+systemctl --user start|stop|restart mr-scrooge-v6
 
 # Logs
-journalctl --user -u mr-scrooge-v5 -f -o cat
+journalctl --user -u mr-scrooge-v6 -f -o cat
 
 # Dry run (no orders)
 source mr_burns_env/bin/activate && python main.py

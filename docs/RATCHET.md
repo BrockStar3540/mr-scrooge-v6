@@ -1,5 +1,12 @@
 # Ratchet exit
 
+> **V6 status (2026-07-05):** the ratchet is now ONE OF THREE exit classes —
+> FAST cells use `bracket.py` (server-side TP, no trail) and only MEDIUM/LONG
+> cells run this ratchet, with per-setup overrides (`trigger`=engage, ATR-scaled
+> trail) from the cell configs. The V4-ported TP1/TP2 partial-close ladder was
+> REMOVED at the V6 port (never enabled live). Global rollover stop-freeze
+> 20:55–22:05 UTC applies. Full derivation: [PAPER_cost_aware_exit_classes_2026-07-05.md](PAPER_cost_aware_exit_classes_2026-07-05.md).
+
 V5 uses a single ratchet-only exit. No TP — wins ride until the trailing SL hits.
 
 ## Live configuration
@@ -14,7 +21,6 @@ Held in `config/exit_config.json` (hot-reloaded by the engine, no restart needed
 | `step_trigger_pips` | 7.5 | Peak MFE in pips required to ARM the first rung |
 | `step_trail_pips` | 2.5 | When a rung arms, SL parks at `peak − step_trail_pips` |
 | `step_size_pips` | 2.5 | Distance between consecutive rungs |
-| `tp1_enabled` / `tp2_enabled` | false / false | Optional partial-close ladder (off by default) |
 
 ## How a ratchet plays out
 
@@ -59,7 +65,7 @@ See [../CHANGELOG.md](../CHANGELOG.md) for full chronology. Key retunes:
 
 Two paths:
 
-**Option 1 — Edit via the dashboard TUNE tab.** Goes through server-side validation (cross-rules: `step_trail < step_trigger`, TP1+TP2 close_pct < 1.0, etc.). Reflects in the running engine within one config-reload cycle.
+**Option 1 — Edit via the dashboard TUNE tab.** Goes through server-side validation (cross-rules: `step_trail < step_trigger`, etc.). Reflects in the running engine within one config-reload cycle.
 
 **Option 2 — Edit the JSON directly on disk.** Faster for scripting. The engine re-reads on every cycle so the change applies next time around. No restart. **But:** no server-side validation. If you typo a value the engine logs an error and falls back to last known-good.
 
@@ -69,7 +75,7 @@ In both cases, always back up the config file before editing — convention is `
 
 - **No time-based exit.** A trade can stay open indefinitely if it never trips the SL.
 - **No averaging-down or scaling-in.** Each entry is a one-shot trade.
-- **No partial closes by default.** TP1/TP2 ladder is supported but `tp1_enabled = tp2_enabled = false`.
+- **No partial closes.** The TP1/TP2 ladder was removed in V6 — winners ride the full position (bake-off verdict, 2026-06-13).
 - **No equity-based hard stop.** Account-level safety is the Playmaker's pre-entry concern, not the ratchet's.
 
 ## Reads / observability
