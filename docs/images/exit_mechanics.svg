@@ -16,7 +16,7 @@
   <text x="66" y="245" fill="#8b949e" font-size="9.5">the toll — round-trip spread: entry is born ~2p under water</text>
   <!-- TP + SL + timeout -->
   <line x1="60" y1="210" x2="450" y2="210" stroke="#ffb547" stroke-width="1.5" stroke-dasharray="7 4"/>
-  <text x="446" y="203" text-anchor="end" fill="#ffb547" font-size="10.5">TP limit @ +4p (cost floor — a limit order cannot slip)</text>
+  <text x="446" y="226" text-anchor="end" fill="#ffb547" font-size="10.5">TP limit @ +4p (cost floor — a limit order cannot slip)</text>
   <line x1="60" y1="300" x2="450" y2="300" stroke="#e74c3c" stroke-width="1" stroke-dasharray="3 5" opacity="0.7"/>
   <text x="446" y="313" text-anchor="end" fill="#e74c3c" font-size="10" opacity="0.8">SL −5p</text>
   <line x1="320" y1="70" x2="320" y2="360" stroke="#8b949e" stroke-width="1" stroke-dasharray="2 6" opacity="0.7"/>
@@ -34,10 +34,10 @@
   <!-- green exit -->
   <circle cx="206" cy="210" r="6" fill="#2ecc71"/>
   <circle cx="206" cy="210" r="10" fill="none" stroke="#2ecc71" opacity="0.5"/>
-  <text x="214" y="196" fill="#2ecc71" font-size="11.5" font-weight="700">filled +4p · 35 min · green banked</text>
+  <text x="214" y="178" fill="#2ecc71" font-size="11.5" font-weight="700">filled +4p · 35 min · green banked</text>
   <!-- travel bracket -->
   <path d="M 60 226 L 60 206 M 56 206 L 64 206 M 56 226 L 64 226" stroke="#ffb547" stroke-width="1" opacity="0.9"/>
-  <text x="66" y="205" fill="#ffb547" font-size="9.5" opacity="0.9">mid must travel TP + spread for this fill to exist</text>
+  <text x="66" y="192" fill="#ffb547" font-size="9.5" opacity="0.9">mid must travel TP + spread to fill</text>
 
   <!-- ═══════════ RIGHT PANEL: LONG runner ═══════════ -->
   <text x="720" y="54" text-anchor="middle" fill="#c47fff" font-size="13" font-weight="700">🟣 LONG cell (Asia/London trend) — ratchet the runner, give nothing back</text>
@@ -57,7 +57,7 @@
   <rect x="530" y="239" width="410" height="22" fill="#30363d" opacity="0.55"/>
   <!-- engage line -->
   <line x1="530" y1="194" x2="940" y2="194" stroke="#c47fff" stroke-width="1.2" stroke-dasharray="7 4" opacity="0.9"/>
-  <text x="536" y="188" fill="#c47fff" font-size="10">lock may engage only past +8p — early locks amputate runners</text>
+  <text x="536" y="186" fill="#c47fff" font-size="10">lock engages only past +8p</text>
   <!-- price path -->
   <polyline points="530,250 545,259 558,270 572,278 588,268 602,256 616,240 630,224 645,212 660,199 673,187 690,176 705,166 720,159 735,163 750,172 765,166 780,155 795,149 810,142 825,138 840,144 855,152 870,148 885,158 900,164 912,169"
             fill="none" stroke="#e6edf3" stroke-width="2.2" stroke-linejoin="round"/>
@@ -79,7 +79,7 @@
   <!-- green exit -->
   <circle cx="912" cy="169" r="6" fill="#2ecc71"/>
   <circle cx="912" cy="169" r="10" fill="none" stroke="#2ecc71" opacity="0.5"/>
-  <text x="906" y="192" text-anchor="end" fill="#2ecc71" font-size="11.5" font-weight="700">stopped into profit: +11.5p locked</text>
+  <text x="902" y="214" text-anchor="end" fill="#2ecc71" font-size="11.5" font-weight="700">stopped into profit: +11.5p locked</text>
 
   <!-- bottom shared caption -->
   <text x="480" y="416" text-anchor="middle" fill="#8b949e" font-size="11.5">Every trade swings between its MFE (best excursion) and MAE (worst) — both measured per cell from 8 years of broker-anchored data.</text>
