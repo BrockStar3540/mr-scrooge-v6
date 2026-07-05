@@ -11,7 +11,7 @@ Created at the 2026-07-05 port. Rule: anything that could change live behavior i
 - [x] v6 service unit; v5 unit not ported.
 
 ## Sim-gated removals (do with fired-trade parity replay)
-- [ ] **TP1/TP2 partial-close ladder** in `ratchet.py` (V4 port, defaults OFF everywhere). Dead by config; remove after parity replay confirms nothing references it.
+- [x] **TP1/TP2 partial-close ladder** — REMOVED 2026-07-05 (ratchet.py, engine recovery kwargs, TUNE schema, exit_config keys). Gate: shadow-week parity (running).
 - [ ] **dir_certainty / mom_certainty / vol_regime fields** on `TradeTicket` (legacy-V5 concepts; cell era stubs them). Prune fields + dashboard columns together.
 - [ ] **lock_guard** beyond the session-instance throttle: locked_cells.json machinery is retired-era; decide keep-as-throttle-only vs full retirement once direction-persistence rules complete their n≥20 clocks.
 - [ ] **exit_config.json per-pair schema**: superseded by per-setup `exit` blocks; keep as fallback for recovery-adopted trades or collapse.

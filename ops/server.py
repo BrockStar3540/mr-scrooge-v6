@@ -47,13 +47,6 @@ _EXIT_FIELDS = {
 }
 # TP1/TP2 fields. bools use kind=bool; percentages 0..1.
 _EXIT_FIELDS_TP = {
-    "tp1_enabled":   {"kind": "bool",                "label": "TP1 on"},
-    "tp1_at_pips":   {"min": 0.5,  "max": 200.0,     "label": "TP1 peak (pips)"},
-    "tp1_close_pct": {"min": 0.0,  "max": 0.95,      "label": "TP1 close %"},
-    "tp1_lock_pips": {"min": 0.0,  "max": 100.0,     "label": "TP1 SL lock (pips)"},
-    "tp2_enabled":   {"kind": "bool",                "label": "TP2 on"},
-    "tp2_at_pips":   {"min": 0.5,  "max": 300.0,     "label": "TP2 peak (pips)"},
-    "tp2_close_pct": {"min": 0.0,  "max": 0.95,      "label": "TP2 close %"},
 }
 _EXIT_FIELDS.update(_EXIT_FIELDS_TP)
 _PAIRS_ALL = ["AUD_JPY","AUD_USD","EUR_JPY","EUR_USD","GBP_USD","USD_CAD","USD_CHF","USD_JPY"]
@@ -79,17 +72,8 @@ def _validate_exit_field(k: str, v):
     return f
 
 def _check_tp_cross_rules(merged: dict) -> None:
-    """Cross-field validation for TP1/TP2 on the merged effective view."""
-    t1e = bool(merged.get("tp1_enabled", False))
-    t2e = bool(merged.get("tp2_enabled", False))
-    if t2e and not t1e:
-        raise ValueError("tp2_enabled requires tp1_enabled (TP2 only fires after TP1)")
-    t1p = merged.get("tp1_close_pct"); t2p = merged.get("tp2_close_pct")
-    if t1p is not None and t2p is not None and (t1p + t2p) >= 1.0:
-        raise ValueError(f"tp1_close_pct + tp2_close_pct = {t1p+t2p:.2f} >= 1.0 (runner must remain)")
-    t1at = merged.get("tp1_at_pips"); t2at = merged.get("tp2_at_pips")
-    if t1at is not None and t2at is not None and t2at <= t1at:
-        raise ValueError(f"tp2_at_pips ({t2at}) must be > tp1_at_pips ({t1at})")
+    return  # TP ladder removed in V6 (AUDIT_TODO item 1)
+
 
 def _validate_exit_cfg(cfg: dict) -> dict:
     out = {"schema": "v2", "defaults": {}, "per_pair": {}}

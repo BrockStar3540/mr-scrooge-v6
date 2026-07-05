@@ -11,8 +11,6 @@ Live values as of 2026-07-03 (from config/exit_config.json "defaults"):
   step_trigger_pips=  7.5   — peak MFE required before first SL movement
   step_trail_pips  =  2.5   — SL parks this many pips behind the step level
   step_size_pips   =  2.5   — ratchet step size (new SL level every N pips above trigger)
-  tp1_enabled      = false  — partial-close at TP1 (disabled)
-  tp2_enabled      = false  — partial-close at TP2 (disabled)
 
 Per-pair overrides in exit_config.json "per_pair" are merged on top of defaults.
 
@@ -43,24 +41,14 @@ _DEFAULTS: dict = {
     "step_size_pips":    5.0,    # ratchet step size (SL level every N pips above trigger)
     "step_trigger_pips": 10.0,   # peak MFE required before first SL movement
     "step_trail_pips":   6.0,    # SL parks this many pips behind the step level
-    # TP1/TP2 partial-close (ported from V4 harvest_ladder, disabled by default)
-    "tp1_enabled":      False,   # if true, partial-close on peak crossing tp1_at_pips
-    "tp1_at_pips":      12.0,    # peak MFE that triggers TP1 partial close
-    "tp1_close_pct":    0.50,    # fraction of INITIAL position closed at TP1 (0..1)
-    "tp1_lock_pips":     6.0,    # SL bump (pips from entry, profit side) when TP1 fires; 0 = no bump
-    "tp2_enabled":      False,   # if true, partial-close on peak crossing tp2_at_pips
-    "tp2_at_pips":      20.0,    # peak MFE that triggers TP2 partial close
-    "tp2_close_pct":    0.25,    # fraction of INITIAL position closed at TP2 (0..1)
 }
 
 _CONFIG_PATH = Path(__file__).resolve().parent.parent.parent / "config" / "exit_config.json"
 
 
-_BOOL_FIELDS = ("tp1_enabled", "tp2_enabled")
-
 def _coerce(k: str, v):
-    if k in _BOOL_FIELDS:
-        return bool(v)
+    if isinstance(v, bool):
+        return v
     return float(v)
 
 def _load_config(pair: Optional[str] = None) -> dict:
@@ -95,8 +83,7 @@ class RatchetManager(TradeManager):
     """
 
     def __init__(self, position: Position, broker=None, dry_run: bool = False,
-                 initial_units: Optional[int] = None,
-                 tp1_done: bool = False, tp2_done: bool = False):
+                 initial_units: Optional[int] = None, **_legacy_kwargs):
         self.position       = position
         self.broker         = broker
         self.dry_run        = dry_run
@@ -105,8 +92,6 @@ class RatchetManager(TradeManager):
         # Original units at fill — needed so partial closes are a percentage of
         # the INITIAL position (not the post-TP1 remainder).
         self.initial_units  = int(initial_units if initial_units is not None else position.units)
-        self.tp1_done       = bool(tp1_done)
-        self.tp2_done       = bool(tp2_done)
 
         # Peak tracks best price seen; initialise to entry
         self.peak_price     = position.entry_price
@@ -158,10 +143,6 @@ class RatchetManager(TradeManager):
             cfg['step_trigger_pips'] = float(_ep.trigger_pips)
             cfg['step_trail_pips']   = float(_ep.trail_pips)
 
-        # TP1/TP2 partial-close ladder runs BEFORE the trail step. Both default
-        # OFF — when disabled this is a no-op and the legacy ratchet-only path
-        # is preserved exactly.
-        self._check_tp_ladder(cfg, current_time)
         elapsed_total   = (current_time - self.position.entry_time).total_seconds() / 60
         elapsed_check   = (current_time - self.last_check_time).total_seconds() / 60
         engage_ok       = elapsed_total >= cfg["step_engage_min"]
@@ -175,45 +156,6 @@ class RatchetManager(TradeManager):
         return self._check_stop_hit(current_price, current_time)
 
     # ── Core step logic ───────────────────────────────────────────────────────
-
-    def _check_tp_ladder(self, cfg: dict, ts: datetime) -> None:
-        """Partial-close ladder ported from V4 harvest_ladder. Closes a fraction
-        of the INITIAL position when peak MFE crosses tp1_at_pips / tp2_at_pips.
-        Ratchet keeps managing the remainder. Defaults disabled -> no-op."""
-        if not (cfg.get("tp1_enabled") or cfg.get("tp2_enabled")):
-            return
-        peak_pips = self._peak_pips()
-
-        # TP1
-        if (cfg.get("tp1_enabled") and not self.tp1_done
-                and peak_pips >= float(cfg["tp1_at_pips"])):
-            units_to_close = max(1, int(round(self.initial_units * float(cfg["tp1_close_pct"]))))
-            self._fire_partial("TP1", units_to_close, peak_pips, ts)
-            self.tp1_done = True
-            lock = float(cfg.get("tp1_lock_pips", 0.0))
-            if lock > 0 and (self.sl_locked_pips is None or self.sl_locked_pips < lock):
-                self.sl_locked_pips = lock
-                self._push_stop(lock, peak_pips, ts)
-
-        # TP2 — only after TP1 has fired (matches V4 harvest_ladder order)
-        if (cfg.get("tp2_enabled") and self.tp1_done and not self.tp2_done
-                and peak_pips >= float(cfg["tp2_at_pips"])):
-            units_to_close = max(1, int(round(self.initial_units * float(cfg["tp2_close_pct"]))))
-            self._fire_partial("TP2", units_to_close, peak_pips, ts)
-            self.tp2_done = True
-
-    def _fire_partial(self, label: str, units: int, peak_pips: float, ts: datetime) -> None:
-        """Call broker.close_position with a unit count (partial close)."""
-        pair = self.position.ticket.pair
-        tid = self.position.oanda_trade_id
-        log.info("%s %s | close %d units (peak=%.2fp) | trade_id=%s",
-                 label, pair, units, peak_pips, tid)
-        if self.dry_run or not self.broker:
-            return
-        try:
-            self.broker.close_position(tid, units=units)
-        except Exception as exc:
-            log.warning("%s partial close %s units=%d failed: %s", label, pair, units, exc)
 
     def _evaluate_and_lock(self, cfg: dict, ts: datetime) -> None:
         peak_pips = self._peak_pips()
