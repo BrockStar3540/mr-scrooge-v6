@@ -23,9 +23,10 @@ def journal(unit, since, until):
         m = CYCLE_RE.search(line)
         if not m: continue
         ts, picked, n, rest = m.groups()
-        bucket = ts[:16]  # minute bucket aligns the 5-min grids
         intents = frozenset(INTENT_RE.findall(rest))
-        cycles[bucket] = {"picked": picked, "n": int(n), "intents": intents, "ts": ts}
+        from datetime import datetime
+        epoch = datetime.fromisoformat(ts).timestamp()
+        cycles[epoch] = {"picked": picked, "n": int(n), "intents": intents, "ts": ts}
     return cycles
 
 def main():
@@ -36,16 +37,25 @@ def main():
     ap.add_argument("--shadow-unit", default="mr-scrooge-v6-dryrun")
     a = ap.parse_args()
     live, shadow = journal(a.live_unit, a.since, a.until), journal(a.shadow_unit, a.since, a.until)
-    common = [b for b in live if b in shadow]
-    if len(common) < 10:
-        print(f"INSUFFICIENT: only {len(common)} aligned cycles (live={len(live)} shadow={len(shadow)})")
+    # nearest-neighbor alignment: the two engines run phase-shifted 5-min grids
+    TOL = 150.0
+    shadow_keys = sorted(shadow)
+    pairs = []
+    used = set()
+    for le in sorted(live):
+        best = min((sk for sk in shadow_keys if sk not in used), key=lambda sk: abs(sk - le), default=None)
+        if best is not None and abs(best - le) <= TOL:
+            pairs.append((le, best)); used.add(best)
+    if len(pairs) < 10:
+        print(f"INSUFFICIENT: only {len(pairs)} aligned cycles (live={len(live)} shadow={len(shadow)})")
         sys.exit(2)
     mism = []
-    for b in common:
-        L, S = live[b], shadow[b]
+    for le, se in pairs:
+        b = live[le]["ts"][:16]
+        L, S = live[le], shadow[se]
         if L["intents"] != S["intents"] or L["picked"] != S["picked"]:
             mism.append((b, L, S))
-    print(f"aligned cycles: {len(common)} | intent+pick parity: {len(common)-len(mism)} | MISMATCHES: {len(mism)}")
+    print(f"aligned cycles: {len(pairs)} | intent+pick parity: {len(pairs)-len(mism)} | MISMATCHES: {len(mism)}")
     for b, L, S in mism[:20]:
         print(f"  {b}  live picked={L['picked']} intents={sorted(L['intents'])}")
         print(f"  {'':16}shadow picked={S['picked']} intents={sorted(S['intents'])}")
