@@ -75,7 +75,7 @@ Packages installed:
 | `numpy` | ≥1.25 | Numerical operations (ATR, RSI, Z-score) |
 | `requests` | ≥2.31 | HTTP calls to OANDA REST directly where oandapyV20 is bypassed |
 
-No ML framework is required for V5 (unlike V4's brain). All signal logic is deterministic weighted scoring.
+No ML framework is required at runtime. Entry logic is per-cell validated setups (raw-indicator conditions from config); ML lives offline in the research pipeline only.
 
 ---
 
@@ -115,7 +115,7 @@ curl -H "Authorization: Bearer YOUR_TOKEN" \
 
 ## 5. Create the Secrets File
 
-V5 reads credentials from `~/.openclaw/secrets.env`. This file is **never committed to git**.
+V6 reads credentials from the environment (see `.env.example`); we keep them in a chmod-600 `~/.openclaw/secrets.env`. This file is **never committed to git**.
 
 ```bash
 mkdir -p ~/.openclaw
@@ -123,7 +123,6 @@ cat > ~/.openclaw/secrets.env << 'EOF'
 OANDA_API_URL=https://api-fxtrade.oanda.com
 OANDA_API_TOKEN=your_token_here
 OANDA_ACCOUNT_ID=001-001-XXXXXXX-001
-GITHUB_TOKEN_SCROOGE_V5=your_github_token_here
 EOF
 chmod 600 ~/.openclaw/secrets.env
 ```
@@ -160,9 +159,9 @@ python main.py
 Expected output:
 ```
 INFO v5.main  DRY RUN mode — pass --live to enable order execution
-INFO v5.engine  V5 engine ready | dry_run=True | 8 pairs | 24 dir_mods | 24 mom_mods
+INFO v5.cells   cells: loaded config for AUD_JPY (3 sessions)   # ... one line per pair
 INFO v5.dashboard  Dashboard started on port 8084 — https://...
-INFO v5.engine  V5 engine starting (dry_run=True, interval=300s)
+INFO v5.engine  V5 engine starting (dry_run=True, scan=300s, manage=5s)
 ```
 
 The dashboard will be available at `http://localhost:8084/` in dry-run mode. Every 5 minutes you will see signal summaries in the logs.
@@ -197,7 +196,7 @@ mkdir -p ~/.config/systemd/user
 
 cat > ~/.config/systemd/user/mr-scrooge-v6.service << 'EOF'
 [Unit]
-Description=Mr. Scrooge V5 Trading Platform (LIVE)
+Description=Mr. Scrooge V6 Trading Platform
 After=network-online.target
 Wants=network-online.target
 
@@ -375,7 +374,7 @@ systemctl --user restart mr-scrooge-v6
 systemctl --user stop mr-scrooge-v6
 ```
 
-**What RECOVERED means in logs**: on every restart, V5 reads OANDA's current open trades and reconstructs the ratchet state from the existing server-side stop-loss. `RECOVERED EUR_JPY short | entry=X | sl_locked=-15.0` means V5 has taken over management of that trade. The SL never retreats on restart.
+**What RECOVERED means in logs**: on every restart, the engine reads OANDA's current open trades and reconstructs the ratchet state from the existing server-side stop-loss. `RECOVERED EUR_JPY short | entry=X | sl_locked=-15.0` means the engine has taken over management of that trade. The SL never retreats on restart.
 
 ---
 
@@ -394,7 +393,7 @@ The ratchet config can be updated without restarting (just edit `config/exit_con
 
 ## 14. Trading Pairs and Sessions
 
-V5 trades 8 pairs, each only during its active session(s):
+V6 evaluates 8 configured pairs (7 actively trading — USD_CHF disabled 2026-07-01), each only during its cells' sessions:
 
 | Pair | Active Sessions | Pip value |
 |---|---|---|
