@@ -18,6 +18,7 @@ Created at the 2026-07-05 port. Rule: anything that could change live behavior i
 - [ ] `playmaker.py` legacy ticket paths not exercised by cell intents.
 
 ## Open engineering debt
+- [ ] Backport SHADOWBOARD from V5 (ops/shadowboard.py + route + SHADOW-tab section); parameterize the journal unit name (V5 hardcodes mr-scrooge-v5) and keep scoring in the background thread (single-threaded-server lesson, 2026-07-09).
 - [ ] `tests/` is empty — port needs a real test suite (manager unit tests exist as smoke scripts in session history; formalize).
 - [ ] Recovery-adopted trades always get RatchetManager (bracket trades recovered after restart lose their timeout; server TP/SL still protect them). Fix: persist exit class in trade clientExtensions.
 - [ ] Sizing: equal-margin vs equal-$/pip decision (4.1× asymmetry documented in the cost study) — Brock decision pending.
