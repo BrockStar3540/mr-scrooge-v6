@@ -33,6 +33,14 @@ from .base import Position, ExitSignal, TradeManager, in_rollover_freeze
 
 log = logging.getLogger("v5.ratchet")
 
+# Pre-rollover stop guard (2026-07-08): at 21:00 UTC half-spreads run 4-10x and
+# a resting server-side stop within blowout range is triggered by the widening
+# itself (live specimen 2026-07-08: -12.4p fill carrying ~5.6p half-spread at
+# 21:18Z). Between 20:45-20:55, while pricing is still clean, positions whose
+# stop sits within this many pips of price are flattened at market; deeper
+# stops ride the window untouched.
+_ROLLOVER_GUARD_PIPS = 10.0
+
 # Defaults — match exit_config.json; used when JSON is missing or corrupt
 _DEFAULTS: dict = {
     "initial_sl_pips":   12.0,   # initial server-side stop loss (pips from entry, abs)
@@ -127,6 +135,14 @@ class RatchetManager(TradeManager):
            (OANDA server-side stop is the primary exit mechanism).
         """
         self._update_peak(current_price)
+
+        # Pre-rollover stop guard: flatten cleanly at 20:45-20:55 if the stop
+        # is close enough for the 21:00 spread blowout to trigger it.
+        hm = current_time.hour * 60 + current_time.minute
+        if (20 * 60 + 45) <= hm < (20 * 60 + 55) and self.sl_locked_pips is not None:
+            sl_price = self._sl_pips_to_price(self.sl_locked_pips)
+            if abs(current_price - sl_price) / self.pip <= _ROLLOVER_GUARD_PIPS:
+                return self._make_exit(current_price, current_time, "rollover_guard_flat")
 
         # Rollover freeze: no stop-tightening, no bot-side closes 20:55-22:05 UTC.
         if in_rollover_freeze(current_time):
