@@ -18,7 +18,7 @@
           "id": "timing_lean_30",
           "side": "short",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
@@ -55,7 +55,100 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean trend_4h sign=negative (corr=-0.0750, AUC=0.4636). lean confirmer dropped (trend_4h [-1,1] = full feature range, always-true no-op); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=3.676957 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean trend_4h sign=negative (corr=-0.0750, AUC=0.4636). lean confirmer dropped (trend_4h [-1,1] = full feature range, always-true no-op); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=3.676957 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED to shadow control 2026-07-06: corpus drift LONG in window, recent two windows +2.60/+8.17 p240."
+        },
+        {
+          "id": "timing_lean_30_long",
+          "side": "long",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 3.676957,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (3.676957) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m GBP_USD/asia/long"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.321
+            },
+            {
+              "feature": "atr_conc",
+              "min": 0.233
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 14.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "side-audit 2026-07-06: atr_5m>=3.677 asia window drift LONG last-60d +2.60, last-14d +8.17 p/240m (YTD ~flat)",
+            "drift": "STRENGTHENING"
+          },
+          "notes": "LIVE FLIP 2026-07-06 (Brock order) from timing_lean_30 short. Tripwire fast last_n=20 min_ev=-0.5 suspend. | SL 20->14 (winners MAE p75=13.8). | DIAL-IN 2026-07-08 batch: rvol<=1.321, atr_conc>=0.233 -> drift +8.87, cw 43%, dead 8%."
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 4.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "prev-session screen: +3.07 YTD, 14d +12.0 (n=1701)",
+            "drift": "STABLE"
+          },
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
@@ -94,13 +187,13 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 12.0,
-            "trigger_pips": 4.0,
-            "trail_pips": 2.5,
-            "trail_mult": 0.6,
-            "trail_min": 2.5,
-            "trail_max": 6.0,
-            "_class": "MEDIUM"
+            "sl_pips": 14.0,
+            "trigger_pips": 8.0,
+            "trail_pips": 4.0,
+            "trail_mult": 1.0,
+            "trail_min": 4.0,
+            "trail_max": 10.0,
+            "_class": "LONG"
           },
           "sizing": {
             "risk_pct": 0.5
@@ -113,7 +206,7 @@
             "n_floor_status": "deep-oos-passed",
             "holdout_months_positive": 2
           },
-          "notes": "PRIMARY formula: rvol_5bar rolling-pct band [p4.8, p25.2]. Deep OOS: 7/7 years positive, sequential +0.35p, STABLE drift. Rolling pct bounds from config/formula_rolling_pct.json (updated monthly). 2026 absolute fallback: [0.371479, 0.669169]. Geo: SL=12, trig=10, trail=1.5 (best_cell from convergence study). Source: research/sessions/2026-07-04_range_harvest + ~/v5-formula-history/ on Mini (verdict_table.csv).",
+          "notes": "PRIMARY formula: rvol_5bar rolling-pct band [p4.8, p25.2]. Deep OOS: 7/7 years positive, sequential +0.35p, STABLE drift. Rolling pct bounds from config/formula_rolling_pct.json (updated monthly). 2026 absolute fallback: [0.371479, 0.669169]. Geo: SL=12, trig=10, trail=1.5 (best_cell from convergence study). Source: research/sessions/2026-07-04_range_harvest + ~/v5-formula-history/ on Mini (verdict_table.csv). | DEMOTED to SHADOW 2026-07-08: RESOLVED band [0.670,0.861] drifts -3.46p/60d (fallback band audit was misleading); no dial rescues. Shadow-watch pending monthly band re-resolution; 7/7yr lineage spares cemetery. | RE-PROMOTED 2026-07-09 w/ runner gear: stamp-forward +7.33p/ep n=18 83% hit medMFE 16.6 \u2014 Monday was exit-capture failure not signal failure. Tripwire armed.",
           "tripwires": {
             "monthly": {
               "metric": "atr_h1_relative_monthly_mean",
@@ -131,7 +224,7 @@
           "id": "timing_lean_30",
           "side": "short",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "DISABLED",
           "horizon_min": 30,
           "conditions": [
             {
@@ -168,7 +261,47 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean ema5 sign=negative (corr=-0.0630, AUC=0.4820). lean confirmer dropped (ema5 = price level, AUC at noise floor); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=5.766878 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean ema5 sign=negative (corr=-0.0630, AUC=0.4820). lean confirmer dropped (ema5 = price level, AUC at noise floor); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=5.766878 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | CEMETERY 2026-07-06 (Brock doctrine): drift sign flips every window (+3.96/-3.78/+3.05 p240) \u2014 no defensible side, no separating filter found. Re-enters only via discovery loop with new evidence."
+        },
+        {
+          "id": "classic_box_fade_long",
+          "side": "long",
+          "class": "classic",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03,
+              "note": "price at/below lower Bollinger (box_fade long)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 4.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "classics-retrial 2026-07-09: YTD +5.0 drift, edge vs baseline +3.3 (strongest of batch)",
+            "drift": "STABLE"
+          },
+          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard."
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -231,7 +364,7 @@
           "id": "willr_recovery_short",
           "side": "short",
           "class": "LEAN",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -240,6 +373,10 @@
               "max": 0.0,
               "note": "willr_m5 >= -50 (willr bounded [-100, 0], so [-50, 0] IS a range). Blocks extreme-oversold shorts (countertrend risk): loss tid 9640 (willr=-73.1) blocked; keep 6 -> 5W/1L 83.3% WR vs base 71.4% (+11.9pp) on n=7 recoverable. Equivalent alternative: kc_up >= -10.",
               "lineage": "phaseA_gate_rederivation-2026-07-04 CELL 1 (raw feature search)"
+            },
+            {
+              "feature": "atr_5m",
+              "max": 6.349
             }
           ],
           "exit": {
@@ -269,7 +406,91 @@
             "source": "phaseA_gate_rederivation 2026-07-04 (PARTIAL verdict; n=7 recoverable + 14 broker)",
             "n_floor_status": "small-n-hypothesis (n=7 journal; broker 12W/2L +42.4p)"
           },
-          "notes": "phaseA PARTIAL verdict: willr>=-50 replaces cert gate. m_cert>=0.40 DROPPED (never binding). Second loss (9636) not separable by any raw feature at n=7. Side short via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis."
+          "notes": "phaseA PARTIAL verdict: willr>=-50 replaces cert gate. m_cert>=0.40 DROPPED (never binding). Second loss (9636) not separable by any raw feature at n=7. Side short via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis. | DIAL-IN 2026-07-08: atr_5m<=6.349 -> drift +6.88. | DEMOTED 2026-07-09: broker -1.79p/trade (5W-9L) + stamp-forward -4.79p n=63 converge; atr<=6.35 filtered version re-earns in shadow or cemetery."
+        },
+        {
+          "id": "box_pdl_short",
+          "side": "short",
+          "class": "box",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdl_dist",
+              "max": 0.0,
+              "note": "price below prior-day low = downside box break (V1 OG box theory, resurrected 2026-07-09)"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 4.0,
+            "sl_pips": 5.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "box-screen 2026-07-09: drift +4.82p/240m n=4109, all measurable slices positive",
+            "drift": "PERSISTENT"
+          },
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20."
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> NY fade"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 4.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "prev-session screen: +5.90 YTD (n=951), all slices",
+            "drift": "STABLE"
+          },
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
         }
       ],
       "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."

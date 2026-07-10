@@ -25,7 +25,7 @@ log = logging.getLogger("v5.feed")
 _SECRETS_CACHE: Optional[dict] = None
 
 # Candle counts — enough lookback for every indicator
-_M5_COUNT = 200   # covers 16h+ of M5 bars; need 50 for EMAs, 30 for ATR14, 32 for rvol
+_M5_COUNT = 240   # covers 20h of M5 bars; prev-session H/L needs up to ~18h (ny after full asia)
 _H1_COUNT = 200   # 200H; need 65 for RSI14+slope, 61 for htf_pct_60, ~100 for atr_h1_relative baseline
 _D_COUNT  = 100   # 100 days; need 63 for htf_pct_60
 
@@ -228,6 +228,34 @@ def _compute_features(
     mid  = (bid + ask) / 2.0
     sess = _coarse_session(ts.hour)
 
+    # ── Previous-session structure (2026-07-10) ──────────────────────────────
+    # Prev session's H/L from the M5 history: label each bar's coarse session,
+    # blocks = consecutive same-label runs, take the last COMPLETED block.
+    ps_high_dist, ps_low_dist, ps_pos = 0.0, 0.0, 0.5
+    try:
+        if "time" in m5.columns:
+            _tt = m5["time"]
+            _hours = [t.hour if hasattr(t, "hour") else int(str(t)[11:13]) for t in _tt]
+        else:
+            _hours = list(m5.index.hour)
+        _lbl = [(0 if (h >= 22 or h < 7) else (1 if h < 13 else 2)) for h in _hours]
+        _blocks: list = []
+        for _i, _l in enumerate(_lbl):
+            if not _blocks or _l != _lbl[_blocks[-1][0]]:
+                _blocks.append([_i, _i])
+            else:
+                _blocks[-1][1] = _i
+        if len(_blocks) >= 2:
+            _s, _e = _blocks[-2]
+            _ps_h = float(m5["high"].iloc[_s:_e+1].max())
+            _ps_l = float(m5["low"].iloc[_s:_e+1].min())
+            ps_high_dist = (mid - _ps_h) / pip
+            ps_low_dist  = (mid - _ps_l) / pip
+            if _ps_h > _ps_l:
+                ps_pos = max(0.0, min(1.0, (mid - _ps_l) / (_ps_h - _ps_l)))
+    except Exception as _pse:
+        log.warning("prev-session structure failed for %s: %s", pair, _pse)
+
     # ── H1 features ─────────────────────────────────────────────────────────
     h1c  = h1["close"].astype(float)
     h1h  = h1["high"].astype(float)
@@ -414,6 +442,9 @@ def _compute_features(
         pdl_dist=round(pdl_dist, 4),
         pdh_dist_atr_pct=round(pdh_dist_atr_pct, 4),
         pdl_dist_atr_pct=round(pdl_dist_atr_pct, 4),
+        ps_high_dist=round(ps_high_dist, 4),
+        ps_low_dist=round(ps_low_dist, 4),
+        ps_pos=round(ps_pos, 4),
         # Daily context
         d_ret=round(d_ret, 4),
         close_pos_daily=round(close_pos_daily, 4),

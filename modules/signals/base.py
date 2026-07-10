@@ -30,6 +30,10 @@ class MarketView:
     pdl_dist:          float = 0.0  # current price - prev-day low, pips    [+5.9p]
     pdh_dist_atr_pct:  float = 0.0  # pdh_dist normalized by ATR            [+5.6p]
     pdl_dist_atr_pct:  float = 0.0  # pdl_dist normalized by ATR            [+5.7p]
+    # Previous-SESSION structure (2026-07-10, Brock: floor/ceiling consciousness)
+    ps_high_dist:      float = 0.0  # mid - prev session HIGH, pips (>0 = broke ceiling)
+    ps_low_dist:       float = 0.0  # mid - prev session LOW, pips (<0 = broke floor)
+    ps_pos:            float = 0.5  # position of mid within prev session range [0..1]
 
     # ── Daily context ─────────────────────────────────────────────────────────
     d_ret:          float = 0.0     # today's running daily return, pips     [+7.1p]
