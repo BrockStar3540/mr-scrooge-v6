@@ -1093,6 +1093,165 @@ def _apply_exit_classes(cfg: dict, pair: str) -> None:
                               "trail_mult": 0.6, "trail_min": 2.5, "trail_max": 6.0,
                               "_class": "MEDIUM"}
 
+
+
+def _apply_brock_overrides_2026_07(configs: dict) -> None:
+    """Live side/filter/exit overrides ordered by Brock 2026-07-06 (deep dives:
+    AUD_USD, GBP_USD, USD_JPY). Applied post-generation so monthly refits
+    preserve them. Each traces to research/sessions + activity log 2026-07-06."""
+    import copy as _copy
+    # AUD_USD/london: live flip short->long (corpus drift LONG all windows)
+    lon = configs.get("AUD_USD", {}).get("sessions", {}).get("london", {})
+    for st in lon.get("setups", []):
+        if st.get("id") == "kc_up_short_lean":
+            st["status"] = "SHADOW"
+            if not any(x.get("id") == "kc_up_long_lean" for x in lon["setups"]):
+                tw = _copy.deepcopy(st); tw["id"] = "kc_up_long_lean"; tw["side"] = "long"; tw["status"] = "ACTIVE"
+                lon["setups"].append(tw)
+    # GBP_USD/asia: live flip short->long; london timing: cemetery
+    ga = configs.get("GBP_USD", {}).get("sessions", {}).get("asia", {})
+    for st in ga.get("setups", []):
+        if st.get("id") == "timing_lean_30":
+            st["status"] = "SHADOW"
+            if not any(x.get("id") == "timing_lean_30_long" for x in ga["setups"]):
+                tw = _copy.deepcopy(st); tw["id"] = "timing_lean_30_long"; tw["side"] = "long"; tw["status"] = "ACTIVE"
+                ga["setups"].append(tw)
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30":
+            st["status"] = "DISABLED"
+    # PREV-SESSION structure shadows 2026-07-10 (floor/ceiling consciousness)
+    _PS_MED = lambda trig: {"mode":"ratchet","sl_pips":12.0,"trigger_pips":trig,"trail_pips":2.5,
+                            "trail_mult":0.6,"trail_min":2.5,"trail_max":6.0,"_class":"MEDIUM"}
+    _PS_WIRE = [
+        ("EUR_JPY","london","ps_floor_break_short","short",[{"feature":"ps_low_dist","max":0.0}],_PS_MED(4.5)),
+        ("GBP_USD","ny","ps_ceil_fade_short","short",[{"feature":"ps_pos","min":0.85},{"feature":"ps_high_dist","max":0.0}],_PS_MED(4.0)),
+        ("EUR_USD","ny","ps_ceil_fade_short","short",[{"feature":"ps_pos","min":0.85},{"feature":"ps_high_dist","max":0.0}],_PS_MED(3.5)),
+        ("EUR_USD","asia","ps_floor_fade_long","long",[{"feature":"ps_pos","max":0.15},{"feature":"ps_low_dist","min":0.0}],_PS_MED(3.5)),
+        ("GBP_USD","asia","ps_floor_fade_long","long",[{"feature":"ps_pos","max":0.15},{"feature":"ps_low_dist","min":0.0}],_PS_MED(4.0)),
+    ]
+    for _pp, _ss, _sid, _side, _conds, _ex in _PS_WIRE:
+        _sc = configs.get(_pp, {}).get("sessions", {}).get(_ss, {})
+        if _sc and not any(x.get("id")==_sid for x in _sc.get("setups", [])):
+            _sc.setdefault("setups", []).append({"id":_sid,"side":_side,"class":"session_structure",
+                "status":"SHADOW","horizon_min":240,"conditions":_conds,"exit":_ex,
+                "sizing":{"risk_pct":0.2},
+                "tripwires":{"fast":{"last_n":20,"min_ev":-0.5,"action":"suspend"}},
+                "evidence":{"ev_seq":0.0,"source":"prev-session screen 2026-07-10","drift":"STABLE"},
+                "notes":"Session floor/ceiling consciousness; shadow earns via scoreboard."})
+    # OG BOX THEORY shadows 2026-07-09 (resurrection docket item 3)
+    import copy as _cbx
+    _BOX = {"id":"box_pdl_short","side":"short","class":"box","status":"SHADOW","horizon_min":240,
+            "conditions":[{"feature":"pdl_dist","max":0.0}],
+            "sizing":{"risk_pct":0.2},
+            "tripwires":{"fast":{"last_n":20,"min_ev":-0.5,"action":"suspend"}},
+            "evidence":{"ev_seq":0.0,"source":"box-screen 2026-07-09","drift":"PERSISTENT"},
+            "notes":"V1 box theory resurrected; SHADOW earns via scoreboard."}
+    _BOX_EXITS = {
+        ("EUR_JPY","asia"): {"mode":"ratchet","sl_pips":14.0,"trigger_pips":8.0,"trail_pips":4.0,"trail_mult":1.0,"trail_min":4.0,"trail_max":10.0,"_class":"LONG"},
+        ("USD_JPY","asia"): {"mode":"ratchet","sl_pips":12.0,"trigger_pips":6.0,"trail_pips":3.5,"trail_mult":0.7,"trail_min":3.0,"trail_max":7.0,"_class":"HARVEST"},
+        ("GBP_USD","ny"):   {"mode":"bracket","tp_pips":4.0,"sl_pips":5.0,"timeout_min":60.0,"entry_cutoff_utc":20.0,"trigger_pips":7.5,"trail_pips":1.5,"_class":"FAST"},
+    }
+    for (bp, bs), bx in _BOX_EXITS.items():
+        sc = configs.get(bp, {}).get("sessions", {}).get(bs, {})
+        if sc and not any(x.get("id")=="box_pdl_short" for x in sc.get("setups", [])):
+            st = _cbx.deepcopy(_BOX); st["exit"] = bx
+            sc.setdefault("setups", []).append(st)
+    # MTF dial 2026-07-09: htf_pct_60 floor-of-range confirmation on AU london kc
+    for st in configs.get("AUD_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "kc_up_long_lean":
+            if not any(c.get("feature")=="htf_pct_60" for c in st.get("conditions", [])):
+                st["conditions"].append({"feature": "htf_pct_60", "max": 0.013})
+    # SHADOW SCOREBOARD 2026-07-09 (stamp-forward verdicts)
+    for st in configs.get("AUD_USD", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "control_atrconc_60":
+            st["status"] = "ACTIVE"
+            st["exit"] = {"mode":"bracket","tp_pips":3.0,"sl_pips":4.0,"timeout_min":60.0,
+                          "entry_cutoff_utc":20.0,"trigger_pips":7.5,"trail_pips":1.5,"_class":"FAST"}
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "rvol_low_240":
+            st["status"] = "ACTIVE"
+            st["exit"] = {"mode":"ratchet","sl_pips":14.0,"trigger_pips":8.0,"trail_pips":4.0,
+                          "trail_mult":1.0,"trail_min":4.0,"trail_max":10.0,"_class":"LONG"}
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "willr_recovery_short":
+            st["status"] = "SHADOW"
+    # BATCH DIAL-IN 2026-07-08 pt2 (Brock full-book order)
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("asia", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_long":
+            cds = st.setdefault("conditions", [])
+            if not any(c.get("feature")=="rvol_5bar" for c in cds): cds.append({"feature":"rvol_5bar","max":1.321})
+            if not any(c.get("feature")=="atr_conc" for c in cds): cds.append({"feature":"atr_conc","min":0.233})
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "willr_recovery_short":
+            if not any(c.get("feature")=="atr_5m" for c in st.get("conditions", [])):
+                st["conditions"].append({"feature":"atr_5m","max":6.349})
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "rvol_low_240":
+            st["status"] = "SHADOW"
+    for st in configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_short":
+            for cd in st.get("conditions", []):
+                if cd.get("feature")=="atr_5m": cd["max"] = 7.947
+    uj_lon = configs.get("USD_JPY", {}).get("sessions", {}).get("london", {})
+    for st in uj_lon.get("setups", []):
+        if st.get("id") == "timing_lean_30" and st.get("side") == "long":
+            st["status"] = "SHADOW"
+            if not any(x.get("id")=="timing_lean_30_short" for x in uj_lon["setups"]):
+                import copy as _c
+                tw = _c.deepcopy(st); tw["id"]="timing_lean_30_short"; tw["side"]="short"; tw["status"]="ACTIVE"
+                tw["exit"] = {"mode":"ratchet","sl_pips":25.0,"trigger_pips":10.0,"trail_pips":5.0,
+                              "trail_mult":1.0,"trail_min":5.0,"trail_max":12.0,"_class":"LONG"}
+                uj_lon["setups"].append(tw)
+    # DIAL-IN 2026-07-08 (quintile tables, combined-verified on 60d corpus)
+    for st in configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "regime_short_240":
+            for cd in st.get("conditions", []):
+                if cd.get("feature") == "atr_5m": cd["max"] = 2.81
+                if cd.get("feature") == "kc_up_dist_pips": cd["min"] = -4.54
+    for st in configs.get("AUD_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "kc_up_long_lean":
+            for cd in st.get("conditions", []):
+                if cd.get("feature") == "kc_up_dist_pips": cd["min"] = -15.0; cd["max"] = -4.62
+            if not any(c.get("feature") == "rvol_5bar" for c in st.get("conditions", [])):
+                st["conditions"].append({"feature": "rvol_5bar", "min": 0.80})
+    for st in configs.get("EUR_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30":
+            if not any(c.get("feature") == "atr_h1_relative" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "atr_h1_relative", "min": 1.09})
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("asia", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_long":
+            st["exit"] = dict(st.get("exit", {}), sl_pips=14.0)
+    # AUD_JPY/ny timing_lean_30: live flip long->short (2026-07-08, window drift -2.95)
+    aj_ny = configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {})
+    for st in aj_ny.get("setups", []):
+        if st.get("id") == "timing_lean_30" and st.get("side") == "long":
+            st["status"] = "SHADOW"
+            if not any(x.get("id") == "timing_lean_30_short" for x in aj_ny["setups"]):
+                import copy as _c
+                tw = _c.deepcopy(st); tw["id"] = "timing_lean_30_short"; tw["side"] = "short"; tw["status"] = "ACTIVE"
+                aj_ny["setups"].append(tw)
+    # AUD_JPY/ny regime_short_240: dual filter + SL12 (2026-07-08 deep dive)
+    for st in configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "regime_short_240":
+            cds = st.setdefault("conditions", [])
+            if not any(c.get("feature") == "kc_up_dist_pips" for c in cds):
+                cds.append({"feature": "kc_up_dist_pips", "min": -6.75})
+            if not any(c.get("feature") == "willr_m5" for c in cds):
+                cds.append({"feature": "willr_m5", "min": -66.37})
+            st["exit"] = dict(st.get("exit", {}), sl_pips=12.0)
+    # AUD_USD/london kc_up_long_lean: harvest regear (2026-07-08)
+    for st in configs.get("AUD_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "kc_up_long_lean":
+            st["exit"] = {"mode": "ratchet", "sl_pips": 12.0, "trigger_pips": 6.0, "trail_pips": 3.5,
+                          "trail_mult": 0.7, "trail_min": 3.0, "trail_max": 7.0, "_class": "HARVEST"}
+    # USD_JPY/asia kc_breakout_long: vol filter + harvest regear (window bleeds at 240m)
+    for st in configs.get("USD_JPY", {}).get("sessions", {}).get("asia", {}).get("setups", []):
+        if st.get("id") == "kc_breakout_long":
+            if not any(c.get("feature") == "atr_h1_relative" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "atr_h1_relative", "max": 1.05})
+            st["exit"] = {"mode": "ratchet", "sl_pips": 12.0, "trigger_pips": 6.0, "trail_pips": 3.5,
+                          "trail_mult": 0.7, "trail_min": 3.0, "trail_max": 7.0, "_class": "HARVEST"}
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
     parser.add_argument("--out-dir", default=None,
@@ -1146,6 +1305,10 @@ def main() -> int:
         out_path = out_dir / f"{pair}.json"
         out_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
         print(f"    -> {out_path}")
+
+    _apply_brock_overrides_2026_07(configs)
+    for pair, cfg in configs.items():
+        (out_dir / f"{pair}.json").write_text(json.dumps(cfg, indent=2), encoding="utf-8")
 
     # Print book summary
     _print_book_summary(configs)

@@ -27,17 +27,21 @@
               "max": null,
               "note": "kc_up_dist_pips >= 0 (open-top range): price at/above KC upper band = breakout regime. Blocks 3/4 losses (9517=-0.5, 9539=-12.1, 9692=-19.4) incl 9692 which d_cert>=0.49 passed. Known false-negative: 9813 (kc_up=-35, won +8.3p). Alternative candidate: atr_5m >= 0.04 (blocks same 3 losses).",
               "lineage": "phaseA_gate_rederivation-2026-07-04 CELL 2 (raw feature search)"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "max": 1.05
             }
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 20.0,
-            "trigger_pips": 8.0,
-            "trail_pips": 4.0,
-            "trail_mult": 1.0,
-            "trail_min": 4.0,
-            "trail_max": 10.0,
-            "_class": "LONG"
+            "sl_pips": 12.0,
+            "trigger_pips": 6.0,
+            "trail_pips": 3.5,
+            "trail_mult": 0.7,
+            "trail_min": 3.0,
+            "trail_max": 7.0,
+            "_class": "HARVEST"
           },
           "sizing": {
             "risk_pct": 0.2
@@ -56,7 +60,47 @@
             "source": "phaseA_gate_rederivation 2026-07-04 (RE-EXPRESSIBLE; beats old d_cert gate 80% vs 71.4% keep-WR, n=9)",
             "n_floor_status": "small-n-hypothesis (keep-set n=5 of n=9 journal)"
           },
-          "notes": "phaseA RE-EXPRESSIBLE verdict: kc_up>=0 replaces d_cert>=0.49 (tighter: fewer fires, higher WR, catches the loss cert gate missed). Side long via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis."
+          "notes": "phaseA RE-EXPRESSIBLE verdict: kc_up>=0 replaces d_cert>=0.49 (tighter: fewer fires, higher WR, catches the loss cert gate missed). Side long via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis. | REGEARED 2026-07-06 (Brock deep dive): window bleeds at 240m (drift -14.75p/60d) \u2014 harvest the pop, not a runner. Filter atr_h1_relative<=1.05 (38.8% vs 11.1% clean-win). SL12/engage6/0.7xATR[3,7]."
+        },
+        {
+          "id": "box_pdl_short",
+          "side": "short",
+          "class": "box",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdl_dist",
+              "max": 0.0,
+              "note": "price below prior-day low = downside box break (V1 OG box theory, resurrected 2026-07-09)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 6.0,
+            "trail_pips": 3.5,
+            "trail_mult": 0.7,
+            "trail_min": 3.0,
+            "trail_max": 7.0,
+            "_class": "HARVEST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "box-screen 2026-07-09: drift +6.55p/240m n=2117, 4/5 slices (mirror of kc_breakout_long)",
+            "drift": "PERSISTENT"
+          },
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20."
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
@@ -76,7 +120,7 @@
           "id": "timing_lean_30",
           "side": "long",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
@@ -126,7 +170,62 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean atr_h1_relative sign=negative (corr=-0.1276, AUC=0.4723). Lean confirmer: atr_h1_relative >= p75 (rolling-percentile form). atr_5m boundary p75=6.521932 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | SIDE OVERRIDE: short -> long per Brock direction-persistence order 2026-07-04 (lock-era 4W/0L +24.9p, config/locked_cells.json); the atr conditions stay as vol-energy gates; revisit at n>=20 same-engine trades."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean atr_h1_relative sign=negative (corr=-0.1276, AUC=0.4723). Lean confirmer: atr_h1_relative >= p75 (rolling-percentile form). atr_5m boundary p75=6.521932 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | SIDE OVERRIDE: short -> long per Brock direction-persistence order 2026-07-04 (lock-era 4W/0L +24.9p, config/locked_cells.json); the atr conditions stay as vol-energy gates; revisit at n>=20 same-engine trades. | DEMOTED 2026-07-08: window drift -12.92p/240m long; lean evidence was sign=negative all along (long side = lock-era override)."
+        },
+        {
+          "id": "timing_lean_30_short",
+          "side": "short",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.521932,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.521932) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m USD_JPY/london/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "pct_window_days": 90,
+              "pct_lo": 75.0,
+              "pct_hi": 100.0,
+              "resolved": [
+                1.107572,
+                3.374999
+              ],
+              "resolved_at": "2026-07-04",
+              "note": "Direction lean confirmer (rolling-percentile form): atr_h1_relative >= p75 \u2014 lean evidence 'atr_h1_relative HIGH' sign=negative drift=PERSISTENT. resolved lo = p75 of 2026 london-session bars (n=10870); resolved hi = observed 2026 max Monthly refit re-resolves; engine reads 'resolved'.",
+              "lineage": "cell-calibration-2026-07/direction_lean (atr_h1_relative HIGH, PERSISTENT); regime-edges-2026-07; resolved 2026-07-04 from Mini qtl-discovery-8yr/features/USD_JPY_features.parquet"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 25.0,
+            "trigger_pips": 10.0,
+            "trail_pips": 5.0,
+            "trail_mult": 1.0,
+            "trail_min": 5.0,
+            "trail_max": 12.0,
+            "_class": "LONG"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "batch-dialin 2026-07-08: short drift +12.92/240m +7.37/60m (n=173/60d), medMFE 36p; consistent with original lean sign=negative",
+            "drift": "PERSISTENT"
+          },
+          "notes": "LIVE FLIP 2026-07-08. Violent window: SL25 (winners MAE p75 34.5), engage 10, trail 1.0xATR[5,12]. Highest-variance setup in the book \u2014 tripwire fast last_n=20."
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -184,6 +283,91 @@
               "action": "suspend"
             }
           }
+        },
+        {
+          "id": "classic_box_fade_short",
+          "side": "short",
+          "class": "classic",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "price at/above upper Bollinger (box_fade short)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 3.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "classics-retrial 2026-07-09: YTD +2.9, edge +2.7",
+            "drift": "STABLE"
+          },
+          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard."
+        },
+        {
+          "id": "classic_willr_fade_short",
+          "side": "short",
+          "class": "classic",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "willr_m5",
+              "min": -22.0,
+              "note": "williams extreme overbought (rsi-proxy >=78)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "down bar confirmation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 12.0,
+            "trigger_pips": 3.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.6,
+            "trail_min": 2.5,
+            "trail_max": 6.0,
+            "_class": "MEDIUM"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "classics-retrial 2026-07-09: YTD +2.6, edge +2.4",
+            "drift": "STABLE"
+          },
+          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard."
         }
       ],
       "notes": "0 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."

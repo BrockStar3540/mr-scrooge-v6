@@ -18,6 +18,7 @@ Created at the 2026-07-05 port. Rule: anything that could change live behavior i
 - [ ] `playmaker.py` legacy ticket paths not exercised by cell intents.
 
 ## Open engineering debt
+- [ ] **Generator-override sync discipline**: every V5 dial-in that touches research/tools/generate_cell_configs.py overrides or config/cells/*.json MUST be synced to V6 in the same session (2026-07-13 lesson: 07-08 dial-in never ported -> shadow traded retired sides for 3 days, gauntlet window invalidated). Candidate automation: nightly diff alert V5 vs V6 generator+configs.
 - [ ] Backport SHADOWBOARD from V5 (ops/shadowboard.py + route + SHADOW-tab section); parameterize the journal unit name (V5 hardcodes mr-scrooge-v5) and keep scoring in the background thread (single-threaded-server lesson, 2026-07-09).
 - [ ] `tests/` is empty — port needs a real test suite (manager unit tests exist as smoke scripts in session history; formalize).
 - [ ] Recovery-adopted trades always get RatchetManager (bracket trades recovered after restart lose their timeout; server TP/SL still protect them). Fix: persist exit class in trade clientExtensions.

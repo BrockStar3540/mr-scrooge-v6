@@ -50,14 +50,22 @@
             {
               "feature": "atr_5m",
               "min": null,
-              "max": 3.604874,
+              "max": 2.81,
               "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
               "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
+            },
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -4.54
+            },
+            {
+              "feature": "willr_m5",
+              "min": -66.37
             }
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 20.0,
+            "sl_pips": 12.0,
             "trigger_pips": 4.5,
             "trail_pips": 2.5,
             "trail_mult": 0.6,
@@ -87,13 +95,13 @@
             "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
             "n_floor_status": "shadow-only-session-disabled"
           },
-          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short."
+          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%."
         },
         {
           "id": "timing_lean_30",
           "side": "long",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
@@ -130,7 +138,49 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean q_yzv_m5 sign=positive (corr=0.0609, AUC=0.5297). lean confirmer dropped (q_yzv_m5 not on live feed (queued feed-extension)); side=long retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.617985 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean q_yzv_m5 sign=positive (corr=0.0609, AUC=0.5297). lean confirmer dropped (q_yzv_m5 not on live feed (queued feed-extension)); side=long retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.617985 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED 2026-07-08: window (atr_5m>=6.62 ny) drifts -2.95p/240m = SHORT side; caught before first cell-era fire."
+        },
+        {
+          "id": "timing_lean_30_short",
+          "side": "short",
+          "class": "TIMING",
+          "status": "ACTIVE",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.617985,
+              "max": 7.947,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "bracket",
+            "tp_pips": 5.0,
+            "sl_pips": 6.0,
+            "timeout_min": 60.0,
+            "entry_cutoff_utc": 20.0,
+            "trigger_pips": 7.5,
+            "trail_pips": 1.5,
+            "_class": "FAST"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "side-audit 2026-07-08: loud-vol ny window drift -2.95p/240m (n=389, 60d); NY fade consistent with regime_short_240 sibling",
+            "drift": "STABLE"
+          },
+          "notes": "LIVE FLIP 2026-07-08 from timing_lean_30 long. FAST bracket retained. Tripwire fast last_n=20 min_ev=-0.5. | DIAL-IN 2026-07-08: atr window [6.618,7.947] -> drift +4.61."
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
