@@ -149,13 +149,13 @@
           "id": "timing_lean_30_short",
           "side": "short",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
               "feature": "atr_5m",
-              "min": 6.617985,
-              "max": 7.947,
+              "min": 5.91,
+              "max": 8.13,
               "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
               "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
             }

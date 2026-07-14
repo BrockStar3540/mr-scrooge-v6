@@ -1293,6 +1293,15 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
         if st.get("id") == "willr_recovery_short":
             if not any(c.get("feature") == "willr_m5" for c in st.get("conditions", [])):
                 st.setdefault("conditions", []).append({"feature": "willr_m5", "min": -61.0})
+    # AJ/ny timing_lean_30_short: DEAD CELL FIX (0.0% cond-pass since cutover — atr band [6.62,7.95]
+    # stranded above current regime p90 5.75). Same-tail refresh (top 8.3%..1.7% of trailing 30d)
+    # -> [5.91,8.13]; SHADOW until the board scores it (zero live/stamp evidence in current form).
+    for st in configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_short":
+            for cd in st.get("conditions", []):
+                if cd.get("feature") == "atr_5m":
+                    cd["min"] = 5.91; cd["max"] = 8.13
+            st["status"] = "SHADOW"
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
