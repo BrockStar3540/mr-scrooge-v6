@@ -44,7 +44,7 @@
           "id": "regime_short_240",
           "side": "short",
           "class": "LEAN",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -61,6 +61,10 @@
             {
               "feature": "willr_m5",
               "min": -66.37
+            },
+            {
+              "feature": "htf_pct_60",
+              "max": -0.005
             }
           ],
           "exit": {
@@ -71,7 +75,8 @@
             "trail_mult": 0.6,
             "trail_min": 2.5,
             "trail_max": 6.0,
-            "_class": "MEDIUM"
+            "_class": "MEDIUM",
+            "entry_cutoff_utc": 17.0
           },
           "sizing": {
             "risk_pct": 0.2

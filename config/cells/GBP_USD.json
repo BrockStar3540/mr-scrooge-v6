@@ -82,7 +82,7 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 14.0,
+            "sl_pips": 9.0,
             "trigger_pips": 8.0,
             "trail_pips": 4.0,
             "trail_mult": 1.0,
@@ -168,7 +168,7 @@
           "id": "rvol_low_240",
           "side": "long",
           "class": "FORMULA",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -183,6 +183,10 @@
               "resolved_at": "2026-07-04T04:20:49.522289Z",
               "note": "Rolling-pct band [p4.8, p25.2] of rvol_5bar in GBP_USD london-session bars, trailing 90d. Engine reads 'resolved'; monthly refit updates resolved values. 2026 absolute fallback: [0.371479, 0.669169].",
               "lineage": "formula-rolling-pct-2026-07-04/config/formula_rolling_pct.json; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            },
+            {
+              "feature": "pdl_dist",
+              "max": 57.0
             }
           ],
           "exit": {

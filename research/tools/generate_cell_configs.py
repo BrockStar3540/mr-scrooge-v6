@@ -1251,6 +1251,48 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
                 st.setdefault("conditions", []).append({"feature": "atr_h1_relative", "max": 1.05})
             st["exit"] = {"mode": "ratchet", "sl_pips": 12.0, "trigger_pips": 6.0, "trail_pips": 3.5,
                           "trail_mult": 0.7, "trail_min": 3.0, "trail_max": 7.0, "_class": "HARVEST"}
+    # ===== 2026-07-14 deep-dive dials (broker CSV + 235-episode corpus join; Brock order) =====
+    # AJ/ny regime_short_240: DEMOTE + htf regime filter (qtl mono 1.0) + pre-rollover runway cutoff
+    for st in configs.get("AUD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "regime_short_240":
+            st["status"] = "SHADOW"
+            if not any(c.get("feature") == "htf_pct_60" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "htf_pct_60", "max": -0.005})
+            st["exit"] = dict(st.get("exit", {}), entry_cutoff_utc=17.0)
+    # GBP/lon rvol_low_240: DEMOTE + don't-chase filter (pdl_dist qtl mono 1.0, -1.20 -> +2.42/ep)
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "rvol_low_240":
+            st["status"] = "SHADOW"
+            if not any(c.get("feature") == "pdl_dist" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "pdl_dist", "max": 57.0})
+    # UJ/lon timing_lean_30_short: DEMOTE; SL 25->12 (winners' MAE p90 10.3; -25/attempt discovery)
+    for st in configs.get("USD_JPY", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_short":
+            st["status"] = "SHADOW"
+            st["exit"] = dict(st.get("exit", {}), sl_pips=12.0)
+    # UJ/ny control_atr5m_60: PROMOTE with SL 20->5 (winners' MAE p90 4.2; +3.9/ep @60m, +8.6 @240m)
+    for st in configs.get("USD_JPY", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "control_atr5m_60":
+            st["status"] = "ACTIVE"
+            st["exit"] = dict(st.get("exit", {}), sl_pips=5.0)
+    # AU/lon kc_up_long_lean: SL 12->7 (max winner MAE 6.8 across 17 episodes)
+    for st in configs.get("AUD_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if st.get("id") == "kc_up_long_lean":
+            st["exit"] = dict(st.get("exit", {}), sl_pips=7.0)
+    # GBP/asia timing_lean_30_long: SL 14->9 (max winner MAE 7.7; losers run to 24)
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("asia", {}).get("setups", []):
+        if st.get("id") == "timing_lean_30_long":
+            st["exit"] = dict(st.get("exit", {}), sl_pips=9.0)
+    # UJ/asia kc_breakout_long: trend-day confirmation (pdl_dist mono 1.0; SL12 KEPT, max winner MAE 11.1)
+    for st in configs.get("USD_JPY", {}).get("sessions", {}).get("asia", {}).get("setups", []):
+        if st.get("id") == "kc_breakout_long":
+            if not any(c.get("feature") == "pdl_dist" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "pdl_dist", "min": 63.0})
+    # GBP/ny willr_recovery_short (shadow): willr floor — losers live below -61 (still-oversold shorts)
+    for st in configs.get("GBP_USD", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if st.get("id") == "willr_recovery_short":
+            if not any(c.get("feature") == "willr_m5" for c in st.get("conditions", [])):
+                st.setdefault("conditions", []).append({"feature": "willr_m5", "min": -61.0})
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
