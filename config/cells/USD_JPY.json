@@ -39,13 +39,13 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 12.0,
+            "sl_pips": 40.0,
             "trigger_pips": 6.0,
             "trail_pips": 3.5,
-            "trail_mult": 0.7,
-            "trail_min": 3.0,
-            "trail_max": 7.0,
-            "_class": "HARVEST"
+            "trail_mult": 1.0,
+            "trail_min": 3.5,
+            "trail_max": 12.0,
+            "_class": "WIDE_TEST"
           },
           "sizing": {
             "risk_pct": 0.2

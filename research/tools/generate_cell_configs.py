@@ -1293,6 +1293,28 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
         if st.get("id") == "willr_recovery_short":
             if not any(c.get("feature") == "willr_m5" for c in st.get("conditions", [])):
                 st.setdefault("conditions", []).append({"feature": "willr_m5", "min": -61.0})
+    # ===== 2026-07-14 SL40 WIDE-STOP TEST — 6-cell shortlist (Brock order, portfolio sim proven) =====
+    # All -> ratchet SL40 with own trigger/trail (bracket cells converted, matching the sim).
+    # 4 shadow (scored forward = OOS validation), 2 active (kc_breakout_long, EJ/ny timing = live wide).
+    _SL40 = [
+        ("USD_JPY", "asia", "kc_breakout_long"),
+        ("AUD_JPY", "ny", "regime_short_240"),
+        ("GBP_USD", "london", "classic_box_fade_long"),
+        ("GBP_USD", "ny", "ps_ceil_fade_short"),
+        ("EUR_JPY", "ny", "timing_lean_30"),
+        ("GBP_USD", "ny", "control_rvol_60"),
+    ]
+    for _p, _s, _id in _SL40:
+        for st in configs.get(_p, {}).get("sessions", {}).get(_s, {}).get("setups", []):
+            if st.get("id") == _id:
+                _ex = dict(st.get("exit", {}))
+                _trig = _ex.get("trigger_pips") or 6.0
+                _trail = _ex.get("trail_pips") or 3.0
+                _new = {"mode": "ratchet", "sl_pips": 40.0, "trigger_pips": _trig, "trail_pips": _trail,
+                        "trail_mult": 1.0, "trail_min": _trail, "trail_max": 12.0, "_class": "WIDE_TEST"}
+                if _ex.get("entry_cutoff_utc"): _new["entry_cutoff_utc"] = _ex["entry_cutoff_utc"]
+                st["exit"] = _new
+
     # AJ/ny timing_lean_30_short: DEAD CELL FIX (0.0% cond-pass since cutover — atr band [6.62,7.95]
     # stranded above current regime p90 5.75). Same-tail refresh (top 8.3%..1.7% of trailing 30d)
     # -> [5.91,8.13]; SHADOW until the board scores it (zero live/stamp evidence in current form).
