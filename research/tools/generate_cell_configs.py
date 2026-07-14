@@ -1325,6 +1325,36 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
                     cd["min"] = 5.91; cd["max"] = 8.13
             st["status"] = "SHADOW"
 
+
+    # ===== 2026-07-14 RANGE-SIZED SL — ALL CELLS (Brock order, PRACTICE account experiment) =====
+    # Every cell -> ratchet, SL sized to its session's median swing (rare-red / runner-carried thesis).
+    # SUPERSEDES the 6-cell SL40 block above. Brackets -> ratchet so wide stops + runners express.
+    _RANGE_SL = {
+        "USD_CHF/asia":40.0,"EUR_USD/asia":40.0,"USD_CAD/asia":40.0,"AUD_USD/london":40.0,"AUD_USD/asia":40.0,
+        "USD_CHF/london":40.0,"GBP_USD/asia":40.0,"USD_CAD/london":40.0,
+        "AUD_USD/ny":50.0,"USD_CHF/ny":50.0,"AUD_JPY/london":50.0,"EUR_USD/london":50.0,"EUR_USD/ny":50.0,
+        "USD_JPY/london":50.0,"USD_JPY/asia":50.0,"AUD_JPY/ny":50.0,"AUD_JPY/asia":50.0,
+        "EUR_JPY/asia":60.0,"USD_JPY/ny":60.0,"USD_CAD/ny":60.0,"EUR_JPY/ny":60.0,"EUR_JPY/london":60.0,
+        "GBP_USD/london":60.0,"GBP_USD/ny":60.0,
+    }
+    for _pair, _pcfg in configs.items():
+        for _sess, _scfg in _pcfg.get("sessions", {}).items():
+            _sl = _RANGE_SL.get(_pair + "/" + _sess)
+            if not _sl:
+                continue
+            for _st in _scfg.get("setups", []):
+                _ex = dict(_st.get("exit", {}))
+                _trig = _ex.get("trigger_pips") or 6.0
+                _trail = _ex.get("trail_pips") or 3.0
+                _new = {"mode": "ratchet", "sl_pips": _sl, "trigger_pips": _trig, "trail_pips": _trail,
+                        "trail_mult": 1.0, "trail_min": _trail, "trail_max": max(_trail * 3.0, 10.0),
+                        "_class": "RANGE_SIZED"}
+                if _ex.get("entry_cutoff_utc"):
+                    _new["entry_cutoff_utc"] = _ex["entry_cutoff_utc"]
+                _st["exit"] = _new
+
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
     parser.add_argument("--out-dir", default=None,

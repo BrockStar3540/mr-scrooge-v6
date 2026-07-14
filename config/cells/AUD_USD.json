@@ -44,13 +44,13 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 20.0,
+            "sl_pips": 40.0,
             "trigger_pips": 8.0,
             "trail_pips": 4.0,
             "trail_mult": 1.0,
             "trail_min": 4.0,
-            "trail_max": 10.0,
-            "_class": "LONG"
+            "trail_max": 12.0,
+            "_class": "RANGE_SIZED"
           },
           "sizing": {
             "risk_pct": 0.2
@@ -96,13 +96,13 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 7.0,
+            "sl_pips": 40.0,
             "trigger_pips": 6.0,
             "trail_pips": 3.5,
-            "trail_mult": 0.7,
-            "trail_min": 3.0,
-            "trail_max": 7.0,
-            "_class": "HARVEST"
+            "trail_mult": 1.0,
+            "trail_min": 3.5,
+            "trail_max": 10.5,
+            "_class": "RANGE_SIZED"
           },
           "sizing": {
             "risk_pct": 0.2
@@ -141,13 +141,13 @@
           ],
           "exit": {
             "mode": "ratchet",
-            "sl_pips": 12.0,
+            "sl_pips": 40.0,
             "trigger_pips": 6.0,
             "trail_pips": 3.5,
-            "trail_mult": 0.7,
-            "trail_min": 3.0,
-            "trail_max": 7.0,
-            "_class": "HARVEST"
+            "trail_mult": 1.0,
+            "trail_min": 3.5,
+            "trail_max": 10.5,
+            "_class": "RANGE_SIZED"
           },
           "sizing": {
             "risk_pct": 0.2
@@ -196,14 +196,15 @@
             }
           ],
           "exit": {
-            "mode": "bracket",
-            "tp_pips": 3.0,
-            "sl_pips": 4.0,
-            "timeout_min": 60.0,
-            "entry_cutoff_utc": 20.0,
+            "mode": "ratchet",
+            "sl_pips": 50.0,
             "trigger_pips": 7.5,
             "trail_pips": 1.5,
-            "_class": "FAST"
+            "trail_mult": 1.0,
+            "trail_min": 1.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
           },
           "sizing": {
             "risk_pct": 0.2
