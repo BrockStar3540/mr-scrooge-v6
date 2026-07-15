@@ -3,7 +3,7 @@
   "account": {
     "max_concurrent_trades": 4,
     "margin_pct_per_trade": 0.2,
-    "max_per_currency_direction": 1
+    "max_per_currency_direction": 4
   },
   "defaults": {
     "enabled": true,
