@@ -1362,6 +1362,16 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
             _st["status"] = "ACTIVE"
 
 
+
+    # ===== 2026-07-15 PROMOTE rvol_low_240 (GBP/lon) + classic_extension_fade_long (AUD/lon) (Brock) =====
+    for _st in configs.get("GBP_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if _st.get("id") == "rvol_low_240":
+            _st["status"] = "ACTIVE"
+    for _st in configs.get("AUD_USD", {}).get("sessions", {}).get("london", {}).get("setups", []):
+        if _st.get("id") == "classic_extension_fade_long":
+            _st["status"] = "ACTIVE"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
     parser.add_argument("--out-dir", default=None,

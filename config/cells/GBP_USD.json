@@ -168,7 +168,7 @@
           "id": "rvol_low_240",
           "side": "long",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
