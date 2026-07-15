@@ -1355,6 +1355,13 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
 
 
 
+
+    # ===== 2026-07-15 PROMOTE control_rvol_60 GBP/ny SHADOW->ACTIVE (Brock; n=13, MFE/MAE 17.9/5.6, 7d +13.16) =====
+    for _st in configs.get("GBP_USD", {}).get("sessions", {}).get("ny", {}).get("setups", []):
+        if _st.get("id") == "control_rvol_60":
+            _st["status"] = "ACTIVE"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate config/cells/<PAIR>.json for all 8 pairs.")
     parser.add_argument("--out-dir", default=None,

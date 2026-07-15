@@ -325,7 +325,7 @@
           "id": "control_rvol_60",
           "side": "short",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 60,
           "conditions": [
             {
