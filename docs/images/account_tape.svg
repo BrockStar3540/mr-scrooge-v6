@@ -1,0 +1,74 @@
+<svg viewBox="0 0 900 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif">
+  <!-- Colors are theme-neutral: mid-gray text (#808a94) reads on light AND dark;
+       one accent = amber (#cf8e3e). No pure black/white, no external assets. -->
+
+  <!-- Title -->
+  <text x="450" y="30" text-anchor="middle" fill="#808a94" font-size="18" font-weight="700">The tuition: what falsifying five edge families cost</text>
+  <text x="450" y="50" text-anchor="middle" fill="#9aa2ab" font-size="11" font-style="italic">Practice-account equity, V1 launch → forward test · three anchor values are real, the curve between them is schematic</text>
+
+  <!-- ===== Era bands (plot area y 74..362) ===== -->
+  <!-- V1→V4 strategy era: Mar22 (x90) → Jun10 low (x614) -->
+  <rect x="90" y="74" width="524" height="288" fill="#808a94" opacity="0.09"/>
+  <!-- V5 measurement era: Jun10 (x614) → Jul14 (x837) -->
+  <rect x="614" y="74" width="223" height="288" fill="#808a94" opacity="0.17"/>
+  <!-- V6 forward test: Jul14 (x837) → now (x850) -->
+  <rect x="837" y="74" width="13" height="288" fill="#cf8e3e" opacity="0.22"/>
+
+  <!-- Era labels -->
+  <text x="352" y="90" text-anchor="middle" fill="#808a94" font-size="12" font-weight="700">V1 → V4 · strategy era</text>
+  <text x="352" y="105" text-anchor="middle" fill="#9aa2ab" font-size="10">100+ strategies tried, every one falsified</text>
+  <text x="725" y="90" text-anchor="middle" fill="#808a94" font-size="12" font-weight="700">V5 · measurement era</text>
+  <text x="725" y="105" text-anchor="middle" fill="#9aa2ab" font-size="10">broker-truth · the bleeding stops</text>
+  <text x="843" y="66" text-anchor="middle" fill="#cf8e3e" font-size="11" font-weight="700">V6</text>
+  <text x="843" y="52" text-anchor="middle" fill="#cf8e3e" font-size="9">forward test</text>
+
+  <!-- ===== Y gridlines + labels (linear 0..105k over y 360..? ; 100k->84, 0->360) ===== -->
+  <g stroke="#808a94" stroke-width="1" opacity="0.25">
+    <line x1="90" y1="84"  x2="850" y2="84"/>
+    <line x1="90" y1="153" x2="850" y2="153"/>
+    <line x1="90" y1="222" x2="850" y2="222"/>
+    <line x1="90" y1="291" x2="850" y2="291"/>
+    <line x1="90" y1="360" x2="850" y2="360"/>
+  </g>
+  <g fill="#9aa2ab" font-size="10" text-anchor="end">
+    <text x="82" y="88">$100k</text>
+    <text x="82" y="157">$75k</text>
+    <text x="82" y="226">$50k</text>
+    <text x="82" y="295">$25k</text>
+    <text x="82" y="364">$0</text>
+  </g>
+
+  <!-- ===== X axis + date labels ===== -->
+  <line x1="90" y1="362" x2="850" y2="362" stroke="#808a94" stroke-width="1.2"/>
+  <g fill="#9aa2ab" font-size="10" text-anchor="middle">
+    <text x="90"  y="382">Mar 22</text>
+    <text x="286" y="382">Apr</text>
+    <text x="450" y="382">May</text>
+    <text x="614" y="382">Jun 10</text>
+    <text x="850" y="382">Jul 16</text>
+  </g>
+
+  <!-- ===== Equity curve (schematic decline through real anchors) ===== -->
+  <polyline points="90,84 150,112 210,152 270,140 330,192 390,214 450,232 510,272 570,302 614,317 660,313 720,316 780,311 837,313 850,314"
+            fill="none" stroke="#cf8e3e" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+
+  <!-- ===== Anchor points (the three REAL values) ===== -->
+  <!-- 100k start -->
+  <circle cx="90" cy="84" r="4.5" fill="#cf8e3e" stroke="#808a94" stroke-width="1"/>
+  <text x="100" y="80" fill="#808a94" font-size="11" font-weight="700">$100,000</text>
+  <text x="100" y="94" fill="#9aa2ab" font-size="9.5">Mar 22, 2026 · V1 launch</text>
+
+  <!-- 15,598 low -->
+  <circle cx="614" cy="317" r="5" fill="#cf8e3e" stroke="#808a94" stroke-width="1"/>
+  <text x="606" y="337" text-anchor="end" fill="#808a94" font-size="11" font-weight="700">$15,598 low</text>
+  <text x="606" y="351" text-anchor="end" fill="#9aa2ab" font-size="9.5">Jun 10, 2026 · −84% drawdown</text>
+
+  <!-- ~16.8k current -->
+  <circle cx="850" cy="314" r="4.5" fill="#cf8e3e" stroke="#808a94" stroke-width="1"/>
+  <text x="842" y="304" text-anchor="end" fill="#808a94" font-size="11" font-weight="700">~$16.8k</text>
+  <text x="842" y="318" text-anchor="end" fill="#9aa2ab" font-size="9.5">mid-Jul · flat &amp; slightly up</text>
+
+  <!-- honest schematic note -->
+  <text x="98" y="410" fill="#9aa2ab" font-size="9.5" font-style="italic">Anchors ($100,000 · $15,598 · ~$16.8k) are actual account values; the path between them is schematic between anchor points.</text>
+  <text x="98" y="424" fill="#9aa2ab" font-size="9.5">Five versions of increasingly careful research could not out-predict the market — the account kept the receipts.</text>
+</svg>
