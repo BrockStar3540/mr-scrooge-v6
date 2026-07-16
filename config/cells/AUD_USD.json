@@ -71,6 +71,58 @@
           "notes": "phaseA: kc_up [-15,0] survives raw re-derivation; m_cert long gate dropped (both lock-era long wins would have passed \u2014 no regression). kc_up_dist_pips in [-15, 0] is broker-validated (6W1L) raw gate. Side: short. No vwap long setup emitted (q_vwap_dist_pips_m5 not on live feed). Log m_cert-equivalent stamps on every london long fire; re-derive after 10 longs. | DEMOTED 2026-07-06 (Brock deep-dive): corpus drift in this window favors LONG at all horizons (last-14d +6.14p/240m); first cell-era fire (9917) full -20.3p stop. Was ev_seq -0.054 / phaseA INSUFFICIENT DATA."
         },
         {
+          "id": "kc_up_long_lean_t20s",
+          "side": "long",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -15.0,
+              "max": -4.62,
+              "note": "Price within [-15, 0] pips of KC upper band; near/below upper KC. Clean-data re-derivation (2026-07-03): KEEP n=8391 -0.054p 49.2% WR vs BLOCKED -1.110p 47.9% WR. Fresh stump: -13.6459 (gt) WR=49.6%. Broker-validated: 6W 1L on live AUD_USD/london/short trades. phaseA (2026-07-04): survives raw re-derivation unchanged.",
+              "lineage": "rederivation-2026-07-03/v5_rederivation_REPORT.md item-3b; broker-validation-6W1L-2026-07; phaseA_gate_rederivation-2026-07-04 CELL 4"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 0.8
+            },
+            {
+              "feature": "htf_pct_60",
+              "max": 0.013,
+              "note": "MTF dial 2026-07-09: htf_pct_60 = 60-DAY return (defn verified corpus pct_change(60) == feed dc[-1]/dc[-61]-1). <=0.013: take the pullback-long only when the pair is NOT already extended (+1.3%) on the quarter. Robustness bar: both horizons, 4/5 slices, positive every month; drift +2.93->+7.71."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "side-audit 2026-07-06: corpus drift LONG in window (2026 +0.40, 60d +1.59, 14d +6.14 p/240m); twin installed to earn side via n>=20 shadow gauntlet",
+            "drift": "STRENGTHENING"
+          },
+          "notes": "LIVE FLIP 2026-07-06 (Brock order) from kc_up_short_lean. Corpus drift LONG all windows. Tripwire: fast last_n=20 min_ev=-0.5 suspend. | REGEARED 2026-07-08: harvest gear SL12/engage6/0.7xATR[3,7] (winner MAE p75 9.2; MFE med 11.1). Side reconfirmed LONG (+1.59 drift/60d). No filter added \u2014 no honest separator found. | DIAL-IN 2026-07-08: pullback-long zone [-15,-4.62] + rvol>=0.80. drift +2.93 (+84%), cw 43%. | +htf_pct_60<=0.013 MTF dial 2026-07-09 (first HTF seat: 60-day-return <= +1.3%; +163% drift, monthly-consistent).",
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+        },
+        {
           "id": "kc_up_long_lean",
           "side": "long",
           "class": "LEAN",
@@ -120,6 +172,52 @@
             "drift": "STRENGTHENING"
           },
           "notes": "LIVE FLIP 2026-07-06 (Brock order) from kc_up_short_lean. Corpus drift LONG all windows. Tripwire: fast last_n=20 min_ev=-0.5 suspend. | REGEARED 2026-07-08: harvest gear SL12/engage6/0.7xATR[3,7] (winner MAE p75 9.2; MFE med 11.1). Side reconfirmed LONG (+1.59 drift/60d). No filter added \u2014 no honest separator found. | DIAL-IN 2026-07-08: pullback-long zone [-15,-4.62] + rvol>=0.80. drift +2.93 (+84%), cw 43%. | +htf_pct_60<=0.013 MTF dial 2026-07-09 (first HTF seat: 60-day-return <= +1.3%; +163% drift, monthly-consistent)."
+        },
+        {
+          "id": "classic_extension_fade_long_t20s",
+          "side": "long",
+          "class": "classic",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "willr_m5",
+              "max": -65.0,
+              "note": "rsi-proxy <=35 oversold"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "below EMA20 (extended down -> fade long)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "classics-retrial 2026-07-09: YTD +2.9, edge +2.0",
+            "drift": "STABLE"
+          },
+          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard.",
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
         },
         {
           "id": "classic_extension_fade_long",
@@ -180,6 +278,51 @@
         "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
       "setups": [
+        {
+          "id": "control_atrconc_60_t20s",
+          "side": "short",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "atr_conc",
+              "min": 0.1776,
+              "max": 0.241631,
+              "note": "Absolute 2026 bounds \u2014 CONTROL formula, not rolling. Source: formula_shadow.py REGISTRY entry.",
+              "lineage": "formula-shadow-registry-2026-07-04/modules/signals/formula_shadow.py; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "evidence": {
+            "ev_seq": -0.5,
+            "drift": "STABLE",
+            "source": "formula-history-2026-07-04/verdict_table.csv",
+            "holdout_months_positive": 2
+          },
+          "notes": "CONTROL formula: deep-OOS failed validation. 2026 convergence ev=+0.394 is a 2026-pocket artifact. atr_conc in [p13.9, p35.5] abs=[0.177600, 0.241631]. Stamps emitted for live falsification. Source: formula_shadow.py REGISTRY + ~/v5-formula-history/ verdict_table.csv. | PROMOTED 2026-07-09 (shadow scoreboard): stamp-forward +3.65p/ep n=48 83% hit; corpus ny-short agrees.",
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+        },
         {
           "id": "control_atrconc_60",
           "side": "short",

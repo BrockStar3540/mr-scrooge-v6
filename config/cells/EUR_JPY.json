@@ -15,6 +15,47 @@
       },
       "setups": [
         {
+          "id": "box_pdl_short_t20s",
+          "side": "short",
+          "class": "box",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdl_dist",
+              "max": 0.0,
+              "note": "price below prior-day low = downside box break (V1 OG box theory, resurrected 2026-07-09)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "box-screen 2026-07-09: drift +10.73p/240m YTD n=2465, positive ALL slices (May +58.6)",
+            "drift": "PERSISTENT"
+          },
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
+          "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades"
+        },
+        {
           "id": "box_pdl_short",
           "side": "short",
           "class": "box",
@@ -122,6 +163,55 @@
         "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
       "setups": [
+        {
+          "id": "timing_lean_30_t20s",
+          "side": "short",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.787983,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.787983) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m EUR_JPY/ny/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.09
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean pdh sign=negative (corr=-0.0626, AUC=0.4787). lean confirmer dropped (pdh = absolute price band (182-188), setup-killer on drift); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.787983 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | AUDIT 2026-07-08: side confirmed (+5.17); atr_h1_rel>=1.09 floor -> drift +8.32 (+61%), dead 12%, fill-odds unchanged.",
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+        },
         {
           "id": "timing_lean_30",
           "side": "short",

@@ -41,6 +41,69 @@
       },
       "setups": [
         {
+          "id": "regime_short_240_t20s",
+          "side": "short",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": null,
+              "max": 2.81,
+              "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
+            },
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -4.54
+            },
+            {
+              "feature": "willr_m5",
+              "min": -66.37
+            },
+            {
+              "feature": "htf_pct_60",
+              "max": -0.005
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 17.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_5m_monthly_mean",
+              "lte": 2.836,
+              "action": "suspend",
+              "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": -0.07,
+            "drift": "STABLE",
+            "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
+            "n_floor_status": "shadow-only-session-disabled"
+          },
+          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%.",
+          "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades"
+        },
+        {
           "id": "regime_short_240",
           "side": "short",
           "class": "LEAN",
