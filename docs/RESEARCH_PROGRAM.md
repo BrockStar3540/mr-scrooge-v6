@@ -421,7 +421,12 @@ the premise outright (all 1,374 test reds are fast stop-outs, median hold 2.2h; 
 pre-registered test (the red-denominator hunt) found the reds DO share a real common denominator —
 they are born in quiet tape (low ambient volatility, 22σ over a shuffled null at n=78k; NY-afternoon
 13–18 UTC; and news days are *safer*, not riskier) — but the tradeable filter form failed both books
-out-of-sample (sim): the regime is describable, not capturable. Both addenda in the H6 paper.
+out-of-sample (sim): the regime is describable, not capturable. A fourth (joint SL x trigger grid)
+closed wider stops with a clean physical law — widening the stop 3x cuts the pre-engage stop-out
+rate only ~2.9x; rarity never outruns width — but produced **the ledger's first material positive**:
+wider ENGAGE (trigger 7.5 → 20, SL unchanged) blind-tests at Sharpe ~0.57 in both sizing frames with
+a zero overfit gap and a stable adjacent-arm plateau (sim) — material (≥0.30), not a revival (<0.70),
+never yet traded live. All addenda in the H6 paper.
 
 **What still runs.** The wide-stop book (range-sized SL 40/50/60, trigger +7.5 → lock +5, fixed trail
 2.5 — B-090 fixed; no green-lock inside a spread of entry) remains deployed on the OANDA **practice**
@@ -439,20 +444,25 @@ With the wide-stop verdict in (§6), the ledger holds no open price-prediction h
 surviving directions are the edge hunt's non-tuning forks — none of them "generate variant #7" of a
 falsified family:
 
-1. **Pivot from prediction to execution/structure** — carry, cost, liquidity, and rollover-timing
+1. **Shadow the wider-engage arm** — the ledger's first material blind-test positive (3-cell book,
+   trigger 20, SL 40–60; test Sharpe ~0.57 both frames, zero overfit gap — H6 paper, Addendum 3).
+   Per the gauntlet: a live **shadow** seat only (no capital), to measure realized slippage and fill
+   behavior against the sim's cost model; the 0.70 research bar and the live tape still gate any
+   promotion.
+2. **Pivot from prediction to execution/structure** — carry, cost, liquidity, and rollover-timing
    edges are a different game with a different test. This is now the leading fork: the cost work (83%
    of a loss window was spread) and the H6 autopsy (gross Sharpe 1.26 eaten entirely by ~0.8–1.0p of
    slippage) both say the accessible edge lives in *paying less*, not *predicting better*.
-2. **Different corpus, not different tuning** — the factor verdict's own prescription: the edge could
+3. **Different corpus, not different tuning** — the factor verdict's own prescription: the edge could
    not be expanded from this corpus, so any future prediction attempt belongs on a *different* one
    (pre-2019, other instruments) where AUD_JPY's 2023–26 trend does not dominate the OOS window — and
    must clear the same pre-registered cost-bearing bar H6 was held to.
-3. **Accept trend as a low-Sharpe diversifier** — run it tiny and cheap alongside other ventures
+4. **Accept trend as a low-Sharpe diversifier** — run it tiny and cheap alongside other ventures
    rather than as the main bet, consistent with the CTA finding.
-4. **Measure the sim's one soft assumption** — the practice-account tape's remaining job: realized
+5. **Measure the sim's one soft assumption** — the practice-account tape's remaining job: realized
    per-fill slippage vs the ~0.4p knife-edge (§6). Cheap, already running, and the only observation
    that could reopen H6.
-5. **The honest option, now the default posture** — the program's own results say an automated retail
+6. **The honest option, now the default posture** — the program's own results say an automated retail
    price-edge is not this venture's advantage; engineering weight shifts toward the ventures that
    are. The willingness to conclude this is what makes the program's positive findings — the
    methodology, the falsifications, the cost accounting — trustworthy.

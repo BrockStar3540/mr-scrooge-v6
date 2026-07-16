@@ -12,7 +12,7 @@
 </div>
 
 <!-- LIVE_BALANCE_START -->
-**Live practice-account NAV: $16,780.15** · 1 open trade · as of 2026-07-16 06:21 UTC *(auto-updated on every push)*
+**Live practice-account NAV: $16,769.76** · 1 open trade · as of 2026-07-16 06:51 UTC *(auto-updated on every push)*
 <!-- LIVE_BALANCE_END -->
 
 ---

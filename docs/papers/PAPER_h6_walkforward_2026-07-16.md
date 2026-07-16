@@ -308,6 +308,78 @@ regime (Addendum 2). Brock's instinct that "there must be something" was directi
 is something, it is describable, and it is not capturable. That distinction is the program's finding
 in miniature.
 
+## Addendum 3 (2026-07-16): wider stops falsified, wider engage material — the ledger's first positive
+
+The last untested corner of the H6 surface (Brock): *"what about wider SL — −80/−100/−120? How often
+are they hit, what's the cost? … maybe a wider engage too."* The 07-14 sweep had stopped at SL60.
+Pre-registered joint grid on the **frozen** books (this tests gear, not cells — no re-selection):
+SL arms {range 1x = 40/50/60, scaled 1.5x/2x, flat 60/80/100/120} x trigger arms {7.5, 10, 15, 20},
+trail 2.5 (lock = trigger − 2.5); argmax on TRAIN only, one frozen arm per book, tested once on
+2023–26; both sizing frames reported (risk-norm, position ∝ 1/SL; and fixed-size, Brock's frame);
+same bars (≥0.30 material / ≥0.70 revives). Honesty gate: the vectorized ride engine was proven
+bit-equivalent to the scalar original (1,500 sample rides, 0 mismatches) and both registered
+baselines reproduced exactly before any arm ran. All sim.
+
+**Part 1 — the reusable physics: how often is a wide stop hit?** On all 77,936 18-cell train entries,
+the adverse excursion suffered *before* reaching +7.5 favorable:
+
+| tier | n | reach +7.5 first | ≤ −40 | ≤ −60 | ≤ −80 | ≤ −100 | ≤ −120 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| asia | 16,985 | 95.6% | 15.1% | 10.6% | 8.3% | 6.6% | 5.5% |
+| london | 17,980 | 96.3% | 15.9% | 11.3% | 8.9% | 7.2% | 6.2% |
+| ny | 42,971 | 95.6% | 14.3% | 10.0% | 7.6% | 5.8% | 4.4% |
+| **pooled** | **77,936** | **95.8%** | **14.8%** | **10.4%** | **8.1%** | **6.3%** | **5.1%** |
+
+**Widening the stop 3x (40 → 120) cuts the pre-engage stop-out rate only ~2.9x (14.8% → 5.1%).**
+Rarity keeps pace with width but never outruns it: at −120 the hit rate still sits *above* the
+fixed-size break-even (~4.7%) and just below the risk-norm one (~6%). The companion engage surface
+quantifies the other blade: a wider trigger strips armor (at trig 20 only 67.5% engage before −40 vs
+85.2% at 7.5). This table is the durable artifact — the stop-width trade-off is now measured, not
+argued.
+
+**Wider stops: FALSIFIED.** The red-rate-vs-SL curves confirm the physics end-to-end: on the 3-cell
+book at trig 7.5, tripling the stop cuts red rate only ~2.4x and tops out near Sharpe 0.3; on the
+18-cell book every SL arm stays negative — wider stops make the loser *less bad*, never good. The
+18-cell grid's lone train-positive corner (scale-1.5x × trig 20, train +0.503) collapsed to **−0.129**
+on blind test — a textbook **+0.633 winner's-curse gap** from searching 28 arms. And because slippage
+does not scale with SL (a modeling choice that *favors* wide arms), the wide-stop falsification is,
+if anything, optimistic.
+
+**Wider engage: the ledger's first material positive.** After three same-day closures, the surface
+walk found one corner materially above water in blind test — and it is the geometry Brock predicted:
+demand more proof before arming, let the lock ride higher. The 3-cell registered book with **SL
+unchanged at 40–60 and trigger 7.5 → 20** (lock +17.5, trail 2.5):
+
+| | baseline (t7.5) | wider engage (t20) |
+|---|---:|---:|
+| test net Sharpe (risk-norm / fixed-size) | +0.003 / +0.014 | **+0.566 / +0.558** |
+| mean net per trade | −0.28p | **+0.40p** |
+| avg green / red rate | +8.08p / 15.3% | +21.97p / 31.6% |
+| overfit gap (train → test) | — | +0.489 → +0.566 (test *better*) |
+
+The red rate doubles exactly as the engage surface mechanically predicts, and the bigger greens win
+the trade. The result is not a knife-edge: adjacent grid arms hold a **stable 0.49–0.57 plateau**,
+and both sizing frames agree. **Verdict: MATERIAL (≥ 0.30) — NOT a revival (< 0.70).**
+
+**Caveats carried, in full.** (1) Three cells only. (2) This is the fourth family-wise test of the
+day — mitigated by pre-registration, a zero (negative) overfit gap, the plateau, and both-frames
+agreement, but the breadth is real. (3) The slippage model is unchanged and remains the binding
+ceiling: the no-slip twin scores **+1.15** — the toll still caps everything, and wider engage does
+not relieve it, it just clears more of it. (4) The trigger/trail sweep was not a clean one-factor
+isolation (trail held at 2.5). (5) **Trigger-20 has never traded live.** Per the program's own
+gauntlet, the doctrinal next step is a live **SHADOW** deployment — no capital — to measure realized
+slippage and fill behavior on the arm before any promotion question is even posed.
+
+Scope: frozen books, leak-clean M5 truth corpus, extended 5-day horizon for slow arms (unresolved
+fractions ≤1.9%; baselines re-run at the same horizon for apples-to-apples). Artifacts (grids,
+adverse/engage surfaces, red-rate curves, frozen choice, equity curves):
+`/SCROOGE ARCHIVE/session-notes/2026-07-16_wider_sl_engage/`.
+
+The three addenda now read as one arc: the reds have no time structure (1), no entry-state structure
+beyond a diffuse quiet-tape regime (2), and no rescue by stop width (3) — but the exit *geometry*
+still had one dial mis-set, and moving it produced the first blind-test-positive configuration the
+ledger has recorded. Material, unpromoted, and owed a live shadow.
+
 ## 8. Data availability
 
 - Full pre-registered results file, frozen design, selection table (all 29 candidate verdicts), main
