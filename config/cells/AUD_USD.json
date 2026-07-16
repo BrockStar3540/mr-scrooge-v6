@@ -47,7 +47,7 @@
             "sl_pips": 40.0,
             "trigger_pips": 7.5,
             "trail_pips": 2.5,
-            "trail_mult": 1.0,
+            "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED"
@@ -99,7 +99,7 @@
             "sl_pips": 40.0,
             "trigger_pips": 7.5,
             "trail_pips": 2.5,
-            "trail_mult": 1.0,
+            "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED"
@@ -144,7 +144,7 @@
             "sl_pips": 40.0,
             "trigger_pips": 7.5,
             "trail_pips": 2.5,
-            "trail_mult": 1.0,
+            "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED"
@@ -200,7 +200,7 @@
             "sl_pips": 50.0,
             "trigger_pips": 7.5,
             "trail_pips": 2.5,
-            "trail_mult": 1.0,
+            "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",

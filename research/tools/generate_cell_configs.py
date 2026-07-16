@@ -1347,7 +1347,7 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
                 _trig = 7.5   # Brock 2026-07-15: engage at real +7.5 move (not +3.5 wiggles); tested Sharpe 0.70 vs 0.60
                 _trail = 2.5  # trail stays TIGHT to lock the gain (loosening to 4 collapses to Sharpe 0.04)
                 _new = {"mode": "ratchet", "sl_pips": _sl, "trigger_pips": _trig, "trail_pips": _trail,
-                        "trail_mult": 1.0, "trail_min": _trail, "trail_max": max(_trail * 3.0, 10.0),
+                        "trail_mult": 0.0, "trail_min": _trail, "trail_max": max(_trail * 3.0, 10.0),  # trail_mult=0 -> FIXED trail (Brock: no ATR-scaling; engage +7.5, lock +5)
                         "_class": "RANGE_SIZED"}
                 if _ex.get("entry_cutoff_utc"):
                     _new["entry_cutoff_utc"] = _ex["entry_cutoff_utc"]
