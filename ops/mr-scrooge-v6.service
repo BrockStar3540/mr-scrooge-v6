@@ -1,13 +1,14 @@
 [Unit]
-Description=Mr. Scrooge V6 Trading Platform
+Description=Mr. Scrooge V6 Trading Platform (live)
 After=network-online.target
 
 [Service]
 Type=simple
 WorkingDirectory=%h/mr-scrooge-v6
-ExecStart=/usr/bin/python3 main.py --live
+Environment=DASHBOARD_PORT=8084
+ExecStart=%h/mr_burns_env/bin/python3 main.py --live
 Restart=on-failure
-RestartSec=10
+RestartSec=15
 
 [Install]
 WantedBy=default.target
