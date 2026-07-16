@@ -12,7 +12,11 @@
 </div>
 
 <!-- LIVE_BALANCE_START -->
-**Live practice-account NAV: $16,865.27** · 2 open trades · as of 2026-07-16 10:39 UTC *(auto-updated on every push)*
+**📈 Live practice-account track record** — NAV **$16,860.82** · since the $15,598 low (2026-06-10): **+$1,262.82 (+8.1%)** · 2 open · 367 trades logged (realized −$15,407.55) · updated 2026-07-16 10:40 UTC
+
+![equity](livelog/equity.svg)
+
+*Auto-updated hourly from the broker account. Full log: [livelog/](livelog/) ([equity](livelog/equity.csv) · [trades](livelog/trades.csv)). Practice account — not real money.*
 <!-- LIVE_BALANCE_END -->
 
 ---

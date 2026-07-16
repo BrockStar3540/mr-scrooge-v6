@@ -1,6 +1,0 @@
-#!/bin/sh
-# Refresh the README live-balance line on every commit (fails soft).
-# Install once per clone:  cp ops/hooks/pre-commit .git/hooks/pre-commit
-root="$(git rev-parse --show-toplevel)"
-python3 "$root/ops/update_balance.py" && git add "$root/README.md"
-exit 0
