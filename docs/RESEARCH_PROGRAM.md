@@ -449,6 +449,7 @@ falsified family:
    Per the gauntlet: a live **shadow** seat only (no capital), to measure realized slippage and fill
    behavior against the sim's cost model; the 0.70 research bar and the live tape still gate any
    promotion.
+   _Shadow DEPLOYED 2026-07-16 (commit 4ccf4db): additive `_t20s` SHADOW setups (the registered 3-cell book + 9 exploratory duplicates of live-ACTIVE setups) stamp on the dry-run shadow; a daily forward scorer replays the validated ratchet t20 vs t7.5 gears on practice M5 with the sim's realized-cost model. Never trades; promotion still gated by the 0.70 bar + live tape._
 2. **Pivot from prediction to execution/structure** — carry, cost, liquidity, and rollover-timing
    edges are a different game with a different test. This is now the leading fork: the cost work (83%
    of a loss window was spread) and the H6 autopsy (gross Sharpe 1.26 eaten entirely by ~0.8–1.0p of
