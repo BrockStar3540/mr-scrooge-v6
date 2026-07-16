@@ -867,15 +867,15 @@ def _cellshadow(n: int = 200) -> dict:
 
 
 # ── Cell scoreboard (cell_setup_score.py --json, cached 300s) ────────────────
-_CELLSCORE_CACHE = {"ts": 0, "data": None}
+_CELLSCORE_CACHE = {"ts": 0, "data": None, "refreshing": False}
 _CELLSCORE_SCRIPT = _REPO_ROOT / "research" / "tools" / "cell_setup_score.py"
 
-def _cellscore() -> dict:
-    """Run the Phase-C scorer as a subprocess (it needs OANDA candles + journal).
-    Cached 300s; scorer errors/timeouts degrade to an empty scoreboard."""
+def _cellscore_refresh():
+    """Worker: run the Phase-C scorer subprocess and refill the cache.
+    Runs ONLY in the daemon thread — the scorer takes minutes and the
+    dashboard server is single-threaded (2026-07-09 lesson; a blocked
+    /api/state here is what painted quick-status red)."""
     import time
-    if time.time() - _CELLSCORE_CACHE["ts"] < 300 and _CELLSCORE_CACHE["data"] is not None:
-        return _CELLSCORE_CACHE["data"]
     try:
         out = subprocess.check_output(
             ["python3", str(_CELLSCORE_SCRIPT), "--json"],
@@ -895,6 +895,23 @@ def _cellscore() -> dict:
     _CELLSCORE_CACHE["ts"] = time.time()
     _CELLSCORE_CACHE["data"] = data
     return data
+    _CELLSCORE_CACHE["refreshing"] = False
+
+
+def _cellscore() -> dict:
+    """Serve the cached scoreboard instantly; kick a background refresh
+    when stale. Never blocks the request thread."""
+    import threading, time
+    fresh = (time.time() - _CELLSCORE_CACHE["ts"] < 300
+             and _CELLSCORE_CACHE["data"] is not None)
+    if not fresh and not _CELLSCORE_CACHE["refreshing"]:
+        _CELLSCORE_CACHE["refreshing"] = True
+        threading.Thread(target=_cellscore_refresh,
+                         name="cellscore-refresh", daemon=True).start()
+    return _CELLSCORE_CACHE["data"] or {
+        "setups": [], "note": "scoreboard building in background — refresh shortly",
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
 
 
 def _sysinfo() -> dict:
