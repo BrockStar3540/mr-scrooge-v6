@@ -57,6 +57,14 @@ The book right now is **29 validated setups across 14 (pair × session) cells �
 
 Every dead end is documented on purpose: [the Book of Bugs, B-001→B-090](docs/BOOK_OF_BUGS.md) · [version history V1→V6](docs/SCROOGE_HISTORY.md) · full research corpus, retired modules, and the strategy graveyard: **shared archive link at public launch**.
 
+## The tape — what the tuition cost
+
+Everything above was paid for on one practice account, and we publish its tape rather than curate it. The account opened at **$100,000 on March 22, 2026** (V1) and bottomed at **$15,598 on June 10, 2026** — an **−84% drawdown** across the V1→V4 strategy eras and early V5: every falsified strategy, every exit that strangled winners, every bug in the Book of Bugs, charged against that balance. That number is the strongest argument in this repo: five versions of increasingly careful research could not out-predict the market, and the account kept the receipts. V5's measurement overhaul (broker-fill truth, cell-era falsification discipline) is what stopped the bleeding; whether the wide-stop book can climb is the open forward experiment.
+
+<!-- LIVE_BALANCE_START -->
+**Live practice-account NAV: $16,764.36** · 1 open trade · as of 2026-07-16 03:07 UTC *(auto-updated on every push)*
+<!-- LIVE_BALANCE_END -->
+
 ## Predictions — as falsifiable forward tests, not promises
 
 We don't publish return projections. The wide-stop deployment is a **forward experiment on a practice account**; these are the things the sim says *should* hold, scored weekly against **broker fills** (never our own logs), per class, at n≥20 before any verdict — no aggregate blending across eras.
@@ -104,3 +112,5 @@ Local panel on port `:8084`. Tabs:
 Think we're wrong somewhere? Good. The shared archive ships the corpora and every retired experiment precisely so you can re-run the analysis and attack the conclusions — the same gauntlet our own ideas face (leak-checked corpus → walk-forward → fired-trade simulation → shadow → capital). External suggestions are treated as untrusted input: nothing reaches the live path without passing that gauntlet.
 
 > ⚠️ **Research software on an OANDA practice account. Not financial advice. The wide-stop result is a simulation with known inflators and its live verdict is pending. Leveraged forex can lose more than your deposit. If you run this, the outcomes are yours.**
+
+**License:** [Apache-2.0](LICENSE) · **Contributing:** [CONTRIBUTING.md](CONTRIBUTING.md) — external ideas are welcome and treated as untrusted input: everything passes the same falsification gauntlet our own ideas do.
