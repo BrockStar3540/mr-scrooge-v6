@@ -482,15 +482,6 @@ body.has-ticker{padding-bottom:32px}
 .mode-MEDIUM{background:#122c3a;color:#4fc3f7;border:1px solid #1e5a7a}
 .mode-LONG{background:#26123a;color:#c47fff;border:1px solid #4e1e7a}
 .mode-LEGACY{background:var(--bg4);color:var(--fg2);border:1px solid var(--bg4)}
-.mh-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;padding:12px}
-.mh-card{background:var(--bg2);border:1px solid var(--border-2);border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start}
-.mh-dot{width:12px;height:12px;border-radius:50%;margin-top:3px;flex-shrink:0}
-.mh-dot.green{background:#2ecc71;box-shadow:0 0 6px #2ecc7188}
-.mh-dot.yellow{background:#f4c542;box-shadow:0 0 6px #f4c54288}
-.mh-dot.red{background:#e74c3c;box-shadow:0 0 8px #e74c3c;animation:pulse 1.5s infinite}
-.mh-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--fg1)}
-.mh-detail{font-size:11px;color:var(--fg2);margin-top:2px}
-.tag.mh-green{background:#12321f;color:#2ecc71}.tag.mh-yellow{background:#3a3212;color:#f4c542}.tag.mh-red{background:#3a1512;color:#e74c3c}
 #freeze-flag{background:#1a2b3a;color:#7fd4ff;border:1px solid #2e5a7a;animation:pulse 2s infinite}
 .bk-status{font-size:8.5px;font-weight:800;letter-spacing:.06em;margin-left:auto}
 .bk-status.ACTIVE{color:var(--pass)}.bk-status.SHADOW{color:var(--warn)}.bk-status.SUSPENDED{color:var(--fail)}
@@ -558,14 +549,13 @@ body.has-ticker{padding-bottom:32px}
 <div class="nav">
   <div class="brand">
     <div class="brand-mark"></div>
-    <div class="brand-name">SCROOGE <span class="brand-v">V6</span></div>
+    <div class="brand-name">SCROOGE <span class="brand-v">V5</span></div>
   </div>
   <button class="tab active" onclick="showTab('live',this)">LIVE</button>
   <button class="tab" onclick="showTab('pairs',this)">PAIRS</button>
   <button class="tab" onclick="showTab('cells',this)">BOOK</button>
   <button class="tab" onclick="showTab('shadow',this)">SHADOW</button>
   <button class="tab" onclick="showTab('indicators',this)">INDICATORS</button>
-  <button class="tab" onclick="showTab('modules',this)">MODULES</button>
   <button class="tab" onclick="showTab('health',this)">HEALTH</button>
   <button class="tab" onclick="showTab('system',this)">SYSTEM</button>
   <button class="tab" onclick="showTab('tune',this);loadTune()">TUNE</button>
@@ -583,17 +573,6 @@ body.has-ticker{padding-bottom:32px}
     <button class="snd-toggle" onclick="toggleStream()" title="Toggle stream mode (large hero, minimal UI)">📺 STREAM</button>
     <span id="ts" style="font-size:11px;color:var(--fg3)">—</span>
     <span id="spin">●</span>
-  </div>
-</div>
-
-<!-- ─── MODULES TAB (module health, V6) ──────────────────────────────────── -->
-<div id="tab-modules" class="pane">
-  <div class="card" style="margin:14px">
-    <div class="card-title">Module Health
-      <span id="mh-overall" class="tag">—</span>
-      <span id="mh-ts" class="muted" style="font-size:10px;margin-left:8px"></span>
-    </div>
-    <div id="mh-grid" class="mh-grid"></div>
   </div>
 </div>
 
@@ -734,6 +713,23 @@ body.has-ticker{padding-bottom:32px}
 
 <!-- ─── SHADOW TAB (Phase C shadow-week scoreboard + stamp feed) ─────────── -->
 <div id="tab-shadow" class="pane">
+  <div class="card" style="margin:14px">
+    <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard
+      <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
+    </div>
+    <div class="muted" style="padding:0 12px 8px;font-size:11px">
+      Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m.
+      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow beating the live book's median.
+    </div>
+    <table id="sb-tbl" style="width:100%">
+      <thead><tr>
+        <th>setup</th><th>cell</th><th>side</th><th>status</th><th>eps</th>
+        <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
+      </tr></thead>
+      <tbody id="sb-body"></tbody>
+    </table>
+  </div>
+
   <div id="shadow-phase" class="banner banner-gray">Loading shadow-phase status…</div>
   <div class="card">
     <div class="card-title">Setup Scoreboard — simulated EV vs expected
@@ -803,51 +799,26 @@ body.has-ticker{padding-bottom:32px}
 <!-- ─── TUNE TAB (preserved exit-config editor) ──────────────────────────── -->
 <div id="tab-tune" class="pane">
   <div class="card">
-    <div class="card-title">Exit knobs — defaults + per-pair overrides
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(live; ratchet re-reads each 5s tick, new entries read on placement)</span>
+    <div class="card-title">Cell exit stack — live, per-cell
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(range-sized SL → engage +trigger → lock (trigger−trail) → trail; from config/cells, hot-reloaded. Edit via direct config.)</span>
     </div>
     <div id="tune-msg" style="padding:8px 10px;font-size:12px"></div>
     <div style="overflow-x:auto">
     <table id="tune-tbl" style="font-size:12px">
-      <thead>
-        <tr>
-          <th style="text-align:left">Scope</th>
-          <th title="Initial server-side stop loss in pips from entry">SL (pips)</th>
-          <th title="Peak MFE required to arm the first ratchet rung (TP1)">TP1 trigger</th>
-          <th title="Pips below the rung level where the SL parks (give-back)">Trail</th>
-          <th title="Distance between ratchet rungs (TP2 = TP1 + this)">Rung step</th>
-          <th title="Minutes after entry before the ratchet can engage (0 = immediate)">Engage min</th>
-          <th title="Minimum minutes between ratchet re-checks">Cadence min</th>
-          <th title="Derived: first lock = trigger - trail; second lock = trigger + step - trail">TP1 lock / TP2 lock</th>
-          <th></th>
-        </tr>
-      </thead>
+      <thead><tr>
+        <th style="text-align:left">Cell · setup</th>
+        <th>Status</th><th>Side</th>
+        <th title="Range-sized initial stop (pips)">SL</th>
+        <th title="Peak MFE to engage the ratchet">Engage</th>
+        <th title="Pips behind peak once engaged">Trail</th>
+        <th title="0 = fixed trail; &gt;0 = ATR-scaled (B-090 risk)">Mult</th>
+        <th title="First lock = engage − trail (green after spread)">Locks</th>
+        <th>Class</th>
+      </tr></thead>
       <tbody id="tune-body"></tbody>
     </table>
     </div>
-    <div style="padding:10px;display:flex;gap:10px;align-items:center">
-      <button class="primary" onclick="saveTune()">Save all changes</button>
-      <button class="secondary" onclick="loadTune()">Discard edits</button>
-      <span class="muted" style="font-size:11px">Per-pair: blank = inherit default. Rules: <code>trail &lt; trigger</code>, <code>tp2_at &gt; tp1_at</code>, <code>tp1% + tp2% &lt; 1</code>.</span>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title">TP ladder (partial close) — V4 harvest_ladder port
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(defaults OFF — toggle on per scope to use)</span>
-    </div>
-    <div style="overflow-x:auto">
-    <table id="tune-tp-tbl" style="font-size:12px">
-      <thead>
-        <tr>
-          <th style="text-align:left">Scope</th>
-          <th>TP1 on</th><th>TP1 at (pips)</th><th>TP1 close %</th><th>TP1 SL lock (pips)</th>
-          <th>TP2 on</th><th>TP2 at (pips)</th><th>TP2 close %</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="tune-tp-body"></tbody>
-    </table>
-    </div>
+    <div style="padding:8px 10px;font-size:12px" class="muted" id="tune-summary"></div>
   </div>
 </div>
 
@@ -872,11 +843,12 @@ body.has-ticker{padding-bottom:32px}
       </div>
       <div id="pm-risk-math" style="font-size:11px;color:var(--fg2);align-self:flex-end;padding-bottom:6px"></div>
     </div>
+    <div id="pm-acct-ro" style="padding:0 10px 10px;font-size:12px;color:var(--fg2)"></div>
   </div>
 
   <div class="card">
-    <div class="card-title">Per-pair playmaker gates
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(blank cell on a pair row = inherit default)</span>
+    <div class="card-title">Per-pair playmaker gates <span style="color:var(--fail);font-size:11px">(LEGACY — retired)</span>
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">dir/mom-certainty gates are from the pre-cell era (direction_v2/momentum_v3, archived 2026-07-04). The cell era gates on raw per-cell indicator conditions instead — see the BOOK and TUNE tabs.</span>
     </div>
     <div style="overflow-x:auto">
     <table id="pm-tbl" style="font-size:12px">
@@ -924,24 +896,32 @@ function showTab(name, btn){
 }
 function fmt(v,d=2){return v==null?'—':Number(v).toFixed(d)}
 
-/* ── Module Health (V6) ────────────────────────────────────────────────── */
-async function pollModuleHealth(){
+/* ── Shadowboard ───────────────────────────────────────────────────────── */
+async function pollShadowboard(){
   try{
-    const r=await fetch('/api/module_health'); if(!r.ok)return;
+    const r=await fetch('/api/shadowboard'); if(!r.ok)return;
     const d=await r.json();
-    const ov=document.getElementById('mh-overall');
-    ov.textContent=d.overall.toUpperCase();
-    ov.className='tag mh-'+d.overall;
-    document.getElementById('mh-ts').textContent='checked '+(d.ts||'').slice(11,19)+'Z';
-    document.getElementById('mh-grid').innerHTML=(d.modules||[]).map(m=>
-      `<div class="mh-card"><div class="mh-dot ${m.status}"></div>
-        <div><div class="mh-name">${m.module}</div>
-        <div class="mh-detail">${m.detail||''}</div></div></div>`).join('');
-    const navBtns=document.querySelectorAll('.tab');
-    navBtns.forEach(b=>{if(b.textContent==='MODULES'){b.style.color=d.overall==='red'?'#e74c3c':(d.overall==='yellow'?'#f4c542':'');}});
+    document.getElementById('sb-meta').textContent=
+      `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
+    document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
+      const beat=(x.status==='SHADOW'&&d.active_median!=null&&x.avg_net240>d.active_median)?' 🏆':'';
+      const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
+      const ncls=x.avg_net240>0?'pos':'neg';
+      return `<tr>
+        <td class="mono" style="font-size:11px">${x.setup}${beat}</td>
+        <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
+        <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
+        <td class="mono ${ncls}"><b>${x.avg_net240>0?'+':''}${x.avg_net240}p</b></td>
+        <td class="mono ${x.cum_net240>0?'pos':'neg'}">${x.cum_net240>0?'+':''}${x.cum_net240}p</td>
+        <td>${Math.round(x.wr*100)}%</td><td>${Math.round(x.hit6*100)}%</td>
+        <td class="mono muted" style="font-size:11px">${x.med_mfe}/${x.med_mae}</td>
+        <td class="mono" style="font-size:11px">${x.last7_avg==null?'—':(x.last7_avg>0?'+':'')+x.last7_avg+'p ('+x.last7_n+')'}</td>
+        <td class="muted" style="font-size:10px">${x.first}</td>
+      </tr>`;
+    }).join('');
   }catch(e){}
 }
-setInterval(pollModuleHealth,10000); pollModuleHealth();
+setInterval(pollShadowboard,60000); pollShadowboard();
 function fmtPips(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+n.toFixed(1)+'p'}
 function fmtDollar(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+'$'+Math.abs(n).toFixed(2)}
 function colorPips(v){if(v==null)return '';return v>=0?'pos':'neg'}
@@ -1711,14 +1691,7 @@ function renderPairs(){
         <span style="margin-left:auto">${spark((HIST[t.pair]||[]).map(h=>h.dscore),{w:70,h:14,min:-1,max:1,zero:true,color:'var(--info)'})}</span>
       </div>
       <div class="pc-score-bar"><div class="pc-score-fill" style="width:${scoreW}%;background:${scoreColor}"></div></div>
-      <div class="pc-row"><span class="pc-lbl">Cert</span><span class="mono">${Math.round(t.dir_certainty*100)}% dir · ${Math.round(t.mom_certainty*100)}% mom</span>
-        <span style="margin-left:auto">${spark((HIST[t.pair]||[]).map(h=>h.mcert),{w:70,h:14,min:0,max:1,color:'var(--pass)'})}</span>
-      </div>
       <div class="pc-row"><span class="pc-lbl">Vol</span>${volPill(t.vol_regime)}<span class="muted mono" style="font-size:11px">~${fmt(t.expected_pips,1)}p exp</span></div>
-      <div class="pc-profiles">
-        L:<b>${t.long_profile||'?'}</b> · S:<b>${t.short_profile||'?'}</b> · M:<b>${t.mom_profile||'?'}</b>
-        ${t.active_side?`<br><span class="muted">active: ${(t.active_side||'').replace('_profile','')} · gates ${t.gates_passed===true?'<span class="pos">✓</span>':t.gates_passed===false?'<span class="neg">✗</span>':'—'}${t.cert_boost?' · boost '+t.cert_boost+'×':''}</span>`:''}
-      </div>
       ${rules.length?`<div class="pc-rules">${rules.join('')}</div>`:''}
       ${chips?`<div class="pc-chips">${chips}</div>`:''}
     </div>`;
@@ -2080,7 +2053,7 @@ function renderSysinfo(){
  * TUNE tab — preserved from prior version
  * ═════════════════════════════════════════════════════════════════════════ */
 let TUNE_META=null;
-async function loadTune(){const r=await fetch('/api/config/exit');const d=await r.json();TUNE_META=d;renderTune();document.getElementById('tune-msg').textContent=''}
+async function loadTune(){const r=await fetch('/api/cells');const d=await r.json();TUNE_META=d;renderTune();document.getElementById('tune-msg').textContent=''}
 function _inp(val,ph,w='70px'){const v=(val==null)?'':val;return `<input type="number" step="0.01" value="${v}" placeholder="${ph}" style="width:${w};background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:4px 6px;text-align:right">`}
 function _row(scope,eff,override,isDef){
   const f=TUNE_META.fields;
@@ -2097,13 +2070,32 @@ function _row(scope,eff,override,isDef){
 }
 function renderTune(){
   if(!TUNE_META)return;
-  const body=document.getElementById('tune-body');
-  const defaults=TUNE_META.cfg.defaults||{};
-  const per=TUNE_META.cfg.per_pair||{};
-  let rows=[_row('DEFAULT',defaults,defaults,true)];
-  for(const p of TUNE_META.pairs){const ov=per[p]||null;const eff={...defaults,...(ov||{})};rows.push(_row(p,eff,ov,false))}
-  body.innerHTML=rows.join('');
-  renderTuneTP(defaults,per,TUNE_META.pairs);
+  const ord={ACTIVE:0,SHADOW:1,'NO-SIDE':2,DISABLED:3};
+  const rows=[];let nAtr=0,nSet=0;
+  const cells=(TUNE_META.cells||[]).slice().sort((a,b)=>(ord[a.status_rollup]??9)-(ord[b.status_rollup]??9)||a.pair.localeCompare(b.pair)||a.session.localeCompare(b.session));
+  for(const c of cells){
+    for(const s of (c.setups||[])){
+      nSet++;
+      const e=s.exit||{};
+      const lock=(e.trigger_pips!=null&&e.trail_pips!=null)?(e.trigger_pips-e.trail_pips):null;
+      const atr=!!(e.trail_mult&&e.trail_mult>0);if(atr)nAtr++;
+      const stPill=s.status==='ACTIVE'?'pill-pass':s.status==='SHADOW'?'pill-info':'pill-block';
+      rows.push(`<tr>
+        <td style="text-align:left" class="mono">${c.pair.replace('_','/')}/${c.session} · ${s.id}</td>
+        <td><span class="pill ${stPill}">${s.status}</span></td>
+        <td class="mono">${s.side||'—'}</td>
+        <td class="mono">${e.mode==='ratchet'?('-'+e.sl_pips):'(bracket)'}</td>
+        <td class="mono">${e.trigger_pips??'—'}</td>
+        <td class="mono">${e.trail_pips??'—'}</td>
+        <td class="mono" style="${atr?'color:var(--fail)':''}">${e.trail_mult??'—'}${atr?' ⚠ATR':''}</td>
+        <td class="mono pos">${lock!=null?('+'+lock.toFixed(1)):'—'}</td>
+        <td class="muted">${e._class||''}</td>
+      </tr>`);
+    }
+  }
+  document.getElementById('tune-body').innerHTML=rows.join('')||'<tr><td colspan="9" class="muted" style="padding:10px">no cells</td></tr>';
+  const t=TUNE_META.totals||{};
+  document.getElementById('tune-summary').innerHTML=`${nSet} setups · ACTIVE ${t.ACTIVE||0} / SHADOW ${t.SHADOW||0} / DISABLED ${t.DISABLED||0}`+(nAtr?` · <span style="color:var(--fail)">${nAtr} with ATR-scaled trail (mult&gt;0) — B-090 risk</span>`:` · all trails fixed (mult 0) ✓`);
 }
 function clearPairOverride(p){document.querySelector(`#tune-body tr[data-scope="${p}"]`).querySelectorAll('input').forEach(i=>i.value='')}
 function _collectRow(row){
@@ -2214,6 +2206,7 @@ function renderPlaymaker(){
   const acct=PM_META.cfg.account||{};
   document.getElementById('pm-risk').value=acct.margin_pct_per_trade||'';
   document.getElementById('pm-maxc').value=acct.max_concurrent_trades||'';
+  document.getElementById('pm-acct-ro').innerHTML=`Max per-currency direction: <b>${acct.max_per_currency_direction??'\u2014'}</b> &nbsp;·&nbsp; Picker: <b>${STATE?.governance?.random_pick?'RANDOM':'edge_rank (EV \u2192 alphabetical)'}</b> &nbsp;<span class="muted">\u2014 edit these via direct config; dashboard Save does not persist the currency cap or governance yet.</span>`;
   ['pm-risk','pm-maxc'].forEach(id=>document.getElementById(id).oninput=_updatePmRiskMath);
   _updatePmRiskMath();
 }
