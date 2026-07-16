@@ -232,6 +232,17 @@ class Engine:
         self.last_feed_time = now
         self.feed_views_n   = len(views)
 
+        # Box direction-discovery probes (log-only, never trades). Ported from
+        # V5 (Brock 2026-07-10): collect the full indicator vector at box
+        # center/ceiling/floor to later mine for a which-way / breakout filter.
+        # Additive + wrapped in try/except so a probe failure can never touch
+        # trading. Scorer: research/tools/center_probe_score.py
+        try:
+            from modules.research import center_probe
+            center_probe.observe(views, now)
+        except Exception as _cpe:
+            log.warning("center_probe hook failed: %s", _cpe)
+
         # ── Step 4: cells — THE strategy source ──────────────────────────────
         # Every in-session cell evaluates its setups. SHADOW setups stamp
         # CELLSHADOW and return None; ACTIVE setups return CellIntents.
