@@ -12,11 +12,21 @@
 </div>
 
 <!-- LIVE_BALANCE_START -->
-**📈 Live practice-account track record** — NAV **$16,860.82** · since the $15,598 low (2026-06-10): **+$1,262.82 (+8.1%)** · 2 open · 367 trades logged (realized −$15,407.55) · updated 2026-07-16 10:40 UTC
+### 📈 Live track record — current configuration
+*range-sized wide-stop ratchet · SL 40/50/60 · engage +7.5 → lock +5 → trail 2.5 fixed, live since 2026-07-16. Practice account, broker-verified fills.*
+
+| metric | value |
+|---|---|
+| **Closed trades (this config)** | **2** — 2/2 green, 100% green so far |
+| **Realized P/L** | **+$142.86** |
+| Open trades | 2 (+$57.93 unrealized) |
+| Config-to-date (realized + open) | **+$200.79** (+1.20%) |
+| Account NAV | $16,865.92 |
+| Updated | 2026-07-16 10:48 UTC |
 
 ![equity](livelog/equity.svg)
 
-*Auto-updated hourly from the broker account. Full log: [livelog/](livelog/) ([equity](livelog/equity.csv) · [trades](livelog/trades.csv)). Practice account — not real money.*
+*Auto-updated hourly from the broker. Full log: [livelog/trades.csv](livelog/trades.csv) · [equity.csv](livelog/equity.csv). Prior configs (and the −84% research tape) are a different story — see [the history](docs/SCROOGE_HISTORY.md). This is the current book only; small sample, honest record.*
 <!-- LIVE_BALANCE_END -->
 
 ---
