@@ -206,6 +206,51 @@ knife-edge, not the jackpot. The remaining honest directions are the edge hunt's
 execution/structure/cost edges (pay less rather than predict better), running trend tiny as a
 diversifier, or concluding the venue has no automatable price edge and weighting effort elsewhere.
 
+## Addendum (2026-07-16, same day): the stale-exit mechanism test — also falsified
+
+A pre-registered follow-up tested the one mechanism hypothesis the main result left standing (Brock):
+*trades that fire but never reach the +7.5p engage drift toward the wide stop; cutting them after T
+hours should cut the red rate without gutting the greens.* Design frozen before the run: T swept
+**on TRAIN only** (in {4, 8, 12, 24, 48, 96}h) on the registered 3-cell book, T\* frozen, tested once
+on 2023-26 under the same cost model (stale exits pay the market-exit charge); material bar test
+Sharpe >= 0.30, revive-H6 bar >= 0.70. Honesty gate first: the engine reproduced this paper's
+registered baseline exactly (test net Sharpe 0.034; red rate 15.5%; avg green +8.09p / avg red
+-45.46p) before the rule ran. One structural constraint surfaced, not hidden: the harness ride
+horizon is 12h, so T >= 12h cannot fire -- bounded by the extended-horizon probe below.
+
+**Verdict: FALSIFIED below the 0.30 material bar.** Every T that actually cuts trades *lowers*
+Sharpe on train (T=4h: 0.165 -> -0.228; T=8h: -0.037), so the train argmax froze to **T\* = 12h -- a
+structural no-op** (0% staled; test 0.034, identical to baseline). The test-window robustness rows
+are monotone: the more the rule cuts, the worse (T=8h -> -0.025; T=4h -> **-0.210**). All sim, same
+scope as the main result.
+
+Two findings earn the addendum:
+
+1. **The mechanism (diagnostic decomposition at the live-cut settings).** Pre-engage, "drifters" and
+   "winners-in-waiting" are **the same population** -- reaching +7.5p *is* the winner definition, so
+   time-to-engage carries no separating information, and any cut sacrifices future winners ~1:1
+   against the drift it avoids. At T=4h: +7,809p of avoided drift vs **-9,119p of forgone late
+   engagers -- all 354 of them baseline winners** (net -1,310p); at T=8h the pips roughly wash
+   (+212p) but Sharpe still falls, because the rule shaves the right tail while the avoided reds
+   were already capped by the stop. Each staled trade also books a certain ~ -19 to -22p exit loss.
+2. **The factual premise is refuted.** An exploratory 5-day extended-horizon probe (H=1440 bars)
+   shows the multi-day drifter population does not exist: **all 1,374 test-window reds are fast
+   stop-outs (median hold 2.2h, p90 7.1h, zero horizon-drifters)** -- the wide stop is far in price
+   but reached quickly when a trade is wrong (baseline trades overall: median 0.6h, p90 3.7h, max
+   84.9h). The probe also confirms the 12h harness horizon is not an artifact of the main result:
+   the mechanism fails at every T under the 5-day horizon too (argmax again a no-op).
+
+Scope: the registered 3-cell wide-stop book, the leak-clean M5 truth corpus (the ride/stop/engage
+logic is pure OHLC path, so the H1-leak note does not bind), 2023-26 test window, trig 7.5 / trail
+2.5, range-tier SL, the same tiered-slippage portfolio mechanics; T\* train-selected only, no cell
+re-selection. Artifacts (pre-registered design, sweep tables, decomposition, extended-horizon probe):
+`/SCROOGE ARCHIVE/session-notes/2026-07-16_stale_exit/`.
+
+The addendum strengthens the paper's conclusion from a second angle: not only does the wide-stop
+book fail net of cost -- its loss profile has no exploitable time structure left to rescue it. The
+reds are fast, the greens define themselves only by engaging, and the insurance-book shape (many
+small greens, rare capped reds) is already the optimum of its own mechanism family.
+
 ## 8. Data availability
 
 - Full pre-registered results file, frozen design, selection table (all 29 candidate verdicts), main

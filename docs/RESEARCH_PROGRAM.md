@@ -414,7 +414,11 @@ pass bar Sharpe ≥ 0.70 — was run on 2026-07-16 and returned **net test Sharp
 identical book with zero slippage scores 1.26, locating the failure precisely at execution cost: the
 gross wide-stop edge is real and is the same size as the toll (knife-edge ~0.4p round-trip vs a
 defensible retail estimate of ~0.8–1.0p). H6 is falsified as-tested; no cell is promoted to a live
-shadow seat.
+shadow seat. A same-day pre-registered follow-up (stale-exit of never-engaged trades after T hours,
+T train-swept) also failed its material bar — every T that fires lowers Sharpe, because pre-engage
+"drifters" and winners-in-waiting are the same population, and a 5-day extended-horizon probe refuted
+the premise outright (all 1,374 test reds are fast stop-outs, median hold 2.2h; sim) — closing the
+last mechanism variant. Addendum in the H6 paper.
 
 **What still runs.** The wide-stop book (range-sized SL 40/50/60, trigger +7.5 → lock +5, fixed trail
 2.5 — B-090 fixed; no green-lock inside a spread of entry) remains deployed on the OANDA **practice**
