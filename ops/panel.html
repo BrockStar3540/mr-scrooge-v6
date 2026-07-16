@@ -926,7 +926,7 @@ function fmtPips(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'
 function fmtDollar(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+'$'+Math.abs(n).toFixed(2)}
 function colorPips(v){if(v==null)return '';return v>=0?'pos':'neg'}
 function colorDollar(v){if(v==null)return '';return v>=0?'pos':'neg'}
-function fmtAge(m){if(m==null)return '—';if(m<60)return Math.round(m)+'m';const h=Math.floor(m/60),mm=Math.round(m%60);return h+'h '+mm+'m'}
+function fmtAge(m){if(m==null)return '—';if(m<60)return Math.round(m)+'m';let h=Math.floor(m/60),mm=Math.round(m%60);if(mm>=60){h++;mm-=60}return h+'h '+mm+'m'}
 function escape(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function dirPill(b){
   if(b==='long')  return '<span class="pill pill-long">LONG</span>';

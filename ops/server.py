@@ -47,6 +47,13 @@ _EXIT_FIELDS = {
 }
 # TP1/TP2 fields. bools use kind=bool; percentages 0..1.
 _EXIT_FIELDS_TP = {
+    "tp1_enabled":   {"kind": "bool",                "label": "TP1 on"},
+    "tp1_at_pips":   {"min": 0.5,  "max": 200.0,     "label": "TP1 peak (pips)"},
+    "tp1_close_pct": {"min": 0.0,  "max": 0.95,      "label": "TP1 close %"},
+    "tp1_lock_pips": {"min": 0.0,  "max": 100.0,     "label": "TP1 SL lock (pips)"},
+    "tp2_enabled":   {"kind": "bool",                "label": "TP2 on"},
+    "tp2_at_pips":   {"min": 0.5,  "max": 300.0,     "label": "TP2 peak (pips)"},
+    "tp2_close_pct": {"min": 0.0,  "max": 0.95,      "label": "TP2 close %"},
 }
 _EXIT_FIELDS.update(_EXIT_FIELDS_TP)
 _PAIRS_ALL = ["AUD_JPY","AUD_USD","EUR_JPY","EUR_USD","GBP_USD","USD_CAD","USD_CHF","USD_JPY"]
@@ -72,8 +79,17 @@ def _validate_exit_field(k: str, v):
     return f
 
 def _check_tp_cross_rules(merged: dict) -> None:
-    return  # TP ladder removed in V6 (AUDIT_TODO item 1)
-
+    """Cross-field validation for TP1/TP2 on the merged effective view."""
+    t1e = bool(merged.get("tp1_enabled", False))
+    t2e = bool(merged.get("tp2_enabled", False))
+    if t2e and not t1e:
+        raise ValueError("tp2_enabled requires tp1_enabled (TP2 only fires after TP1)")
+    t1p = merged.get("tp1_close_pct"); t2p = merged.get("tp2_close_pct")
+    if t1p is not None and t2p is not None and (t1p + t2p) >= 1.0:
+        raise ValueError(f"tp1_close_pct + tp2_close_pct = {t1p+t2p:.2f} >= 1.0 (runner must remain)")
+    t1at = merged.get("tp1_at_pips"); t2at = merged.get("tp2_at_pips")
+    if t1at is not None and t2at is not None and t2at <= t1at:
+        raise ValueError(f"tp2_at_pips ({t2at}) must be > tp1_at_pips ({t1at})")
 
 def _validate_exit_cfg(cfg: dict) -> dict:
     out = {"schema": "v2", "defaults": {}, "per_pair": {}}
@@ -218,8 +234,9 @@ def _state(engine: "Engine") -> dict:
         _mode  = mgr.name() if hasattr(mgr, "name") else "ratchet"
         _tmult = float(getattr(_ep, "trail_mult", 0) or 0) if _ep is not None else 0.0
         _klass = ("FAST" if _mode == "bracket"
-                  else "LONG" if _tmult >= 0.99
-                  else "MEDIUM" if _tmult > 0 else "LEGACY")
+                  else "RECOVERED" if _ep is None
+                  else "ATR-TRAIL" if _tmult > 0
+                  else "FIXED")
         _exit_info = {"exit_mode": _mode, "exit_class": _klass}
         if _mode == "bracket":
             _tp  = float(getattr(mgr, "tp_pips", 0) or 0)
@@ -236,10 +253,19 @@ def _state(engine: "Engine") -> dict:
                 "timeout_left_min": round(max(0.0, _tmo - elapsed), 1) if _tmo else None,
             })
         else:
+            if _ep is not None:
+                _eng, _trl, _tm = float(getattr(_ep, "trigger_pips", 0) or 0), float(getattr(_ep, "trail_pips", 0) or 0), _tmult
+            else:
+                # recovered position: no per-cell exit_params -> runs exit_config.json effective gear
+                _ec = _read_exit_config()
+                _base = _ec.get("defaults", _ec)
+                _pp = (_ec.get("per_pair") or {}).get(pair) or {}
+                _dfl = {**_base, **_pp}
+                _eng, _trl, _tm = float(_dfl.get("step_trigger_pips", 7.5)), float(_dfl.get("step_trail_pips", 2.5)), 0.0
             _exit_info.update({
-                "engage_pips": round(float(getattr(_ep, "trigger_pips", 0) or 0), 2) if _ep else None,
-                "trail_pips":  round(float(getattr(_ep, "trail_pips", 0) or 0), 2) if _ep else None,
-                "trail_mult":  _tmult or None,
+                "engage_pips": round(_eng, 2),
+                "trail_pips":  round(_trl, 2),
+                "trail_mult":  _tm or None,
             })
 
         open_positions.append({
@@ -908,7 +934,7 @@ def start_dashboard(engine: "Engine", port: int = 8084) -> None:
     srv = http.server.HTTPServer(("127.0.0.1", port), handler_factory)
     t = threading.Thread(target=srv.serve_forever, daemon=True, name="v5-dashboard")
     t.start()
-    log.info("Dashboard started on port %d — http://localhost:%d/", port, port)
+    log.info("Dashboard started on port %d — https://[internal-host-redacted]:%d/", port, port)
 
 
 class _Handler(http.server.BaseHTTPRequestHandler):
@@ -930,9 +956,9 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_state(self._engine), default=str).encode()
                 ctype = "application/json"
                 code = 200
-            elif self.path.startswith("/api/module_health"):
-                from ops import health as _health
-                body = _j.dumps(_health.snapshot(self._engine), default=str).encode()
+            elif self.path.startswith("/api/shadowboard"):
+                from ops import shadowboard as _sb
+                body = _j.dumps(_sb.get_board(), default=str).encode()
                 ctype = "application/json"
                 code = 200
             elif self.path.startswith("/api/sysinfo"):
