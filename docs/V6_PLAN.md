@@ -9,14 +9,14 @@
 4. **Linked, not carried:** the master archive (corpora, old MLs, retired modules, strategy encyclopedia, dead-ends graveyard, session diaries) — one shared Dropbox link in the README so anyone can re-run or challenge the research.
 
 ## Master archive gating (before the public link is created)
-- [ ] Evacuation complete: Alien Drive Scrooge material + Mini corpora → `research-corpora/` (hash-verified manifest) — *in flight 2026-07-05*
+- [ ] Evacuation complete: the lab drive's Scrooge material + lab corpora → `research-corpora/` (hash-verified manifest) — *in flight 2026-07-05*
 - [ ] **Sanitization pass over every tarball**: extract-scan for `.env`, `secrets`, keys, dashboard credentials, account ids, private IPs; scrub and re-pack offenders. NO LINK until this passes. (Known offenders already removed: V4-mirror `env.SECRETS`. Known content to scrub: workspace tarballs likely contain env files.)
 - [ ] Master index reviewed; every folder described.
 - [ ] Shared link created read-only, folder-level, revocable.
 
 ## Machine roles after cutover
-- **Alien Drive: V6 backups ONLY.** No longer a research graveyard — everything historical lives in the Dropbox archive. Scrooge dirs removed from Alien after upload verification.
-- Mini: research/lab + monthly refit (unchanged). EC2: live trader only.
+- **Lab backup drive: V6 backups ONLY.** No longer a research graveyard — everything historical lives in the Dropbox archive. Scrooge dirs removed from the lab drive after upload verification.
+- Lab hardware: research/lab + monthly refit (unchanged). Live host: live trader only.
 
 ## Moltbook engagement (post-publish)
 Create project account on moltbook.com; engage AI agents/bots on the research questions (cell tailoring, exit geometry, cost-aware slicing). Ground rules:

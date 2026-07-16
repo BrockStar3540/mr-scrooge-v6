@@ -12,7 +12,7 @@ Live config currently has `step_trigger=7.5 / trail=2.5 / size=2.5`. Diagnosed 2
 - **Hybrid** `4.5 / 2.5 / 2.5` — keep the new step+trail shape, lower the trigger.
 - **Keep current** — accept the new trade distribution.
 
-See [research/sessions/2026-06-19_live_smoke_v1-v5/](../research/sessions/2026-06-19_live_smoke_v1-v5/) for the data.
+The launch-week smoke data is archived under `/SCROOGE ARCHIVE/session-notes/2026-06-19_*` (indexed in [research/README.md](../research/README.md) §4).
 
 ### Activate direction_v2 + momentum_v3
 
@@ -31,7 +31,7 @@ If yes, swap to v3. If no, refine the cell assignments before activating.
 
 ### Per-(pair × session × direction) calibration anchors
 
-The D1/D10 normalization anchors in `data/factor_sweep.json` are per-(pair × session) only. Adding a direction axis would require re-running the aggregator sweep on Mini with the long/short split. ~24h compute. Currently the per-direction modules use the same anchors for both directions, which is fine for now but limits per-direction precision.
+The D1/D10 normalization anchors in `data/factor_sweep.json` are per-(pair × session) only. Adding a direction axis would require re-running the aggregator sweep on lab hardware with the long/short split. ~24h compute. Currently the per-direction modules use the same anchors for both directions, which is fine for now but limits per-direction precision.
 
 ### Per-direction `expected_pips` scaler
 
@@ -45,13 +45,13 @@ The 3 aggregator amplifier rules in `direction_profiles.AGGREGATOR_RULES` are sy
 
 ### Self-evaluating ML — Path B
 
-The nightly cron at 23:30 UTC writes `/data/v5-smoke-history/all_trades_per_feature.csv`. After 5-10 trading days (target: 200+ trades), we can train a per-cell ML that:
+The nightly smoke cron writes `all_trades_per_feature.csv` (seed committed at `research/live-smoke/all_trades_per_feature_seed.csv`; the running series is archived). After 5-10 trading days (target: 200+ trades), we can train a per-cell ML that:
 
 - Predicts pip_high MFE given the entry-time features
 - Identifies cells where V5's expected_pips is over/under-estimating
 - Refines the per-cell profile assignments
 
-Path B = a Mini lab job that ingests the smoke CSV monthly + regenerates the profile assignments. Build deferred until N ≥ 200 trades accumulated.
+Path B = a lab-hardware job (never the live-trader host) that ingests the smoke CSV monthly + regenerates the profile assignments. Build deferred until N ≥ 200 trades accumulated.
 
 ### Reassess profile assignments
 
@@ -73,7 +73,7 @@ Currently every pair sees the same 24 direction features. Some pairs may have id
 
 ### Backtest harness
 
-V5 doesn't have a proper backtest harness yet — all validation is live or via the Mini's aggregator sweep on the 7.5yr OANDA corpus. A walk-forward backtest harness that runs the full pipeline (Direction → Momentum → Playmaker → Ratchet) against historical candles would let us validate config changes before shipping.
+V5 doesn't have a proper backtest harness yet — all validation is live or via a lab-hardware aggregator sweep on the 7.5yr OANDA corpus. A walk-forward backtest harness that runs the full pipeline (Direction → Momentum → Playmaker → Ratchet) against historical candles would let us validate config changes before shipping.
 
 ### Cross-broker validation
 
@@ -87,6 +87,6 @@ The 2026-06-18 forexsb.com H1 cross-validation showed broker-portable methodolog
 
 ## How items move on/off the roadmap
 
-- A new session in [research/sessions/](../research/sessions/) often surfaces new items.
+- A new research session (diaries archived under `/SCROOGE ARCHIVE/session-notes/`, indexed in [research/README.md](../research/README.md)) often surfaces new items.
 - Items in flight have a session folder + a CHANGELOG entry when they land.
 - "Off-roadmap" items stay here as a record of "considered, not pursuing."

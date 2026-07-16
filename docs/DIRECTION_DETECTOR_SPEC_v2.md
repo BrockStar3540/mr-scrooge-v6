@@ -192,7 +192,7 @@ distance / elder_force_index …; short names remain as model columns.)
 2. Anchor check vs broker fills after every pipeline change (bar: r ≥ 0.8).
 3. Fit windows are RECENT (current year); long history is drift context only
    (PERSISTENT/REGIME/FLICKER), never the fit.
-4. Corpus promotes → live vetoes → monthly re-fit (Mini cron).
+4. Corpus promotes → live vetoes → monthly re-fit (lab-hardware cron).
 5. When a number looks too good (r=+0.40 autocorrelation in FX), assume leak until proven
    otherwise. The reflex found the bug; keep the reflex.
 

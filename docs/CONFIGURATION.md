@@ -86,7 +86,7 @@ Same shape as exit_config: `per_pair: { "<PAIR>": { ... } }`. Any field present 
 
 NOT a config — a calibration data file. Holds D1-D10 per-feature percentile anchors per (pair × session) used by both Direction and Momentum modules for normalization.
 
-- Updated only when a new aggregator sweep is run (currently last: 2026-06-18, on Mini at `/Volumes/Alien Device/scrooge-research/v5_aggregator_test_2026-06-18/`).
+- Updated only when a new aggregator sweep is run (last: 2026-06-18; the sweep output is archived at `/SCROOGE ARCHIVE/research-corpora/alien/scrooge-research.tar.gz` — the lab drive that held it was wiped after archival).
 - Read on module `__init__`; cached for the life of the process.
 - Restart V5 after editing.
 
@@ -107,7 +107,7 @@ Editing this requires a service restart. Sessions are stable enough that this is
 
 ## Secrets
 
-NEVER stored in config files or committed to the repo. Loaded from `~/.openclaw/secrets.env` (chmod 600) on EC2 at service start. Includes:
+NEVER stored in config files or committed to the repo. Loaded from the environment at service start (e.g. a `.env` file with `chmod 600`, or your service manager's secret store), never from a committed config file. Includes:
 - `OANDA_API_TOKEN`
 - `OANDA_ACCOUNT_ID`
 - `OANDA_API_URL` (practice vs live endpoint)

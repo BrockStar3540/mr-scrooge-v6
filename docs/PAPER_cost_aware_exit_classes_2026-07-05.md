@@ -106,8 +106,7 @@ Per the evaluation doctrine: judge ONLY trades tagged engine=cell_v1 with the ne
 
 ## 9. Artifact index
 
-- `research/sessions/2026-07-04_cell_transaction_costs/` — cost matrix, slippage, conversion, mechanics addendum, reusable `analyze_transaction_costs.py`
-- `research/sessions/2026-07-05_ratchet_profiles/` — feature-scaling CSV, cell classes, `fill_probabilities.csv`
-- `research/sessions/2026-07-04_trade_excursions_3wk/` — 230-trade MAE/MFE table + Mini tool
-- Code: commit `EXIT CLASSES LIVE` (+dashboard follow-up), tag `pre-exit-classes-2026-07-05`
-- Vault: cockpit V5 banner 2026-07-05; activity log entries 07-04/07-05
+- Cost matrix, slippage, conversion, mechanics addendum + reusable `analyze_transaction_costs.py`: archived at `/SCROOGE ARCHIVE/session-notes/2026-07-05 Ratchet Exit Research/` (indexed in [`../research/README.md`](../research/README.md) §4)
+- Feature-scaling CSV, cell classes, `fill_probabilities.csv`: same archive folder
+- 230-trade MAE/MFE excursion table: same archive folder, built on the truth-matrix corpus `/SCROOGE ARCHIVE/research-corpora/mini/v5-truth-matrix.tar.gz`
+- Code: tag `pre-exit-classes-2026-07-05`

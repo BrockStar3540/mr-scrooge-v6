@@ -57,7 +57,7 @@ If the peak NEVER reaches +7.5p, the SL stays at -20p and the trade either close
 
 See [../CHANGELOG.md](../CHANGELOG.md) for full chronology. Key retunes:
 
-- `[2026-06-19 06:15 UTC]` commit `249f970` — trigger 4.5 → 7.5, trail 1.5 → 2.5, size 5.0 → 2.5. Brock-requested. **Diagnosed same day as the cause of a -612 USD swing**: ~50% of historical winners peak in the +4.5-7.5p zone and now never arm. See [../research/sessions/2026-06-19_live_smoke_v1-v5/](../research/sessions/2026-06-19_live_smoke_v1-v5/) for the analysis. Revert/redesign pending.
+- `[2026-06-19 06:15 UTC]` commit `249f970` — trigger 4.5 → 7.5, trail 1.5 → 2.5, size 5.0 → 2.5. Brock-requested. **Diagnosed same day as the cause of a -612 USD swing**: ~50% of historical winners peak in the +4.5-7.5p zone and now never arm. The launch-week smoke analysis is archived under `/SCROOGE ARCHIVE/session-notes/2026-06-19_*` (indexed in [../research/README.md](../research/README.md) §4). Revert/redesign pending.
 
 - `[2026-06-18 EOD]` — `initial_sl_pips` widened 12 → 20. Trades were hitting -12p stops on noise that would have run to profit; the ratchet was supposed to do the tightening, the initial was over-aggressive.
 
