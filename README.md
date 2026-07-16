@@ -62,7 +62,7 @@ Every dead end is documented on purpose: [the Book of Bugs, B-001→B-090](docs/
 Everything above was paid for on one practice account, and we publish its tape rather than curate it. The account opened at **$100,000 on March 22, 2026** (V1) and bottomed at **$15,598 on June 10, 2026** — an **−84% drawdown** across the V1→V4 strategy eras and early V5: every falsified strategy, every exit that strangled winners, every bug in the Book of Bugs, charged against that balance. That number is the strongest argument in this repo: five versions of increasingly careful research could not out-predict the market, and the account kept the receipts. V5's measurement overhaul (broker-fill truth, cell-era falsification discipline) is what stopped the bleeding; whether the wide-stop book can climb is the open forward experiment.
 
 <!-- LIVE_BALANCE_START -->
-**Live practice-account NAV: $16,748.56** · 1 open trade · as of 2026-07-16 03:47 UTC *(auto-updated on every push)*
+**Live practice-account NAV: $16,748.97** · 1 open trade · as of 2026-07-16 03:49 UTC *(auto-updated on every push)*
 <!-- LIVE_BALANCE_END -->
 
 ## Predictions — as falsifiable forward tests, not promises
