@@ -151,6 +151,13 @@ tr:hover td{background:rgba(255,255,255,.025)}
 .pc-rule.pass{background:rgba(34,197,94,.08);color:var(--pass);border-color:rgba(34,197,94,.2)}
 .pc-rule.fail{background:rgba(239,68,68,.08);color:var(--fail);border-color:rgba(239,68,68,.2)}
 .pc-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px dashed var(--border-2)}
+/* PAIRS cell-era: per-session cell blocks (cell state + setups + condition bars) */
+.pc-sessions{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.pc-sessblk{border-top:1px dashed var(--border-2);padding-top:7px}
+.pc-sessblk.in-sess{border-top-color:rgba(34,197,94,.35)}
+.pc-sesshead{display:flex;align-items:center;gap:8px;font-size:10.5px;margin-bottom:2px}
+.pc-sesslbl{font-weight:700;color:var(--fg3);text-transform:uppercase;letter-spacing:.07em}
+.pc-sessblk.in-sess .pc-sesslbl{color:var(--pass)}
 .fc{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;background:var(--bg3);
     border-radius:4px;font-size:10.5px;white-space:nowrap;font-family:"JetBrains Mono",monospace}
 .fc .fk{color:var(--fg3);font-size:9.5px;text-transform:uppercase;letter-spacing:.05em}
@@ -839,6 +846,11 @@ body.has-ticker{padding-bottom:32px}
       <div>
         <label style="font-size:11px;color:var(--fg2);display:block;margin-bottom:4px">Max concurrent trades</label>
         <input id="pm-maxc" type="number" step="1" min="1" max="20"
+               style="width:120px;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;text-align:right">
+      </div>
+      <div>
+        <label style="font-size:11px;color:var(--fg2);display:block;margin-bottom:4px" title="Max concurrent open positions sharing any single (currency, sign) exposure">Max per-currency direction</label>
+        <input id="pm-ccy" type="number" step="1" min="1" max="20"
                style="width:120px;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;text-align:right">
       </div>
       <div id="pm-risk-math" style="font-size:11px;color:var(--fg2);align-self:flex-end;padding-bottom:6px"></div>
@@ -1623,43 +1635,54 @@ function renderEvents(){
 
 /* ── PAIRS tab ─────────────────────────────────────────────────────────── */
 function chip(k,v,cls=''){return v==null?'':`<span class="fc ${cls}"><span class="fk">${k}</span><span class="fv">${v}</span></span>`}
+/* Cell-era rebuild (2026-07-15): each pair card shows its per-session cell state
+ * from /api/cells — session name, rollup ACTIVE/SHADOW/NO-SIDE/DISABLED, and each
+ * setup (id + side + status chip + live condition bars vs their bands, via the
+ * shared bookSetupHtml/condBar) — plus the existing MarketView indicator chips.
+ * Direction-era dir/vol/score displays are retired (that era archived 2026-07-04). */
 function renderPairs(){
   const g=document.getElementById('pairs-grid');
-  const tickets=STATE.last_tickets||[];
-  if(!tickets.length){g.innerHTML='<div class="muted" style="padding:14px">No cycle data yet</div>';return}
-  const viewMap={};(STATE.last_views||[]).forEach(v=>viewMap[v.pair]=v);
-  const gov=STATE.governance||{};
-  const inv_live=new Set((gov.inverted_live_cells||[]).map(c=>c[0]+'/'+c[1]));
-  const inv_shadow=new Set((gov.inverted_shadow_cells||[]).map(c=>c[0]+'/'+c[1]));
-  const disabled=new Set((gov.disabled_cells||[]).map(c=>c[0]+'/'+c[1]+'/'+c[2]));
+  const viewMap={};(STATE?.last_views||[]).forEach(v=>viewMap[v.pair]=v);
+  const tickMap={};(STATE?.last_tickets||[]).forEach(t=>tickMap[t.pair]=t);
+  const cellsReady=CELLS&&!CELLS._pending&&Array.isArray(CELLS.cells);
+  const cellMap={};
+  if(cellsReady)CELLS.cells.forEach(c=>cellMap[c.pair+'/'+c.session]=c);
   const perPair=DAILY_PL?.per_pair||{};
-  g.innerHTML=tickets.map(t=>{
-    const v=viewMap[t.pair]||{};
-    const biasCls=t.dir_bias==='long'?'bias-long':t.dir_bias==='short'?'bias-short':'bias-block';
-    const actCls=t.actionable?'actionable':'';
-    const pp=perPair[t.pair];
+  const cur=(cellsReady&&CELLS.current_session)||currentSession();
+  const haveState=STATE&&((STATE.last_views||[]).length||(STATE.last_tickets||[]).length);
+  if(!haveState&&!cellsReady){g.innerHTML='<div class="muted" style="padding:14px">No cycle data yet</div>';return}
+  const rollPill=roll=>roll==='ACTIVE'?'<span class="pill pill-pass">ACTIVE</span>'
+    :roll==='SHADOW'?'<span class="pill pill-warn">SHADOW</span>'
+    :roll==='DISABLED'?'<span class="pill pill-fail">DISABLED</span>'
+    :'<span class="pill pill-block">NO-SIDE</span>';
+  g.innerHTML=PAIRS_ALL.map(pair=>{
+    const v=viewMap[pair]||{};
+    const t=tickMap[pair];
+    const pp=perPair[pair];
     const todayBadge=pp?`<div class="pc-today ${pp.pl>=0?'pos':'neg'}" title="Today: ${pp.n} trade${pp.n>1?'s':''} · ${pp.wins} won">${fmtDollar(pp.pl)} · ${pp.n}t</div>`:'';
-    const scoreW=Math.min(Math.abs(t.dir_score||0)*100,100);
-    const scoreColor=t.dir_bias==='long'?'var(--long)':t.dir_bias==='short'?'var(--short)':'var(--block)';
-    const isInvLive=inv_live.has(t.pair+'/'+t.session);
-    const isInvShadow=inv_shadow.has(t.pair+'/'+t.session);
-    const isDisabled=disabled.has(t.pair+'/'+t.session+'/'+t.dir_bias);
-    // Per-cell rules check
-    const cellKey3=t.pair+'/'+t.session+'/'+t.dir_bias;
-    const cellKey2=t.pair+'/'+t.session;
-    const rules=[];
-    const mcmax=gov.per_cell_mom_cert_max?.[cellKey2];
-    const mcmin=gov.per_cell_mom_cert_min?.[cellKey2];
-    const wrng=gov.per_cell_willr_range?.[cellKey3];
-    const krng=gov.per_cell_kc_up_range?.[cellKey3];
-    if(mcmax!=null){const ok=t.mom_certainty<=mcmax;rules.push(`<span class="pc-rule ${ok?'pass':'fail'}">mcert≤${mcmax}: ${t.mom_certainty.toFixed(2)} ${ok?'✓':'✗'}</span>`)}
-    if(mcmin!=null){const ok=t.mom_certainty>=mcmin;rules.push(`<span class="pc-rule ${ok?'pass':'fail'}">mcert≥${mcmin}: ${t.mom_certainty.toFixed(2)} ${ok?'✓':'✗'}</span>`)}
-    if(wrng&&v.willr_m5!=null){const ok=v.willr_m5>=wrng[0]&&v.willr_m5<=wrng[1];rules.push(`<span class="pc-rule ${ok?'pass':'fail'}">willr∈[${wrng[0]},${wrng[1]}]: ${v.willr_m5.toFixed(1)} ${ok?'✓':'✗'}</span>`)}
-    if(krng&&v.kc_up_dist_pips!=null){const ok=v.kc_up_dist_pips>=krng[0]&&v.kc_up_dist_pips<=krng[1];rules.push(`<span class="pc-rule ${ok?'pass':'fail'}">kc_up∈[${krng[0]},${krng[1]}]: ${v.kc_up_dist_pips.toFixed(2)} ${ok?'✓':'✗'}</span>`)}
-    if(isInvLive)rules.push('<span class="pc-rule" style="background:rgba(168,85,247,.1);color:var(--inverted);border-color:rgba(168,85,247,.3)">INVERTED-LIVE</span>');
-    if(isInvShadow)rules.push('<span class="pc-rule" style="background:rgba(100,116,139,.15);color:var(--shadow);border-color:rgba(100,116,139,.3)">SHADOW</span>');
-    if(isDisabled)rules.push('<span class="pc-rule" style="background:rgba(107,114,128,.15);color:var(--fg3)">DISABLED</span>');
-    // Full chip set
+    const actPill=t?(t.actionable
+      ?'<span class="pill pill-pass">ACTIONABLE</span>'
+      :'<span class="pill pill-block">blocked</span>'):'';
+    // Per-session cell state (from /api/cells): rollup + setups + live condition bars
+    const sessBlocks=(PAIR_SESSIONS[pair]||['asia','london','ny']).map(s=>{
+      const inSess=s===cur;
+      const inSessChip=inSess?'<span class="bk-chip" style="color:var(--pass)">IN SESSION</span>':'';
+      const sessLbl=`<span class="pc-sesslbl">${s.toUpperCase()}</span>${inSessChip}`;
+      if(!cellsReady){
+        return `<div class="pc-sessblk ${inSess?'in-sess':''}">
+          <div class="pc-sesshead">${sessLbl}<span style="margin-left:auto" class="muted">cells pending…</span></div>
+        </div>`;
+      }
+      const c=cellMap[pair+'/'+s];
+      const roll=c?.status_rollup||'NO-SIDE';
+      const body=(c?.setups||[]).map(su=>bookSetupHtml(su,!inSess)).join('')
+        ||`<div class="muted" style="font-size:10.5px;padding:2px 0">${roll==='DISABLED'?'session disabled':'no setups yet'}</div>`;
+      return `<div class="pc-sessblk ${inSess?'in-sess':''}">
+        <div class="pc-sesshead">${sessLbl}<span style="margin-left:auto">${rollPill(roll)}</span></div>
+        ${body}
+      </div>`;
+    }).join('');
+    // Existing MarketView indicator chips (kept)
     const chips=[
       v.rsi14!=null?chip('RSI',fmt(v.rsi14,1),v.rsi14>70?'hot':v.rsi14<30?'cool':''):''
       ,v.h1_ret_1bar!=null?chip('H1r',fmtPips(v.h1_ret_1bar),colorPips(v.h1_ret_1bar)):''
@@ -1677,22 +1700,14 @@ function renderPairs(){
       ,v.htf_pct_20!=null?chip('H20',fmt(v.htf_pct_20,2)):''
       ,v.rvol_5bar!=null?chip('rvol5',fmt(v.rvol_5bar,2)):''
     ].filter(Boolean).join('');
-    const actPill = t.actionable
-      ? '<span class="pill pill-pass">ACTIONABLE</span>'
-      : '<span class="pill pill-block">blocked</span>';
-    return `<div class="pair-card ${biasCls} ${actCls}" style="position:relative">
+    return `<div class="pair-card" style="position:relative">
       ${todayBadge}
       <div class="pc-head">
-        <div class="pc-name">${t.pair.replace('_','/')}</div>
-        <div class="pc-sess">${t.session.toUpperCase()}</div>
-        <div class="pc-actpill" style="margin-left:0">${actPill}</div>
+        <div class="pc-name">${pair.replace('_','/')}</div>
+        ${t&&t.session?`<div class="pc-sess">now: ${t.session.toUpperCase()}</div>`:''}
+        ${actPill?`<div class="pc-actpill">${actPill}</div>`:''}
       </div>
-      <div class="pc-row"><span class="pc-lbl">Dir</span>${dirPill(t.dir_bias)}<span class="muted mono" style="font-size:11px">${(t.dir_score>=0?'+':'')+fmt(t.dir_score,3)}</span>
-        <span style="margin-left:auto">${spark((HIST[t.pair]||[]).map(h=>h.dscore),{w:70,h:14,min:-1,max:1,zero:true,color:'var(--info)'})}</span>
-      </div>
-      <div class="pc-score-bar"><div class="pc-score-fill" style="width:${scoreW}%;background:${scoreColor}"></div></div>
-      <div class="pc-row"><span class="pc-lbl">Vol</span>${volPill(t.vol_regime)}<span class="muted mono" style="font-size:11px">~${fmt(t.expected_pips,1)}p exp</span></div>
-      ${rules.length?`<div class="pc-rules">${rules.join('')}</div>`:''}
+      <div class="pc-sessions">${sessBlocks}</div>
       ${chips?`<div class="pc-chips">${chips}</div>`:''}
     </div>`;
   }).join('');
@@ -2206,7 +2221,8 @@ function renderPlaymaker(){
   const acct=PM_META.cfg.account||{};
   document.getElementById('pm-risk').value=acct.margin_pct_per_trade||'';
   document.getElementById('pm-maxc').value=acct.max_concurrent_trades||'';
-  document.getElementById('pm-acct-ro').innerHTML=`Max per-currency direction: <b>${acct.max_per_currency_direction??'\u2014'}</b> &nbsp;·&nbsp; Picker: <b>${STATE?.governance?.random_pick?'RANDOM':'edge_rank (EV \u2192 alphabetical)'}</b> &nbsp;<span class="muted">\u2014 edit these via direct config; dashboard Save does not persist the currency cap or governance yet.</span>`;
+  document.getElementById('pm-ccy').value=acct.max_per_currency_direction??'';
+  document.getElementById('pm-acct-ro').innerHTML=`Picker: <b>${STATE?.governance?.random_pick?'RANDOM':'edge_rank (EV → alphabetical)'}</b> &nbsp;<span class="muted">— the currency cap now persists on Save. Per-cell governance (disabled/inverted cells, per-cell ranges) is preserved across saves; edit it via direct config.</span>`;
   ['pm-risk','pm-maxc'].forEach(id=>document.getElementById(id).oninput=_updatePmRiskMath);
   _updatePmRiskMath();
 }
@@ -2234,20 +2250,12 @@ async function savePlaymaker(){
     else if(Object.keys(c).length)per_pair[scope]=c;
   });
   const acct={margin_pct_per_trade:Number(document.getElementById('pm-risk').value)||undefined,
-              max_concurrent_trades:Number(document.getElementById('pm-maxc').value)||undefined};
-  // Preserve all the NEW per-cell governance fields when saving — read from STATE.governance
-  const gov=STATE?.governance||{};
-  const payload={
-    schema:'v1', account:acct, defaults, per_pair,
-    disabled_cells:        (gov.disabled_cells||[]).map(c=>c),
-    inverted_live_cells:   (gov.inverted_live_cells||[]).map(c=>c),
-    inverted_shadow_cells: (gov.inverted_shadow_cells||[]).map(c=>c),
-    per_cell_mom_cert_max: gov.per_cell_mom_cert_max||{},
-    per_cell_mom_cert_min: gov.per_cell_mom_cert_min||{},
-    per_cell_willr_range:  gov.per_cell_willr_range||{},
-    per_cell_kc_up_range:  gov.per_cell_kc_up_range||{},
-    random_pick:           !!gov.random_pick,
-  };
+              max_concurrent_trades:Number(document.getElementById('pm-maxc').value)||undefined,
+              max_per_currency_direction:Number(document.getElementById('pm-ccy').value)||undefined};
+  // Only the three editable blocks are sent. Per-cell governance (disabled/inverted
+  // cells, per-cell ranges, _notes) is preserved SERVER-SIDE from the on-disk config
+  // by _validate_pm_cfg — a dashboard save can no longer drop it. See ops/server.py.
+  const payload={schema:'v1', account:acct, defaults, per_pair};
   try{
     const r=await fetch('/api/config/playmaker',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const d=await r.json();

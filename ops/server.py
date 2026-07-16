@@ -29,13 +29,25 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from core.engine import Engine
 
-log = logging.getLogger("v5.dashboard")
+log = logging.getLogger("v6.dashboard")
 
 _PANEL = Path(__file__).resolve().parent / "panel.html"
 
-# ── Exit-tuning config (TUNE tab) ───────────────────────────────────────────
+# Repo root derived from THIS file's location (ops/server.py → repo root), so the
+# dashboard always reads its OWN config/journal — never a sibling checkout. Mirrors
+# modules/cells/cell.py (_CELLS_DIR = Path(__file__)...parents[...]).
 from pathlib import Path as _Path
-_EXIT_CONFIG_PATH = _Path("/home/ubuntu/mr-scrooge-v5/config/exit_config.json")
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+
+def _journal_unit() -> str:
+    """journald unit for CELLSHADOW / journal reads — parameterized via
+    SCROOGE_JOURNAL_UNIT (default = the V6 dry-run shadow). Matches the exact
+    pattern in ops/shadowboard.py so both read the same unit's journal."""
+    import os
+    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6-dryrun")
+
+# ── Exit-tuning config (TUNE tab) ───────────────────────────────────────────
+_EXIT_CONFIG_PATH = _REPO_ROOT / "config" / "exit_config.json"
 
 _EXIT_FIELDS = {
     "initial_sl_pips":   {"min": 1.0,  "max": 100.0, "label": "Initial SL (pips)"},
@@ -124,7 +136,7 @@ def _validate_exit_cfg(cfg: dict) -> dict:
 
 
 # ── Playmaker config (PLAYMAKER tab) ────────────────────────────────────────
-_PM_CONFIG_PATH = _Path("/home/ubuntu/mr-scrooge-v5/config/playmaker_config.json")
+_PM_CONFIG_PATH = _REPO_ROOT / "config" / "playmaker_config.json"
 
 _PM_FIELDS = {
     "enabled":             {"kind": "bool",                 "label": "Enabled"},
@@ -132,10 +144,18 @@ _PM_FIELDS = {
     "min_dir_certainty":   {"min": 0.0,  "max": 1.0,        "label": "Min direction.certainty"},
     "min_mom_certainty":   {"min": 0.0,  "max": 1.0,        "label": "Min momentum.certainty"},
     "cooldown_after_sl_min": {"min": 0.0, "max": 1440.0,    "label": "Cooldown after losing exit (min)"},
+    # Governance toggles that live in the `defaults` block (playmaker._pm_load reads
+    # them from defaults). Declared here so a save validates + round-trips them.
+    "profile_shadow_enabled":  {"kind": "bool",             "label": "Profile shadow logging"},
+    "calibration_log_enabled": {"kind": "bool",             "label": "Calibration logging"},
 }
 _PM_ACCT_FIELDS = {
     "margin_pct_per_trade":  {"min": 0.001, "max": 1.0,  "label": "Margin per trade (fraction of balance)"},
     "max_concurrent_trades": {"min": 1,     "max": 20,   "label": "Max concurrent trades", "int": True},
+    # Live per-currency directional exposure cap. MUST round-trip: dropping it on a
+    # save silently reverts the live cap to the code default (playmaker._PM_ACCT_DEFAULTS
+    # = 1), changing risk behaviour without an operator edit.
+    "max_per_currency_direction": {"min": 1, "max": 20, "label": "Max concurrent same (currency, sign) exposures", "int": True},
 }
 _PM_LEGACY_ACCT_KEYS = {"risk_pct_per_trade": "margin_pct_per_trade"}
 
@@ -160,25 +180,58 @@ def _validate_pm_field(table: dict, k: str, v):
     return int(f) if spec.get("int") else f
 
 def _validate_pm_cfg(cfg: dict) -> dict:
-    out = {"schema": "v1", "account": {}, "defaults": {}, "per_pair": {}}
+    """Validate a dashboard playmaker edit and MERGE it onto the on-disk config.
+
+    Only the three editable blocks (account / defaults / per_pair) are taken from
+    the incoming payload; every OTHER top-level key — disabled_cells, inverted_*
+    cells, per_cell_* ranges, random_pick and all _note* annotations — is carried
+    over verbatim from disk so a dashboard save can NEVER silently drop live
+    governance or risk caps.  (Pre-fix regression: a save reduced the file to
+    {schema,account,defaults,per_pair}, wiping account.max_per_currency_direction,
+    12 disabled_cells, the inverted_live_cells set and every per_cell_* range.)
+
+    Within each editable block KNOWN fields are range/type-validated; UNKNOWN
+    sub-keys (e.g. a per-pair `_note`) are preserved untouched rather than stripped.
+    """
+    if not isinstance(cfg, dict):
+        raise ValueError("playmaker config must be a JSON object")
+    base = _read_playmaker_config()
+    if not isinstance(base, dict) or "_error" in base:
+        base = {"schema": "v1", "account": {}, "defaults": {}, "per_pair": {}}
+    # Start from every on-disk key EXCEPT the three we're about to rebuild.
+    out = {k: v for k, v in base.items() if k not in ("account", "defaults", "per_pair")}
+    out["schema"] = "v1"
+
+    acct = dict(base.get("account") or {})
     for k, v in (cfg.get("account") or {}).items():
         k = _PM_LEGACY_ACCT_KEYS.get(k, k)   # back-compat rename
-        out["account"][k] = _validate_pm_field(_PM_ACCT_FIELDS, k, v)
+        acct[k] = _validate_pm_field(_PM_ACCT_FIELDS, k, v) if k in _PM_ACCT_FIELDS else v
+    out["account"] = acct
+
+    defs = dict(base.get("defaults") or {})
     for k, v in (cfg.get("defaults") or {}).items():
-        out["defaults"][k] = _validate_pm_field(_PM_FIELDS, k, v)
-    for pair, ov in (cfg.get("per_pair") or {}).items():
-        if pair not in _PAIRS_ALL:
-            raise ValueError(f"unknown pair: {pair}")
-        clean = {}
-        for k, v in (ov or {}).items():
-            clean[k] = _validate_pm_field(_PM_FIELDS, k, v)
-        if clean:
-            out["per_pair"][pair] = clean
+        defs[k] = _validate_pm_field(_PM_FIELDS, k, v) if k in _PM_FIELDS else v
+    out["defaults"] = defs
+
+    per = dict(base.get("per_pair") or {})
+    if isinstance(cfg.get("per_pair"), dict):
+        for pair, ov in cfg["per_pair"].items():
+            if pair not in _PAIRS_ALL:
+                raise ValueError(f"unknown pair: {pair}")
+            merged = dict(per.get(pair) or {})
+            for k, v in (ov or {}).items():
+                merged[k] = _validate_pm_field(_PM_FIELDS, k, v) if k in _PM_FIELDS else v
+            per[pair] = merged
+    out["per_pair"] = per
     return out
 
 def _write_playmaker_config(cfg: dict) -> None:
     clean = _validate_pm_cfg(cfg)
-    clean["_note"] = "Edited via dashboard PLAYMAKER tab."
+    # Record edit provenance WITHOUT clobbering the on-disk `_note` annotation
+    # (which documents the disabled/inverted cell rationale).
+    clean["_note_dashboard"] = ("Last edited via dashboard PLAYMAKER tab "
+                                f"{datetime.now(timezone.utc).isoformat()} — "
+                                "account/defaults/per_pair only; governance preserved.")
     tmp = _PM_CONFIG_PATH.with_suffix(".tmp")
     tmp.write_text(_j.dumps(clean, indent=2))
     tmp.replace(_PM_CONFIG_PATH)
@@ -628,7 +681,7 @@ def _daily_pl(engine: "Engine") -> dict:
 
 
 # ── Cell book (Phase C, 2026-07-04) ──────────────────────────────────────────
-_CELLS_DIR = _Path("/home/ubuntu/mr-scrooge-v5/config/cells")
+_CELLS_DIR = _REPO_ROOT / "config" / "cells"
 _SESSIONS_ALL = ["asia", "london", "ny"]
 
 def _cell_condition_view(cond: dict, view) -> dict:
@@ -776,7 +829,7 @@ def _cellshadow(n: int = 200) -> dict:
         raw_lines: list[str] = []
         try:
             out = subprocess.check_output(
-                ["journalctl", "--user", "-u", "mr-scrooge-v5",
+                ["journalctl", "--user", "-u", _journal_unit(),
                  "--since", "48 hours ago", "--no-pager", "-o", "short-iso"],
                 text=True, timeout=15, stderr=subprocess.DEVNULL,
             )
@@ -815,7 +868,7 @@ def _cellshadow(n: int = 200) -> dict:
 
 # ── Cell scoreboard (cell_setup_score.py --json, cached 300s) ────────────────
 _CELLSCORE_CACHE = {"ts": 0, "data": None}
-_CELLSCORE_SCRIPT = _Path("/home/ubuntu/mr-scrooge-v5/research/tools/cell_setup_score.py")
+_CELLSCORE_SCRIPT = _REPO_ROOT / "research" / "tools" / "cell_setup_score.py"
 
 def _cellscore() -> dict:
     """Run the Phase-C scorer as a subprocess (it needs OANDA candles + journal).
@@ -827,7 +880,7 @@ def _cellscore() -> dict:
         out = subprocess.check_output(
             ["python3", str(_CELLSCORE_SCRIPT), "--json"],
             text=True, timeout=120, stderr=subprocess.DEVNULL,
-            cwd="/home/ubuntu/mr-scrooge-v5",
+            cwd=str(_REPO_ROOT),
         )
         data = _j.loads(out)
         if not isinstance(data, dict):
@@ -870,7 +923,7 @@ def _sysinfo() -> dict:
     except Exception as exc:
         return {"error": str(exc)}
 
-    _SHOW = {"mr-scrooge-v5", "openclaw-gateway", "claim-donkey", "mantis-crm"}
+    _SHOW = {_journal_unit(), "openclaw-gateway", "claim-donkey", "mantis-crm"}
     services = []
     try:
         out = subprocess.check_output(
@@ -903,7 +956,7 @@ def _sysinfo() -> dict:
     logs: list[str] = []
     try:
         logs = subprocess.check_output(
-            ["journalctl", "--user", "-u", "mr-scrooge-v5", "-o", "cat",
+            ["journalctl", "--user", "-u", _journal_unit(), "-o", "cat",
              "-n", "40", "--no-pager"],
             text=True, timeout=5, stderr=subprocess.DEVNULL,
         ).splitlines()
@@ -932,9 +985,9 @@ def start_dashboard(engine: "Engine", port: int = 8084) -> None:
         return _Handler(engine, *args, **kwargs)
 
     srv = http.server.HTTPServer(("127.0.0.1", port), handler_factory)
-    t = threading.Thread(target=srv.serve_forever, daemon=True, name="v5-dashboard")
+    t = threading.Thread(target=srv.serve_forever, daemon=True, name="dashboard")
     t.start()
-    log.info("Dashboard started on port %d — https://[internal-host-redacted]:%d/", port, port)
+    log.info("Dashboard started on 127.0.0.1:%d", port)
 
 
 class _Handler(http.server.BaseHTTPRequestHandler):
