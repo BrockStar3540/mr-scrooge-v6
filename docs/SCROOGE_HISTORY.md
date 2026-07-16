@@ -36,6 +36,19 @@ repo README and is auto-updated on every push.)
 
 ## V1 — "The Box Bot" (≈ Feb–Mar 2026)
 
+- **Origin (primary sources, recovered 2026-07).** V1's *first* identity, before the box playbook,
+  was a micro-breakout **"Sniper Bot"** scoped in the OANDA-agent genesis conversation (*Dropbox
+  `/LLM Sessions/…/Trading/2026-02-14 Building a forex trading agent with OANDA API`*): 1–2 pairs
+  (EUR/USD + GBP/USD), high-liquidity windows only, one position at a time, tight stop + time-based
+  exit — on a **Node/TypeScript + Supabase** engine with a Lovable dashboard, later re-homed to the
+  Python line. That conversation already fixed three ideas the whole program kept: the **risk dial**
+  (a single 0.1–1.0 aggression slider), the **fee-aware minimum-move gate** (`MinMove = SpreadCost +
+  Commission + SlippageBuffer`, skip anything that can't clear it), and a full set of **circuit
+  breakers** (max daily loss/trades, consecutive-loss cooldown, news blackout). A sibling crypto bot
+  ("Mr. Wonderful") was scoped the same fortnight (*2026-02-28 Kraken fee research*), sharing the
+  cost-awareness DNA. Live paper-trading ran in Feb–early March **before** the tracked $100k account
+  opened (2026-03-22). See [`RESEARCH_PROGRAM.md`](RESEARCH_PROGRAM.md) §1 for how this genesis frames
+  the program's research question.
 - **Thesis:** a discretionary Darvas-box playbook — daily PDH/PDL liquidity zones, sucker-moves,
   John Wick / Power-of-Towers setups, tiered zone classification — can be automated rule-for-rule.
 - **Method:** hand-coded gates (`zone_detector`, `signal_engine`, `trade_manager`); first live
@@ -48,7 +61,11 @@ repo README and is auto-updated on every push.)
   (**B-001 → B-053**), including the green-exit infinite-retry crisis (**B-033**) that
   established the still-standing doctrine *the bot never places reactive market orders*. A 30m
   rolling-box experiment (**B-069**) broke profitability and was reverted. Superseded in the
-  V2/V3 transition.
+  V2/V3 transition. The earliest live failure on record — a USD/JPY *pitchfork*-signal **runaway
+  re-entry** (2026-03-01/02: 20 identical SELL stop-outs in 3h10m, ~98 pips each, no loss-memory
+  or cooldown) — is the primal circuit-breaker lesson, recovered from a dated session archive and
+  catalogued under *legacy defects* in [`BOOK_OF_BUGS.md`](BOOK_OF_BUGS.md); notably the genesis
+  spec had *called for* exactly those breakers, which the first live build shipped without.
 - **Carried forward:** geometric anchoring of behavioural rules; pip-normalized thresholds;
   fixed-pip stops over equity-%; single-process enforcement; the no-reactive-market-order rule.
 - **Graveyard:** `/SCROOGE ARCHIVE/V3/archives/mr-scrooge-v1/` (code, Trade-Strategy PDFs, exec

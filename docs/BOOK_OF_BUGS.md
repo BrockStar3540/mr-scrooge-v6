@@ -551,6 +551,32 @@ These bug families repeat across versions:
 
 ---
 
+# Legacy defects recovered from session archives
+
+Defects documented in the operator's **dated pre-repo session archives** (Dropbox
+`/LLM Sessions/…/Trading/`) that predate the B-numbering system and were never assigned a B-id.
+They are recorded here for the historical record with an **`L-` designation so they do not consume
+or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented (see below).
+
+### L-01 — USD/JPY "pitchfork" runaway re-entry (V1, no loss-memory)
+- **Date:** 2026-03-01/02 · **Source:** *Dropbox `/LLM Sessions/…/Trading/2026-03-02 Scrooge bot
+  USDJPY runaway re-entry bug`* (primary log, recovered 2026-07).
+- **Symptom:** the live V1 bot placed **20 identical USD/JPY SELL entries** on the `pitchfork` signal,
+  every 10 minutes for 3h10m (13:13 → 16:23 UTC), each filled at 110.51 and stopped at 111.49 within
+  ~1 second — ~98 pips × 20 ≈ $177 on 1,000-unit clips. Price was already at/above the stop at each
+  entry; the signal kept firing into an already-invalidated zone.
+- **Root cause:** no trade-outcome awareness — no loss memory, no consecutive-loss halt, no
+  post-stop cooldown, and no pre-entry price validation (reject a SELL when price ≥ stop). The bot
+  had no concept of "I just lost this trade."
+- **Fix / lesson:** the primal circuit-breaker lesson of the whole program — hard breakers must live
+  at the **bot** level, not only the broker: max consecutive losses → halt the symbol, daily-loss
+  cap → halt all, cooldown after a stop, and a pre-entry price-vs-stop guard. Bitter irony: the
+  genesis spec (*2026-02-14*) had **called for exactly these breakers**; the first live build shipped
+  without them. Related later B-entries in the same lineage: **B-007** (re-entry not wired), **B-023**
+  (cooldown wrongly applied to wins), **B-025** (consecutive-candle counting).
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

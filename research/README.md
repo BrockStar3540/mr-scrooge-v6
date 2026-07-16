@@ -17,19 +17,29 @@ circumspect of any new "direction" finding and cross-check it against what is al
 
 Start here; each links to a file that lives in this repo.
 
-1. **[`../docs/SCROOGE_HISTORY.md`](../docs/SCROOGE_HISTORY.md)** — the whole story V1→V6, each
-   era's thesis / method / measured numbers / what falsified it. The map for everything else.
-2. **[`../docs/PAPER_cost_aware_exit_classes_2026-07-05.md`](../docs/PAPER_cost_aware_exit_classes_2026-07-05.md)**
-   — the flagship paper: transaction costs from broker fills, the three-speed exit book
-   (FAST/MEDIUM/LONG), the rollover wash, and the fill-probability tables. This is the current
-   live exit doctrine.
-3. **[`../docs/CELL_ARCHITECTURE_SPEC.md`](../docs/CELL_ARCHITECTURE_SPEC.md)** — what a "cell"
+1. **[`../docs/RESEARCH_PROGRAM.md`](../docs/RESEARCH_PROGRAM.md)** — **the entry point.** The program
+   as a research monograph: the research question, the six-hypothesis ledger (each hypothesis as held →
+   test → result → verdict), the methodology evolution, the experiment ledger, threats to validity, and
+   the current open experiment. Read this first for the *why*; read the history for the *when*.
+2. **[`../docs/SCROOGE_HISTORY.md`](../docs/SCROOGE_HISTORY.md)** — the whole story V1→V6, each
+   era's thesis / method / measured numbers / what falsified it. The chronological map.
+3. **[`../docs/papers/`](../docs/papers/)** — the formalized papers (Abstract/Background/Method/
+   Results/Limitations/Data-availability). The flagship is
+   **[`PAPER_edge_hunt_falsifications_2026-07-14.md`](../docs/papers/PAPER_edge_hunt_falsifications_2026-07-14.md)**
+   (five falsifications + the survivorship-bias discovery + the wide-stop turn); see also
+   **[`PAPER_methodology_overhaul_2026-06-21.md`](../docs/papers/PAPER_methodology_overhaul_2026-06-21.md)**
+   (broker-truth / forward-pip / NY-fade) and the preserved historical papers under
+   [`papers/historical/`](../docs/papers/historical/).
+4. **[`../docs/PAPER_cost_aware_exit_classes_2026-07-05.md`](../docs/PAPER_cost_aware_exit_classes_2026-07-05.md)**
+   — transaction costs from broker fills, the three-speed exit book (FAST/MEDIUM/LONG), the rollover
+   wash, and the fill-probability tables. This is the current live exit doctrine.
+5. **[`../docs/CELL_ARCHITECTURE_SPEC.md`](../docs/CELL_ARCHITECTURE_SPEC.md)** — what a "cell"
    is and how a validated setup becomes a trade (the strategy-free execution model).
-4. **[`../docs/DIRECTION_DETECTOR_SPEC_v2.md`](../docs/DIRECTION_DETECTOR_SPEC_v2.md)** and
+6. **[`../docs/DIRECTION_DETECTOR_SPEC_v2.md`](../docs/DIRECTION_DETECTOR_SPEC_v2.md)** and
    **[`../docs/RATCHET.md`](../docs/RATCHET.md)** — the two mechanisms (entry side, exit trail).
-5. **[`../docs/BOOK_OF_BUGS.md`](../docs/BOOK_OF_BUGS.md)** — every documented defect B-001→B-090,
+7. **[`../docs/BOOK_OF_BUGS.md`](../docs/BOOK_OF_BUGS.md)** — every documented defect B-001→B-090,
    including B-078 (the H1 look-ahead leak that re-bases much of the pre-2026-07-03 research).
-6. **[`../docs/ROADMAP.md`](../docs/ROADMAP.md)** and **[`../docs/AUDIT_TODO.md`](../docs/AUDIT_TODO.md)**
+8. **[`../docs/ROADMAP.md`](../docs/ROADMAP.md)** and **[`../docs/AUDIT_TODO.md`](../docs/AUDIT_TODO.md)**
    — open questions and the sim-gated removal ledger.
 
 ## 2. In-repo research assets
