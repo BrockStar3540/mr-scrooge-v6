@@ -12,21 +12,15 @@
 </div>
 
 <!-- LIVE_BALANCE_START -->
-### 📈 Live track record — current configuration
-*range-sized wide-stop ratchet · SL 40/50/60 · engage +7.5 → lock +5 → trail 2.5 fixed, live since 2026-07-16. Practice account, broker-verified fills.*
+<div align="center">
 
-| metric | value |
-|---|---|
-| **Closed trades (this config)** | **2** — 2/2 green, 100% green so far |
-| **Realized P/L** | **+$142.86** |
-| Open trades | 2 (+$57.93 unrealized) |
-| Config-to-date (realized + open) | **+$200.79** (+1.20%) |
-| Account NAV | $16,865.92 |
-| Updated | 2026-07-16 10:48 UTC |
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%24208.20_(%2B1.25%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-2_·_100%25_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-2_(%2B%2465)-58a6ff?style=flat-square)
 
-![equity](livelog/equity.svg)
+[![live track record](livelog/equity.svg)](livelog/trades.csv)
 
-*Auto-updated hourly from the broker. Full log: [livelog/trades.csv](livelog/trades.csv) · [equity.csv](livelog/equity.csv). Prior configs (and the −84% research tape) are a different story — see [the history](docs/SCROOGE_HISTORY.md). This is the current book only; small sample, honest record.*
+</div>
+
+> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +7.5 → lock +5 → trail 2.5 fixed, live since 2026-07-16, auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
 <!-- LIVE_BALANCE_END -->
 
 ---
