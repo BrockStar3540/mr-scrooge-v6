@@ -472,3 +472,25 @@ No number here is uncited, and no scope (sim/live/broker) is upgraded from its s
 [`DATA_AND_MODELS.md`](DATA_AND_MODELS.md). The machine-learning systems specifically (direction ML,
 the pips brains, BUCKET21, the discovery engine, the sealed lab, the pattern loop) are documented
 end-to-end in [`papers/PAPER_ml_program.md`](papers/PAPER_ml_program.md).
+
+---
+
+## Coda — the operator's doctrine
+
+Written by the operator on the day the ledger closed (2026-07-16), after six falsifications
+and the walk-forward verdict, as the distillation of what sixteen months and an −84% tape
+actually taught:
+
+> *"Indicators are useful — but more useful for momentum than direction. The wisdom found is
+> in the trade management. That's where you win: you find the room for the pair to swing, and
+> you lock in your green like a squirrel saving nuts for winter — at a lock-in point that
+> floats above spread and slippage."*
+> — Brock, 2026-07-16
+
+Every clause is a measured result: momentum-not-direction is the 0-of-144 finding; the
+management wisdom is where every surviving improvement in this program lived; the floating
+lock is the breakeven-lock rejection ("never lock within a spread of entry") made doctrine.
+The program adds one boundary the operator's doctrine runs into on this venue: management
+redistributes the win/loss geometry but cannot manufacture expectancy — the doctrine is the
+correct way to trade, and the execution toll decides whether trading is worth doing at all.
+At a round-trip cost under ~0.4 pips, the system described above wins as already built.
