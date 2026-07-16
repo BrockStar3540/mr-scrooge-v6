@@ -311,5 +311,8 @@ The archive is the single consolidated graveyard + research library. Its own ent
 | `/SCROOGE ARCHIVE/docs-harvest/` | Full `docs/` trees lifted from the retired V3 and V4 repos: ADRs, evolution timeline, strategy encyclopedia, execution physics, research methodology, fix postmortems |
 | `/SCROOGE ARCHIVE/research-corpora/` | Backtest corpora and truth-matrix parquets (8 pairs × 8yr forward MFE/MAE, broker-anchored), qtl 8yr feature sets, ML-lab and direction-ML artifacts — everything needed to reproduce or challenge the research |
 
-*Archive access is private. Curated folders can be shared by link on request — the archive
-contains operational material and is link-shared only after a per-folder sanitization review.*
+*The archive is shared publicly, read-only (post-sanitization review):*
+https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
+*Per-artifact catalog — sizes, load hints, and leak labels: [`DATA_AND_MODELS.md`](DATA_AND_MODELS.md).
+(Note: corpora/model tarballs are being consolidated into `models/` and `corpora/` subfolders; the
+catalog carries the canonical paths.)*

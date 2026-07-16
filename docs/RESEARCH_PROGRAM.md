@@ -178,7 +178,8 @@ edge — but that edge was one narrow phenomenon, and the whole `ml_tp_*` family
 V5 cell-era cutover. What carried forward is the *discipline* (walk-forward gate as the activation
 primitive), not the strategies.
 
-**Documented.** `RESEARCH_METHODOLOGY.md`, `BACKTEST_RESULTS.md` (archive `docs-harvest/v4-repo-docs/`);
+**Documented.** [`papers/PAPER_ml_program.md`](papers/PAPER_ml_program.md) (the complete ML arc);
+`RESEARCH_METHODOLOGY.md`, `BACKTEST_RESULTS.md` (archive `docs-harvest/v4-repo-docs/`);
 [`SCROOGE_HISTORY.md`](SCROOGE_HISTORY.md) V4.
 
 ---
@@ -440,3 +441,9 @@ under [`papers/historical/`](papers/historical/) with their era clearly marked; 
 from the retired-repo docs (`/SCROOGE ARCHIVE/docs-harvest/`) and the research session diaries
 (`/SCROOGE ARCHIVE/session-notes/`), both indexed in [`../research/README.md`](../research/README.md).
 No number here is uncited, and no scope (sim/live/broker) is upgraded from its source.
+
+**Data availability.** Every corpus and retired model behind these hypotheses is publicly downloadable
+— the catalog, with the archive link and per-artifact leak status, is
+[`DATA_AND_MODELS.md`](DATA_AND_MODELS.md). The machine-learning systems specifically (direction ML,
+the pips brains, BUCKET21, the discovery engine, the sealed lab, the pattern loop) are documented
+end-to-end in [`papers/PAPER_ml_program.md`](papers/PAPER_ml_program.md).

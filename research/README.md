@@ -2,8 +2,10 @@
 
 This is the reading-order index for the Mr. Scrooge research corpus. It is written for a
 **public reader who has only this repo** — everything referenced here is either in-repo or in
-the Dropbox `/SCROOGE ARCHIVE/` research library (folder paths given; a shareable link is added
-at public launch). Nothing points at a private machine or a private repo.
+the Dropbox `/SCROOGE ARCHIVE/` research library, shared read-only at:
+https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
+(per-artifact catalog with leak labels: [`../docs/DATA_AND_MODELS.md`](../docs/DATA_AND_MODELS.md)).
+Nothing points at a private machine or a private repo.
 
 The project's one non-negotiable methodological claim: **the market telegraphs WHEN a move
 comes and HOW FAR it travels, but not WHICH WAY.** Five structurally distinct price-direction
@@ -28,18 +30,23 @@ Start here; each links to a file that lives in this repo.
    **[`PAPER_edge_hunt_falsifications_2026-07-14.md`](../docs/papers/PAPER_edge_hunt_falsifications_2026-07-14.md)**
    (five falsifications + the survivorship-bias discovery + the wide-stop turn); see also
    **[`PAPER_methodology_overhaul_2026-06-21.md`](../docs/papers/PAPER_methodology_overhaul_2026-06-21.md)**
-   (broker-truth / forward-pip / NY-fade) and the preserved historical papers under
+   (broker-truth / forward-pip / NY-fade),
+   **[`PAPER_ml_program.md`](../docs/papers/PAPER_ml_program.md)** (the complete machine-learning arc
+   and why the cell-era bot runs no live ML), and the preserved historical papers under
    [`papers/historical/`](../docs/papers/historical/).
 4. **[`../docs/PAPER_cost_aware_exit_classes_2026-07-05.md`](../docs/PAPER_cost_aware_exit_classes_2026-07-05.md)**
    — transaction costs from broker fills, the three-speed exit book (FAST/MEDIUM/LONG), the rollover
    wash, and the fill-probability tables. This is the current live exit doctrine.
-5. **[`../docs/CELL_ARCHITECTURE_SPEC.md`](../docs/CELL_ARCHITECTURE_SPEC.md)** — what a "cell"
+5. **[`../docs/DATA_AND_MODELS.md`](../docs/DATA_AND_MODELS.md)** — the public availability catalog:
+   every retired model and corpus, with archive paths, sizes, load hints, and per-artifact leak status
+   (CLEAN / TAINTED-H1 / MIXED). The download-and-reproduce companion to everything above.
+6. **[`../docs/CELL_ARCHITECTURE_SPEC.md`](../docs/CELL_ARCHITECTURE_SPEC.md)** — what a "cell"
    is and how a validated setup becomes a trade (the strategy-free execution model).
-6. **[`../docs/DIRECTION_DETECTOR_SPEC_v2.md`](../docs/DIRECTION_DETECTOR_SPEC_v2.md)** and
+7. **[`../docs/DIRECTION_DETECTOR_SPEC_v2.md`](../docs/DIRECTION_DETECTOR_SPEC_v2.md)** and
    **[`../docs/RATCHET.md`](../docs/RATCHET.md)** — the two mechanisms (entry side, exit trail).
-7. **[`../docs/BOOK_OF_BUGS.md`](../docs/BOOK_OF_BUGS.md)** — every documented defect B-001→B-090,
+8. **[`../docs/BOOK_OF_BUGS.md`](../docs/BOOK_OF_BUGS.md)** — every documented defect B-001→B-090,
    including B-078 (the H1 look-ahead leak that re-bases much of the pre-2026-07-03 research).
-8. **[`../docs/ROADMAP.md`](../docs/ROADMAP.md)** and **[`../docs/AUDIT_TODO.md`](../docs/AUDIT_TODO.md)**
+9. **[`../docs/ROADMAP.md`](../docs/ROADMAP.md)** and **[`../docs/AUDIT_TODO.md`](../docs/AUDIT_TODO.md)**
    — open questions and the sim-gated removal ledger.
 
 ## 2. In-repo research assets
