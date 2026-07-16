@@ -16,6 +16,7 @@ setup trades nothing — silence is the default state of the book.
 """
 from __future__ import annotations
 import collections
+import json
 import logging
 import time
 from datetime import datetime, timezone
@@ -38,6 +39,43 @@ log = logging.getLogger("v5.engine")
 
 _SESSIONS = ["asia", "london", "ny"]
 
+
+
+def _encode_exit_ext(ep, setup_id: str) -> dict:
+    """Compact exit-gear payload for OANDA tradeClientExtensions (comment
+    field is limited to 128 chars — zero-valued keys are omitted)."""
+    d = {"m": ep.mode, "sl": ep.sl_pips, "tr": ep.trigger_pips, "tp": ep.trail_pips}
+    for k, v in (("tpp", ep.tp_pips), ("to", ep.timeout_min), ("tm", ep.trail_mult),
+                 ("tmin", ep.trail_min), ("tmax", ep.trail_max)):
+        if v:
+            d[k] = v
+    d["su"] = setup_id
+    comment = json.dumps(d, separators=(",", ":"))
+    if len(comment) > 128:  # last resort: drop the setup id, keep the gear
+        del d["su"]
+        comment = json.dumps(d, separators=(",", ":"))
+    return {"tag": "cell_v1", "comment": comment}
+
+
+def _decode_exit_ext(trade: dict):
+    """Parse persisted exit gear off an OANDA trade dict. Returns
+    (ExitParams, setup_id) or None (absent / foreign / unparseable)."""
+    comment = (trade.get("clientExtensions") or {}).get("comment", "")
+    if not comment.startswith("{"):
+        return None
+    try:
+        d = json.loads(comment)
+        from modules.cells.cell import ExitParams
+        ep = ExitParams(
+            sl_pips=float(d["sl"]), trigger_pips=float(d["tr"]),
+            trail_pips=float(d["tp"]), mode=str(d.get("m", "ratchet")),
+            tp_pips=float(d.get("tpp", 0.0)), timeout_min=float(d.get("to", 0.0)),
+            trail_mult=float(d.get("tm", 0.0)), trail_min=float(d.get("tmin", 0.0)),
+            trail_max=float(d.get("tmax", 0.0)),
+        )
+        return ep, str(d.get("su", "persisted"))
+    except (KeyError, ValueError, TypeError, json.JSONDecodeError):
+        return None
 
 class Engine:
     def __init__(self, feed, broker, dry_run: bool = True):
@@ -127,6 +165,7 @@ class Engine:
                 vol_regime="unknown", expected_pips=0.0,
                 timestamp=entry_time, reads={},
             )
+            _persisted = _decode_exit_ext(t)
             oanda_sl = t.get("stopLossOrder", {}).get("price")
             initial_sl_price = float(oanda_sl) if oanda_sl else 0.0
             pos = Position(
@@ -137,16 +176,22 @@ class Engine:
                 oanda_trade_id=trade_id,
                 pip_size=PIP[pair],
                 initial_sl_price=initial_sl_price,
+                exit_params=_persisted[0] if _persisted else None,
             )
-            self.managers[pair] = RatchetManager(
+            _rec_mgr = RatchetManager
+            if _persisted and _persisted[0].mode == "bracket":
+                from modules.management.bracket import BracketManager as _BM
+                _rec_mgr = _BM
+            self.managers[pair] = _rec_mgr(
                 position=pos,
                 broker=self.broker,
                 dry_run=self.dry_run,
                 initial_units=abs(int(float(t.get("initialUnits", t.get("currentUnits", 0))))),
             )
             elapsed_min = (now - entry_time).total_seconds() / 60
-            log.info("RECOVERED %s %s | entry=%.5f | trade_id=%s | elapsed=%.1fm",
-                     pair, direction, entry_price, trade_id, elapsed_min)
+            log.info("RECOVERED %s %s | entry=%.5f | trade_id=%s | elapsed=%.1fm | gear=%s",
+                     pair, direction, entry_price, trade_id, elapsed_min,
+                     f"persisted({_persisted[1]})" if _persisted else "exit_config-defaults")
             self.recent_events.append(
                 f"{datetime.now(timezone.utc).strftime('%H:%M:%S')} RECOVERED {pair} {direction} @ {entry_price:.5f}"
             )
@@ -402,6 +447,7 @@ class Engine:
         trade = self.broker.place_market(
             ticket.pair, ticket.direction, units=units,
             entry_price=entry_price, sl_pips=initial_sl, tp_pips=_tp_pips,
+            client_ext=_encode_exit_ext(_ep, _it.setup_id) if _ep is not None else None,
         )
 
         initial_sl_price = (entry_price - initial_sl * pip

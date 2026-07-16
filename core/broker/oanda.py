@@ -178,6 +178,7 @@ class OandaBroker:
         units:     int,
         sl_pips:   float = DEFAULT_INITIAL_SL_PIPS,
         entry_price: Optional[float] = None,
+        client_ext: Optional[dict] = None,
         tp_pips:   float = 0.0,
     ) -> dict:
         """Place a market order with an initial server-side stop loss.
@@ -214,6 +215,10 @@ class OandaBroker:
             "units":      str(signed),
             "stopLossOnFill": {"price": f"{sl_price:.{prec}f}"},
         }
+        # Exit-gear persistence: survives restarts so recovery re-adopts the
+        # trade's ENTRY gear instead of exit_config defaults (AUDIT_TODO item).
+        if client_ext:
+            order["tradeClientExtensions"] = client_ext
         # FAST slice class: server-side limit TP — fills at price or better,
         # cannot slip (stop-lock exits measured med 0.0 / p90 0.8p slippage).
         if tp_pips and tp_pips > 0:
