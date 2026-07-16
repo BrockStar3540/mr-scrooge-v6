@@ -251,6 +251,63 @@ book fail net of cost -- its loss profile has no exploitable time structure left
 reds are fast, the greens define themselves only by engaging, and the insurance-book shape (many
 small greens, rare capped reds) is already the optimum of its own mechanism family.
 
+## Addendum 2 (2026-07-16): the red-denominator test — a real common denominator, not a tradeable one
+
+Brock's question, verbatim: *"can we not test the indicators present in those reds and see if there is
+a common denominator?"* — with the scope extension to session, day-of-week, news days, and vol regime
+("there must be something"). Prior stated honestly before running: two cousins of this idea were
+already falsified (H1's 0/144; the dial-in quintile separators), and red-vs-green at entry is largely
+"which arrived first, -SL or +7.5" = direction with asymmetric thresholds. Honesty gate first: the
+engine reproduced both registered baselines exactly (3-cell 0.034; 18-cell -1.252). All sim, same
+corpus and mechanics as the main result; the 18-cell book (n = 77,936 train trades) powers the
+descriptive part.
+
+**The positive descriptive finding — the reds DO share a common denominator.** It is not an indicator
+fingerprint; it is the **ambient volatility regime: reds are born in quiet tape.** Within-cell
+standardized, null-calibrated (family-wise shuffled null, 500 draws): `atr_1h` AUC 0.451 = **22 sigma
+over the null**, corroborated with the identical low-vol sign by independent volatility measures
+(`atr_d_pips` 0.461, `atr_5m` 0.473, Yang-Zhang `q_yzv_m5` 0.474) -- so not a single-feature fluke or
+leak. The calendar face of the same regime: **NY afternoon 13-18 UTC runs 19-22% red vs ~13-15%
+elsewhere** (the known NY momentum-fade window), and the **lowest prior-day-range quartile runs 19.0%
+vs 15.0%** at the highest. Statistically real -- and economically trivial: |AUC-0.5| ~ 0.05 is a
+coin-flip plus a whisker, cleared only because n = 78k.
+
+Two counterintuitive results deserve print:
+
+1. **News days are SAFER, not riskier.** Red rate is *lower* on NFP (15.3%) and FOMC decision days
+   (14.8%) than otherwise (17.5%) -- FOMC dates from federalreserve.gov, including the 2020 emergency
+   cuts. Big directional catalysts give a wide-stop ratchet something to *trend* on; the danger is the
+   **absence** of volatility, not the presence of news.
+2. **Day-of-week, week-of-month, and FOMC±1 are pure noise** (16-19% flat, inside the shuffle null).
+   The folklore calendar carries nothing here.
+
+**The tradeable form is falsified at the pre-registered bars.** A train-only frozen filter (veto
+low-vol tails + the hour-16 slot; 8 of 186 candidates qualified under a multiple-comparison
+discipline) fails both books on test: the 3-cell book goes 0.034 -> **0.011** (below its own baseline
+-- red rate actually ticked *up* 15.5 -> 15.7%), and the 18-cell book's train lift **+0.89 halves to
++0.45 out-of-sample**, landing at **-0.80** -- still deeply unprofitable. Mechanically, the filter
+vetoes **~40% of trades to shave <1pp of red rate**. A 40-draw placebo (outcomes permuted within
+cell-year, identical machinery) manufactures **+0.145 mean test lift from trade-thinning alone**; the
+real filter's +0.454 beats it at p = 0.025 -- statistically distinguishable from noise, and still not
+profitable. A real edge must clear both the placebo *and* the break-even line; this clears only the
+first.
+
+**Mechanism conclusion.** Red-vs-green is direction with asymmetric thresholds. The only separator is
+the ambient regime a trade is born into, and that regime is too diffuse to cut reds without cutting
+comparable greens -- you cannot know the tape was "too quiet" until after the fact without also
+killing the winners born in the same conditions. Caveat carried: `atr_d_pips` is a daily-aggregate
+feature with possible end-of-day look-ahead; the finding does not rest on it (its unambiguously clean
+intraday cousins agree in sign). Placebo N = 40, so p = 0.025 is indicative, not tight.
+
+Scope: this book + corpus + exit, not general. Artifacts (pipeline, per-feature and calendar tables,
+frozen filter, placebo runs): `/SCROOGE ARCHIVE/session-notes/2026-07-16_red_denominator/`.
+
+Together the two addenda complete the autopsy: the wide-stop book's reds have no exploitable time
+structure (Addendum 1) and no exploitable entry-state structure beyond a real-but-diffuse quiet-tape
+regime (Addendum 2). Brock's instinct that "there must be something" was directionally right -- there
+is something, it is describable, and it is not capturable. That distinction is the program's finding
+in miniature.
+
 ## 8. Data availability
 
 - Full pre-registered results file, frozen design, selection table (all 29 candidate verdicts), main
