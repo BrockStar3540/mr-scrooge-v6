@@ -33,7 +33,10 @@ Start here; each links to a file that lives in this repo.
    (broker-truth / forward-pip / NY-fade),
    **[`PAPER_ml_program.md`](../docs/papers/PAPER_ml_program.md)** (the complete machine-learning arc
    and why the cell-era bot runs no live ML), and the preserved historical papers under
-   [`papers/historical/`](../docs/papers/historical/).
+   [`papers/historical/`](../docs/papers/historical/). Save
+   **[`PAPER_h6_walkforward_2026-07-16.md`](../docs/papers/PAPER_h6_walkforward_2026-07-16.md)** for
+   **last** — it is the ending: the pre-registered walk-forward that falsified the program's final
+   open hypothesis (net test Sharpe 0.03 vs the 0.70 bar; the gross edge equals the execution toll).
 4. **[`../docs/PAPER_cost_aware_exit_classes_2026-07-05.md`](../docs/PAPER_cost_aware_exit_classes_2026-07-05.md)**
    — transaction costs from broker fills, the three-speed exit book (FAST/MEDIUM/LONG), the rollover
    wash, and the fill-probability tables. This is the current live exit doctrine.
@@ -180,10 +183,13 @@ archived as tarballs):
 
 ## 5. Active research frontier
 
-- **Wide-stop verdict (the decisive open test):** walk-forward cell selection (train 2019–22 /
-  test 2023–26) + a slippage haircut on the range-sized book. If Sharpe survives ~0.7 there, a
-  cell earns a live *shadow* seat. Until then the practice-account forward tape is the only
-  verdict, and it is not in yet.
+- **Wide-stop verdict — IN, and negative (2026-07-16):** the pre-registered walk-forward
+  (train 2019–22 / test 2023–26) + slippage haircut returned net test Sharpe **0.03** vs the 0.70
+  bar (gross 1.26 without slippage — the edge equals the toll). H6 falsified as-tested; no cell
+  earns a shadow seat. Full writeup:
+  [`../docs/papers/PAPER_h6_walkforward_2026-07-16.md`](../docs/papers/PAPER_h6_walkforward_2026-07-16.md).
+  The practice-account tape keeps running as the independent live check — its remaining job is
+  measuring realized slippage against the ~0.4p round-trip knife-edge.
 - **Direction hunt (honest):** the center-box discovery probe logs a full feature vector at the
   prev-session box center with no direction commitment, mining signed-travel (which wall) vs each
   indicator for a which-way filter — needs n≥100 before any read. Prior attempts at pre-committed

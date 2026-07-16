@@ -31,7 +31,10 @@ leak, and survivorship in the stop-tuning itself. Every headline number in this 
 to how it was measured — **sim**, **live** (bot journal/intent), or **broker** (OANDA fills, the
 only trade-truth) — and those scopes are never interchangeable. The one edge that appears to
 survive honest scrutiny is thin, low-Sharpe, exit-geometry-shaped rather than direction-shaped,
-and is at time of writing an **open forward experiment**, not a claimed result.
+and was itself **falsified as-tested on 2026-07-16** by a pre-registered walk-forward with an honest
+cost model (net test Sharpe 0.03 vs a 0.70 bar; gross 1.26 without slippage — the edge equals the
+toll). The ledger closes with no surviving price-prediction hypothesis; what remains open is
+execution-side, not prediction-side.
 
 ---
 
@@ -63,8 +66,10 @@ The research question this apparatus was built to answer can be stated as a null
 > out-of-sample.
 
 The five months that follow are the attempt to reject H₀. The honest summary of the program is that
-**H₀ was not rejected for the direction-prediction family**, and that the one place it may fail —
-excursion-aware exit geometry on cells with a persistent side — is still under test.
+**H₀ was never rejected**: not for the direction-prediction family, and — as of the 2026-07-16
+pre-registered walk-forward — not for the last candidate either (excursion-aware exit geometry on
+cells with a persistent side, H6). Every family that showed a gross edge showed one the same size as
+its execution cost.
 
 ---
 
@@ -244,7 +249,7 @@ re-dialing and book-flips of the prior weeks: they were fitting realized-directi
 
 ---
 
-### H6 — The wide-stop / rare-red thesis (open)
+### H6 — The wide-stop / rare-red thesis (falsified as-tested, 2026-07-16)
 
 **Statement (as held now, Brock, Jul 14–15 2026).** Risk a book of many small greens plus the
 occasional big green against a **wide, range-sized stop** (40 quiet / 50 mid / 60 loud, sized to the
@@ -252,25 +257,31 @@ per-(pair × session) session swing). Prove a trade green (ratchet trigger +7.5 
 runners express, and accept that reds are **rare and large** but carried by the green skew. Never
 lock a stop within a spread of entry (a "flat" price is already −1 spread).
 
-**Test method.** The capstone portfolio sim (above) plus a range-sized variant; deployed to all 29
-cells 2026-07-14 as a live forward experiment. **The decisive test is still owed:** walk-forward cell
-selection (train 2019–22 / test 2023–26) + a slippage haircut.
+**Test method.** First the capstone portfolio sim (above) plus a range-sized variant, deployed to all
+29 cells 2026-07-14 as a live forward experiment. Then the pre-committed decisive test, run
+2026-07-16 with the design frozen before the run: **walk-forward cell selection** (train 2019–22 only
+→ 3 of 29 cells survive; test 2023–26 untouched by selection) **plus a pre-registered tiered slippage
+haircut** (~0.8–1.2p round-trip), on an engine validated by exact reproduction of the 07-14 capstone.
+Pass bar stated first: net test Sharpe ≥ 0.70.
 
-**Result (sim, 6-cell portfolio).** Range-sized SL: Sharpe 1.00, maxDD −31%, rarest reds (14%), most
-big runners (3% > 20p, 1% > 40p) — Brock's rare-red/runner skew confirmed in sim. **But** the
-absolute level is inflated by cell selection (6 best), 2026 partially in-sample, and no
-slippage/financing (wide stops slip); honest haircut ≈ **Sharpe 0.6–0.8** — a low-Sharpe grind, not a
-jackpot.
+**Result.** In-sample (sim, 6-cell): Sharpe 1.00–1.05, the rare-red/runner skew confirmed — with the
+inflators named and an honest guess of Sharpe 0.6–0.8 after correction. Decisive test (sim,
+leak-clean corpus, n = 7,582): **net test Sharpe 0.03** vs the 0.70 bar (CAGR −2.1%, maxDD −50.9%).
+The identical frozen book with zero slippage scores **Sharpe 1.26** (+32%/yr); the flat-slippage sweep
+puts the knife-edge at **~0.4p round-trip** — half the defensible retail estimate. Every robustness
+row (flat-SL, trigger-3.5, an exploratory 18-cell loose selection) fails in the same direction, and
+the design's known impurities (candidate thresholds dialed on full history) could only have flattered
+the result. The gross edge is also non-stationary (2023–24 strong, 2025–26 near-dead, frictionless).
 
-**Verdict — OPEN.** This is the current live book on the practice account. What would falsify it: the
-walk-forward + slippage test failing to clear ~0.7 Sharpe; or the forward tape showing avg-red not
-contained, wide-stop slippage eating the runners, or the green skew not materializing at n ≥ 20 per
-cell. **Live stops were not changed on the sim alone** beyond the deploy itself, and no cell is
-promoted until the owed test passes.
+**Verdict — FALSIFIED (as-tested, 2026-07-16).** The gross edge is real; it equals the execution
+toll — the sixth structurally distinct family to die at the same wall. Nothing promoted to shadow;
+live stops unchanged. The practice-account forward tape continues as an independent live check of the
+same question (its main value now: measuring realized slippage against the sim's knife-edge), with
+expectations reset accordingly.
 
-**Documented.** [`papers/PAPER_edge_hunt_falsifications_2026-07-14.md`](papers/PAPER_edge_hunt_falsifications_2026-07-14.md)
-(CAPSTONE + range-sized deploy); [`SCROOGE_HISTORY.md`](SCROOGE_HISTORY.md) V5 Arcs 8–10;
-[`../research/README.md`](../research/README.md) §5 (active frontier).
+**Documented.** [`papers/PAPER_h6_walkforward_2026-07-16.md`](papers/PAPER_h6_walkforward_2026-07-16.md)
+(the decisive test); [`papers/PAPER_edge_hunt_falsifications_2026-07-14.md`](papers/PAPER_edge_hunt_falsifications_2026-07-14.md)
+(CAPSTONE + range-sized deploy); [`SCROOGE_HISTORY.md`](SCROOGE_HISTORY.md) V5 Arcs 8–10.
 
 ---
 
@@ -358,6 +369,7 @@ tags: **sim** (backtest), **live** (bot journal/intent), **broker** (OANDA fills
 | 2026-07-05 | Can features predict which way? | truth-matrix, 24 cells × 6 feats | ~290k bars | **0/144** signed-direction robust (broker-anchored) | Cost-classes paper §4 |
 | 2026-07-14 | Is there any automatable price edge? | 5-family falsification, 16yr | 8 pairs, 16yr | 5 families fail at edge<cost wall (sim) | Edge-hunt paper |
 | 2026-07-14 | Tight vs wide stops, same cells? | head-to-head portfolio sim | 6 cells, 8yr | tight −93%/yr Sharpe −3.54; wide +25.4%/yr Sharpe 1.05 (sim) | Edge-hunt paper CAPSTONE |
+| 2026-07-16 | Does wide-stop survive walk-forward + slippage? | pre-registered WF (train 2019–22 / test 2023–26), tiered slippage, engine reproduction-gated | 29→3 cells; 7,582 test trades | net Sharpe **0.03** vs 0.70 bar; no-slip twin 1.26; knife-edge ~0.4p RT (sim) | H6 walk-forward paper |
 
 ---
 
@@ -393,41 +405,50 @@ Stated candidly; several are the reason a finding above is REVISED or OPEN rathe
 
 ---
 
-## 6. The current open experiment
+## 6. The verdict on the last open experiment — and what still runs
 
-The live book (2026-07-14 → present) is the **wide-stop / range-sized-SL forward test** (H6): all 29
-cells on range-sized stops (40/50/60 by session swing), ratchet trigger +7.5 → lock +5, fixed trail
-2.5 (the `trail_mult=1.0` ATR-scaling bug that silently parked the ratchet below breakeven was B-090,
-fixed), no green-lock inside a spread of entry. It runs on the OANDA **practice** account.
+**The walk-forward verdict is in, and it is negative.** The decisive test the program owed itself —
+pre-registered walk-forward cell selection (train 2019–22 / test 2023–26) plus a slippage haircut,
+pass bar Sharpe ≥ 0.70 — was run on 2026-07-16 and returned **net test Sharpe 0.03**
+([`papers/PAPER_h6_walkforward_2026-07-16.md`](papers/PAPER_h6_walkforward_2026-07-16.md)). The
+identical book with zero slippage scores 1.26, locating the failure precisely at execution cost: the
+gross wide-stop edge is real and is the same size as the toll (knife-edge ~0.4p round-trip vs a
+defensible retail estimate of ~0.8–1.0p). H6 is falsified as-tested; no cell is promoted to a live
+shadow seat.
 
-**What it would take to promote any cell to a live *shadow* seat:** the owed decisive test — anchored
-walk-forward cell selection (train 2019–22 / test 2023–26) plus a slippage haircut — must return a
-Sharpe that survives ~0.7. Until then the forward tape is the only verdict, and it is not in yet.
-
-**What would falsify H6:** the walk-forward + haircut failing ~0.7; or the forward tape (at n ≥ 20 per
-cell) showing avg-red not contained toward the wide stop, wide-stop slippage eating the runners the
-thesis depends on, or the many-small-greens/rare-big-green skew simply not appearing.
+**What still runs.** The wide-stop book (range-sized SL 40/50/60, trigger +7.5 → lock +5, fixed trail
+2.5 — B-090 fixed; no green-lock inside a spread of entry) remains deployed on the OANDA **practice**
+account as an *independent live check of the same question*, with expectations reset by the sim
+verdict. Its purpose is no longer to confirm a jackpot; it is to measure what the sim had to assume:
+realized entry/stop slippage against the ~0.4p knife-edge, avg-red containment, and whether the
+rare-red/green-skew shape appears in live fills at n ≥ 20 per cell. If the live tape were to beat the
+sim's cost model decisively, that — and only that — would reopen H6.
 
 ---
 
 ## 7. Future work
 
-Framed as the honest forks named at the close of the edge hunt — none of them "generate variant #6"
-of a falsified family:
+With the wide-stop verdict in (§6), the ledger holds no open price-prediction hypothesis. The
+surviving directions are the edge hunt's non-tuning forks — none of them "generate variant #7" of a
+falsified family:
 
-1. **Finish the wide-stop verdict** — the walk-forward + slippage gauntlet above. This is the single
-   highest-value next step; the whole live book is staked on it.
+1. **Pivot from prediction to execution/structure** — carry, cost, liquidity, and rollover-timing
+   edges are a different game with a different test. This is now the leading fork: the cost work (83%
+   of a loss window was spread) and the H6 autopsy (gross Sharpe 1.26 eaten entirely by ~0.8–1.0p of
+   slippage) both say the accessible edge lives in *paying less*, not *predicting better*.
 2. **Different corpus, not different tuning** — the factor verdict's own prescription: the edge could
-   not be expanded from this corpus, so test on a *different* one (pre-2019, other instruments) where
-   AUD_JPY's 2023–26 trend does not dominate the OOS window.
-3. **Pivot from prediction to execution/structure** — carry, cost, liquidity, and rollover-timing
-   edges are a different game with a different test; the cost work (83% of the loss was spread)
-   suggests the accessible edge may live in *paying less*, not *predicting better*.
-4. **Accept trend as a low-Sharpe diversifier** — run it tiny and cheap alongside other ventures
+   not be expanded from this corpus, so any future prediction attempt belongs on a *different* one
+   (pre-2019, other instruments) where AUD_JPY's 2023–26 trend does not dominate the OOS window — and
+   must clear the same pre-registered cost-bearing bar H6 was held to.
+3. **Accept trend as a low-Sharpe diversifier** — run it tiny and cheap alongside other ventures
    rather than as the main bet, consistent with the CTA finding.
-5. **The honest option, kept on the table** — conclude that an automated retail price-edge is not this
-   venture's advantage and weight engineering toward the ventures that are. The program's willingness
-   to state this is part of what makes its positive findings trustworthy.
+4. **Measure the sim's one soft assumption** — the practice-account tape's remaining job: realized
+   per-fill slippage vs the ~0.4p knife-edge (§6). Cheap, already running, and the only observation
+   that could reopen H6.
+5. **The honest option, now the default posture** — the program's own results say an automated retail
+   price-edge is not this venture's advantage; engineering weight shifts toward the ventures that
+   are. The willingness to conclude this is what makes the program's positive findings — the
+   methodology, the falsifications, the cost accounting — trustworthy.
 
 ---
 

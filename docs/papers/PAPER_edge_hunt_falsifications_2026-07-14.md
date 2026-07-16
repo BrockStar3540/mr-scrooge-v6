@@ -207,6 +207,11 @@ passes:
 runnable-looking edge, but it is gated on wide stops and exit geometry, the tight-stop dial-in doctrine
 was actively harmful and survivorship-biased, and the honest verdict is pending the walk-forward gauntlet.
 
+> **Update (2026-07-16):** the owed test was run, pre-registered, two days later — and **failed** (net
+> test Sharpe 0.03 vs the 0.70 bar; gross 1.26 without slippage). H6 is falsified as-tested; see
+> [`PAPER_h6_walkforward_2026-07-16.md`](PAPER_h6_walkforward_2026-07-16.md). This section is preserved
+> as written on 07-14.
+
 ---
 
 ## 8. Data availability
