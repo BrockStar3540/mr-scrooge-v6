@@ -1308,8 +1308,8 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
         for st in configs.get(_p, {}).get("sessions", {}).get(_s, {}).get("setups", []):
             if st.get("id") == _id:
                 _ex = dict(st.get("exit", {}))
-                _trig = _ex.get("trigger_pips") or 6.0
-                _trail = _ex.get("trail_pips") or 3.0
+                _trig = 7.5   # Brock 2026-07-15: engage at real +7.5 move (not +3.5 wiggles); tested Sharpe 0.70 vs 0.60
+                _trail = 2.5  # trail stays TIGHT to lock the gain (loosening to 4 collapses to Sharpe 0.04)
                 _new = {"mode": "ratchet", "sl_pips": 40.0, "trigger_pips": _trig, "trail_pips": _trail,
                         "trail_mult": 1.0, "trail_min": _trail, "trail_max": 12.0, "_class": "WIDE_TEST"}
                 if _ex.get("entry_cutoff_utc"): _new["entry_cutoff_utc"] = _ex["entry_cutoff_utc"]
@@ -1344,8 +1344,8 @@ def _apply_brock_overrides_2026_07(configs: dict) -> None:
                 continue
             for _st in _scfg.get("setups", []):
                 _ex = dict(_st.get("exit", {}))
-                _trig = _ex.get("trigger_pips") or 6.0
-                _trail = _ex.get("trail_pips") or 3.0
+                _trig = 7.5   # Brock 2026-07-15: engage at real +7.5 move (not +3.5 wiggles); tested Sharpe 0.70 vs 0.60
+                _trail = 2.5  # trail stays TIGHT to lock the gain (loosening to 4 collapses to Sharpe 0.04)
                 _new = {"mode": "ratchet", "sl_pips": _sl, "trigger_pips": _trig, "trail_pips": _trail,
                         "trail_mult": 1.0, "trail_min": _trail, "trail_max": max(_trail * 3.0, 10.0),
                         "_class": "RANGE_SIZED"}
