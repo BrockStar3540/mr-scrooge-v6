@@ -923,6 +923,9 @@ body.has-ticker{padding-bottom:32px}
     <div class="card-title">OANDA credentials
       <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">stored locally in config/credentials.local.json (chmod 600, gitignored). Tokens are verified read-only against OANDA and never displayed again.</span>
     </div>
+    <div class="banner banner-amber" style="margin:10px;display:block;line-height:1.5">
+      <b>⚠ Defaults are OANDA.</b> You can point these at another broker, but this bot and dashboard have only been built, tested, and run on <b>OANDA's v20 REST API</b>. A different broker's API is almost certainly incompatible — different endpoints, auth, and order/position/pricing shapes — and <b>will require code changes</b> (in <code>core/broker/</code> and <code>core/feed/</code>), not just a URL swap. Changing the URL alone will not make another broker work.
+    </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px">
       <div style="border:1px solid var(--border);border-radius:8px;padding:12px">
         <div style="font-weight:700;color:#22c55e;margin-bottom:8px">PRACTICE <span class="mono-sm muted" id="cred-practice-status">—</span></div>
@@ -930,6 +933,8 @@ body.has-ticker{padding-bottom:32px}
         <input id="cred-practice-token" type="password" placeholder="paste practice token" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
         <label style="font-size:11px;color:var(--fg2);display:block">Account ID (101-…)</label>
         <input id="cred-practice-acct" type="text" placeholder="101-001-…" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <label style="font-size:11px;color:var(--fg2);display:block">API URL <a href="#" onclick="resetUrl('practice');return false" style="color:var(--info);font-size:10px;margin-left:6px">reset to OANDA default</a></label>
+        <input id="cred-practice-url" type="text" placeholder="https://api-fxpractice.oanda.com" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px;font-family:'JetBrains Mono',monospace;font-size:11px">
         <button class="primary" onclick="saveCreds('practice')">Verify + save practice</button>
         <div id="cred-practice-msg" class="mono-sm" style="margin-top:6px"></div>
       </div>
@@ -939,12 +944,14 @@ body.has-ticker{padding-bottom:32px}
         <input id="cred-live-token" type="password" placeholder="paste live token" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
         <label style="font-size:11px;color:var(--fg2);display:block">Account ID (00x-…)</label>
         <input id="cred-live-acct" type="text" placeholder="001-001-…" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <label style="font-size:11px;color:var(--fg2);display:block">API URL <a href="#" onclick="resetUrl('live');return false" style="color:var(--info);font-size:10px;margin-left:6px">reset to OANDA default</a></label>
+        <input id="cred-live-url" type="text" placeholder="https://api-fxtrade.oanda.com" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px;font-family:'JetBrains Mono',monospace;font-size:11px">
         <button class="primary" onclick="saveCreds('live')">Verify + save live</button>
         <div id="cred-live-msg" class="mono-sm" style="margin-top:6px"></div>
       </div>
     </div>
     <div class="muted" style="padding:0 10px 12px;font-size:11px">
-      Resolution precedence: environment OANDA_* vars &gt; ~/.openclaw/secrets.env &gt; this file. On the production EC2 box the secrets.env file keeps winning, so entries here never affect it.
+      Resolution precedence: environment OANDA_* vars &gt; ~/.openclaw/secrets.env &gt; this file. On the production EC2 box the secrets.env file keeps winning, so entries here never affect it. The token is verified read-only against the API URL — a non-OANDA URL will fail verification.
     </div>
   </div>
 </div>
@@ -2149,21 +2156,38 @@ function renderCredentials(){
   if(bl){bl.disabled=!CRED.live_armed;bl.title=CRED.live_armed?'':'live trading disabled on this instance';}
   const bp=document.getElementById('btn-practice');
   if(bp)bp.disabled=(mode==='practice');
-  const pc=document.getElementById('cred-practice-status');
-  if(pc)pc.textContent=CRED.practice?.configured?`configured ${CRED.practice.masked} · id ${CRED.practice.account_id_last4}`:'not set';
-  const lc=document.getElementById('cred-live-status');
-  if(lc)lc.textContent=CRED.live?.configured?`configured ${CRED.live.masked} · id ${CRED.live.account_id_last4}`:'not set';
+  ['practice','live'].forEach(k=>{
+    const set=CRED[k]||{};
+    const st=document.getElementById(`cred-${k}-status`);
+    if(st)st.textContent=set.configured?`configured ${set.masked} · id ${set.account_id_last4}`:'not set';
+    // Pre-fill the API URL field (only when the user hasn't started editing it).
+    const urlEl=document.getElementById(`cred-${k}-url`);
+    if(urlEl && document.activeElement!==urlEl){
+      urlEl.value=set.api_url||'';
+      urlEl.dataset.default=set.default_url||'';
+      urlEl.style.borderColor=set.url_is_default?'':'#f4c542';   // amber if overridden
+    }
+  });
+}
+function resetUrl(kind){
+  const el=document.getElementById(`cred-${kind}-url`);
+  if(!el)return;
+  el.value=el.dataset.default||(CRED&&CRED[kind]&&CRED[kind].default_url)||'';
+  el.style.borderColor='';
 }
 async function saveCreds(kind){
   const msg=document.getElementById(`cred-${kind}-msg`); msg.textContent='verifying…';
   const token=document.getElementById(`cred-${kind}-token`).value.trim();
   const acct=document.getElementById(`cred-${kind}-acct`).value.trim();
+  const url=document.getElementById(`cred-${kind}-url`).value.trim();
   if(!token||!acct){msg.innerHTML='<span class="neg">token + account id required</span>';return}
   try{
+    const payload={account:kind,api_token:token,account_id:acct};
+    if(url)payload.api_url=url;
     const r=await fetch('/api/credentials',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({account:kind,api_token:token,account_id:acct})});
+      body:JSON.stringify(payload)});
     const d=await r.json();
-    if(d.ok){msg.innerHTML=`<span class="pos">verified + saved ${d.masked}</span>`;
+    if(d.ok){msg.innerHTML=`<span class="pos">verified + saved ${d.masked} @ ${escape(d.api_url||'')}</span>`;
       document.getElementById(`cred-${kind}-token`).value='';loadCredentials();}
     else msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`;
   }catch(e){msg.innerHTML=`<span class="neg">${e.message}</span>`}

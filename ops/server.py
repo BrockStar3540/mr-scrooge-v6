@@ -366,18 +366,28 @@ def _save_credentials(payload: dict) -> dict:
         raise ValueError(f"account must be one of {list(_cred.MODES)}")
     api_token = payload.get("api_token")
     account_id = payload.get("account_id")
-    ok, msg = _cred.verify_oanda_token(account, api_token, account_id)
+    # Optional editable api_url. Blank/absent → OANDA default for the type.
+    raw_url = payload.get("api_url")
+    if raw_url is not None and str(raw_url).strip():
+        if not _cred.valid_https_url(raw_url):
+            raise ValueError("api_url must be a well-formed https:// URL")
+        api_url = str(raw_url).strip().rstrip("/")
+    else:
+        api_url = _cred.default_url_for(account)
+    # Verify against the chosen host — a non-OANDA URL fails here (deliberate guard).
+    ok, msg = _cred.verify_oanda_token(account, api_token, account_id, api_url=api_url)
     if not ok:
         raise ValueError(msg)
     local = _cred.load_local()
     local[account] = {"api_token": str(api_token).strip(),
-                      "account_id": str(account_id).strip()}
+                      "account_id": str(account_id).strip(),
+                      "api_url": api_url}
     local.setdefault("mode", "practice")
     _cred.write_local(local)
-    log.info("credentials saved for %s account (token %s, id %s) — verified",
-             account, _cred.mask(api_token), account_id)
+    log.info("credentials saved for %s account (token %s, id %s, url %s) — verified",
+             account, _cred.mask(api_token), account_id, api_url)
     return {"ok": True, "account": account, "verified": True,
-            "masked": _cred.mask(api_token), "account_id": account_id}
+            "masked": _cred.mask(api_token), "account_id": account_id, "api_url": api_url}
 
 def _set_mode(payload: dict) -> tuple[int, dict]:
     """POST /api/mode — the practice/live toggle.  Returns (http_status, body).
@@ -400,7 +410,8 @@ def _set_mode(payload: dict) -> tuple[int, dict]:
             return 400, {"ok": False, "error": "no live credentials saved — add + verify them first"}
         if payload.get("confirm") != "TRADE REAL MONEY":
             return 400, {"ok": False, "error": 'confirmation required: send confirm="TRADE REAL MONEY"'}
-        ok, msg = _cred.verify_oanda_token("live", cset["api_token"], cset["account_id"])
+        ok, msg = _cred.verify_oanda_token("live", cset["api_token"], cset["account_id"],
+                                           api_url=_cred.url_for_set(cset, "live"))
         if not ok:
             return 400, {"ok": False, "error": f"live credentials failed re-verification: {msg}"}
 

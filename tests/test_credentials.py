@@ -161,6 +161,70 @@ def test_resolve_env_wins(creds_path, monkeypatch):
     assert r["OANDA_API_TOKEN"] == "envtok" and r["_source"] == "env"
 
 
+# ── editable api_url ───────────────────────────────────────────────────────────
+def test_api_url_persists_and_round_trips(creds_path, fake_oanda):
+    out = server._save_credentials({"account": "practice", "api_token": "good:101-001-1-0",
+                                    "account_id": "101-001-1-0",
+                                    "api_url": "https://api-fxpractice.oanda.com/"})
+    assert out["api_url"] == "https://api-fxpractice.oanda.com"   # trailing slash stripped
+    on_disk = json.loads(creds_path.read_text())
+    assert on_disk["practice"]["api_url"] == "https://api-fxpractice.oanda.com"
+    # status + resolve reflect the stored url
+    assert cred.status()["practice"]["api_url"] == "https://api-fxpractice.oanda.com"
+
+
+def test_missing_api_url_falls_back_to_oanda_default(creds_path, fake_oanda):
+    server._save_credentials({"account": "practice", "api_token": "good:101-001-1-0",
+                              "account_id": "101-001-1-0"})   # no api_url
+    on_disk = json.loads(creds_path.read_text())
+    assert on_disk["practice"]["api_url"] == cred.OANDA_PRACTICE_URL
+    # a set object with no api_url key at all → default per type
+    assert cred.url_for_set({}, "practice") == cred.OANDA_PRACTICE_URL
+    assert cred.url_for_set({}, "live") == cred.OANDA_LIVE_URL
+
+
+def test_malformed_api_url_rejected(creds_path, fake_oanda):
+    for bad in ["http://insecure.example.com", "not a url", "ftp://x", "https://has space.com"]:
+        with pytest.raises(ValueError):
+            server._save_credentials({"account": "practice", "api_token": "good:101-1",
+                                      "account_id": "101-001-1-0", "api_url": bad})
+    # nothing written after rejects
+    assert not creds_path.exists() or "practice" not in json.loads(creds_path.read_text())
+
+
+def test_reset_restores_oanda_default(creds_path, fake_oanda):
+    # save a (valid https) override, then a fresh save without api_url returns to default
+    cred.write_local({"practice": {"api_token": "t", "account_id": "101-x",
+                                   "api_url": "https://api-fxpractice.oanda.com"}})
+    assert cred.url_for_set(cred.load_local()["practice"], "practice") == cred.OANDA_PRACTICE_URL
+    assert cred.default_url_for("practice") == cred.OANDA_PRACTICE_URL
+    assert cred.default_url_for("live") == cred.OANDA_LIVE_URL
+
+
+def test_env_url_wins_over_stored(creds_path, monkeypatch):
+    monkeypatch.setenv("OANDA_API_TOKEN", "envtok")
+    monkeypatch.setenv("OANDA_API_URL", "https://env-host.example.com")
+    r = cred.resolve_oanda_creds()
+    assert r["OANDA_API_URL"] == "https://env-host.example.com" and r["_source"] == "env"
+
+
+def test_resolve_uses_stored_url_when_present(creds_path, monkeypatch):
+    monkeypatch.delenv("OANDA_API_TOKEN", raising=False)
+    monkeypatch.setattr(cred, "_SECRETS_ENV", "/nonexistent/secrets.env")
+    cred.write_local({"mode": "practice",
+                      "practice": {"api_token": "t", "account_id": "101-p",
+                                   "api_url": "https://api-fxpractice.oanda.com"}})
+    assert cred.resolve_oanda_creds()["OANDA_API_URL"] == "https://api-fxpractice.oanda.com"
+
+
+def test_valid_https_url():
+    assert cred.valid_https_url("https://api-fxtrade.oanda.com")
+    assert not cred.valid_https_url("http://x.com")
+    assert not cred.valid_https_url("https://")
+    assert not cred.valid_https_url("")
+    assert not cred.valid_https_url(None)
+
+
 # ── the file must never be committable ─────────────────────────────────────────
 def test_credentials_local_is_gitignored():
     gi = (cred._REPO_ROOT / ".gitignore").read_text()

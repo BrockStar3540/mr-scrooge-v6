@@ -70,13 +70,19 @@ verbatim server-side. Hot-reloads (read each new entry / playmaker cycle).
 
 ### CONNECTION — credentials + mode
 Credentials are stored in `config/credentials.local.json` (chmod 600, **gitignored,
-never committed**). Shape: `{"practice":{...},"live":{...},"mode":"practice"}`.
-Host URLs are derived from mode (`practice`→api-fxpractice, `live`→api-fxtrade).
+never committed**). Shape:
+`{"practice":{"api_token","account_id","api_url"},"live":{...},"mode":"practice"}`.
+Each set's **API URL is editable** and defaults to the OANDA host for its type
+(`practice`→api-fxpractice, `live`→api-fxtrade), named in `config/credentials.py`
+as `OANDA_PRACTICE_URL` / `OANDA_LIVE_URL`. Each field has a **"reset to OANDA
+default"** link; a set with no stored `api_url` falls back to that default.
 
-- `POST /api/credentials` verifies a token **read-only** against the matching
-  OANDA host (`GET /v3/accounts` must 200, the account_id must be visible, and
-  its prefix must match the type — `101-`=practice, `00x-`=live). Tokens are
-  never logged or echoed (masked to `…last4`).
+- `POST /api/credentials` accepts optional `api_url` (validated as a well-formed
+  `https://` URL) and verifies the token **read-only** against it (`GET
+  {api_url}/v3/accounts` must 200, the account_id must be visible, and its prefix
+  must match the type — `101-`=practice, `00x-`=live). A non-OANDA URL naturally
+  fails this check — a deliberate guard. Tokens are never logged or echoed
+  (masked to `…last4`); `api_url` is not secret and is shown.
 - `GET /api/credentials` returns status only — configured booleans, masked
   last4, current mode, and whether live is armed. Never the values.
 - `POST /api/mode` is the toggle.
@@ -84,7 +90,19 @@ Host URLs are derived from mode (`practice`→api-fxpractice, `live`→api-fxtra
 **Credential resolution precedence** (the broker's `_secrets()`):
 1. environment `OANDA_API_TOKEN` / `OANDA_API_URL` / `OANDA_ACCOUNT_ID`
 2. `~/.openclaw/secrets.env` (legacy production path)
-3. `config/credentials.local.json`, selecting the set by `mode`
+3. `config/credentials.local.json`, selecting the set by `mode` (using that set's
+   `api_url`, else the OANDA default for the type)
+
+### Broker compatibility (OANDA only)
+The editable API URL exists so you can point at a different OANDA host (e.g. a
+region or a mock), **not** at a different broker. This bot and dashboard were
+built, tested, and run **only** against **OANDA's v20 REST API**. Another
+broker's API is almost certainly incompatible — different endpoints, auth, and
+order/position/pricing shapes — so pointing the URL elsewhere will fail token
+verification and, even past that, will not work without real code changes. The
+OANDA-specific integration lives in **`core/broker/oanda.py`** (orders, stops,
+sizing, account summary) and **`core/feed/oanda.py`** (pricing/candles feed); a
+porter would need to reimplement both against the target broker's API.
 
 secrets.env is deliberately kept **above** the local json so a production box
 that reads secrets.env can never be re-pointed by a stray local file. A fresh

@@ -10,13 +10,14 @@ Local storage
 config/credentials.local.json  (chmod 0600, GITIGNORED — must NEVER be committed):
 
     {
-      "practice": {"api_token": "...", "account_id": "101-..."},
-      "live":     {"api_token": "...", "account_id": "001-..."},
+      "practice": {"api_token": "...", "account_id": "101-...", "api_url": "https://..."},
+      "live":     {"api_token": "...", "account_id": "001-...", "api_url": "https://..."},
       "mode":     "practice"
     }
 
-Host URLs are DERIVED from mode (practice → api-fxpractice, live → api-fxtrade);
-they are never stored.
+Each set's api_url is editable (CONNECTION tab) and defaults to the OANDA host
+for its type (OANDA_PRACTICE_URL / OANDA_LIVE_URL).  A set with no api_url falls
+back to that default.  Env OANDA_API_URL still wins on the production box.
 
 Resolution precedence — resolve_oanda_creds()  (highest first)
 --------------------------------------------------------------
@@ -42,6 +43,7 @@ import logging
 import os
 import re
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -51,10 +53,12 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 CREDS_PATH = _REPO_ROOT / "config" / "credentials.local.json"
 
 MODES = ("practice", "live")
-OANDA_HOSTS = {
-    "practice": "https://api-fxpractice.oanda.com",
-    "live":     "https://api-fxtrade.oanda.com",
-}
+# Named OANDA v20 REST hosts — the DEFAULT api_url for each account type. A
+# credential set may override its own api_url (CONNECTION tab), but these remain
+# the fallback + the "Reset to OANDA default" target.
+OANDA_PRACTICE_URL = "https://api-fxpractice.oanda.com"
+OANDA_LIVE_URL     = "https://api-fxtrade.oanda.com"
+OANDA_HOSTS = {"practice": OANDA_PRACTICE_URL, "live": OANDA_LIVE_URL}
 _SECRETS_ENV = os.path.expanduser("~/.openclaw/secrets.env")
 
 
@@ -62,6 +66,29 @@ _SECRETS_ENV = os.path.expanduser("~/.openclaw/secrets.env")
 def allow_live() -> bool:
     """True only when this instance is deliberately armed for real-money mode."""
     return os.environ.get("SCROOGE_ALLOW_LIVE", "") == "1"
+
+
+def default_url_for(mode: str) -> str:
+    """The OANDA default host for an account type."""
+    return OANDA_LIVE_URL if mode == "live" else OANDA_PRACTICE_URL
+
+
+def valid_https_url(url: str | None) -> bool:
+    """A well-formed https:// URL with a host (no query/fragment required)."""
+    if not url or not isinstance(url, str):
+        return False
+    try:
+        p = urllib.parse.urlparse(url.strip())
+    except Exception:
+        return False
+    return p.scheme == "https" and bool(p.netloc) and " " not in url.strip()
+
+
+def url_for_set(cset: dict, mode: str) -> str:
+    """The api_url a credential set should use — its own override, else the
+    OANDA default for the type."""
+    u = (cset or {}).get("api_url")
+    return u.rstrip("/") if (u and valid_https_url(u)) else default_url_for(mode)
 
 
 def mask(token: str | None) -> str:
@@ -162,7 +189,7 @@ def resolve_oanda_creds() -> dict:
         mode = "practice"
     cset = local.get(mode) or {}
     return {
-        "OANDA_API_URL":    OANDA_HOSTS.get(mode, OANDA_HOSTS["practice"]),
+        "OANDA_API_URL":    url_for_set(cset, mode),   # per-set override, else OANDA default
         "OANDA_API_TOKEN":  cset.get("api_token", ""),
         "OANDA_ACCOUNT_ID": cset.get("account_id", ""),
         "_source":          f"local:{mode}",
@@ -185,13 +212,16 @@ def _fetch_account_ids(host: str, api_token: str) -> list[str]:
     return [a.get("id") for a in data.get("accounts", []) if a.get("id")]
 
 
-def verify_oanda_token(mode: str, api_token: str, account_id: str) -> tuple[bool, str]:
-    """Validate a credential set READ-ONLY against the matching OANDA host.
+def verify_oanda_token(mode: str, api_token: str, account_id: str,
+                       api_url: str | None = None) -> tuple[bool, str]:
+    """Validate a credential set READ-ONLY against its OANDA host.
 
     Checks, in order:
       1. account_id prefix must match the account type (101-=practice, 00x-=live);
-      2. the token is accepted by that host (GET /v3/accounts → 200); and
+      2. the token is accepted by that host (GET {api_url}/v3/accounts → 200); and
       3. account_id is actually visible to the token on that host.
+    `api_url` overrides the OANDA default host (used by the editable-URL field);
+    a non-OANDA URL naturally fails step 2/3 — that is a deliberate guard.
     Returns (ok, message).  Never logs the token."""
     if mode not in MODES:
         return False, f"unknown account type: {mode}"
@@ -208,7 +238,7 @@ def verify_oanda_token(mode: str, api_token: str, account_id: str) -> tuple[bool
         return False, (f"account_id prefix indicates a {ptype.upper()} account but it "
                        f"was filed under {mode.upper()} — refusing the mismatch")
 
-    host = OANDA_HOSTS[mode]
+    host = (api_url or default_url_for(mode)).rstrip("/")
     try:
         ids = _fetch_account_ids(host, api_token)
     except urllib.error.HTTPError as exc:
@@ -239,6 +269,11 @@ def status() -> dict:
             "configured":      bool(tok and acct),
             "masked":          mask(tok),
             "account_id_last4": ("…" + str(acct)[-4:]) if acct else "—",
+            # api_url is NOT a secret — surface it so the field pre-fills + shows
+            # any override. Falls back to the OANDA default for the type.
+            "api_url":         url_for_set(c, kind),
+            "default_url":     default_url_for(kind),
+            "url_is_default":  url_for_set(c, kind) == default_url_for(kind),
         }
 
     resolved = resolve_oanda_creds()
