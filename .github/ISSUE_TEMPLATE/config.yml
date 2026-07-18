@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Discussions — questions, ideas, general comments
+    url: https://github.com/BrockStar3540/mr-scrooge-v6/discussions
+    about: For open discussion, questions, and suggestions, use Discussions.
+  - name: Report a security issue or leaked secret (PRIVATE)
+    url: https://github.com/BrockStar3540/mr-scrooge-v6/security/advisories/new
+    about: Please report security problems privately — never as a public issue.
