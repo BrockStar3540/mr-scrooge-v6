@@ -30,16 +30,29 @@ RISK_PCT   = MARGIN_PCT  # back-compat alias for any code still importing this
 
 
 def _secrets() -> dict:
-    path = os.path.expanduser("~/.openclaw/secrets.env")
-    out: dict = {}
-    if os.path.exists(path):
-        for raw in open(path):
-            line = raw.strip()
-            if line and "=" in line and not line.startswith("#"):
-                k, v = line.split("=", 1)
-                k = k.replace("export ", "").strip()
-                out[k] = v.strip()
-    return out
+    """Resolve OANDA credentials for this instance.
+
+    Delegates to config.credentials.resolve_oanda_creds(), whose precedence is
+    env vars > ~/.openclaw/secrets.env > config/credentials.local.json[mode]
+    (see that module).  This lets a fresh public-repo clone supply its own keys
+    via the dashboard CONNECTION tab while leaving Brock's production box — which
+    reads secrets.env — completely unaffected.  Falls back to the legacy
+    secrets.env-only reader if the credentials module is unavailable."""
+    try:
+        from config.credentials import resolve_oanda_creds
+        return resolve_oanda_creds()
+    except Exception as exc:                          # never let creds import break init
+        log.warning("credentials module unavailable (%s); using secrets.env only", exc)
+        path = os.path.expanduser("~/.openclaw/secrets.env")
+        out: dict = {}
+        if os.path.exists(path):
+            for raw in open(path):
+                line = raw.strip()
+                if line and "=" in line and not line.startswith("#"):
+                    k, v = line.split("=", 1)
+                    k = k.replace("export ", "").strip()
+                    out[k] = v.strip()
+        return out
 
 
 class OandaBroker:

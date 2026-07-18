@@ -365,7 +365,8 @@ body.stream-mode #tab-indicators,
 body.stream-mode #tab-health,
 body.stream-mode #tab-system,
 body.stream-mode #tab-tune,
-body.stream-mode #tab-playmaker{display:none !important}
+body.stream-mode #tab-playmaker,
+body.stream-mode #tab-connection{display:none !important}
 body.stream-mode #banner{display:none}
 body.stream-mode #tab-live{padding:20px 32px}
 body.stream-mode .giga-pnl{min-width:380px;padding:24px 32px}
@@ -526,7 +527,45 @@ body.has-ticker{padding-bottom:32px}
 *::-webkit-scrollbar-track{background:var(--bg1)}
 *::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:4px}
 *::-webkit-scrollbar-thumb:hover{background:var(--bg4)}
+/* ── Fat practice/live mode banner (always visible) ───────────────────── */
+.mode-banner{padding:7px 16px;font-size:12.5px;font-weight:800;letter-spacing:.08em;
+  text-align:center;text-transform:uppercase;border-bottom:2px solid transparent}
+.mode-banner.practice{background:rgba(34,197,94,.14);color:#22c55e;border-bottom-color:#22c55e}
+.mode-banner.live{background:rgba(239,68,68,.18);color:#ef4444;border-bottom-color:#ef4444;
+  animation:livepulse 2s ease-in-out infinite}
+.mode-banner.unknown{background:rgba(120,120,120,.14);color:var(--fg2);border-bottom-color:var(--border-2)}
+@keyframes livepulse{0%,100%{background:rgba(239,68,68,.18)}50%{background:rgba(239,68,68,.30)}}
+/* ── 3-way status control (BOOK tab) ──────────────────────────────────── */
+.stctl{display:inline-flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.stctl button{background:var(--bg0);color:var(--fg2);border:none;padding:3px 9px;font-size:10.5px;
+  font-weight:700;cursor:pointer;letter-spacing:.04em}
+.stctl button:hover{background:var(--bg1)}
+.stctl button.on.ACTIVE{background:#22c55e;color:#04120a}
+.stctl button.on.SHADOW{background:#f4c542;color:#1a1400}
+.stctl button.on.DISABLED{background:#ef4444;color:#1a0404}
+.stctl button:disabled{opacity:.6;cursor:default}
+/* ── Editable per-cell exit row (TUNE tab) ────────────────────────────── */
+.tune-inp{width:66px;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);
+  border-radius:4px;padding:3px 5px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:11px}
+.tune-inp.dirty{border-color:var(--info);box-shadow:0 0 0 1px var(--info)}
+.mini-save{padding:3px 10px;font-size:11px;border-radius:4px;border:1px solid var(--pass);
+  background:rgba(34,197,94,.12);color:var(--pass);cursor:pointer;font-weight:700}
+.mini-save:disabled{opacity:.4;cursor:default}
+/* ── Live-mode confirm modal ──────────────────────────────────────────── */
+.modal-back{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9999;display:none;
+  align-items:center;justify-content:center}
+.modal-back.show{display:flex}
+.modal-card{background:var(--bg1);border:2px solid #ef4444;border-radius:12px;max-width:520px;
+  padding:22px 24px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal-card h2{color:#ef4444;font-size:18px;margin:0 0 10px;letter-spacing:.04em}
+.modal-card p{font-size:12.5px;color:var(--fg1);line-height:1.5;margin:8px 0}
+.modal-card .modal-inp{width:100%;background:var(--bg0);color:var(--fg0);border:1px solid var(--border);
+  border-radius:6px;padding:8px 10px;font-size:13px;margin:8px 0;font-family:'JetBrains Mono',monospace}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 </style></head><body>
+
+<!-- ─── FAT PRACTICE/LIVE MODE BANNER (always visible, driven by /api/credentials) ── -->
+<div id="mode-banner" class="mode-banner unknown">● connection mode: loading…</div>
 
 <!-- ─── TRADE EVENT OVERLAY (slides in from top on new trade) ─────────────── -->
 <div id="trade-overlay" class="trade-overlay">
@@ -566,7 +605,8 @@ body.has-ticker{padding-bottom:32px}
   <button class="tab" onclick="showTab('health',this)">HEALTH</button>
   <button class="tab" onclick="showTab('system',this)">SYSTEM</button>
   <button class="tab" onclick="showTab('tune',this);loadTune()">TUNE</button>
-  <button class="tab" onclick="showTab('playmaker',this);loadPlaymaker()">PLAYMAKER</button>
+  <button class="tab" onclick="showTab('playmaker',this);loadPlaymaker()">RISK</button>
+  <button class="tab" onclick="showTab('connection',this);loadCredentials()">CONNECTION</button>
   <div class="nav-right">
     <div class="sess-dots" title="Trading session — UTC hour windows: asia 22-7, london 7-13, ny 13-22">
       <span class="sess-dot" id="sd-asia">ASIA</span>
@@ -683,39 +723,8 @@ body.has-ticker{padding-bottom:32px}
     <span>·</span>
     <span>Cell = (pair × session) · glowing = in session now · click a card for full setup detail</span>
   </div>
+  <div class="muted" style="font-size:11px;margin-bottom:8px">Click a cell for full setup detail + the ACTIVE / SHADOW / DISABLED status control.</div>
   <div id="book-grid" class="book-grid"><div class="muted" style="padding:14px">Loading…</div></div>
-  <div style="margin-top:14px">
-    <a class="legacy-toggle" id="legacy-toggle" onclick="toggleLegacyView()">▸ LEGACY EXEC STACK (retires at Phase D)</a>
-  </div>
-  <div id="legacy-exec-stack" style="display:none">
-  <div class="card" style="padding:12px 18px;margin-bottom:12px">
-    <div class="banner banner-amber" style="margin-bottom:10px">
-      LEGACY EXEC STACK — this is the direction_v2/momentum_v3 view that still drives ALL live execution until Phase D cutover.
-    </div>
-    <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:11.5px;margin-bottom:10px">
-      <div><span class="pill pill-pass">READY</span> all gates pass + in-session</div>
-      <div><span class="pill pill-inverted">INVERTED</span> direction flipped at exec</div>
-      <div><span class="pill pill-shadow">SHADOW</span> shadow-log only</div>
-      <div><span class="pill pill-block">DISABLED</span> off entirely</div>
-      <div class="muted">·</div>
-      <div class="muted">Cell = (pair × session × direction) · sorted READY first</div>
-    </div>
-    <div class="cells-filter">
-      <span class="muted" style="font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Filter:</span>
-      <div class="cell-fc active" data-filter="all" onclick="setCellFilter('all',this)">ALL</div>
-      <div class="cell-fc" data-filter="ready" onclick="setCellFilter('ready',this)">READY</div>
-      <div class="cell-fc" data-filter="in-session" onclick="setCellFilter('in-session',this)">IN SESSION</div>
-      <div class="cell-fc" data-filter="inverted" onclick="setCellFilter('inverted',this)">INVERTED</div>
-      <div class="cell-fc" data-filter="shadow" onclick="setCellFilter('shadow',this)">SHADOW</div>
-      <div class="cell-fc" data-filter="disabled" onclick="setCellFilter('disabled',this)">DISABLED</div>
-      <div class="cell-fc" data-filter="with-rules" onclick="setCellFilter('with-rules',this)">HAS RULES</div>
-      <div class="cell-fc" data-filter="fired-today" onclick="setCellFilter('fired-today',this)">FIRED TODAY</div>
-      <div style="flex:1"></div>
-      <div class="muted" id="cells-counts" style="font-size:11px">—</div>
-    </div>
-  </div>
-  <div id="cells-grid" class="cells-grid"></div>
-  </div><!-- /legacy-exec-stack -->
 </div>
 
 <!-- ─── SHADOW TAB (Phase C shadow-week scoreboard + stamp feed) ─────────── -->
@@ -803,11 +812,11 @@ body.has-ticker{padding-bottom:32px}
   </div>
 </div>
 
-<!-- ─── TUNE TAB (preserved exit-config editor) ──────────────────────────── -->
+<!-- ─── TUNE TAB (live per-cell exit editor) ─────────────────────────────── -->
 <div id="tab-tune" class="pane">
   <div class="card">
-    <div class="card-title">Cell exit stack — live, per-cell
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(range-sized SL → engage +trigger → lock (trigger−trail) → trail; from config/cells, hot-reloaded. Edit via direct config.)</span>
+    <div class="card-title">Per-cell exit geometry — LIVE
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(edits the setup's <code>exit</code> block in config/cells/&lt;PAIR&gt;.json — hot-reloaded on the next cycle. Range-sized SL → engage at trigger → lock (trigger−trail) → trail. Values shown are the exact live config.)</span>
     </div>
     <div id="tune-msg" style="padding:8px 10px;font-size:12px"></div>
     <div style="overflow-x:auto">
@@ -815,25 +824,49 @@ body.has-ticker{padding-bottom:32px}
       <thead><tr>
         <th style="text-align:left">Cell · setup</th>
         <th>Status</th><th>Side</th>
-        <th title="Range-sized initial stop (pips)">SL</th>
-        <th title="Peak MFE to engage the ratchet">Engage</th>
-        <th title="Pips behind peak once engaged">Trail</th>
-        <th title="0 = fixed trail; &gt;0 = ATR-scaled (B-090 risk)">Mult</th>
-        <th title="First lock = engage − trail (green after spread)">Locks</th>
-        <th>Class</th>
+        <th title="Range-sized initial stop, 5–200">SL</th>
+        <th title="Peak MFE to engage the ratchet, 0–50">Trigger</th>
+        <th title="Pips behind peak once engaged, 0–30">Trail</th>
+        <th title="0 = fixed trail; &gt;0 = ATR-scaled (B-090 risk), 0–3">Mult</th>
+        <th title="First lock = trigger − trail (must stay &gt; 0)">Lock</th>
+        <th>Class</th><th></th>
       </tr></thead>
       <tbody id="tune-body"></tbody>
     </table>
     </div>
     <div style="padding:8px 10px;font-size:12px" class="muted" id="tune-summary"></div>
   </div>
+
+  <div class="card">
+    <div class="card-title">Recovery fallback defaults — exit_config.json
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(FALLBACK ONLY: used when a position is recovered after a restart with no per-cell exit_params. Live trades use the per-cell table above, never this.)</span>
+    </div>
+    <div id="tunefb-msg" style="padding:8px 10px;font-size:12px"></div>
+    <div style="overflow-x:auto">
+    <table id="tunefb-tbl" style="font-size:12px">
+      <thead><tr>
+        <th title="Server-side hard SL at entry">initial_sl</th>
+        <th title="Peak MFE to engage">trigger</th>
+        <th title="Trail behind level">trail</th>
+        <th title="Rung spacing">size</th>
+        <th title="Engage delay (min)">engage_min</th>
+        <th title="Cadence (min)">cadence</th>
+      </tr></thead>
+      <tbody id="tunefb-body"></tbody>
+    </table>
+    </div>
+    <div style="padding:10px;display:flex;gap:10px;align-items:center">
+      <button class="primary" onclick="saveExitFallback()">Save fallback defaults</button>
+      <button class="secondary" onclick="loadTune()">Reload</button>
+    </div>
+  </div>
 </div>
 
-<!-- ─── PLAYMAKER TAB (preserved + extended for new mechanisms) ──────────── -->
+<!-- ─── RISK TAB (portfolio risk caps — the live playmaker account block) ─── -->
 <div id="tab-playmaker" class="pane">
   <div class="card">
-    <div class="card-title">Account knobs
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(live; reads each new entry / each playmaker cycle)</span>
+    <div class="card-title">Portfolio risk caps — LIVE
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(config/playmaker_config.json → account; read on each new entry / playmaker cycle — hot-reloaded, no restart. Governance below is preserved across saves.)</span>
     </div>
     <div id="pm-msg" style="padding:8px 10px;font-size:12px"></div>
     <div style="display:flex;gap:24px;flex-wrap:wrap;padding:10px">
@@ -844,7 +877,7 @@ body.has-ticker{padding-bottom:32px}
         <div id="pm-risk-warn" style="font-size:11px;margin-top:4px"></div>
       </div>
       <div>
-        <label style="font-size:11px;color:var(--fg2);display:block;margin-bottom:4px">Max concurrent trades</label>
+        <label style="font-size:11px;color:var(--fg2);display:block;margin-bottom:4px" title="Global cap on simultaneously open positions">Max concurrent trades</label>
         <input id="pm-maxc" type="number" step="1" min="1" max="20"
                style="width:120px;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;text-align:right">
       </div>
@@ -855,37 +888,80 @@ body.has-ticker{padding-bottom:32px}
       </div>
       <div id="pm-risk-math" style="font-size:11px;color:var(--fg2);align-self:flex-end;padding-bottom:6px"></div>
     </div>
+    <div style="padding:0 10px 10px;display:flex;gap:10px;align-items:center">
+      <button class="primary" onclick="savePlaymaker()">Save risk caps</button>
+      <button class="secondary" onclick="loadPlaymaker()">Discard edits</button>
+    </div>
     <div id="pm-acct-ro" style="padding:0 10px 10px;font-size:12px;color:var(--fg2)"></div>
   </div>
 
   <div class="card">
-    <div class="card-title">Per-pair playmaker gates <span style="color:var(--fail);font-size:11px">(LEGACY — retired)</span>
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">dir/mom-certainty gates are from the pre-cell era (direction_v2/momentum_v3, archived 2026-07-04). The cell era gates on raw per-cell indicator conditions instead — see the BOOK and TUNE tabs.</span>
+    <div class="card-title">Per-cell governance (read-only view)
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(disabled/inverted cells + per-cell ranges; preserved verbatim across risk-cap saves. Edit via direct config — hot-reloaded.)</span>
     </div>
-    <div style="overflow-x:auto">
-    <table id="pm-tbl" style="font-size:12px">
-      <thead>
-        <tr>
-          <th style="text-align:left">Scope</th>
-          <th>Enabled</th><th>Min |dir.score|</th><th>Min dir.cert</th>
-          <th>Min mom.cert</th><th>Cooldown after loss (min)</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="pm-body"></tbody>
-    </table>
+    <div id="pm-governance"></div>
+  </div>
+</div>
+
+<!-- ─── CONNECTION TAB (OANDA credentials + practice/live mode) ───────────── -->
+<div id="tab-connection" class="pane">
+  <div class="card">
+    <div class="card-title">Trading mode</div>
+    <div id="cred-msg" style="padding:8px 10px;font-size:12px"></div>
+    <div style="padding:10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div id="mode-now" style="font-size:15px;font-weight:800;letter-spacing:.06em">—</div>
+      <button class="secondary" id="btn-practice" onclick="setModePractice()">Switch to PRACTICE</button>
+      <button class="secondary" id="btn-live" onclick="openLiveModal()">Switch to LIVE</button>
+      <span id="mode-armed" class="mono-sm muted"></span>
     </div>
-    <div style="padding:10px;display:flex;gap:10px;align-items:center">
-      <button class="primary" onclick="savePlaymaker()">Save all changes</button>
-      <button class="secondary" onclick="loadPlaymaker()">Discard edits</button>
+    <div class="muted" style="padding:0 10px 10px;font-size:11px">
+      Mode selects which saved credential set the bot uses. It applies on the next bot restart (broker credentials load at engine start) — switching here does NOT open or close trades.
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">Per-cell governance (read-only view)
-      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">(edit by direct config — hot-reloaded on save)</span>
+    <div class="card-title">OANDA credentials
+      <span class="muted" style="font-weight:normal;font-size:11px;text-transform:none;letter-spacing:0">stored locally in config/credentials.local.json (chmod 600, gitignored). Tokens are verified read-only against OANDA and never displayed again.</span>
     </div>
-    <div id="pm-governance"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:10px">
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#22c55e;margin-bottom:8px">PRACTICE <span class="mono-sm muted" id="cred-practice-status">—</span></div>
+        <label style="font-size:11px;color:var(--fg2);display:block">API token</label>
+        <input id="cred-practice-token" type="password" placeholder="paste practice token" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <label style="font-size:11px;color:var(--fg2);display:block">Account ID (101-…)</label>
+        <input id="cred-practice-acct" type="text" placeholder="101-001-…" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <button class="primary" onclick="saveCreds('practice')">Verify + save practice</button>
+        <div id="cred-practice-msg" class="mono-sm" style="margin-top:6px"></div>
+      </div>
+      <div style="border:1px solid var(--border);border-radius:8px;padding:12px">
+        <div style="font-weight:700;color:#ef4444;margin-bottom:8px">LIVE (real money) <span class="mono-sm muted" id="cred-live-status">—</span></div>
+        <label style="font-size:11px;color:var(--fg2);display:block">API token</label>
+        <input id="cred-live-token" type="password" placeholder="paste live token" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <label style="font-size:11px;color:var(--fg2);display:block">Account ID (00x-…)</label>
+        <input id="cred-live-acct" type="text" placeholder="001-001-…" style="width:100%;background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:6px 8px;margin:3px 0 8px">
+        <button class="primary" onclick="saveCreds('live')">Verify + save live</button>
+        <div id="cred-live-msg" class="mono-sm" style="margin-top:6px"></div>
+      </div>
+    </div>
+    <div class="muted" style="padding:0 10px 12px;font-size:11px">
+      Resolution precedence: environment OANDA_* vars &gt; ~/.openclaw/secrets.env &gt; this file. On the production EC2 box the secrets.env file keeps winning, so entries here never affect it.
+    </div>
+  </div>
+</div>
+
+<!-- ─── LIVE-MODE CONFIRM MODAL ──────────────────────────────────────────── -->
+<div class="modal-back" id="live-modal">
+  <div class="modal-card">
+    <h2>⚠ SWITCH TO REAL MONEY</h2>
+    <p>You are about to point the bot at your <b>LIVE</b> OANDA account. On the next restart it will place orders with <b>real funds</b>.</p>
+    <p style="color:#f4c542">Note: this bot's own research shows <b>negative expected value net of cost</b> — see docs/RESEARCH_PROGRAM.md. Do not run it live expecting profit.</p>
+    <p>Type <b>TRADE REAL MONEY</b> to confirm:</p>
+    <input class="modal-inp" id="live-confirm-inp" placeholder="TRADE REAL MONEY" autocomplete="off">
+    <div id="live-modal-msg" class="mono-sm" style="min-height:16px"></div>
+    <div class="modal-actions">
+      <button class="secondary" onclick="closeLiveModal()">Cancel</button>
+      <button class="mini-save" style="border-color:#ef4444;background:rgba(239,68,68,.15);color:#ef4444;padding:6px 14px" onclick="confirmLive()">Confirm LIVE</button>
+    </div>
   </div>
 </div>
 
@@ -1016,13 +1092,6 @@ function spark(values, opts={}){
  * Polling: /api/state, /api/sysinfo, /api/daily_pl
  * ═════════════════════════════════════════════════════════════════════════ */
 let STATE=null, SYSINFO=null, DAILY_PL=null;
-let CELL_FILTER='all';
-function setCellFilter(f, btn){
-  CELL_FILTER = f;
-  document.querySelectorAll('.cell-fc').forEach(x => x.classList.remove('active'));
-  btn.classList.add('active');
-  renderCells();
-}
 
 async function fetchState(){
   try{
@@ -1052,7 +1121,6 @@ function renderAll(){
   renderTrades();
   renderEvents();
   renderPairs();
-  renderCells();
   renderIndicators();
   renderHealth();
   renderPMGovernance();
@@ -1713,183 +1781,6 @@ function renderPairs(){
   }).join('');
 }
 
-/* ── CELLS tab (per-cell governance grid) ──────────────────────────────── */
-function renderCells(){
-  const g=document.getElementById('cells-grid');
-  if(!STATE.governance){g.innerHTML='<div class="muted" style="padding:14px">No governance data</div>';return}
-  const gov=STATE.governance;
-  const inv_live=new Set((gov.inverted_live_cells||[]).map(c=>c.join('/')));
-  const inv_shadow=new Set((gov.inverted_shadow_cells||[]).map(c=>c.join('/')));
-  const disabled=new Set((gov.disabled_cells||[]).map(c=>c.join('/')));
-  const tickets={};(STATE.last_tickets||[]).forEach(t=>tickets[t.pair+'/'+t.session]=t);
-  const views={};(STATE.last_views||[]).forEach(v=>views[v.pair]=v);
-  const fires=DAILY_PL?.per_cell||{};
-  const cur=currentSession();
-  const all=[];
-  for(const p of PAIRS_ALL){
-    for(const s of (PAIR_SESSIONS[p]||[])){
-      for(const d of ['long','short']){
-        all.push({pair:p,session:s,dir:d});
-      }
-    }
-  }
-  // First pass: classify each cell so we can sort + filter
-  const classified=all.map(c=>{
-    const k3=c.pair+'/'+c.session+'/'+c.dir;
-    const k2=c.pair+'/'+c.session;
-    const isDisabled=disabled.has(k3);
-    const isInvLive=inv_live.has(k2);
-    const isInvShadow=inv_shadow.has(k2)&&!isInvLive;
-    const inSession=c.session===cur;
-    const t=tickets[k2];
-    const v=views[c.pair];
-    // Rules pass — must match playmaker.pick_best gate order exactly
-    const mcmax=gov.per_cell_mom_cert_max?.[k2];
-    const mcmin=gov.per_cell_mom_cert_min?.[k2];
-    const dcmax=gov.per_cell_dir_cert_max?.[k2];
-    const dcmin=gov.per_cell_dir_cert_min?.[k2];
-    const wrng=gov.per_cell_willr_range?.[k3];
-    const krng=gov.per_cell_kc_up_range?.[k3];
-    const hasRules=mcmax!=null||mcmin!=null||dcmax!=null||dcmin!=null||wrng!=null||krng!=null;
-    // Base gates from playmaker defaults (cert/score floors)
-    const defs=gov.defaults||{};
-    const minDirCert=defs.min_dir_certainty??0.30;
-    const minMomCert=defs.min_mom_certainty??0.25;
-    const minDirScore=defs.min_direction_score??0.25;
-    // Use shared helper (returns array of {tag, text})
-    const blockReasons=cellBlockReasons(c, t, v, gov);
-    const allPass=blockReasons.length===0;
-    const tickerOk=t&&t.actionable&&t.dir_bias===c.dir;
-    const ready=tickerOk&&inSession&&!isDisabled&&allPass;
-    return {c,k2,k3,isDisabled,isInvLive,isInvShadow,inSession,t,v,
-            hasRules,mcmax,mcmin,dcmax,dcmin,wrng,krng,allPass,ready,blockReasons,
-            fire:fires[k3]};
-  });
-  // Filter
-  const filt=classified.filter(x=>{
-    switch(CELL_FILTER){
-      case 'ready':       return x.ready;
-      case 'in-session':  return x.inSession && !x.isDisabled;
-      case 'inverted':    return x.isInvLive;
-      case 'shadow':      return x.isInvShadow;
-      case 'disabled':    return x.isDisabled;
-      case 'with-rules':  return x.hasRules;
-      case 'fired-today': return !!x.fire;
-      default:            return true;
-    }
-  });
-  // Sort: READY first, then in-session active, then inverted, then shadow, then disabled
-  const rank=x=>{
-    if(x.ready)return 0;
-    if(x.fire)return 1;
-    if(x.inSession && !x.isDisabled)return 2;
-    if(x.isInvLive)return 3;
-    if(x.isInvShadow)return 4;
-    if(x.isDisabled)return 6;
-    return 5;
-  };
-  filt.sort((a,b)=>{
-    const ra=rank(a), rb=rank(b);
-    if(ra!==rb)return ra-rb;
-    return (a.c.pair+a.c.session+a.c.dir).localeCompare(b.c.pair+b.c.session+b.c.dir);
-  });
-  // Update counts label
-  const cnt=document.getElementById('cells-counts');
-  cnt.innerHTML=`${filt.length} / ${classified.length} shown · `+
-    `<span class="pos">${classified.filter(x=>x.ready).length} ready</span> · `+
-    `<span class="warn">${classified.filter(x=>x.isInvLive).length} inverted</span> · `+
-    `<span class="muted">${classified.filter(x=>x.isDisabled).length} disabled</span> · `+
-    `${classified.filter(x=>!!x.fire).length} fired today`;
-  if(!filt.length){g.innerHTML='<div class="muted" style="padding:14px;text-align:center">No cells match filter</div>';return}
-  g.innerHTML=filt.map(x=>{
-    const c=x.c, t=x.t, v=x.v;
-    const mcmax=x.mcmax, mcmin=x.mcmin, wrng=x.wrng, krng=x.krng;
-    const isDisabled=x.isDisabled, isInvLive=x.isInvLive, isInvShadow=x.isInvShadow;
-    const inSession=x.inSession, allPass=x.allPass, ready=x.ready;
-    // Rules with current value + pass/fail
-    const rules=[];
-    if(mcmax!=null){
-      const m=t?.mom_certainty, ok=m!=null&&m<=mcmax;
-      rules.push(`<div class="cr ${m==null?'':ok?'pass':'fail'}"><span class="cr-name">mcert ≤ ${mcmax}</span><span>${m!=null?m.toFixed(2):'—'} ${m==null?'':ok?'✓':'✗'}</span></div>`);
-    }
-    if(mcmin!=null){
-      const m=t?.mom_certainty, ok=m!=null&&m>=mcmin;
-      rules.push(`<div class="cr ${m==null?'':ok?'pass':'fail'}"><span class="cr-name">mcert ≥ ${mcmin}</span><span>${m!=null?m.toFixed(2):'—'} ${m==null?'':ok?'✓':'✗'}</span></div>`);
-    }
-    if(wrng){
-      const w=v?.willr_m5, ok=w!=null&&w>=wrng[0]&&w<=wrng[1];
-      rules.push(`<div class="cr ${w==null?'':ok?'pass':'fail'}"><span class="cr-name">willr ∈ [${wrng[0]}, ${wrng[1]}]</span><span>${w!=null?w.toFixed(1):'—'} ${w==null?'':ok?'✓':'✗'}</span></div>`);
-    }
-    if(krng){
-      const k=v?.kc_up_dist_pips, ok=k!=null&&k>=krng[0]&&k<=krng[1];
-      rules.push(`<div class="cr ${k==null?'':ok?'pass':'fail'}"><span class="cr-name">kc_up ∈ [${krng[0]}, ${krng[1]}]</span><span>${k!=null?k.toFixed(2):'—'} ${k==null?'':ok?'✓':'✗'}</span></div>`);
-    }
-    // Status badge
-    let badge='', cellCls='';
-    if(isDisabled){badge='<span class="pill pill-block">DISABLED</span>';cellCls='disabled'}
-    else if(isInvLive){badge='<span class="pill pill-inverted">INVERTED</span>'}
-    else if(isInvShadow){badge='<span class="pill pill-shadow">SHADOW</span>'}
-    else badge='<span class="pill pill-info" style="opacity:.6">active</span>';
-    if(!isDisabled&&!inSession)cellCls+=' inactive-session';
-    if(ready){cellCls+=' ready'; badge=`<span class="pill pill-pass">READY ${isInvLive?'(inv)':''}</span>`;}
-    else if(!isDisabled && inSession && x.blockReasons?.length){
-      const tip=x.blockReasons.map(r=>`[${r.tag}] ${r.text}`).join(' · ');
-      badge=`<span class="pill pill-warn" title="${tip}">BLOCKED ${x.blockReasons.length}×</span>`;
-    }
-    // Today's fires badge (top-right corner)
-    const fire=x.fire;
-    const fireBadge=fire ? `<div class="cell-fire-badge ${fire.pl>=0?'pos':'neg'}">${fire.n}× ${fmtDollar(fire.pl)}</div>` : '';
-    // Tiny dir_score sparkline (last 30 cycles for this pair, regardless of direction)
-    const hist=HIST[c.pair]||[];
-    const sparkSvg = hist.length>=2 ? spark(hist.map(h=>h.dscore), {w:80,h:18,min:-1,max:1,zero:true,color:'var(--info)'}) : '';
-    // Today's trades for this cell (from DAILY_PL.trades)
-    const cellTrades = (DAILY_PL?.trades||[]).filter(tr=>tr.pair===c.pair && tr.session===c.session && tr.dir===c.dir);
-    const tradesHtml = cellTrades.length ? cellTrades.map(tr=>{
-      const cls=tr.pl_usd>0?'win':'lose';
-      const tm=(tr.time||'').slice(11,19);
-      return `<div class="cell-mini-trade ${cls}">
-        <span>${tm} · ${tr.dir} · ${Math.abs(tr.units).toLocaleString()}u @ ${tr.price}</span>
-        <span class="${tr.pl_usd>=0?'pos':'neg'}"><b>${fmtDollar(tr.pl_usd)}</b></span>
-      </div>`;
-    }).join('') : '<span class="muted" style="font-size:10.5px">no fires today</span>';
-    return `<div class="cell ${cellCls}" onclick="this.classList.toggle('expanded')">
-      ${fireBadge}
-      <div class="cell-head">
-        <div class="cell-name">${c.pair.replace('_','/')}</div>
-        <div class="cell-dir ${c.dir}">${c.session}/${c.dir}</div>
-        <div class="cell-status">${badge}</div>
-        <span class="cell-expand-toggle">▾</span>
-      </div>
-      ${rules.length?`<div class="cell-rules">${rules.join('')}</div>`:`<div class="cell-meta" style="font-size:10.5px"><span class="muted">no per-cell rules</span></div>`}
-      ${(!isDisabled && inSession && x.blockReasons?.length) ? `<div class="cell-block-reasons">
-        <div class="cbr-head">blocked by:</div>
-        ${x.blockReasons.map(r=>`<div class="cbr-item"><span class="cbr-tag cbr-tag-${r.tag.toLowerCase()}">${r.tag}</span> ${r.text}</div>`).join('')}
-      </div>` : ''}
-      <div class="cell-meta" style="justify-content:space-between;align-items:center">
-        <span>${t?`${t.dir_bias.toUpperCase()} ${(t.dir_score>=0?'+':'')+t.dir_score.toFixed(3)} · dc ${Math.round(t.dir_certainty*100)} · mc ${Math.round(t.mom_certainty*100)}`:'<span class="muted">no ticket</span>'}</span>
-        ${sparkSvg}
-      </div>
-      <div class="cell-expand">
-        <div class="cell-expand-section">
-          <h5>Today's fires (${cellTrades.length})</h5>
-          ${tradesHtml}
-        </div>
-        <div class="cell-expand-section">
-          <h5>Profile + session</h5>
-          <div class="muted" style="font-size:10.5px;font-family:'JetBrains Mono',monospace">
-            ${t?`profile L:${t.long_profile||'?'} S:${t.short_profile||'?'} M:${t.mom_profile||'?'}<br>active: ${t.active_side||'?'} · gates ${t.gates_passed===true?'<span class="pos">✓</span>':t.gates_passed===false?'<span class="neg">✗</span>':'—'} · boost ${t.cert_boost||'—'}×<br>session window: ${c.session==='asia'?'22-7 UTC':c.session==='london'?'7-13 UTC':'13-22 UTC'}`:'no ticket data'}
-          </div>
-        </div>
-        <div class="cell-expand-section">
-          <h5>Indicator snapshot</h5>
-          <div class="muted" style="font-size:10.5px;font-family:'JetBrains Mono',monospace">
-            ${v?`willr ${v.willr_m5!=null?v.willr_m5.toFixed(1):'—'} · aroon ${v.aroonosc_h1!=null?v.aroonosc_h1.toFixed(0):'—'} · kc_up ${v.kc_up_dist_pips!=null?v.kc_up_dist_pips.toFixed(2):'—'} · cpos ${v.close_pos_daily!=null?v.close_pos_daily.toFixed(3):'—'} · vortex ${v.vortex_diff_h1!=null?(v.vortex_diff_h1>=0?'+':'')+v.vortex_diff_h1.toFixed(3):'—'}`:'no view data'}
-          </div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
 
 /* ── INDICATORS tab ────────────────────────────────────────────────────── */
 function indRow(k,v){return `<div class="ind-row"><span class="ik">${k}</span><span class="iv">${v}</span></div>`}
@@ -2065,23 +1956,29 @@ function renderSysinfo(){
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
- * TUNE tab — preserved from prior version
+ * TUNE tab — LIVE per-cell exit editor (config/cells/<PAIR>.json exit block).
+ * Accurate: values come straight from /api/cells; edits POST /api/cell/exit and
+ * hot-reload on the next cycle. The exit_config.json editor below is FALLBACK.
  * ═════════════════════════════════════════════════════════════════════════ */
-let TUNE_META=null;
-async function loadTune(){const r=await fetch('/api/cells');const d=await r.json();TUNE_META=d;renderTune();document.getElementById('tune-msg').textContent=''}
-function _inp(val,ph,w='70px'){const v=(val==null)?'':val;return `<input type="number" step="0.01" value="${v}" placeholder="${ph}" style="width:${w};background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:4px 6px;text-align:right">`}
-function _row(scope,eff,override,isDef){
-  const f=TUNE_META.fields;
-  const cell=(k,ph='')=>`<td>${_inp(override?override[k]:'',isDef?fmt(eff[k],1):'inherit '+fmt(eff[k],1),'78px')}</td>`;
-  const tp1_lock=fmt((eff.step_trigger_pips||0)-(eff.step_trail_pips||0),1);
-  const tp2_lock=fmt((eff.step_trigger_pips||0)+(eff.step_size_pips||0)-(eff.step_trail_pips||0),1);
-  return `<tr data-scope="${scope}">
-    <td><b>${isDef?'DEFAULT':scope.replace('_','/')}</b></td>
-    ${cell('initial_sl_pips')}${cell('step_trigger_pips')}${cell('step_trail_pips')}${cell('step_size_pips')}
-    ${cell('step_engage_min')}${cell('step_cadence_min')}
-    <td class="muted mono" style="font-size:11px">${tp1_lock}p / ${tp2_lock}p</td>
-    <td>${isDef?'':`<button class="secondary" style="padding:3px 8px;font-size:11px" onclick="clearPairOverride('${scope}')">clear</button>`}</td>
-  </tr>`;
+let TUNE_META=null, TUNE_FB=null;
+async function loadTune(){
+  const msg=document.getElementById('tune-msg'); if(msg)msg.textContent='';
+  try{
+    const r=await fetch('/api/cells'); TUNE_META=await r.json();
+    renderTune();
+  }catch(e){ if(msg)msg.innerHTML=`<span class="neg">${e.message}</span>`; }
+  try{
+    const r2=await fetch('/api/config/exit'); TUNE_FB=await r2.json();
+    renderExitFallback();
+  }catch(e){}
+}
+const _CELL_EXIT_BOUNDS={sl_pips:[5,200],trigger_pips:[0,50],trail_pips:[0,30],trail_mult:[0,3]};
+function _exInp(pair,session,id,key,val){
+  const [lo,hi]=_CELL_EXIT_BOUNDS[key];
+  const v=(val==null)?'':val;
+  return `<input type="number" class="tune-inp" step="0.5" min="${lo}" max="${hi}" value="${v}"`+
+    ` data-key="${key}" data-orig="${v}"`+
+    ` oninput="_exDirty('${pair}','${session}','${cssId(id)}',this)" title="range ${lo}–${hi}">`;
 }
 function renderTune(){
   if(!TUNE_META)return;
@@ -2092,115 +1989,98 @@ function renderTune(){
     for(const s of (c.setups||[])){
       nSet++;
       const e=s.exit||{};
+      const bracket=e.mode==='bracket';
       const lock=(e.trigger_pips!=null&&e.trail_pips!=null)?(e.trigger_pips-e.trail_pips):null;
       const atr=!!(e.trail_mult&&e.trail_mult>0);if(atr)nAtr++;
       const stPill=s.status==='ACTIVE'?'pill-pass':s.status==='SHADOW'?'pill-info':'pill-block';
-      rows.push(`<tr>
-        <td style="text-align:left" class="mono">${c.pair.replace('_','/')}/${c.session} · ${s.id}</td>
+      const rid=`${c.pair}-${c.session}-${cssId(s.id)}`;
+      rows.push(`<tr id="tunerow-${rid}" data-pair="${c.pair}" data-session="${c.session}" data-id="${escape(s.id)}">
+        <td style="text-align:left" class="mono">${c.pair.replace('_','/')}/${c.session} · ${escape(s.id)}</td>
         <td><span class="pill ${stPill}">${s.status}</span></td>
         <td class="mono">${s.side||'—'}</td>
-        <td class="mono">${e.mode==='ratchet'?('-'+e.sl_pips):'(bracket)'}</td>
-        <td class="mono">${e.trigger_pips??'—'}</td>
-        <td class="mono">${e.trail_pips??'—'}</td>
-        <td class="mono" style="${atr?'color:var(--fail)':''}">${e.trail_mult??'—'}${atr?' ⚠ATR':''}</td>
-        <td class="mono pos">${lock!=null?('+'+lock.toFixed(1)):'—'}</td>
+        <td>${bracket?'<span class="muted">(bracket)</span>':_exInp(c.pair,c.session,s.id,'sl_pips',e.sl_pips)}</td>
+        <td>${bracket?'—':_exInp(c.pair,c.session,s.id,'trigger_pips',e.trigger_pips)}</td>
+        <td>${bracket?'—':_exInp(c.pair,c.session,s.id,'trail_pips',e.trail_pips)}</td>
+        <td>${bracket?'—':_exInp(c.pair,c.session,s.id,'trail_mult',e.trail_mult)}${atr?' <span style="color:var(--fail)">⚠ATR</span>':''}</td>
+        <td class="mono pos" id="tunelock-${rid}">${lock!=null?('+'+lock.toFixed(1)):'—'}</td>
         <td class="muted">${e._class||''}</td>
+        <td><button class="mini-save" id="tunesave-${rid}" disabled onclick="saveCellExit('${c.pair}','${c.session}','${escape(s.id)}',this)">save</button>
+          <span class="mono-sm" id="tunemsg-${rid}"></span></td>
       </tr>`);
     }
   }
-  document.getElementById('tune-body').innerHTML=rows.join('')||'<tr><td colspan="9" class="muted" style="padding:10px">no cells</td></tr>';
+  document.getElementById('tune-body').innerHTML=rows.join('')||'<tr><td colspan="10" class="muted" style="padding:10px">no cells</td></tr>';
   const t=TUNE_META.totals||{};
   document.getElementById('tune-summary').innerHTML=`${nSet} setups · ACTIVE ${t.ACTIVE||0} / SHADOW ${t.SHADOW||0} / DISABLED ${t.DISABLED||0}`+(nAtr?` · <span style="color:var(--fail)">${nAtr} with ATR-scaled trail (mult&gt;0) — B-090 risk</span>`:` · all trails fixed (mult 0) ✓`);
 }
-function clearPairOverride(p){document.querySelector(`#tune-body tr[data-scope="${p}"]`).querySelectorAll('input').forEach(i=>i.value='')}
-function _collectRow(row){
-  const out={};
-  row.querySelectorAll('input').forEach((inp,i)=>{
-    const keys=['initial_sl_pips','step_trigger_pips','step_trail_pips','step_size_pips','step_engage_min','step_cadence_min'];
-    if(inp.value!==''&&keys[i])out[keys[i]]=Number(inp.value);
+function _exDirty(pair,session,idc,inp){
+  const rid=`${pair}-${session}-${idc}`;
+  const row=document.getElementById(`tunerow-${rid}`);
+  let dirty=false;
+  row.querySelectorAll('input.tune-inp').forEach(i=>{
+    const chg=String(i.value)!==String(i.dataset.orig);
+    i.classList.toggle('dirty',chg); if(chg)dirty=true;
   });
-  return out;
+  const btn=document.getElementById(`tunesave-${rid}`); if(btn)btn.disabled=!dirty;
+  // live lock preview
+  const g=k=>{const el=row.querySelector(`input[data-key="${k}"]`);return el&&el.value!==''?Number(el.value):null};
+  const trig=g('trigger_pips'),trail=g('trail_pips');
+  const lockEl=document.getElementById(`tunelock-${rid}`);
+  if(lockEl&&trig!=null&&trail!=null){const l=trig-trail;lockEl.textContent=(l>=0?'+':'')+l.toFixed(1);lockEl.className='mono '+(l>0?'pos':'neg');}
 }
-function _chk(c){return `<input type="checkbox" ${c?'checked':''} style="width:16px;height:16px;cursor:pointer;accent-color:var(--info)">`}
-function _tpRow(scope,eff,override,isDef){
-  const cell=(k,t='number',ph='',w='62px')=>{
-    if(t==='bool')return `<td>${_chk(override?override[k]:eff[k])}</td>`;
-    return `<td>${_inp(override?override[k]:'',isDef?fmt(eff[k],1):'inherit '+fmt(eff[k],1),w)}</td>`;
-  };
-  return `<tr data-scope="${scope}">
-    <td><b>${isDef?'DEFAULT':scope.replace('_','/')}</b></td>
-    ${cell('tp1_enabled','bool')}${cell('tp1_at_pips')}${cell('tp1_close_pct')}${cell('tp1_lock_pips')}
-    ${cell('tp2_enabled','bool')}${cell('tp2_at_pips')}${cell('tp2_close_pct')}
-    <td>${isDef?'':`<button class="secondary" style="padding:3px 8px;font-size:11px" onclick="clearPairOverrideTP('${scope}')">clear</button>`}</td>
+async function saveCellExit(pair,session,id,btn){
+  const rid=`${pair}-${session}-${cssId(id)}`;
+  const row=document.getElementById(`tunerow-${rid}`);
+  const msg=document.getElementById(`tunemsg-${rid}`);
+  const exit={};
+  row.querySelectorAll('input.tune-inp').forEach(i=>{ if(i.value!=='')exit[i.dataset.key]=Number(i.value); });
+  if(!Object.keys(exit).length){if(msg)msg.innerHTML='<span class="neg">nothing to save</span>';return}
+  msg.textContent='saving…'; btn.disabled=true;
+  try{
+    const r=await fetch('/api/cell/exit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pair,session,setup_id:id,exit})});
+    const d=await r.json();
+    if(d.ok){ msg.innerHTML='<span class="pos">saved ✓</span>'; loadTune(); }
+    else{ msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`; btn.disabled=false; }
+  }catch(e){ msg.innerHTML=`<span class="neg">${e.message}</span>`; btn.disabled=false; }
+}
+/* ── Recovery fallback editor (exit_config.json defaults only) ──────────── */
+function _fbInp(key,val){const v=(val==null)?'':val;return `<input type="number" class="tune-inp" step="0.1" value="${v}" data-key="${key}" style="width:76px">`}
+function renderExitFallback(){
+  if(!TUNE_FB)return;
+  const d=(TUNE_FB.cfg&&TUNE_FB.cfg.defaults)||{};
+  document.getElementById('tunefb-body').innerHTML=`<tr>
+    <td>${_fbInp('initial_sl_pips',d.initial_sl_pips)}</td>
+    <td>${_fbInp('step_trigger_pips',d.step_trigger_pips)}</td>
+    <td>${_fbInp('step_trail_pips',d.step_trail_pips)}</td>
+    <td>${_fbInp('step_size_pips',d.step_size_pips)}</td>
+    <td>${_fbInp('step_engage_min',d.step_engage_min)}</td>
+    <td>${_fbInp('step_cadence_min',d.step_cadence_min)}</td>
   </tr>`;
 }
-function renderTuneTP(defaults,per,pairs){
-  const body=document.getElementById('tune-tp-body');
-  let rows=[_tpRow('DEFAULT',defaults,defaults,true)];
-  for(const p of pairs){const ov=per[p]||null;const eff={...defaults,...(ov||{})};rows.push(_tpRow(p,eff,ov,false))}
-  body.innerHTML=rows.join('');
-}
-function clearPairOverrideTP(p){document.querySelector(`#tune-tp-body tr[data-scope="${p}"]`).querySelectorAll('input[type=number]').forEach(i=>i.value='')}
-function _collectTPRow(row,isDef){
-  const out={};
-  const inputs=Array.from(row.querySelectorAll('input'));
-  const keys=['tp1_enabled','tp1_at_pips','tp1_close_pct','tp1_lock_pips','tp2_enabled','tp2_at_pips','tp2_close_pct'];
-  inputs.forEach((inp,i)=>{
-    if(!keys[i])return;
-    if(inp.type==='checkbox')out[keys[i]]=inp.checked;
-    else if(inp.value!=='')out[keys[i]]=Number(inp.value);
-  });
-  return out;
-}
-async function saveTune(){
-  const msg=document.getElementById('tune-msg');
-  msg.textContent='Saving…';
-  const defaults={};const per_pair={};
-  const tbody=document.getElementById('tune-body');
-  Array.from(tbody.querySelectorAll('tr')).forEach(row=>{
-    const scope=row.dataset.scope;const collected=_collectRow(row);
-    if(scope==='DEFAULT'){
-      Array.from(row.querySelectorAll('input')).forEach((inp,i)=>{
-        const keys=['initial_sl_pips','step_trigger_pips','step_trail_pips','step_size_pips','step_engage_min','step_cadence_min'];
-        if(keys[i]&&inp.value!=='')defaults[keys[i]]=Number(inp.value);
-      });
-    } else if(Object.keys(collected).length){per_pair[scope]=collected}
-  });
-  // TP rows
-  const tpbody=document.getElementById('tune-tp-body');
-  Array.from(tpbody.querySelectorAll('tr')).forEach(row=>{
-    const scope=row.dataset.scope;const isDef=scope==='DEFAULT';
-    const collected=_collectTPRow(row,isDef);
-    if(isDef){Object.assign(defaults,collected)}
-    else if(Object.keys(collected).length){per_pair[scope]={...(per_pair[scope]||{}),...collected}}
-  });
-  const body={schema:'v2',defaults,per_pair};
+async function saveExitFallback(){
+  const msg=document.getElementById('tunefb-msg'); msg.textContent='Saving…';
+  // Preserve every other exit_config field (TP1/TP2 defaults + per_pair) — only
+  // overwrite the six ratchet knobs the fallback table edits.
+  const defaults={...((TUNE_FB&&TUNE_FB.cfg&&TUNE_FB.cfg.defaults)||{})};
+  const per_pair=((TUNE_FB&&TUNE_FB.cfg&&TUNE_FB.cfg.per_pair)||{});
+  document.querySelectorAll('#tunefb-body input.tune-inp').forEach(i=>{ if(i.value!=='')defaults[i.dataset.key]=Number(i.value); });
   try{
-    const r=await fetch('/api/config/exit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const r=await fetch('/api/config/exit',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({schema:'v2',defaults,per_pair})});
     const d=await r.json();
-    msg.innerHTML=d.ok?'<span class="pos">Saved.</span>':`<span class="neg">Error: ${escape(d.error||'unknown')}</span>`;
+    msg.innerHTML=d.ok?'<span class="pos">Saved fallback defaults.</span>':`<span class="neg">Error: ${escape(d.error||'unknown')}</span>`;
   }catch(e){msg.innerHTML=`<span class="neg">Error: ${e.message}</span>`}
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
- * PLAYMAKER tab — preserved
+ * RISK tab — portfolio risk caps (playmaker_config.json → account).
+ * The legacy pre-cell dir/mom-certainty per-pair gate table was removed at the
+ * cell-era cutover; only the live risk caps remain editable here. Governance
+ * (disabled/inverted cells, per-cell ranges) is preserved server-side on save.
  * ═════════════════════════════════════════════════════════════════════════ */
 let PM_META=null;
 async function loadPlaymaker(){const r=await fetch('/api/config/playmaker');const d=await r.json();PM_META=d;renderPlaymaker();document.getElementById('pm-msg').textContent=''}
-function _pmInp(val,ph,w='70px'){const v=(val==null)?'':val;return `<input type="number" step="0.01" value="${v}" placeholder="${ph}" style="width:${w};background:var(--bg0);color:var(--fg1);border:1px solid var(--border);border-radius:4px;padding:4px 6px;text-align:right">`}
-function _pmBoolCell(val){return `<input type="checkbox" ${val?'checked':''} style="width:16px;height:16px;cursor:pointer;accent-color:var(--info)">`}
-function _pmRow(scope,eff,override,isDef){
-  const cell=(k,t='number',w='80px')=>{
-    if(t==='bool')return `<td>${_pmBoolCell(override?override[k]:eff[k])}</td>`;
-    return `<td>${_pmInp(override?override[k]:'',isDef?fmt(eff[k],3):'inherit '+fmt(eff[k],3),w)}</td>`;
-  };
-  return `<tr data-scope="${scope}">
-    <td><b>${isDef?'DEFAULT':scope.replace('_','/')}</b></td>
-    ${cell('enabled','bool')}${cell('min_direction_score')}${cell('min_dir_certainty')}${cell('min_mom_certainty')}
-    ${cell('cooldown_after_sl_min')}
-    <td>${isDef?'':`<button class="secondary" style="padding:3px 8px;font-size:11px" onclick="clearPmOverride('${scope}')">clear</button>`}</td>
-  </tr>`;
-}
 function _updatePmRiskMath(){
   const risk=Number(document.getElementById('pm-risk').value)||0;
   const maxc=Number(document.getElementById('pm-maxc').value)||0;
@@ -2212,55 +2092,103 @@ function _updatePmRiskMath(){
 }
 function renderPlaymaker(){
   if(!PM_META)return;
-  const body=document.getElementById('pm-body');
-  const defaults=PM_META.cfg.defaults||{};
-  const per=PM_META.cfg.per_pair||{};
-  let rows=[_pmRow('DEFAULT',defaults,defaults,true)];
-  for(const p of PM_META.pairs){const ov=per[p]||null;const eff={...defaults,...(ov||{})};rows.push(_pmRow(p,eff,ov,false))}
-  body.innerHTML=rows.join('');
-  const acct=PM_META.cfg.account||{};
-  document.getElementById('pm-risk').value=acct.margin_pct_per_trade||'';
-  document.getElementById('pm-maxc').value=acct.max_concurrent_trades||'';
+  const acct=(PM_META.cfg&&PM_META.cfg.account)||{};
+  document.getElementById('pm-risk').value=acct.margin_pct_per_trade??'';
+  document.getElementById('pm-maxc').value=acct.max_concurrent_trades??'';
   document.getElementById('pm-ccy').value=acct.max_per_currency_direction??'';
-  document.getElementById('pm-acct-ro').innerHTML=`Picker: <b>${STATE?.governance?.random_pick?'RANDOM':'edge_rank (EV → alphabetical)'}</b> &nbsp;<span class="muted">— the currency cap now persists on Save. Per-cell governance (disabled/inverted cells, per-cell ranges) is preserved across saves; edit it via direct config.</span>`;
+  document.getElementById('pm-acct-ro').innerHTML=`Picker: <b>${STATE?.governance?.random_pick?'RANDOM':'edge_rank (EV → alphabetical)'}</b> &nbsp;<span class="muted">— all three caps persist on Save; disabled/inverted cells + per-cell ranges are preserved untouched.</span>`;
   ['pm-risk','pm-maxc'].forEach(id=>document.getElementById(id).oninput=_updatePmRiskMath);
   _updatePmRiskMath();
-}
-function clearPmOverride(p){document.querySelector(`#pm-body tr[data-scope="${p}"]`).querySelectorAll('input[type=number]').forEach(i=>i.value='')}
-function _pmCollectRow(row,isDef){
-  const out={};
-  const inputs=Array.from(row.querySelectorAll('input'));
-  const keys=['enabled','min_direction_score','min_dir_certainty','min_mom_certainty','cooldown_after_sl_min'];
-  inputs.forEach((inp,i)=>{
-    if(!keys[i])return;
-    if(inp.type==='checkbox')out[keys[i]]=inp.checked;
-    else if(inp.value!=='')out[keys[i]]=Number(inp.value);
-  });
-  return out;
 }
 async function savePlaymaker(){
   const msg=document.getElementById('pm-msg');
   msg.textContent='Saving…';
-  const defaults={};const per_pair={};
-  const body=document.getElementById('pm-body');
-  Array.from(body.querySelectorAll('tr')).forEach(row=>{
-    const scope=row.dataset.scope;const isDef=scope==='DEFAULT';
-    const c=_pmCollectRow(row,isDef);
-    if(isDef)Object.assign(defaults,c);
-    else if(Object.keys(c).length)per_pair[scope]=c;
-  });
-  const acct={margin_pct_per_trade:Number(document.getElementById('pm-risk').value)||undefined,
-              max_concurrent_trades:Number(document.getElementById('pm-maxc').value)||undefined,
-              max_per_currency_direction:Number(document.getElementById('pm-ccy').value)||undefined};
-  // Only the three editable blocks are sent. Per-cell governance (disabled/inverted
-  // cells, per-cell ranges, _notes) is preserved SERVER-SIDE from the on-disk config
-  // by _validate_pm_cfg — a dashboard save can no longer drop it. See ops/server.py.
-  const payload={schema:'v1', account:acct, defaults, per_pair};
+  const acct={};
+  const risk=document.getElementById('pm-risk').value;
+  const maxc=document.getElementById('pm-maxc').value;
+  const ccy=document.getElementById('pm-ccy').value;
+  if(risk!=='')acct.margin_pct_per_trade=Number(risk);
+  if(maxc!=='')acct.max_concurrent_trades=Number(maxc);
+  if(ccy!=='')acct.max_per_currency_direction=Number(ccy);
+  // Only the account block is sent. defaults/per_pair + all governance (disabled/
+  // inverted cells, per-cell ranges, _notes) are preserved SERVER-SIDE by
+  // _validate_pm_cfg — a dashboard save can no longer drop them. See ops/server.py.
+  const payload={schema:'v1', account:acct};
   try{
     const r=await fetch('/api/config/playmaker',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const d=await r.json();
     msg.innerHTML=d.ok?'<span class="pos">Saved.</span>':`<span class="neg">Error: ${escape(d.error||'unknown')}</span>`;
+    if(d.ok)loadPlaymaker();
   }catch(e){msg.innerHTML=`<span class="neg">Error: ${e.message}</span>`}
+}
+
+/* ═════════════════════════════════════════════════════════════════════════
+ * CONNECTION tab — OANDA credentials + practice/live mode
+ * ═════════════════════════════════════════════════════════════════════════ */
+let CRED=null;
+async function loadCredentials(){
+  try{const r=await fetch('/api/credentials');CRED=await r.json();renderCredentials();}
+  catch(e){const m=document.getElementById('cred-msg');if(m)m.innerHTML=`<span class="neg">${e.message}</span>`;}
+}
+function applyModeBanner(){
+  const el=document.getElementById('mode-banner'); if(!el||!CRED)return;
+  const mode=CRED.mode||'practice';
+  el.className='mode-banner '+(mode==='live'?'live':'practice');
+  el.textContent=(mode==='live'?'● LIVE — REAL MONEY':'● PRACTICE — paper trading')+
+    (CRED.source?` · creds: ${CRED.source}`:'');
+}
+function renderCredentials(){
+  if(!CRED)return;
+  applyModeBanner();
+  const mode=CRED.mode||'practice';
+  const mn=document.getElementById('mode-now');
+  if(mn){mn.textContent='Current mode: '+mode.toUpperCase();mn.style.color=mode==='live'?'#ef4444':'#22c55e';}
+  const armed=document.getElementById('mode-armed');
+  if(armed)armed.textContent=CRED.live_armed?'live toggle ARMED (SCROOGE_ALLOW_LIVE=1)':'live toggle locked — set SCROOGE_ALLOW_LIVE=1 to arm';
+  const bl=document.getElementById('btn-live');
+  if(bl){bl.disabled=!CRED.live_armed;bl.title=CRED.live_armed?'':'live trading disabled on this instance';}
+  const bp=document.getElementById('btn-practice');
+  if(bp)bp.disabled=(mode==='practice');
+  const pc=document.getElementById('cred-practice-status');
+  if(pc)pc.textContent=CRED.practice?.configured?`configured ${CRED.practice.masked} · id ${CRED.practice.account_id_last4}`:'not set';
+  const lc=document.getElementById('cred-live-status');
+  if(lc)lc.textContent=CRED.live?.configured?`configured ${CRED.live.masked} · id ${CRED.live.account_id_last4}`:'not set';
+}
+async function saveCreds(kind){
+  const msg=document.getElementById(`cred-${kind}-msg`); msg.textContent='verifying…';
+  const token=document.getElementById(`cred-${kind}-token`).value.trim();
+  const acct=document.getElementById(`cred-${kind}-acct`).value.trim();
+  if(!token||!acct){msg.innerHTML='<span class="neg">token + account id required</span>';return}
+  try{
+    const r=await fetch('/api/credentials',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({account:kind,api_token:token,account_id:acct})});
+    const d=await r.json();
+    if(d.ok){msg.innerHTML=`<span class="pos">verified + saved ${d.masked}</span>`;
+      document.getElementById(`cred-${kind}-token`).value='';loadCredentials();}
+    else msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`;
+  }catch(e){msg.innerHTML=`<span class="neg">${e.message}</span>`}
+}
+async function setModePractice(){
+  const msg=document.getElementById('cred-msg'); msg.textContent='saving…';
+  try{
+    const r=await fetch('/api/mode',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'practice'})});
+    const d=await r.json();
+    msg.innerHTML=d.ok?`<span class="pos">mode → PRACTICE. ${escape(d.note||'')}</span>`:`<span class="neg">${escape(d.error||'error')}</span>`;
+    loadCredentials();
+  }catch(e){msg.innerHTML=`<span class="neg">${e.message}</span>`}
+}
+function openLiveModal(){document.getElementById('live-modal').classList.add('show');document.getElementById('live-confirm-inp').value='';document.getElementById('live-modal-msg').textContent='';}
+function closeLiveModal(){document.getElementById('live-modal').classList.remove('show');}
+async function confirmLive(){
+  const inp=document.getElementById('live-confirm-inp').value;
+  const mm=document.getElementById('live-modal-msg'); mm.textContent='switching…';
+  try{
+    const r=await fetch('/api/mode',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({mode:'live',confirm:inp})});
+    const d=await r.json();
+    if(d.ok){mm.innerHTML=`<span class="pos">mode → LIVE. ${escape(d.note||'')}</span>`;setTimeout(()=>{closeLiveModal();loadCredentials();},1400);}
+    else mm.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`;
+  }catch(e){mm.innerHTML=`<span class="neg">${e.message}</span>`}
 }
 
 /* ═════════════════════════════════════════════════════════════════════════
@@ -2303,13 +2231,6 @@ async function fetchCellScore(){
   renderCellScore();
 }
 
-function toggleLegacyView(){
-  const el=document.getElementById('legacy-exec-stack');
-  const tog=document.getElementById('legacy-toggle');
-  const show=el.style.display==='none';
-  el.style.display=show?'block':'none';
-  tog.textContent=(show?'▾':'▸')+' LEGACY EXEC STACK (retires at Phase D)';
-}
 
 function fmtNum(v){
   if(v==null)return '—';
@@ -2359,6 +2280,32 @@ function condBar(c,dim){
   </div>`;
 }
 
+/* ── Setup status control (ACTIVE / SHADOW / DISABLED) — writes config/cells ── */
+function statusControl(pair,session,setupId,current){
+  const cur=(current||'SHADOW').toUpperCase();
+  const mk=st=>`<button class="${cur===st?'on '+st:''}" ${cur===st?'disabled':''} `+
+    `onclick="event.stopPropagation();setCellStatus('${pair}','${session}','${escape(setupId)}','${st}',this)">${st}</button>`;
+  return `<div class="stctl" title="Flip this setup's live status. ACTIVE = trades live; SHADOW = logs only; DISABLED = off.">`+
+    mk('ACTIVE')+mk('SHADOW')+mk('DISABLED')+`</div>`+
+    `<span class="mono-sm" id="stmsg-${pair}-${session}-${cssId(setupId)}" style="margin-left:8px"></span>`;
+}
+function cssId(s){return String(s).replace(/[^A-Za-z0-9_-]/g,'_')}
+async function setCellStatus(pair,session,setupId,status,btn){
+  const msg=document.getElementById(`stmsg-${pair}-${session}-${cssId(setupId)}`);
+  if(status==='ACTIVE'){
+    if(!confirm(`This ENABLES LIVE TRADING for ${pair.replace('_','/')}/${session}/${setupId}.\n\n`+
+      `The bot will place real orders for this setup on its next cycle. Confirm?`)){return}
+  }
+  if(msg)msg.textContent='saving…';
+  try{
+    const r=await fetch('/api/cell/status',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pair,session,setup_id:setupId,status})});
+    const d=await r.json();
+    if(d.ok){ if(msg){msg.innerHTML=`<span class="pos">→ ${d.status}</span>`;} fetchCells(); }
+    else{ if(msg)msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`; }
+  }catch(e){ if(msg)msg.innerHTML=`<span class="neg">${e.message}</span>`; }
+}
+
 function bookSetupHtml(s,dim){
   const side=s?.side==='long'?'<span class="bk-side long">▲</span>'
             :s?.side==='short'?'<span class="bk-side short">▼</span>'
@@ -2395,6 +2342,7 @@ function bookDetailHtml(c){
       `${cd.lineage?`<br>&nbsp;&nbsp;<span class="dim">${escape(cd.lineage)}</span>`:''}</div>`).join('');
     return `<div style="margin-bottom:10px;padding:8px;background:var(--bg1);border-radius:6px">
       <div class="bk-setup-head" style="margin-bottom:4px">${s.side==='long'?'<span class="bk-side long">▲</span>':s.side==='short'?'<span class="bk-side short">▼</span>':''}${s.class?`<span class="bk-class ${escape(s.class)}">${escape(s.class)}</span>`:''}<b>${escape(s.id||'?')}</b>${s.status?`<span class="bk-status ${escape(s.status)}">${escape(s.status)}</span>`:''}</div>
+      <h5>Status control</h5>${statusControl(c.pair,c.session,s.id,s.status)}
       <h5>Exit geometry</h5><div class="mono-sm">SL ${ex.sl_pips??'—'}p · trigger ${ex.trigger_pips??'—'}p · trail ${ex.trail_pips??'—'}p · horizon ${s.horizon_min??'—'}min</div>
       <h5>Sizing</h5><div class="mono-sm">risk_pct ${sz.risk_pct??'—'}${(sz.size_modulators||[]).length?' · modulators '+escape(JSON.stringify(sz.size_modulators)):''}</div>
       <h5>Tripwires</h5><div class="mono-sm">${twTxt}</div>
@@ -2565,12 +2513,14 @@ setInterval(tickClock,1000);tickClock();
 
 fetchState();fetchSysinfo();fetchDailyPL();
 fetchCells();fetchCellShadow();fetchCellScore();
+loadCredentials();   // drives the fat practice/live mode banner
 setInterval(fetchState,10000);
 setInterval(fetchSysinfo,30000);
 setInterval(fetchDailyPL,60000);
 setInterval(fetchCells,30000);
 setInterval(fetchCellShadow,30000);
 setInterval(fetchCellScore,120000);   // server caches 300s; poll is cheap
+setInterval(loadCredentials,60000);   // keep the mode banner fresh
 </script>
 <!-- ─── DECISION FEED TICKER (bottom-fixed scrolling) ────────────────────── -->
 <div class="dec-ticker" id="dec-ticker" style="display:none">

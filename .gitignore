@@ -8,3 +8,9 @@ data/*
 !.env.example
 journal*
 nohup.out
+
+# Per-user OANDA credentials written by the dashboard CONNECTION tab.
+# NEVER commit — this file holds real API tokens / account ids.
+config/credentials.local.json
+credentials.local.json
+config/credentials.tmp

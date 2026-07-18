@@ -10,10 +10,21 @@ Routes:
   GET /api/cellscore       → cell_setup_score.py --json scoreboard (cached 300s)
   GET /api/config/exit     → exit-tuning config + field schema
   GET /api/config/playmaker→ playmaker config + field schema
-  POST /api/config/exit    → live edit exit_config.json (validated)
-  POST /api/config/playmaker→ live edit playmaker_config.json (validated)
+  GET /api/credentials     → credential status (masked last4 + mode; NEVER values)
+  POST /api/config/exit    → live edit exit_config.json (validated; RECOVERY FALLBACK only)
+  POST /api/config/playmaker→ live edit playmaker_config.json (validated, merge-preserving)
+  POST /api/cell/status    → flip one setup ACTIVE/SHADOW/DISABLED in config/cells (hot-reload)
+  POST /api/cell/exit      → live edit one setup's per-cell exit geometry (hot-reload)
+  POST /api/credentials    → save+verify an OANDA credential set (writes credentials.local.json)
+  POST /api/mode           → practice/live toggle (live-armed via SCROOGE_ALLOW_LIVE + confirm)
 
 Start via start_dashboard(engine, port=8084) from main.py — runs in daemon thread.
+
+WRITE-endpoint safety: every writer validates input, merges (never replaces) so
+unknown/other fields survive, writes atomically (tmp+replace), and touches only
+config on disk — never the 3 open positions.  config/cells + config/*.json all
+hot-reload on the next engine cycle; ONLY credential/mode changes need a restart
+(broker creds load at engine init).
 """
 from __future__ import annotations
 import http.server
@@ -243,6 +254,161 @@ def _write_exit_config(cfg: dict) -> None:
     tmp = _EXIT_CONFIG_PATH.with_suffix(".tmp")
     tmp.write_text(_j.dumps(clean, indent=2))
     tmp.replace(_EXIT_CONFIG_PATH)
+
+
+# ── Per-cell setup controls (status flip + live exit edit) ───────────────────
+# These write the LIVE trading unit: config/cells/<PAIR>.json.  The engine
+# hot-reloads that file on mtime change (modules/cells/cell.py _load_pair_config),
+# so a status/exit write takes effect on the NEXT scan cycle — no restart.
+_CELL_STATUSES = {"ACTIVE", "SHADOW", "DISABLED"}
+# Per-cell exit ranges (dashboard TUNE tab).  Merge-not-replace: only these four
+# geometry knobs are editable; mode/trail_min/trail_max/_class/tp_pips/timeout
+# are preserved verbatim from disk.
+_CELL_EXIT_FIELDS = {
+    "sl_pips":      {"min": 5.0,  "max": 200.0, "label": "Range-sized initial SL (pips)"},
+    "trigger_pips": {"min": 0.0,  "max": 50.0,  "label": "Ratchet engage / peak trigger (pips)"},
+    "trail_pips":   {"min": 0.0,  "max": 30.0,  "label": "Trail behind peak (pips)"},
+    "trail_mult":   {"min": 0.0,  "max": 3.0,   "label": "ATR-scaled trail multiplier (0=fixed)"},
+}
+
+def _cell_path(pair: str) -> Path:
+    if pair not in _PAIRS_ALL:
+        raise ValueError(f"unknown pair: {pair}")
+    return _CELLS_DIR / f"{pair}.json"
+
+def _load_cell_file(pair: str) -> dict:
+    data = _j.loads(_cell_path(pair).read_text())
+    if not isinstance(data, dict):
+        raise ValueError(f"{pair}.json is not a JSON object")
+    return data
+
+def _write_cell_file(pair: str, data: dict) -> None:
+    """Atomic write preserving the file's 2-space indent style."""
+    path = _cell_path(pair)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(_j.dumps(data, indent=2))
+    tmp.replace(path)
+
+def _find_setup(data: dict, session: str, setup_id: str) -> dict:
+    """Return the mutable setup dict for (session, setup_id), or raise."""
+    if session not in _SESSIONS_ALL:
+        raise ValueError(f"unknown session: {session}")
+    scfg = (data.get("sessions") or {}).get(session)
+    if not isinstance(scfg, dict):
+        raise ValueError(f"session {session} not present in config")
+    for s in (scfg.get("setups") or []):
+        if s.get("id") == setup_id:
+            return s
+    raise ValueError(f"setup '{setup_id}' not found in {session}")
+
+def _set_cell_status(pair: str, session: str, setup_id: str, status: str) -> dict:
+    """Flip one setup's status in config/cells/<PAIR>.json (merge-preserving)."""
+    if status not in _CELL_STATUSES:
+        raise ValueError(f"status must be one of {sorted(_CELL_STATUSES)}, got {status!r}")
+    data = _load_cell_file(pair)
+    setup = _find_setup(data, session, setup_id)
+    old = setup.get("status")
+    setup["status"] = status
+    _write_cell_file(pair, data)
+    return {"pair": pair, "session": session, "setup_id": setup_id,
+            "old_status": old, "status": status}
+
+def _validate_cell_exit(patch: dict) -> dict:
+    if not isinstance(patch, dict):
+        raise ValueError("exit must be a JSON object")
+    clean = {}
+    for k, v in patch.items():
+        if k not in _CELL_EXIT_FIELDS:
+            raise ValueError(f"unknown exit field: {k}")
+        spec = _CELL_EXIT_FIELDS[k]
+        f = float(v)
+        if not (spec["min"] <= f <= spec["max"]):
+            raise ValueError(f"{k}={f} out of bounds [{spec['min']}, {spec['max']}]")
+        clean[k] = f
+    if not clean:
+        raise ValueError("no editable exit fields supplied")
+    return clean
+
+def _set_cell_exit(pair: str, session: str, setup_id: str, patch: dict) -> dict:
+    """Merge exit-geometry edits into one setup's `exit` block (preserving
+    mode/trail_min/trail_max/_class/tp_pips/timeout_min/entry_cutoff_utc)."""
+    clean = _validate_cell_exit(patch)
+    data = _load_cell_file(pair)
+    setup = _find_setup(data, session, setup_id)
+    ex = dict(setup.get("exit") or {})
+    merged = {**ex, **clean}
+    # Sanity: first lock = trigger - trail must stay positive when both are set.
+    trig = merged.get("trigger_pips"); trail = merged.get("trail_pips")
+    if trig is not None and trail is not None and float(trig) > 0 and float(trail) >= float(trig):
+        raise ValueError(f"trail_pips ({trail}) must be < trigger_pips ({trig}) "
+                         "(else the first ratchet lock is <= 0)")
+    setup["exit"] = merged
+    _write_cell_file(pair, data)
+    return {"pair": pair, "session": session, "setup_id": setup_id, "exit": merged}
+
+
+# ── Credentials + practice/live mode (CONNECTION tab) ────────────────────────
+# All read/write/validate logic lives in config/credentials.py so the broker and
+# the dashboard share one source of truth.  Tokens are NEVER logged or echoed.
+def _credentials_status() -> dict:
+    from config import credentials as _cred
+    return _cred.status()
+
+def _save_credentials(payload: dict) -> dict:
+    """POST /api/credentials — verify a credential set READ-ONLY against OANDA,
+    then merge it into credentials.local.json (preserving the other set + mode).
+    Returns a masked confirmation; never the token."""
+    from config import credentials as _cred
+    if not isinstance(payload, dict):
+        raise ValueError("body must be a JSON object")
+    account = payload.get("account")
+    if account not in _cred.MODES:
+        raise ValueError(f"account must be one of {list(_cred.MODES)}")
+    api_token = payload.get("api_token")
+    account_id = payload.get("account_id")
+    ok, msg = _cred.verify_oanda_token(account, api_token, account_id)
+    if not ok:
+        raise ValueError(msg)
+    local = _cred.load_local()
+    local[account] = {"api_token": str(api_token).strip(),
+                      "account_id": str(account_id).strip()}
+    local.setdefault("mode", "practice")
+    _cred.write_local(local)
+    log.info("credentials saved for %s account (token %s, id %s) — verified",
+             account, _cred.mask(api_token), account_id)
+    return {"ok": True, "account": account, "verified": True,
+            "masked": _cred.mask(api_token), "account_id": account_id}
+
+def _set_mode(payload: dict) -> tuple[int, dict]:
+    """POST /api/mode — the practice/live toggle.  Returns (http_status, body).
+    Guardrails: live requires SCROOGE_ALLOW_LIVE=1, verified live creds, and the
+    exact confirm string.  Mode applies on the NEXT engine restart."""
+    from config import credentials as _cred
+    if not isinstance(payload, dict):
+        return 400, {"ok": False, "error": "body must be a JSON object"}
+    mode = payload.get("mode")
+    if mode not in _cred.MODES:
+        return 400, {"ok": False, "error": f"mode must be one of {list(_cred.MODES)}"}
+    local = _cred.load_local()
+
+    if mode == "live":
+        if not _cred.allow_live():
+            return 403, {"ok": False, "error": ("live trading disabled on this instance; "
+                         "set SCROOGE_ALLOW_LIVE=1 in the environment to arm.")}
+        cset = local.get("live") or {}
+        if not (cset.get("api_token") and cset.get("account_id")):
+            return 400, {"ok": False, "error": "no live credentials saved — add + verify them first"}
+        if payload.get("confirm") != "TRADE REAL MONEY":
+            return 400, {"ok": False, "error": 'confirmation required: send confirm="TRADE REAL MONEY"'}
+        ok, msg = _cred.verify_oanda_token("live", cset["api_token"], cset["account_id"])
+        if not ok:
+            return 400, {"ok": False, "error": f"live credentials failed re-verification: {msg}"}
+
+    local["mode"] = mode
+    _cred.write_local(local)
+    log.warning("TRADING MODE set to %s via dashboard (applies on next restart)", mode.upper())
+    return 200, {"ok": True, "mode": mode, "restart_required": True,
+                 "note": "mode applies when the bot next restarts (broker creds load at engine init)"}
 
 
 
@@ -1076,6 +1242,10 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 }, default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/credentials"):
+                body = _j.dumps(_credentials_status(), default=str).encode()
+                ctype = "application/json"
+                code = 200
             else:
                 body, ctype, code = b"not found", "text/plain", 404
         except Exception as exc:
@@ -1088,6 +1258,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
         self.wfile.write(body)
+
+    def _read_json(self) -> dict:
+        length = int(self.headers.get("Content-Length", "0") or 0)
+        raw = self.rfile.read(length) if length else b""
+        return _j.loads(raw.decode() or "{}")
 
     def do_POST(self):
         try:
@@ -1120,6 +1295,44 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 except Exception as exc:
                     body = _j.dumps({"ok": False, "error": str(exc)}).encode()
                     ctype, code = "application/json", 400
+            elif self.path.startswith("/api/cell/status"):
+                payload = self._read_json()
+                try:
+                    res = _set_cell_status(payload.get("pair"), payload.get("session"),
+                                           payload.get("setup_id"), payload.get("status"))
+                    body = _j.dumps({"ok": True, **res}).encode()
+                    ctype, code = "application/json", 200
+                    log.info("cell status %s/%s/%s: %s -> %s (dashboard)",
+                             res["pair"], res["session"], res["setup_id"],
+                             res["old_status"], res["status"])
+                except Exception as exc:
+                    body = _j.dumps({"ok": False, "error": str(exc)}).encode()
+                    ctype, code = "application/json", 400
+            elif self.path.startswith("/api/cell/exit"):
+                payload = self._read_json()
+                try:
+                    res = _set_cell_exit(payload.get("pair"), payload.get("session"),
+                                         payload.get("setup_id"), payload.get("exit") or {})
+                    body = _j.dumps({"ok": True, **res}).encode()
+                    ctype, code = "application/json", 200
+                    log.info("cell exit %s/%s/%s updated (dashboard): %s",
+                             res["pair"], res["session"], res["setup_id"], res["exit"])
+                except Exception as exc:
+                    body = _j.dumps({"ok": False, "error": str(exc)}).encode()
+                    ctype, code = "application/json", 400
+            elif self.path.startswith("/api/credentials"):
+                payload = self._read_json()
+                try:
+                    body = _j.dumps(_save_credentials(payload)).encode()
+                    ctype, code = "application/json", 200
+                except Exception as exc:
+                    body = _j.dumps({"ok": False, "error": str(exc)}).encode()
+                    ctype, code = "application/json", 400
+            elif self.path.startswith("/api/mode"):
+                payload = self._read_json()
+                code, obj = _set_mode(payload)
+                body = _j.dumps(obj).encode()
+                ctype = "application/json"
             else:
                 body, ctype, code = b"not found", "text/plain", 404
         except Exception as exc:
