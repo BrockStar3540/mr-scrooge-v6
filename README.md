@@ -7,6 +7,8 @@
 *Six versions · 8 years of data · 20 pairs · 100+ strategies · 50+ indicators — boiled down to one falsifiable idea:*
 **you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
 
+*An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, a full backtesting research program, and an honest, broker-verified track record.*
+
 ![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_practice-cf8e3e) &nbsp; **`41 tests passing`** &nbsp; **`forward test · verdict pending`**
 
 </div>
