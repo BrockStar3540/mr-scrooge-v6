@@ -1,4 +1,4 @@
-"""ops/server.py — V5 control panel HTTP server.
+"""ops/server.py — V6 control panel HTTP server.
 
 Routes:
   GET /                    → ops/panel.html
