@@ -17,6 +17,7 @@ Routes:
   POST /api/cell/exit      → live edit one setup's per-cell exit geometry (hot-reload)
   POST /api/credentials    → save+verify an OANDA credential set (writes credentials.local.json)
   POST /api/mode           → practice/live toggle (live-armed via SCROOGE_ALLOW_LIVE + confirm)
+  POST /api/trading        → soft trading PAUSE switch (hot-reload; pause = no new entries)
 
 Start via start_dashboard(engine, port=8084) from main.py — runs in daemon thread.
 
@@ -422,6 +423,33 @@ def _set_mode(payload: dict) -> tuple[int, dict]:
                  "note": "mode applies when the bot next restarts (broker creds load at engine init)"}
 
 
+def _set_trading(payload: dict) -> tuple[int, dict]:
+    """POST /api/trading — soft trading PAUSE switch. Returns (http_status, body).
+
+    Turning OFF (pause) is unconfirmed — the safe direction. Turning ON while the
+    box is in LIVE mode requires the same typed confirmation as other live
+    actions. Hot-reloads (engine reads config/runtime.json each cycle) — no
+    restart. Pause blocks NEW entries only; open positions keep being managed."""
+    from config import runtime as _rt
+    if not isinstance(payload, dict) or not isinstance(payload.get("enabled"), bool):
+        return 400, {"ok": False, "error": "body must be {\"enabled\": true|false}"}
+    enabled = payload["enabled"]
+    if enabled:
+        # Extra friction to RESUME trading while pointed at real money.
+        try:
+            from config import credentials as _cred
+            mode = _cred.load_local().get("mode", "practice")
+        except Exception:
+            mode = "practice"
+        if mode == "live" and payload.get("confirm") != "TRADE REAL MONEY":
+            return 400, {"ok": False, "error": 'resuming LIVE trading requires confirm="TRADE REAL MONEY"'}
+    _rt.set_trading_enabled(enabled)
+    log.warning("TRADING %s via dashboard (hot-reload; new entries %s)",
+                "ENABLED" if enabled else "PAUSED",
+                "allowed" if enabled else "suppressed — open positions still managed")
+    return 200, {"ok": True, "trading_enabled": enabled}
+
+
 
 def _state(engine: "Engine") -> dict:
     now = datetime.now(timezone.utc)
@@ -724,9 +752,15 @@ def _state(engine: "Engine") -> dict:
         lock_guard_status = [{"error": str(_exc)}]
 
     from modules.management.base import in_rollover_freeze as _irf
+    try:
+        from config.runtime import trading_enabled as _te
+        _trading_enabled = _te()
+    except Exception:
+        _trading_enabled = True
     return {
         "account":         account,
         "rollover_freeze": _irf(now),
+        "trading_enabled": _trading_enabled,
         "open_positions":  open_positions,
         "last_tickets":    last_tickets,
         "last_views":      last_views,
@@ -1342,6 +1376,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             elif self.path.startswith("/api/mode"):
                 payload = self._read_json()
                 code, obj = _set_mode(payload)
+                body = _j.dumps(obj).encode()
+                ctype = "application/json"
+            elif self.path.startswith("/api/trading"):
+                payload = self._read_json()
+                code, obj = _set_trading(payload)
                 body = _j.dumps(obj).encode()
                 ctype = "application/json"
             else:

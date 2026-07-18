@@ -535,6 +535,16 @@ body.has-ticker{padding-bottom:32px}
   animation:livepulse 2s ease-in-out infinite}
 .mode-banner.unknown{background:rgba(120,120,120,.14);color:var(--fg2);border-bottom-color:var(--border-2)}
 @keyframes livepulse{0%,100%{background:rgba(239,68,68,.18)}50%{background:rgba(239,68,68,.30)}}
+/* ── TRADING pause master switch (top bar, right of mode banner) ───────── */
+.trading-switch{padding:7px 20px;font-size:12.5px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;cursor:pointer;display:flex;align-items:center;white-space:nowrap;
+  border-bottom:2px solid transparent;border-left:1px solid var(--border-2)}
+.trading-switch.on{background:rgba(34,197,94,.14);color:#22c55e;border-bottom-color:#22c55e}
+.trading-switch.off{background:rgba(244,197,66,.20);color:#f4c542;border-bottom-color:#f4c542;
+  animation:pausepulse 1.6s ease-in-out infinite}
+.trading-switch.unknown{background:rgba(120,120,120,.14);color:var(--fg2);border-bottom-color:var(--border-2)}
+.trading-switch:hover{filter:brightness(1.15)}
+@keyframes pausepulse{0%,100%{background:rgba(244,197,66,.20)}50%{background:rgba(244,197,66,.34)}}
 /* ── 3-way status control (BOOK tab) ──────────────────────────────────── */
 .stctl{display:inline-flex;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden}
 .stctl button{background:var(--bg0);color:var(--fg2);border:none;padding:3px 9px;font-size:10.5px;
@@ -564,8 +574,12 @@ body.has-ticker{padding-bottom:32px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 </style></head><body>
 
-<!-- ─── FAT PRACTICE/LIVE MODE BANNER (always visible, driven by /api/credentials) ── -->
-<div id="mode-banner" class="mode-banner unknown">● connection mode: loading…</div>
+<!-- ─── TOP BAR: PRACTICE/LIVE mode banner + TRADING pause switch (always visible) ── -->
+<div id="topbar" style="display:flex;align-items:stretch">
+  <div id="mode-banner" class="mode-banner unknown" style="flex:1">● connection mode: loading…</div>
+  <div id="trading-switch" class="trading-switch unknown" onclick="toggleTrading()"
+       title="Pause suppresses NEW entries; open positions keep being managed. To fully stop the process, stop the service.">TRADING: —</div>
+</div>
 
 <!-- ─── TRADE EVENT OVERLAY (slides in from top on new trade) ─────────────── -->
 <div id="trade-overlay" class="trade-overlay">
@@ -741,6 +755,7 @@ body.has-ticker{padding-bottom:32px}
       <thead><tr>
         <th>setup</th><th>cell</th><th>side</th><th>status</th><th>eps</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
+        <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
       <tbody id="sb-body"></tbody>
     </table>
@@ -755,6 +770,7 @@ body.has-ticker{padding-bottom:32px}
       <thead><tr>
         <th>Setup</th><th>Cell</th><th>Side</th><th>N Stamps</th>
         <th>Sim EV</th><th>Exp EV</th><th>Δ</th><th>WR %</th><th>Status</th>
+        <th title="Promote to ACTIVE or DISABLE — writes config/cells">set status</th>
       </tr></thead>
       <tbody id="cellscore-body"></tbody>
     </table>
@@ -1002,6 +1018,12 @@ async function pollShadowboard(){
       const beat=(x.status==='SHADOW'&&d.active_median!=null&&x.avg_net240>d.active_median)?' 🏆':'';
       const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
       const ncls=x.avg_net240>0?'pos':'neg';
+      // cell is "PAIR/session" → split for the status control
+      const parts=String(x.cell||'').split('/');
+      const pair=parts[0]||'', session=parts[1]||'';
+      const liveStatus=currentSetupStatus(pair,session,x.setup)||x.status;
+      const ctrl=(pair&&session&&x.setup)?statusControl(pair,session,x.setup,liveStatus,'sb')
+        :'<span class="muted">—</span>';
       return `<tr>
         <td class="mono" style="font-size:11px">${x.setup}${beat}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
@@ -1012,6 +1034,7 @@ async function pollShadowboard(){
         <td class="mono muted" style="font-size:11px">${x.med_mfe}/${x.med_mae}</td>
         <td class="mono" style="font-size:11px">${x.last7_avg==null?'—':(x.last7_avg>0?'+':'')+x.last7_avg+'p ('+x.last7_n+')'}</td>
         <td class="muted" style="font-size:10px">${x.first}</td>
+        <td style="white-space:nowrap">${ctrl}</td>
       </tr>`;
     }).join('');
   }catch(e){}
@@ -1122,6 +1145,7 @@ function renderAll(){
   const viewMap={};(STATE.last_views||[]).forEach(v=>viewMap[v.pair]=v);
   (STATE.last_tickets||[]).forEach(t=>pushHist(viewMap[t.pair], t));
   renderBanner();
+  renderTradingSwitch();
   renderAcctBar();
   renderGauges();
   renderPositions();
@@ -2215,6 +2239,40 @@ async function confirmLive(){
   }catch(e){mm.innerHTML=`<span class="neg">${e.message}</span>`}
 }
 
+/* ── TRADING pause master switch (top bar) ─────────────────────────────── */
+function renderTradingSwitch(){
+  const el=document.getElementById('trading-switch'); if(!el)return;
+  const t=STATE?STATE.trading_enabled:undefined;
+  if(t===undefined){el.className='trading-switch unknown';el.textContent='TRADING: —';return}
+  el.className='trading-switch '+(t?'on':'off');
+  el.textContent=t?'● TRADING: ON':'❚❚ TRADING: PAUSED';
+}
+async function toggleTrading(){
+  const cur=STATE?STATE.trading_enabled:undefined;
+  if(cur===undefined){alert('Trading state not available yet (bot may need the queued restart to serve /api/trading).');return}
+  const next=!cur;
+  const payload={enabled:next};
+  if(!next){
+    if(!confirm('Pause trading? This suppresses NEW entries. Open positions keep being managed (ratchet + server-side stops). It does NOT stop the process.'))return;
+  } else {
+    // Resuming. In LIVE mode this needs the real-money confirmation string.
+    const live=(CRED&&CRED.mode==='live');
+    if(live){
+      const c=prompt('Resume trading in LIVE mode (real money). Type TRADE REAL MONEY to confirm:');
+      if(c===null)return;
+      payload.confirm=c;
+    } else {
+      if(!confirm('Resume trading? New entries will be allowed again on the next cycle.'))return;
+    }
+  }
+  try{
+    const r=await fetch('/api/trading',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(d.ok){fetchState();}       // refresh the switch from authoritative state
+    else alert('Trading toggle failed: '+(d.error||'error'));
+  }catch(e){alert('Trading toggle failed: '+e.message);}
+}
+
 /* ═════════════════════════════════════════════════════════════════════════
  * BOOK + SHADOW tabs — Phase C cellular architecture (2026-07-04)
  * Sources: /api/cells (book + live condition values), /api/cellshadow
@@ -2304,18 +2362,27 @@ function condBar(c,dim){
   </div>`;
 }
 
-/* ── Setup status control (ACTIVE / SHADOW / DISABLED) — writes config/cells ── */
-function statusControl(pair,session,setupId,current){
+/* ── Setup status control (ACTIVE / SHADOW / DISABLED) — writes config/cells ──
+ * Rendered in the BOOK detail AND the SHADOW tab. `ctx` namespaces the feedback
+ * span id so the same setup can carry a control in more than one place. */
+function cssId(s){return String(s).replace(/[^A-Za-z0-9_-]/g,'_')}
+function currentSetupStatus(pair,session,setupId){
+  if(!CELLS||!Array.isArray(CELLS.cells))return null;
+  const c=CELLS.cells.find(x=>x.pair===pair&&x.session===session);
+  if(!c)return null;
+  const s=(c.setups||[]).find(su=>su.id===setupId);
+  return s?s.status:null;
+}
+function statusControl(pair,session,setupId,current,ctx='book'){
   const cur=(current||'SHADOW').toUpperCase();
   const mk=st=>`<button class="${cur===st?'on '+st:''}" ${cur===st?'disabled':''} `+
-    `onclick="event.stopPropagation();setCellStatus('${pair}','${session}','${escape(setupId)}','${st}',this)">${st}</button>`;
+    `onclick="event.stopPropagation();setCellStatus('${pair}','${session}','${escape(setupId)}','${st}',this,'${ctx}')">${st}</button>`;
   return `<div class="stctl" title="Flip this setup's live status. ACTIVE = trades live; SHADOW = logs only; DISABLED = off.">`+
     mk('ACTIVE')+mk('SHADOW')+mk('DISABLED')+`</div>`+
-    `<span class="mono-sm" id="stmsg-${pair}-${session}-${cssId(setupId)}" style="margin-left:8px"></span>`;
+    `<span class="mono-sm" id="stmsg-${ctx}-${pair}-${session}-${cssId(setupId)}" style="margin-left:8px"></span>`;
 }
-function cssId(s){return String(s).replace(/[^A-Za-z0-9_-]/g,'_')}
-async function setCellStatus(pair,session,setupId,status,btn){
-  const msg=document.getElementById(`stmsg-${pair}-${session}-${cssId(setupId)}`);
+async function setCellStatus(pair,session,setupId,status,btn,ctx='book'){
+  const msg=document.getElementById(`stmsg-${ctx}-${pair}-${session}-${cssId(setupId)}`);
   if(status==='ACTIVE'){
     if(!confirm(`This ENABLES LIVE TRADING for ${pair.replace('_','/')}/${session}/${setupId}.\n\n`+
       `The bot will place real orders for this setup on its next cycle. Confirm?`)){return}
@@ -2325,7 +2392,12 @@ async function setCellStatus(pair,session,setupId,status,btn){
     const r=await fetch('/api/cell/status',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({pair,session,setup_id:setupId,status})});
     const d=await r.json();
-    if(d.ok){ if(msg){msg.innerHTML=`<span class="pos">→ ${d.status}</span>`;} fetchCells(); }
+    if(d.ok){
+      if(msg)msg.innerHTML=`<span class="pos">→ ${d.status}</span>`;
+      // refresh every surface that shows setup status
+      fetchCells();
+      if(ctx!=='book'){pollShadowboard();fetchCellScore();}
+    }
     else{ if(msg)msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`; }
   }catch(e){ if(msg)msg.innerHTML=`<span class="neg">${e.message}</span>`; }
 }
@@ -2509,9 +2581,15 @@ function renderCellScore(){
   body.innerHTML=setups.map(r=>{
     const d=r.delta;
     const dCls=d==null?'':(d>=0?'sh-delta pos':'sh-delta neg');
+    const cellStr=String(r.cell||((r.pair||'')+'/'+(r.session||'')));
+    const parts=cellStr.split('/');
+    const pair=r.pair||parts[0]||'', session=r.session||parts[1]||'';
+    const liveStatus=currentSetupStatus(pair,session,r.setup_id)||r.status;
+    const ctrl=(pair&&session&&r.setup_id)?statusControl(pair,session,r.setup_id,liveStatus,'cs')
+      :'<span class="muted">—</span>';
     return `<tr>
       <td class="mono">${escape(r.setup_id||'?')}</td>
-      <td>${escape(String(r.cell||((r.pair||'')+'/'+(r.session||''))).replace('_','/'))}</td>
+      <td>${escape(cellStr.replace('_','/'))}</td>
       <td>${dirPill(r.side)}</td>
       <td class="mono">${r.n_stamps??'—'}</td>
       <td class="mono">${r.sim_ev!=null?(r.sim_ev>=0?'+':'')+Number(r.sim_ev).toFixed(3)+'p':'—'}</td>
@@ -2519,6 +2597,7 @@ function renderCellScore(){
       <td class="mono ${dCls}">${d!=null?(d>=0?'+':'')+Number(d).toFixed(3):'—'}</td>
       <td class="mono">${r.win_rate!=null?Number(r.win_rate).toFixed(1)+'%':'—'}</td>
       <td><span class="pill ${r.status==='ACTIVE'?'pill-pass':'pill-warn'}">${escape(r.status||'?')}</span></td>
+      <td style="white-space:nowrap">${ctrl}</td>
     </tr>`;
   }).join('');
 }

@@ -14,3 +14,7 @@ nohup.out
 config/credentials.local.json
 credentials.local.json
 config/credentials.tmp
+
+# Per-instance runtime state (trading pause switch) — operational, not source.
+config/runtime.json
+config/runtime.tmp

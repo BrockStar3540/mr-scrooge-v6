@@ -34,6 +34,7 @@ from modules.management.ratchet import RatchetManager, initial_sl_pips_for
 from modules.management.bracket import BracketManager
 from modules.cells import PairModule, CELL_EXECUTION_ENABLED
 from modules.cells.portfolio import select_intent
+from config.runtime import trading_enabled
 
 log = logging.getLogger("v5.engine")
 
@@ -93,6 +94,8 @@ class Engine:
         # cell_opens: "<pair>|<session>|<traded_dir>|<session_instance_key>" -> int
         # In-memory only — resets on restart (per-session bookkeeping)
         self._cell_opens: dict[str, int] = {}
+        # Trading-pause transition tracker (log once per ON<->PAUSED flip).
+        self._trading_enabled_prev: bool = True
 
         # Dashboard state — updated each cycle
         self.last_views:        list = []
@@ -269,8 +272,22 @@ class Engine:
     def _cycle(self):
         now = datetime.now(timezone.utc)
 
-        # Steps 1+2: manage open positions (exit detection + ratchet)
+        # Steps 1+2: manage open positions (exit detection + ratchet).
+        # ALWAYS runs — the trading-pause gate below only blocks NEW entries;
+        # open positions keep being managed (ratchet + server-side stops) even
+        # when paused.
         self._manage(now)
+
+        # Trading-pause gate (hot-reload each cycle via config/runtime.json).
+        # Fail-safe: trading_enabled() returns True on any read error. Log once
+        # per ON<->PAUSED transition.
+        _trading_on = trading_enabled()
+        if _trading_on != self._trading_enabled_prev:
+            if _trading_on:
+                log.info("TRADING RESUMED — new entries re-enabled")
+            else:
+                log.warning("TRADING PAUSED — new entries suppressed (open positions still managed)")
+            self._trading_enabled_prev = _trading_on
 
         # Step 3: full candles for signal evaluation
         views = self.feed.get_views(PAIRS)
@@ -358,6 +375,12 @@ class Engine:
                         )
 
         if trade_ticket is None:
+            return
+
+        # TRADING PAUSE: suppress ALL new entries this cycle. Dashboard state
+        # (tickets/intents/last_trade_ticket) is already updated above so the UI
+        # still shows what WOULD have fired; open positions were already managed.
+        if not _trading_on:
             return
 
         # Open every cap-passing intent this cycle (up to max_concurrent).
