@@ -5,9 +5,20 @@ The dashboard is a self-contained control panel served by `ops/server.py` on
 **fresh on every request**, so HTML/CSS/JS edits are live with no restart; only
 `ops/server.py` changes need a process restart.
 
-A fat **PRACTICE (green) / LIVE (red)** banner sits across the top at all times,
-driven by `GET /api/credentials`. It tells you at a glance whether the bot is
-pointed at paper or real money.
+## The two top banners
+
+A strip across the very top is always visible, with two halves:
+
+- **Left — mode banner:** fat **PRACTICE (green)** / **LIVE (red)**, driven by
+  `GET /api/credentials`. Tells you at a glance whether the bot is pointed at
+  paper or real money. Change it in the **CONNECTION** tab (LIVE is heavily
+  gated — see below).
+- **Right — TRADING switch:** **TRADING: ON (green)** / **PAUSED (amber)**, a
+  clickable master switch driven by `GET /api/state` → `trading_enabled`.
+  **Pause ≠ kill.** Pausing suppresses *new entries* only; open positions keep
+  being managed (ratchet trailing + server-side stops keep running). It does
+  **not** stop the process — to fully stop, `systemctl --user stop mr-scrooge-v6`.
+  See the TRADING control below for the friction involved.
 
 ## Running it (fresh clone)
 
@@ -24,32 +35,59 @@ journal / no OANDA account the panel degrades gracefully (empty feeds, no crash)
 
 ## Tabs
 
+Tabs appear in this order in the nav bar:
+
 | Tab | What it shows / does |
 |-----|----------------------|
-| **LIVE** | Today's P/L hero, equity curve, cell scoreboard mosaic, open positions, today's trades, recent events. Read-only. |
-| **PAIRS** | Per-pair card: each session's cell rollup + live condition-proximity bars + indicator chips. Read-only. |
-| **BOOK** | The full cell book (pair × session). Click a cell for setup detail — including the **ACTIVE / SHADOW / DISABLED status control** (see below). |
-| **SHADOW** | Shadowboard + CELLSHADOW stamp feed + setup scoreboard (simulated EV vs expected). Read-only. |
+| **LIVE** | Today's P/L hero, equity curve, the cell scoreboard mosaic, open positions (with live ratchet state), today's broker-verified trades, and the recent-events feed. Read-only. |
+| **PAIRS** | Per-pair card: each session's cell rollup (ACTIVE/SHADOW/NO-SIDE/DISABLED) + live condition-proximity bars + indicator chips. Read-only. |
+| **BOOK** | The full cell book (pair × session). Click a cell for full setup detail — including the **ACTIVE / SHADOW / DISABLED status control**. |
+| **SHADOW** | The Shadowboard (cumulative stamp-forward scoreboard), the Setup Scoreboard (simulated EV vs expected), and the live CELLSHADOW stamp feed. **Each setup row carries the same status control** so you can promote a good shadow → ACTIVE or disable it here. |
+| **TUNE** | **Live per-cell exit editor** + recovery-fallback defaults. |
+| **RISK** | Portfolio risk caps (was "PLAYMAKER"; the retired cert gates are gone). |
 | **INDICATORS** | Per-pair raw `MarketView` gauges + sparklines. Read-only. |
 | **HEALTH** | Engine status, cycle timing, last trade fired. Read-only. |
-| **SYSTEM** | CPU/RAM/disk, services, recent journal. Read-only. |
-| **TUNE** | **Live per-cell exit editor** + recovery-fallback defaults (see below). |
-| **RISK** | Portfolio risk caps (was "PLAYMAKER"; legacy cert gates removed). |
-| **CONNECTION** | OANDA credentials + practice/live mode toggle (see below). |
+| **SYSTEM** | CPU/RAM/disk gauges, service status, recent journal. Read-only. |
+| **CONNECTION** | OANDA credentials (with editable API URLs) + the practice/live mode toggle. |
+
+### The LIVE track-record card
+The top of the **LIVE** tab (and the README badge) shows the **current
+configuration's** live track record — equity + trades auto-updated hourly from
+**broker-verified fills** (`livelog/`), not from the bot's own logs. It is scoped
+to the *current* config only (Scrooge changes often; blending eras is noise), so
+it is a small, honest sample — not a long-run promise. Prior configs and the
+research "tuition" are a separate story ([docs/SCROOGE_HISTORY.md](SCROOGE_HISTORY.md)).
 
 ## Write controls
 
 All writers **validate input, merge (never replace), write atomically**, and
 touch only config on disk — never the open positions.
 
-### BOOK — setup status (`POST /api/cell/status`)
+### Setup status — BOOK **and** SHADOW (`POST /api/cell/status`)
 Each setup has a 3-way `ACTIVE / SHADOW / DISABLED` control writing its `status`
-in `config/cells/<PAIR>.json`.
+in `config/cells/<PAIR>.json`. It appears in the **BOOK** cell detail *and* on
+every setup row of the **SHADOW** tab (Shadowboard + Setup Scoreboard), so you
+can promote a good shadow → ACTIVE or disable it right where shadows are reviewed.
 - **ACTIVE** = trades live · **SHADOW** = evaluates + logs, never trades ·
   **DISABLED** = off.
 - Switching **to ACTIVE** pops a confirm dialog ("this enables LIVE trading…").
 - Hot-reloads: the engine re-reads the pair file on mtime change, so the change
-  applies on the **next scan cycle** — no restart.
+  applies on the **next scan cycle** — no restart. Every status surface
+  re-fetches after a save.
+
+### TRADING pause (`POST /api/trading`) — the top-bar switch
+The right half of the top bar is a soft **trading pause**. It writes
+`trading_enabled` to `config/runtime.json`, which the engine reads **every
+cycle** (hot-reload, no restart).
+- **Pause blocks new entries only.** Management of open positions (ratchet +
+  server-side stops) keeps running — the pause never touches an open trade. It is
+  **not** a process kill; a full stop is `systemctl --user stop mr-scrooge-v6`.
+- **Pausing is unconfirmed** (the safe direction). **Resuming while in LIVE mode**
+  requires the same `TRADE REAL MONEY` confirmation as other live actions;
+  resuming in practice just asks a normal confirm.
+- Fail-safe: if `config/runtime.json` is missing or unreadable the engine
+  defaults to **ENABLED** (it never silently halts a running bot on a read
+  error) and logs the fallback.
 
 ### TUNE — per-cell exit geometry (`POST /api/cell/exit`)
 Edits the setup's live `exit` block: `sl_pips` (5–200), `trigger_pips` (0–50),

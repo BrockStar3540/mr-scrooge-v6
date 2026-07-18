@@ -85,8 +85,8 @@ The wide-stop deployment is a **forward experiment on a practice account**, scor
 | 📄 **[Papers index](docs/papers/)** | incl. the [cost-aware exit-classes paper](docs/PAPER_cost_aware_exit_classes_2026-07-05.md) (the chapter the wide-stop turn revised) |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
 | 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | download the corpora & trained models — test them, modify them, attack them |
-| ⚙️ **[Setup](docs/SETUP.md)** | OANDA **practice** account, install, services — **credentials via env vars only** |
-| 📊 **Dashboard** | local panel `:8084` — LIVE / TUNE / PLAYMAKER / PAIRS / HEALTH ([docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)) |
+| ⚙️ **[Setup](docs/SETUP.md)** | from-zero install: OANDA **practice** account, venv, credentials (dashboard **or** env vars), run |
+| 📊 **[Dashboard](docs/DASHBOARD.md)** | the local control panel at `:8084` — read it and drive it: setup status toggles, live exit tuning, risk caps, credentials, and the trading pause |
 | 🤝 **[Contributing](CONTRIBUTING.md)** | external ideas welcome, treated as untrusted input — same falsification gauntlet our own ideas face |
 | ⚖️ **[License](LICENSE)** | Apache-2.0 |
 
