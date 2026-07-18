@@ -33,18 +33,31 @@ _D_COUNT  = 100   # 100 days; need 63 for htf_pct_60
 # ── Credentials ─────────────────────────────────────────────────────────────
 
 def _secrets() -> dict:
+    """Resolve OANDA credentials for this instance — SAME path as the broker.
+
+    Delegates to config.credentials.resolve_oanda_creds() so a fresh public-repo
+    clone that supplied keys via the dashboard CONNECTION tab (config/
+    credentials.local.json) gets a working FEED, not just a working broker.
+    Precedence: env vars > ~/.openclaw/secrets.env > credentials.local.json[mode].
+    Falls back to the legacy secrets.env-only reader if the module is absent.
+    Cached; a credential/mode change takes effect on restart (documented)."""
     global _SECRETS_CACHE
     if _SECRETS_CACHE is not None:
         return _SECRETS_CACHE
-    path = os.path.expanduser("~/.openclaw/secrets.env")
-    out: dict = {}
-    if os.path.exists(path):
-        for raw in open(path):
-            line = raw.strip()
-            if line and "=" in line and not line.startswith("#"):
-                k, v = line.split("=", 1)
-                k = k.replace("export ", "").strip()
-                out[k] = v.strip()
+    try:
+        from config.credentials import resolve_oanda_creds
+        out = resolve_oanda_creds()
+    except Exception as exc:                          # never let creds import break the feed
+        log.warning("credentials module unavailable (%s); using secrets.env only", exc)
+        path = os.path.expanduser("~/.openclaw/secrets.env")
+        out = {}
+        if os.path.exists(path):
+            for raw in open(path):
+                line = raw.strip()
+                if line and "=" in line and not line.startswith("#"):
+                    k, v = line.split("=", 1)
+                    k = k.replace("export ", "").strip()
+                    out[k] = v.strip()
     _SECRETS_CACHE = out
     return out
 
