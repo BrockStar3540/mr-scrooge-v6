@@ -1,5 +1,7 @@
 # Data & Models — the Public Availability Catalog
 
+> **Availability (updated 2026-07-18):** the public [archive link](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) now holds the **readable research record** — papers, session notes, backtest results, version history. The **raw corpora and trained-model binaries catalogued below are privately archived** (they are bulk data / code with no public-safe form) and are **available on request** — open a [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions) if you want a specific corpus or model to re-run the analysis. The catalog below documents each one (schema, era, leak status) as the reference of record.
+
 Everything the research rests on — every retired model and every corpus — is downloadable, testable,
 and modifiable. This page is the catalog: what each artifact is, what it was trained/built on, its era,
 and **its leak status**, so a public reader can re-run or challenge any result in
