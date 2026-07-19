@@ -59,7 +59,7 @@ flowchart LR
     style Z fill:#808a94,stroke:#666,color:#fff
 ```
 
-*Book today: 29 validated setups across 14 cells — 9 active (● live · ◐ shadow-validating · — dormant, awaiting monthly refit).*
+*Book today: 29 validated setups across 14 cells — 11 active (● live · ◐ shadow-validating · — dormant, awaiting monthly refit). Exit gear book-wide: engage +8.5 → lock +6 → trail 2.5.*
 
 ## What we falsified
 
