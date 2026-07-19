@@ -126,7 +126,7 @@
           "id": "kc_up_long_lean",
           "side": "long",
           "class": "LEAN",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
