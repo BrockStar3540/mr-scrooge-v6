@@ -26,12 +26,14 @@ from config.pairs import PAIRS, PIP
 from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS
 from modules.signals import formula_shadow as _formula_shadow
 from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct,
+                                          pm_max_concurrent,
                                           pm_formula_shadow_enabled,
                                           pm_cell_shadow_enabled)
 from modules.playmaker import lock_guard
 from modules.management.base import Position
 from modules.management.ratchet import RatchetManager, initial_sl_pips_for
 from modules.management.bracket import BracketManager
+from modules.management.party_package import PartyPackage
 from modules.cells import PairModule, CELL_EXECUTION_ENABLED
 from modules.cells.portfolio import select_intent
 from config.runtime import trading_enabled
@@ -121,6 +123,9 @@ class Engine:
             pair: PairModule(pair) for pair in PAIRS
         }
 
+        # ── Party Package (V6.1) — re-arming popper grids, additive module ────
+        self.pp = PartyPackage(broker, dry_run)
+
         log.info("V5 engine ready (cell_v1) | dry_run=%s | %d pairs | exec=%s",
                  dry_run, len(PAIRS), CELL_EXECUTION_ENABLED)
 
@@ -149,6 +154,15 @@ class Engine:
         now = datetime.now(timezone.utc)
         for t in trades:
             pair = t["instrument"]
+            # Poppers (tag=pp_v1) belong to the Party Package — they must never
+            # be adopted as parent managers (multiple per pair, own gear).
+            if (t.get("clientExtensions") or {}).get("tag") == "pp_v1":
+                try:
+                    self.pp.recover(t)
+                except Exception as exc:
+                    log.exception("PP popper recovery failed for trade %s: %s",
+                                  t.get("id"), exc)
+                continue
             if pair in self.managers:
                 continue
             if pair not in PIP:
@@ -221,7 +235,9 @@ class Engine:
         tick the ratchet for each open position using a cheap pricing() poll (no
         candle fetch). The ratchet re-locks at step_cadence_min granularity, so this
         is what lets the trailing stop follow the peak between 5-min scan cycles."""
-        if self.dry_run or not self.managers:
+        if self.dry_run:
+            return
+        if not self.managers and not self.pp.poppers and not self.pp.grids:
             return
 
         try:
@@ -268,6 +284,14 @@ class Engine:
                 if signal.net_pips < 0:
                     self._sl_history[pair] = now
                 del self.managers[pair]
+
+        # ── Party Package tick (V6.1): popper exits, ratchets, re-arm + fire ──
+        # Additive and fenced — a PP failure can never touch parent management.
+        try:
+            self.pp.tick(now, oanda_open, set(self.managers.keys()),
+                         self.feed.pricing)
+        except Exception as exc:
+            log.exception("PP tick failed: %s", exc)
 
     def _cycle(self):
         now = datetime.now(timezone.utc)
@@ -418,11 +442,15 @@ class Engine:
         """Portfolio selection over remaining tickets; returns a ticket or None.
         Exposure map = live managers overlaid with this cycle's opens (covers
         dry_run, where _open_trade never registers a manager)."""
+        # V6.1: poppers count toward the concurrent-trade cap, and a pair with
+        # an active popper grid may not open a second parent.
+        if len(self.managers) + self.pp.open_popper_count() >= pm_max_concurrent():
+            return None
         _open_pos = {p: mgr.direction for p, mgr in self.managers.items()}
         _open_pos.update(opened_dirs)
         _intent = select_intent(
             [t.cell for t in tickets if t.cell is not None],
-            open_pairs=set(self.managers.keys()) | opened_pairs,
+            open_pairs=set(self.managers.keys()) | opened_pairs | self.pp.busy_pairs(),
             open_positions=list(_open_pos.items()),
             views=views,
             sl_history=self._sl_history,
@@ -498,6 +526,11 @@ class Engine:
                  ticket.pair, ticket.direction, entry_price, units,
                  initial_sl, trade["id"],
                  _it.setup_id if _it else "recovery", _mode, _tp_pips)
+        # Party Package (V6.1): hang the popper grid off this parent.
+        try:
+            self.pp.on_parent_open(pos, _it.setup_id if _it else "?")
+        except Exception as exc:
+            log.exception("PP on_parent_open failed: %s", exc)
         self.recent_events.append(
             f"{now.strftime('%H:%M:%S')} ENTER {ticket.pair} {ticket.direction} @ {entry_price:.5f}"
         )

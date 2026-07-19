@@ -4,6 +4,30 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.1.0] — 2026-07-19
+
+### Added
+- **Party Package (popper grids).** New additive management module
+  (`modules/management/party_package.py`): every parent (cell) trade hangs a re-arming grid of
+  levels every 15 pips on its adverse side. An armed level fires a **popper** — an independent
+  same-direction trade with its own server-side SL (60p from its own fill) and its own ratchet
+  (engage +12.5 → lock +10, trail 2.5). A level re-arms after its popper closes and price
+  re-crosses the level, so oscillating tape harvests repeatedly. Fires are gated on the trading
+  pause, the rollover freeze, spread fail-closed, and the book-wide trade/margin caps; poppers are
+  stamped `engine=pp_v1` and carry `pp_v1` OANDA client extensions for exact broker-truth
+  attribution and restart recovery. Kill switch: `config/pp_config.json {"enabled": false}`
+  (hot-reloaded). Dashboard: new *Party Package* card (grid ladders, armed/spent levels, popper
+  ledger greens vs knives). State persists to `data/pp_state.json`.
+  Research context: `research/` 2026-07-19 scale-in ledger — on simulated costs the grid
+  gross-harvests ~+100–150p/parent but pays more in toll; this deployment is the forward
+  practice-tape test of that cost model.
+- Tests for the grid mechanics (`tests/test_party_package.py`).
+
+### Changed
+- **Sizing:** `margin_pct_per_trade` 0.2 → **0.1**, `max_concurrent_trades` 4 → **8** (total
+  exposure cap unchanged at ~80% of balance; poppers count toward the cap, and a pair with an
+  active grid can't open a second parent).
+
 ## [Unreleased]
 
 ### Fixed

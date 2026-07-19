@@ -757,10 +757,16 @@ def _state(engine: "Engine") -> dict:
         _trading_enabled = _te()
     except Exception:
         _trading_enabled = True
+    # ── Party Package (V6.1) — grids + poppers; defensive like everything else
+    try:
+        party_package = engine.pp.state()
+    except Exception as exc:
+        party_package = {"error": str(exc)}
     return {
         "account":         account,
         "rollover_freeze": _irf(now),
         "trading_enabled": _trading_enabled,
+        "party_package":   party_package,
         "open_positions":  open_positions,
         "last_tickets":    last_tickets,
         "last_views":      last_views,

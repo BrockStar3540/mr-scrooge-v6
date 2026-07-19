@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "step_pips": 15.0,
+  "sl_pips": 60.0,
+  "trigger_pips": 12.5,
+  "trail_pips": 2.5,
+  "max_levels": 8,
+  "max_total_trades": 8,
+  "max_margin_pct_total": 0.8,
+  "grid_max_age_days": 7.0
+}

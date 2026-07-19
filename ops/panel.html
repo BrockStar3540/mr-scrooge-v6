@@ -700,6 +700,21 @@ body.has-ticker{padding-bottom:32px}
   </div>
 
   <div class="card">
+    <div class="card-title">🎆 Party Package — popper grids
+      <span id="pp-status" class="tag">OFF</span>
+      <span id="pp-open" class="tag">0 poppers</span>
+    </div>
+    <table id="pp-tbl">
+      <thead><tr>
+        <th>Pair</th><th>Dir</th><th>Anchor</th><th>Age</th><th>Levels (armed · popper · spent)</th>
+        <th>Fired</th><th>Greens</th><th>Knives</th><th>Popper Net</th>
+      </tr></thead>
+      <tbody id="pp-body"></tbody>
+    </table>
+    <div id="no-pp" class="muted" style="padding:14px 12px;font-size:12px;display:none">No active grids — a grid arms when a parent trade opens</div>
+  </div>
+
+  <div class="card">
     <div class="card-title">Today's Trades
       <span class="tag" id="trades-count">0 closed</span>
     </div>
@@ -1149,6 +1164,7 @@ function renderAll(){
   renderAcctBar();
   renderGauges();
   renderPositions();
+  renderPartyPackage();
   renderTrades();
   renderEvents();
   renderPairs();
@@ -1678,6 +1694,45 @@ function renderPositions(){
       <td class="mono ${colorPips(p.net_pips_now)}">${fmtPips(p.net_pips_now)}</td>
       <td class="mono ${colorDollar(p.unrealized_pl)}">${p.unrealized_pl!=null?fmtDollar(p.unrealized_pl):'—'}</td>
       <td class="mono muted" style="font-size:11px">${mgmt}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ── Party Package (V6.1) — popper grids ───────────────────────────────── */
+function renderPartyPackage(){
+  const pp=STATE.party_package||{};
+  const st=document.getElementById('pp-status');
+  const op=document.getElementById('pp-open');
+  const tb=document.getElementById('pp-body');
+  const no=document.getElementById('no-pp');
+  if(!st)return;
+  st.textContent=pp.enabled?'ARMED':'OFF';
+  st.className='tag '+(pp.enabled?'pill-pass':'pill-block');
+  op.textContent=`${pp.open_poppers||0} poppers`;
+  const grids=pp.grids||[];
+  if(!grids.length){tb.innerHTML='';no.style.display='block';return}
+  no.style.display='none';
+  const step=(pp.config||{}).step_pips||15;
+  tb.innerHTML=grids.map(g=>{
+    const ageH=((Date.now()-new Date(g.created).getTime())/36e5);
+    const lv=Object.keys(g.levels||{}).sort((a,b)=>a-b).map(i=>{
+      const l=g.levels[i];
+      const px=(g.level_prices||{})[i]||'';
+      if(l.trade_id)return `<span class="pill pill-warn" title="popper open @ ${px}">-${i*step}</span>`;
+      if(l.armed)  return `<span class="pill pill-pass" title="armed @ ${px}">-${i*step}</span>`;
+      return `<span class="pill pill-block" title="spent — re-arms on re-cross of ${px}">-${i*step}</span>`;
+    }).join(' ');
+    const net=(g.green_pips||0)+(g.knife_pips||0);
+    return `<tr>
+      <td><b>${g.pair.replace('_','/')}</b></td>
+      <td>${dirPill(g.side)}</td>
+      <td class="mono">${g.anchor}</td>
+      <td>${ageH<24?ageH.toFixed(1)+'h':(ageH/24).toFixed(1)+'d'}</td>
+      <td>${lv}</td>
+      <td class="mono">${g.fired_total||0}</td>
+      <td class="mono" style="color:var(--pass)">${g.greens||0} (${fmtPips(g.green_pips||0)})</td>
+      <td class="mono" style="color:var(--fail)">${g.knives||0} (${fmtPips(g.knife_pips||0)})</td>
+      <td class="mono ${colorPips(net)}">${fmtPips(net)}</td>
     </tr>`;
   }).join('');
 }
