@@ -383,7 +383,7 @@
           "id": "classic_box_fade_long",
           "side": "long",
           "class": "classic",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {

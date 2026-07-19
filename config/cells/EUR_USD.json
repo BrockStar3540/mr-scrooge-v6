@@ -18,7 +18,7 @@
           "id": "ps_floor_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
