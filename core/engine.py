@@ -209,6 +209,12 @@ class Engine:
             log.info("RECOVERED %s %s | entry=%.5f | trade_id=%s | elapsed=%.1fm | gear=%s",
                      pair, direction, entry_price, trade_id, elapsed_min,
                      f"persisted({_persisted[1]})" if _persisted else "exit_config-defaults")
+            # Party Package (V6.1): recovered parents get grids too, anchored at
+            # their original entry (idempotent — existing grids are kept).
+            try:
+                self.pp.on_parent_open(pos, _persisted[1] if _persisted else "recovered")
+            except Exception as exc:
+                log.exception("PP on_parent_open (recovery) failed: %s", exc)
             self.recent_events.append(
                 f"{datetime.now(timezone.utc).strftime('%H:%M:%S')} RECOVERED {pair} {direction} @ {entry_price:.5f}"
             )
