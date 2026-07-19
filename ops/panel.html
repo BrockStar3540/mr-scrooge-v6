@@ -701,9 +701,10 @@ body.has-ticker{padding-bottom:32px}
 
   <div class="card">
     <div class="card-title">🎆 Party Package — popper grids
-      <span id="pp-status" class="tag">OFF</span>
+      <span id="pp-status" class="tag" style="cursor:pointer" title="click to toggle poppers globally" onclick="ppToggleGlobal()">OFF</span>
       <span id="pp-open" class="tag">0 poppers</span>
     </div>
+    <div id="pp-cells" class="muted" style="padding:4px 12px 8px;font-size:11px;line-height:2"></div>
     <table id="pp-tbl">
       <thead><tr>
         <th>Pair</th><th>Dir</th><th>Anchor</th><th>Age</th><th>Levels (armed · popper · spent)</th>
@@ -1699,6 +1700,25 @@ function renderPositions(){
 }
 
 /* ── Party Package (V6.1) — popper grids ───────────────────────────────── */
+async function ppToggleGlobal(){
+  const cur=!!(STATE.party_package||{}).enabled;
+  if(cur&&!confirm('Turn Party Package OFF globally? Open poppers keep being managed to exit; no new poppers will fire.'))return;
+  await fetch('/api/pp/toggle',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({enabled:!cur})});
+  refresh();
+}
+async function ppToggleCell(key,en){
+  await fetch('/api/pp/toggle',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({cell:key,enabled:en})});
+  refresh();
+}
+function ppCellEnabled(pc,key){
+  const parts=key.split('|');
+  for(const k of [key,parts.slice(0,2).join('|'),parts[0]]){
+    if(k in pc)return !!pc[k];
+  }
+  return true;
+}
 function renderPartyPackage(){
   const pp=STATE.party_package||{};
   const st=document.getElementById('pp-status');
@@ -1709,6 +1729,19 @@ function renderPartyPackage(){
   st.textContent=pp.enabled?'ARMED':'OFF';
   st.className='tag '+(pp.enabled?'pill-pass':'pill-block');
   op.textContent=`${pp.open_poppers||0} poppers`;
+  // per-cell opt-out chips (ACTIVE setups only; click to flip)
+  const pcDiv=document.getElementById('pp-cells');
+  if(pcDiv){
+    const pc=pp.per_cell||{};
+    const book=(pp.book_cells||[]).filter(c=>c.status==='ACTIVE');
+    pcDiv.innerHTML=book.length?('poppers per cell: '+book.map(c=>{
+      const en=ppCellEnabled(pc,c.key);
+      const lbl=c.key.replace(/\|/g,'/');
+      return `<span class="pill ${en?'pill-pass':'pill-block'}" style="cursor:pointer;margin-right:4px"
+        title="${en?'poppers ON — click to disable':'poppers OFF — click to enable'} (${lbl})"
+        onclick="ppToggleCell('${c.key}',${en?'false':'true'})">${en?'🎆':'🚫'} ${lbl}</span>`;
+    }).join('')):'';
+  }
   const grids=pp.grids||[];
   if(!grids.length){tb.innerHTML='';no.style.display='block';return}
   no.style.display='none';

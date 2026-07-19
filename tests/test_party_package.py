@@ -192,6 +192,37 @@ def test_state_persistence_roundtrip(pp, tmp_path):
     assert pp2.grids["EUR_USD"].fired_total == 1
 
 
+def test_per_cell_switch_blocks_grid_and_fires(pp, tmp_path, monkeypatch):
+    """Per-cell opt-out: no grid for a disabled cell; an existing grid stops
+    firing when its cell is disabled mid-flight; hierarchy PAIR key works."""
+    # exact-key disable -> no grid on parent open
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(
+        tmp_path, per_cell={"EUR_USD|london|setup_x": False}))
+    pp.on_parent_open(_parent(), "setup_x")
+    assert "EUR_USD" not in pp.grids
+    # pair-level disable blocks fires on an already-armed grid
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path))
+    pp.on_parent_open(_parent(), "setup_x")
+    assert "EUR_USD" in pp.grids
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(
+        tmp_path, per_cell={"EUR_USD": False}))
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))
+    assert pp.open_popper_count() == 0
+    # re-enable -> fires again
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path))
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))
+    assert pp.open_popper_count() == 1
+
+
+def test_pp_cell_enabled_hierarchy():
+    cfg = {"per_cell": {"EUR_USD": False, "EUR_USD|london": True,
+                        "EUR_USD|london|bad_setup": False}}
+    assert ppm.pp_cell_enabled(cfg, "EUR_USD", "london", "good") is True
+    assert ppm.pp_cell_enabled(cfg, "EUR_USD", "london", "bad_setup") is False
+    assert ppm.pp_cell_enabled(cfg, "EUR_USD", "ny", "any") is False
+    assert ppm.pp_cell_enabled(cfg, "GBP_USD", "ny", "any") is True
+
+
 def test_dashboard_state_shape(pp):
     pp.on_parent_open(_parent(), "setup_x")
     pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09840))

@@ -42,7 +42,7 @@ Most bots wager that some indicator reveals *which way* price will go. We spent 
 - **Let the exit earn — and give it room.** The only edge that survived audit lives in stops wide enough that noise doesn't kill a slow winner, plus a ratchet that locks green once a move proves itself.
 - **Wide stops, after a hard lesson.** The old tighten-to-winners'-MAE dial-in was **survivorship-biased** — MAE was measured only on trades that survived to win, blind to the ones a tight stop would have killed first. An 8-yr head-to-head: tight book blew up, wide book profited.
 - **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+7.5 → lock +5 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
-- **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired every 15p of adverse movement, each with its own 60p server-side SL and its own ratchet (+8.5 → lock +6 → trail 2.5). One popper per level at a time; a level re-arms only after its popper clears and price re-crosses it, so oscillating tape harvests repeatedly without stacking duplicates. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in spread+slippage toll (`research/` 2026-07-19 ledger) — this deployment is the live practice-tape test of exactly that claim. Kill switch: `config/pp_config.json`. Every popper is tagged `pp_v1` for broker-truth attribution.
+- **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired every 15p of adverse movement, each with its own 60p server-side SL and its own ratchet (+8.5 → lock +6 → trail 2.5). One popper per level at a time; a level re-arms only after its popper clears and price re-crosses it, so oscillating tape harvests repeatedly without stacking duplicates. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in spread+slippage toll — this deployment is the live practice-tape test of exactly that claim ([full paper: hypothesis → ten falsification rounds → why it shipped anyway](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). **Don't like the strategy? Turn it off**: global kill switch + per-cell opt-out toggles on the dashboard (`config/pp_config.json`, hot-reloaded). Every popper is tagged `pp_v1` for broker-truth attribution.
 - **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers), `max_per_currency_direction = 4`, 10% of balance notional per trade, ~80% total exposure ceiling.
 
 ## The pipeline
@@ -73,10 +73,29 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 | Symmetric both-sides straddle | you always own the loser |
 | Tight-stop-and-reverse | the "asymmetry" was realized direction, not a selectable property |
 | **→ the turn** | tighten-to-MAE dial-in was **survivorship-biased** → the wide-stop book |
+| Wide-stop book (H6, pre-registered WF) | gross Sharpe 1.26 real, **net 0.03** — the edge equals the execution toll ([paper](docs/papers/PAPER_h6_walkforward_2026-07-16.md)) |
+| Scale-in / popper grids (10 rounds) | gross harvest ~+100–150p/parent is **real**; toll ~130–190p is bigger; the majors are **first-passage fair** at every lock level ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
 
-## The forward test now running
+## The forward tests now running
 
-The wide-stop deployment is a **forward experiment on a practice account**, scored weekly against **broker fills** (never our own logs), per class, at n≥20 before any verdict — no aggregate blending across eras. The head-to-head is a selection-biased, no-slippage sim: raw ~Sharpe 1.05 / +25%/yr, honest haircut **~Sharpe 0.6–0.8 with a ~−40% max drawdown** — a low-Sharpe grind, not a jackpot. The trusted part is the *direction* (wide beats tight on the same cells); the level is not a promise. Decisive test still owed: **walk-forward (train 2019–22 / test 2023–26) + slippage haircut**. Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md](docs/ROADMAP.md).
+Everything live is a **forward experiment on a practice account**, scored against **broker fills**
+(never our own logs), per configuration, at n≥20 before any verdict — no aggregate blending across eras.
+
+1. **The wide-stop parent book** — the decisive walk-forward has since run and
+   [falsified the level](docs/papers/PAPER_h6_walkforward_2026-07-16.md): gross Sharpe 1.26,
+   **net 0.03** after realistic slippage. The edge is real and exactly the size of the toll;
+   the system clears its bar only if round-trip slippage ≤ ~0.4p. The practice tape is the
+   standing measurement of that knife-edge.
+2. **The t20 wider-engage shadow** — the one material positive in the ledger (blind-test
+   Sharpe +0.57, avg green +8 → +22p, zero overfit gap), running as a scored shadow.
+3. **The Party Package (V6.1)** — re-arming popper grids, deployed *against* its own sim
+   verdict on purpose: ten falsification rounds say the grid gross-harvests ~+100–150p/parent
+   and pays more in toll ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)).
+   Every popper is broker-tagged (`pp_v1`), so real fills will confirm or refute the *cost
+   model itself* — the one variable no offline sim can settle. Per-cell opt-out + global kill
+   switch on the dashboard.
+
+Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Read the research
 

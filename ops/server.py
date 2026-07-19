@@ -237,6 +237,76 @@ def _validate_pm_cfg(cfg: dict) -> dict:
     out["per_pair"] = per
     return out
 
+def _write_pp_toggle(payload: dict) -> dict:
+    """Party Package on/off switches (V6.1). Merge-writes config/pp_config.json.
+
+    Accepted payload keys:
+      {"enabled": bool}                       — global kill switch
+      {"cell": "PAIR|session|setup" (or "PAIR|session" or "PAIR"), "enabled": bool}
+                                              — per-cell opt-out (most-specific wins)
+      {"cell": "...", "enabled": null}        — remove the per-cell override (back to default ON)
+    Every other pp_config key is carried over verbatim from disk.
+    """
+    if not isinstance(payload, dict):
+        raise ValueError("payload must be a JSON object")
+    path = _REPO_ROOT / "config" / "pp_config.json"
+    try:
+        base = _j.loads(path.read_text())
+    except (OSError, ValueError):
+        base = {}
+    if not isinstance(base, dict):
+        base = {}
+    if "cell" in payload:
+        key = str(payload["cell"]).strip()
+        parts = key.split("|")
+        if not key or len(parts) > 3 or any(not p or "/" in p or ".." in p for p in parts):
+            raise ValueError(f"bad cell key: {key!r}")
+        pc = base.get("per_cell")
+        if not isinstance(pc, dict):
+            pc = {}
+        if payload.get("enabled") is None:
+            pc.pop(key, None)
+        else:
+            pc[key] = bool(payload["enabled"])
+        base["per_cell"] = pc
+    elif "enabled" in payload:
+        base["enabled"] = bool(payload["enabled"])
+    else:
+        raise ValueError("payload needs 'enabled' (global) or 'cell' + 'enabled'")
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(_j.dumps(base, indent=2))
+    tmp.replace(path)
+    return base
+
+
+_PP_BOOK_CACHE = {"ts": 0.0, "cells": []}
+
+def _pp_book_cells() -> list:
+    """Light list of the book's setups ("PAIR|session|setup_id" + status) for the
+    per-cell popper toggles. Plain file reads, cached 30s."""
+    import time as _t
+    if _t.time() - _PP_BOOK_CACHE["ts"] < 30 and _PP_BOOK_CACHE["cells"]:
+        return _PP_BOOK_CACHE["cells"]
+    cells = []
+    cdir = _REPO_ROOT / "config" / "cells"
+    try:
+        for f in sorted(cdir.glob("*.json")):
+            try:
+                data = _j.loads(f.read_text())
+            except (OSError, ValueError):
+                continue
+            pair = data.get("pair") or f.stem
+            for sess, sblock in (data.get("sessions") or {}).items():
+                for su in (sblock.get("setups") or []):
+                    sid = su.get("id") or su.get("setup_id") or "?"
+                    cells.append({"key": f"{pair}|{sess}|{sid}",
+                                  "status": su.get("status", "?")})
+    except OSError:
+        pass
+    _PP_BOOK_CACHE.update(ts=_t.time(), cells=cells)
+    return cells
+
+
 def _write_playmaker_config(cfg: dict) -> None:
     clean = _validate_pm_cfg(cfg)
     # Record edit provenance WITHOUT clobbering the on-disk `_note` annotation
@@ -760,6 +830,7 @@ def _state(engine: "Engine") -> dict:
     # ── Party Package (V6.1) — grids + poppers; defensive like everything else
     try:
         party_package = engine.pp.state()
+        party_package["book_cells"] = _pp_book_cells()
     except Exception as exc:
         party_package = {"error": str(exc)}
     return {
@@ -1317,7 +1388,19 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
-            if self.path.startswith("/api/config/exit"):
+            if self.path.startswith("/api/pp/toggle"):
+                length = int(self.headers.get("Content-Length", "0") or 0)
+                raw = self.rfile.read(length) if length else b""
+                try:
+                    payload = _j.loads(raw.decode() or "{}")
+                    cfg = _write_pp_toggle(payload)
+                    body = _j.dumps({"ok": True, "cfg": cfg}).encode()
+                    ctype, code = "application/json", 200
+                    log.info("pp_config updated via dashboard: %s", payload)
+                except Exception as exc:
+                    body = _j.dumps({"ok": False, "error": str(exc)}).encode()
+                    ctype, code = "application/json", 400
+            elif self.path.startswith("/api/config/exit"):
                 length = int(self.headers.get("Content-Length", "0") or 0)
                 raw = self.rfile.read(length) if length else b""
                 try:

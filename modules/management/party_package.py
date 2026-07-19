@@ -59,6 +59,7 @@ _DEFAULTS: dict = {
     "max_total_trades":     8,      # parents + poppers, book-wide
     "max_margin_pct_total": 0.8,    # parents + poppers, fraction of balance
     "grid_max_age_days":    7.0,    # retire a grid this long after parent entry
+    "per_cell":             {},     # "PAIR|session|setup" (or "PAIR|session" or "PAIR") -> bool
 }
 
 
@@ -69,12 +70,29 @@ def pp_config() -> dict:
             raw = json.load(fh)
         cfg = dict(_DEFAULTS)
         for k, v in raw.items():
-            if k in _DEFAULTS:
-                cfg[k] = bool(v) if isinstance(_DEFAULTS[k], bool) else float(v) \
-                    if isinstance(_DEFAULTS[k], float) else int(v)
+            if k not in _DEFAULTS:
+                continue
+            if isinstance(_DEFAULTS[k], dict):
+                cfg[k] = dict(v) if isinstance(v, dict) else {}
+            elif isinstance(_DEFAULTS[k], bool):
+                cfg[k] = bool(v)
+            elif isinstance(_DEFAULTS[k], float):
+                cfg[k] = float(v)
+            else:
+                cfg[k] = int(v)
         return cfg
     except (OSError, ValueError, TypeError, json.JSONDecodeError):
         return dict(_DEFAULTS)
+
+
+def pp_cell_enabled(cfg: dict, pair: str, session: str, setup_id: str) -> bool:
+    """Per-cell popper opt-out. Most-specific key wins:
+    "PAIR|session|setup" > "PAIR|session" > "PAIR" > default True."""
+    pc = cfg.get("per_cell") or {}
+    for key in (f"{pair}|{session}|{setup_id}", f"{pair}|{session}", pair):
+        if key in pc:
+            return bool(pc[key])
+    return True
 
 
 def _popper_exit_params(cfg: dict):
@@ -99,12 +117,13 @@ class Grid:
     """One re-arming grid per pair, anchored at the parent entry price."""
 
     def __init__(self, pair: str, side: str, anchor: float, created: datetime,
-                 parent_setup: str = "?"):
+                 parent_setup: str = "?", cell_key: str = ""):
         self.pair = pair
         self.side = side                    # popper direction == parent direction
         self.anchor = anchor
         self.created = created
         self.parent_setup = parent_setup
+        self.cell_key = cell_key            # "PAIR|session|setup" for the per-cell switch
         # level idx (1-based) -> {"armed": bool, "trade_id": Optional[str]}
         self.levels: dict[int, dict] = {}
         # lifetime ledger (persisted)
@@ -123,6 +142,7 @@ class Grid:
         return {"pair": self.pair, "side": self.side, "anchor": self.anchor,
                 "created": self.created.isoformat(),
                 "parent_setup": self.parent_setup,
+                "cell_key": self.cell_key,
                 "levels": {str(k): v for k, v in self.levels.items()},
                 "greens": self.greens, "knives": self.knives,
                 "green_pips": round(self.green_pips, 1),
@@ -132,7 +152,8 @@ class Grid:
     @classmethod
     def from_dict(cls, d: dict) -> "Grid":
         g = cls(d["pair"], d["side"], float(d["anchor"]),
-                datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"))
+                datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"),
+                d.get("cell_key", ""))
         g.levels = {int(k): dict(v) for k, v in (d.get("levels") or {}).items()}
         g.greens = int(d.get("greens", 0)); g.knives = int(d.get("knives", 0))
         g.green_pips = float(d.get("green_pips", 0.0))
@@ -159,12 +180,18 @@ class PartyPackage:
         if not cfg["enabled"] or self.dry_run:
             return
         pair = pos.ticket.pair
+        session = pos.ticket.session or "?"
+        if not pp_cell_enabled(cfg, pair, session, setup_id):
+            log.info("PP GRID skipped %s/%s setup=%s — poppers disabled for this cell "
+                     "| engine=pp_v1", pair, session, setup_id)
+            return
         if pair in self.grids:
             log.info("PP GRID exists for %s — parent joins existing grid | engine=pp_v1", pair)
             return
         g = Grid(pair, pos.ticket.direction, pos.entry_price,
                  pos.entry_time if pos.entry_time.tzinfo else
-                 pos.entry_time.replace(tzinfo=timezone.utc), setup_id)
+                 pos.entry_time.replace(tzinfo=timezone.utc), setup_id,
+                 cell_key=f"{pair}|{session}|{setup_id}")
         for idx in range(1, int(cfg["max_levels"]) + 1):
             g.levels[idx] = {"armed": True, "trade_id": None}
         self.grids[pair] = g
@@ -309,6 +336,10 @@ class PartyPackage:
                 # ---- fire gates ----
                 if not cfg["enabled"]:
                     continue
+                if g.cell_key:
+                    _p, _s, _su = (g.cell_key.split("|") + ["?", "?"])[:3]
+                    if not pp_cell_enabled(cfg, _p, _s, _su):
+                        continue     # cell opted out — manage open poppers, no new fires
                 if not trading_enabled():
                     continue
                 if in_rollover_freeze(now):
@@ -395,6 +426,7 @@ class PartyPackage:
     def state(self) -> dict:
         cfg = pp_config()
         out = {"enabled": bool(cfg["enabled"]), "config": cfg,
+               "per_cell": dict(cfg.get("per_cell") or {}),
                "open_poppers": len(self.poppers), "grids": []}
         for pair, g in self.grids.items():
             d = g.to_dict()

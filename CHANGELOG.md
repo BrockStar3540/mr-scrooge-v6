@@ -22,7 +22,16 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   Research context: `research/` 2026-07-19 scale-in ledger — on simulated costs the grid
   gross-harvests ~+100–150p/parent but pays more in toll; this deployment is the forward
   practice-tape test of that cost model.
-- Tests for the grid mechanics (`tests/test_party_package.py`).
+- Tests for the grid mechanics (`tests/test_party_package.py`), including Brock's
+  one-popper-per-mile-marker scenario as a regression test.
+- **Per-cell popper opt-out + global switch.** Dashboard Party Package card gains a clickable
+  ARMED/OFF global toggle and per-cell chips (one per ACTIVE setup); `POST /api/pp/toggle`
+  merge-writes `config/pp_config.json` (`per_cell` map, most-specific key wins:
+  `PAIR|session|setup` > `PAIR|session` > `PAIR`). Disabled cells never arm a grid; a grid whose
+  cell is disabled mid-flight keeps managing open poppers but fires no new ones.
+- **Research paper:** [docs/papers/PAPER_party_package_scale_in_2026-07-19.md](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)
+  — the full hypothesis → ten falsification rounds → first-passage-fairness finding → why the
+  live deployment is the right next test anyway.
 
 ### Changed
 - **Sizing:** `margin_pct_per_trade` 0.2 → **0.1**, `max_concurrent_trades` 4 → **8** (total
