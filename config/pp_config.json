@@ -2,7 +2,7 @@
   "enabled": true,
   "step_pips": 15.0,
   "sl_pips": 60.0,
-  "trigger_pips": 12.5,
+  "trigger_pips": 8.5,
   "trail_pips": 2.5,
   "max_levels": 8,
   "max_total_trades": 8,

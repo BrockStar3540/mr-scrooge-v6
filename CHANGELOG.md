@@ -11,8 +11,9 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   (`modules/management/party_package.py`): every parent (cell) trade hangs a re-arming grid of
   levels every 15 pips on its adverse side. An armed level fires a **popper** — an independent
   same-direction trade with its own server-side SL (60p from its own fill) and its own ratchet
-  (engage +12.5 → lock +10, trail 2.5). A level re-arms after its popper closes and price
-  re-crosses the level, so oscillating tape harvests repeatedly. Fires are gated on the trading
+  (engage +8.5 → lock +6, trail 2.5). One popper per level at a time; a level re-arms after its
+  popper closes and price re-crosses the level, so oscillating tape harvests repeatedly without
+  stacking duplicates at the same mile marker. Fires are gated on the trading
   pause, the rollover freeze, spread fail-closed, and the book-wide trade/margin caps; poppers are
   stamped `engine=pp_v1` and carry `pp_v1` OANDA client extensions for exact broker-truth
   attribution and restart recovery. Kill switch: `config/pp_config.json {"enabled": false}`

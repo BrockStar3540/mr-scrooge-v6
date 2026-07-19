@@ -48,7 +48,7 @@ class FakeBroker:
 
 def _cfg(tmp_path, **over):
     cfg = {"enabled": True, "step_pips": 15.0, "sl_pips": 60.0,
-           "trigger_pips": 12.5, "trail_pips": 2.5, "max_levels": 8,
+           "trigger_pips": 8.5, "trail_pips": 2.5, "max_levels": 8,
            "max_total_trades": 8, "max_margin_pct_total": 0.8,
            "grid_max_age_days": 7.0}
     cfg.update(over)
@@ -117,6 +117,34 @@ def test_rearm_after_close_and_recross(pp):
     pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09840))
     assert len(pp.broker.orders) == n_orders + 1
     assert pp.grids["EUR_USD"].fired_total == 2
+
+
+def test_one_popper_per_mile_marker(pp):
+    """Brock's exact scenario (2026-07-19): parent -15 fires #15; price wanders
+    -20 -> -10 -> back to -15 with #15 still open => NO second #15. Only -30
+    births #30, giving two active poppers."""
+    pp.on_parent_open(_parent(), "setup_x")                       # anchor 1.10000
+    oanda_open = set()
+    pp.tick(NOW, oanda_open, {"EUR_USD"}, _pricing(1.09845))      # -15.5p -> #15 fires
+    assert pp.open_popper_count() == 1
+    oanda_open = set(pp.poppers.keys())                           # popper stays open
+    pp.tick(NOW, oanda_open, {"EUR_USD"}, _pricing(1.09800))      # -20: no marker there
+    pp.tick(NOW, oanda_open, {"EUR_USD"}, _pricing(1.09900))      # back to -10
+    pp.tick(NOW, oanda_open, {"EUR_USD"}, _pricing(1.09845))      # back to -15.5
+    assert pp.open_popper_count() == 1                            # #15 NOT duplicated
+    assert len(pp.broker.orders) == 1
+    pp.tick(NOW, oanda_open, {"EUR_USD"}, _pricing(1.09690))      # -31: #30 fires
+    assert pp.open_popper_count() == 2
+    lvls = pp.grids["EUR_USD"].levels
+    assert lvls[1]["trade_id"] and lvls[2]["trade_id"]            # #15 and #30 both live
+
+
+def test_popper_ratchet_gear(pp):
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))
+    mgr = next(iter(pp.poppers.values()))
+    assert mgr.position.exit_params.trigger_pips == 8.5
+    assert mgr.position.exit_params.trail_pips == 2.5             # lock = +6
 
 
 def test_trade_cap_blocks_fire(pp, tmp_path, monkeypatch):

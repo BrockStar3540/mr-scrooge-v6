@@ -53,7 +53,7 @@ _DEFAULTS: dict = {
     "enabled":              True,
     "step_pips":            15.0,   # adverse distance between grid levels (Brock 2026-07-19)
     "sl_pips":              60.0,   # popper server-side SL from ITS OWN fill
-    "trigger_pips":         12.5,   # popper ratchet engage ("covers the toll": lock 10)
+    "trigger_pips":         8.5,    # popper ratchet engage (lock = trigger - trail = +6)
     "trail_pips":           2.5,    # popper trail (lock = trigger - trail)
     "max_levels":           8,      # deepest grid level (8 x 15p = 120p below anchor)
     "max_total_trades":     8,      # parents + poppers, book-wide
