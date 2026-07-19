@@ -85,7 +85,7 @@ def _fetch_candles(pair: str, from_dt: datetime, to_dt: datetime, granularity: s
     to_s   = to_dt.strftime("%Y-%m-%dT%H:%M:%S.000000000Z")
     url = (f"{BASE}/v3/instruments/{oanda_pair}/candles"
            f"?granularity={granularity}&price=M"
-           f"&from={urllib.parse.quote(from_s)}&to={urllib.parse.quote(to_s)}&count=500")
+           f"&from={urllib.parse.quote(from_s)}&to={urllib.parse.quote(to_s)}")
     req = urllib.request.Request(url, headers={"Authorization": f"Bearer {TOKEN}"})
     try:
         with urllib.request.urlopen(req, timeout=20) as r:

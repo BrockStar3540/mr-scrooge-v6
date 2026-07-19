@@ -45,6 +45,7 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
 ## [Unreleased]
 
 ### Fixed
+- **Setup Scoreboard sim column was silently dead (B-class bug).** `research/tools/cell_setup_score.py` requested OANDA candles with `from` + `to` + `count` together, which the v20 API rejects (HTTP 400) — so the dashboard's "simulated EV vs expected" card showed stamp counts but never a simulated EV. Dropped `count`; the card now scores stamps again.
 - **Credential resolver parity (broker ↔ feed).** The OANDA feed client now resolves credentials
   through the same `config.credentials.resolve_oanda_creds()` path as the broker
   (precedence: env vars → `~/.openclaw/secrets.env` → `config/credentials.local.json[mode]`).
