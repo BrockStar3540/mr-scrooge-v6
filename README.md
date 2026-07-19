@@ -22,7 +22,7 @@
 
 </div>
 
-> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +7.5 → lock +5 → trail 2.5 fixed, live since 2026-07-16, auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
+> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (engage 7.5→8.5 on 2026-07-19), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
 <!-- LIVE_BALANCE_END -->
 
 ---
@@ -41,7 +41,7 @@ Most bots wager that some indicator reveals *which way* price will go. We spent 
 - **Enter on presumed *movement*, never presumed *direction*.** A cell trades only when a **validated setup** fires — mostly volatility-timing (`atr_5m` is the master knob), side set by measured persistence. No setup → no trade. That's the whole "strategy."
 - **Let the exit earn — and give it room.** The only edge that survived audit lives in stops wide enough that noise doesn't kill a slow winner, plus a ratchet that locks green once a move proves itself.
 - **Wide stops, after a hard lesson.** The old tighten-to-winners'-MAE dial-in was **survivorship-biased** — MAE was measured only on trades that survived to win, blind to the ones a tight stop would have killed first. An 8-yr head-to-head: tight book blew up, wide book profited.
-- **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+7.5 → lock +5 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
+- **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+8.5 → lock +6 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
 - **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired every 15p of adverse movement, each with its own 60p server-side SL and its own ratchet (+8.5 → lock +6 → trail 2.5). One popper per level at a time; a level re-arms only after its popper clears and price re-crosses it, so oscillating tape harvests repeatedly without stacking duplicates. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in spread+slippage toll — this deployment is the live practice-tape test of exactly that claim ([full paper: hypothesis → ten falsification rounds → why it shipped anyway](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). **Don't like the strategy? Turn it off**: global kill switch + per-cell opt-out toggles on the dashboard (`config/pp_config.json`, hot-reloaded). Every popper is tagged `pp_v1` for broker-truth attribution.
 - **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers), `max_per_currency_direction = 4`, 10% of balance notional per trade, ~80% total exposure ceiling.
 
@@ -53,7 +53,7 @@ flowchart LR
     B -- "validated setup fires" --> C[portfolio caps<br/>risk only]
     B -. "no setup → sit out" .-> Z((flat))
     C --> D[order + server-side wide SL]
-    D --> E[range-sized wide-stop ratchet<br/>SL 40/50/60 · +7.5→lock+5→trail 2.5 · no timeout]
+    D --> E[range-sized wide-stop ratchet<br/>SL 40/50/60 · +8.5→lock+6→trail 2.5 · no timeout]
     E --> F[broker fills = the only truth]
     F -- "forward tape vs predictions" --> B
     style Z fill:#808a94,stroke:#666,color:#fff

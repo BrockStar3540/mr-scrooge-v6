@@ -27,9 +27,9 @@ def test_exit_config_exists():
 
 
 def test_deployed_engage_and_trail_values():
-    """Currently deployed: engage (step_trigger_pips) 7.5, trail (step_trail_pips) 2.5."""
+    """Currently deployed: engage (step_trigger_pips) 8.5, trail (step_trail_pips) 2.5 (Brock 2026-07-19)."""
     _, d = _defaults()
-    assert d["step_trigger_pips"] == pytest.approx(7.5)
+    assert d["step_trigger_pips"] == pytest.approx(8.5)
     assert d["step_trail_pips"] == pytest.approx(2.5)
 
 

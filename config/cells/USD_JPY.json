@@ -93,7 +93,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -135,7 +135,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -261,7 +261,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -317,7 +317,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -417,7 +417,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -458,7 +458,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,
@@ -503,7 +503,7 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 7.5,
+            "trigger_pips": 8.5,
             "trail_pips": 2.5,
             "trail_mult": 0.0,
             "trail_min": 2.5,

@@ -4,7 +4,7 @@
     "initial_sl_pips": 20.0,
     "step_engage_min": 0.0,
     "step_cadence_min": 0.5,
-    "step_trigger_pips": 7.5,
+    "step_trigger_pips": 8.5,
     "step_trail_pips": 2.5,
     "step_size_pips": 2.0,
     "tp1_enabled": false,

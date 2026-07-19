@@ -34,6 +34,10 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   live deployment is the right next test anyway.
 
 ### Changed
+- **Parent-book ratchet: engage +7.5 → +8.5 (lock +5 → +6), trail 2.5 unchanged.** Applied to
+  all 29 ratchet setups in `config/cells/`, the recovery fallback (`exit_config.json`), and the
+  calibration generator's final override block (so monthly refits preserve it). The t20s
+  wider-engage shadow rows are untouched. Open positions keep the gear persisted at their entry.
 - **Sizing:** `margin_pct_per_trade` 0.2 → **0.1**, `max_concurrent_trades` 4 → **8** (total
   exposure cap unchanged at ~80% of balance; poppers count toward the cap, and a pair with an
   active grid can't open a second parent).

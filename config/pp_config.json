@@ -7,5 +7,6 @@
   "max_levels": 8,
   "max_total_trades": 8,
   "max_margin_pct_total": 0.8,
-  "grid_max_age_days": 7.0
+  "grid_max_age_days": 7.0,
+  "per_cell": {}
 }
