@@ -684,7 +684,7 @@ body.has-ticker{padding-bottom:32px}
   <div id="gauges" class="gauges"></div>
 
   <div class="card">
-    <div class="card-title">Open Positions
+    <div class="card-title">Open Trades
       <span id="open-count" class="tag">0 / 0</span>
       <span id="freeze-flag" class="tag" style="display:none" title="20:55–22:05 UTC rollover spread blowout — no stop tightening, no bot-initiated closes">🧊 ROLLOVER FREEZE</span>
     </div>
@@ -696,7 +696,7 @@ body.has-ticker{padding-bottom:32px}
       </tr></thead>
       <tbody id="positions-body"></tbody>
     </table>
-    <div id="no-positions" class="muted" style="padding:14px 12px;font-size:12px;display:none">No open positions</div>
+    <div id="no-positions" class="muted" style="padding:14px 12px;font-size:12px;display:none">No open trades</div>
   </div>
 
   <div class="card">
@@ -1674,7 +1674,10 @@ function renderPositions(){
   if(ff)ff.style.display=STATE.rollover_freeze?'':'none';
   tb.innerHTML=pos.map(p=>{
     const kl=p.exit_class||'LEGACY';
-    const chip=`<span class="mode-chip mode-${kl}">${kl}</span>`;
+    const isPop=kl==='POPPER';
+    const chip=isPop
+      ?`<span class="mode-chip" style="background:rgba(245,158,11,.15);color:var(--warn)" title="Party Package popper — level ${p.popper_marker||''} of its parent grid">🎇 POPPER ${p.popper_marker||''}</span>`
+      :`<span class="mode-chip mode-${kl}">${kl}</span>`;
     let mgmt;
     if(p.exit_mode==='bracket'){
       const tleft=p.timeout_left_min!=null?`⏱ ${p.timeout_left_min}m left`:'⏱ —';

@@ -613,6 +613,47 @@ def _state(engine: "Engine") -> dict:
             "unrealized_pl": round(upl, 2) if upl is not None else None,
         })
 
+    # ── Poppers (V6.1): every open popper is its own row in Open Trades ──────
+    try:
+        from modules.management.party_package import pp_config as _ppcfg
+        _step = float(_ppcfg().get("step_pips", 15.0))
+        for _tid, _pmgr in engine.pp.poppers.items():
+            _ppair = _pmgr.position.ticket.pair
+            _mid = _pmgr.position.entry_price
+            for v in (engine.last_views or []):
+                if v.pair == _ppair:
+                    _mid = (v.bid + v.ask) / 2
+                    break
+            _lvl = engine.pp._popper_grid.get(_tid, (_ppair, 0))[1]
+            _pt = oanda_trades.get(_tid, {})
+            _pupl = float(_pt.get("unrealizedPL", 0)) if _pt else None
+            _pep = getattr(_pmgr.position, "exit_params", None)
+            _elapsed = (now - _pmgr.position.entry_time).total_seconds() / 60
+            open_positions.append({
+                "exit_mode":     "ratchet",
+                "exit_class":    "POPPER",
+                "popper_level":  _lvl,
+                "popper_marker": f"-{_lvl * _step:g}p",
+                "engage_pips":   round(float(getattr(_pep, "trigger_pips", 0) or 0), 2),
+                "trail_pips":    round(float(getattr(_pep, "trail_pips", 0) or 0), 2),
+                "trail_mult":    None,
+                "pair":          _ppair,
+                "direction":     _pmgr.direction,
+                "entry":         round(_pmgr.position.entry_price, 5),
+                "entry_time":    _pmgr.position.entry_time.isoformat(),
+                "elapsed_min":   round(_elapsed, 1),
+                "oanda_trade_id": _tid,
+                "sl_locked_pips": _pmgr.sl_locked_pips,
+                "peak_price":    round(_pmgr.peak_price, 5),
+                "peak_pips":     round(_pmgr._peak_pips(), 2),
+                "sl_price":      round(_pmgr._sl_pips_to_price(_pmgr.sl_locked_pips), 5)
+                                 if _pmgr.sl_locked_pips is not None else None,
+                "net_pips_now":  round(_pmgr.net_pips(_mid), 2),
+                "unrealized_pl": round(_pupl, 2) if _pupl is not None else None,
+            })
+    except Exception as _pperr:
+        log.warning("popper rows for /api/state failed: %s", _pperr)
+
     # ── Last tickets (from last engine cycle) ─────────────────────────────────
     # Phase-D hardening (2026-07-04): last_tickets may hold legacy PairTickets
     # (direction/momentum OBJECTS with .bias/.score/.certainty/.reads) OR
