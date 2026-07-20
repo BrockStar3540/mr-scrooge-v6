@@ -3,7 +3,7 @@
 
 Runs on EC2 (has the OANDA token via ~/.openclaw/secrets.env). Tracks the
 practice account's performance SINCE THE CURRENT EXIT CONFIG went live — the
-range-sized wide-stop ratchet (SL 40/50/60 · engage +7.5 · trail 2.5 fixed),
+range-sized wide-stop ratchet (SL 40/50/60 · engage +8.5 · trail 2.5 fixed) + V6.1 poppers,
 fully deployed 2026-07-16 01:11 UTC (the B-090 trail_mult=0 fix completed it).
 Earlier trades belong to prior configs and are deliberately NOT counted.
 
@@ -27,7 +27,7 @@ TRADES = LIVELOG / "trades.csv"
 SVG = LIVELOG / "equity.svg"
 
 ANCHOR_TS = "2026-07-16T01:11:00Z"
-ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +7.5 → lock +5 → trail 2.5 fixed"
+ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1)"
 ANCHOR_HUMAN = "2026-07-16"
 
 def secrets():
@@ -140,7 +140,7 @@ try:
       f'<polygon points="{area}" fill="url(#fill)"/>',
       f'<polyline points="{line}" fill="none" stroke="{ACC}" stroke-width="2.5"/>',
       f'<circle cx="{xs[-1]:.1f}" cy="{ys[-1]:.1f}" r="4" fill="{ACC}"/>',
-      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +7.5 → lock +5 → trail 2.5 fixed · OANDA practice · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
+      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +8.5 → lock +6 → trail 2.5 · V6.1 poppers · OANDA practice · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
       '</svg>\n',
     ]
     SVG.write_text("".join(parts))
