@@ -63,19 +63,48 @@ try:
     for u in idx.get("pages", []):
         txns += fetch(u)
     rows, realized, financing = [], 0.0, 0.0
+    _trade_meta_cache = {}
+    def _trade_meta(tid):
+        """(direction, source) for a trade id — direction from the TRADE's own
+        initialUnits (closing-fill sign is inverted!), source from its client
+        extension tag (pp_v1 = popper, cell_v1 = parent)."""
+        if tid in _trade_meta_cache:
+            return _trade_meta_cache[tid]
+        d, src = "?", "?"
+        try:
+            tr = api(f"/v3/accounts/{ACCT}/trades/{tid}").get("trade", {})
+            iu = float(tr.get("initialUnits", 0))
+            d = "long" if iu > 0 else "short" if iu < 0 else "?"
+            tag = (tr.get("clientExtensions") or {}).get("tag", "")
+            src = "popper" if tag == "pp_v1" else "parent" if tag == "cell_v1" else "-"
+        except Exception:
+            pass
+        _trade_meta_cache[tid] = (d, src)
+        return d, src
     for t in txns:
         if t.get("type") == "DAILY_FINANCING":
             financing += float(t.get("financing", t.get("amount", 0)))
         if t.get("type") == "ORDER_FILL" and float(t.get("pl", 0)) != 0 and t.get("time", "") >= ANCHOR_TS:
-            u = float(t.get("units", 0)); pl = float(t["pl"])
-            rows.append([t["time"][:19] + "Z", t.get("instrument", "?"),
-                         "long" if u > 0 else "short", abs(int(u)), f"{pl:.2f}"])
-            realized += pl
+            realized += float(t["pl"])
+            closed = t.get("tradesClosed") or t.get("tradesReduced") or []
+            if not closed:   # fallback: one row from the fill itself, inverted sign
+                u = float(t.get("units", 0))
+                rows.append([t["time"][:19] + "Z", t.get("instrument", "?"),
+                             "short" if u > 0 else "long", abs(int(u)),
+                             f"{float(t['pl']):.2f}", "-"])
+                continue
+            for c in closed:   # one row PER CLOSED TRADE (a fill can close several)
+                tid = c.get("tradeID", "")
+                d, src = _trade_meta(tid)
+                rows.append([t["time"][:19] + "Z", t.get("instrument", "?"),
+                             d, abs(int(float(c.get("units", 0)))),
+                             f"{float(c.get('realizedPL', 0)):.2f}", src])
     rows.sort(key=lambda r: r[0])
     with open(TRADES, "w", newline="") as f:
-        w = csv.writer(f); w.writerow(["close_utc", "instrument", "direction", "units", "realized_usd"])
+        w = csv.writer(f); w.writerow(["close_utc", "instrument", "direction", "units", "realized_usd", "source"])
         w.writerows(rows)
     n_tr = len(rows); n_green = sum(1 for r in rows if float(r[4]) > 0); n_red = n_tr - n_green
+    n_pop = sum(1 for r in rows if r[5] == "popper")
     wr = (n_green / n_tr * 100) if n_tr else 0.0
 except Exception as e:
     print(f"livelog: trade rebuild failed ({e})", file=sys.stderr); sys.exit(0)
@@ -165,7 +194,8 @@ block = (
     f"![status]({b_live}) ![P/L]({b_pl}) ![trades]({b_tr}) ![open]({b_open})\n\n"
     f"[![live track record](livelog/equity.svg)](livelog/trades.csv)\n\n"
     f"</div>\n\n"
-    f"> **Live track record of the *current* configuration** — {ANCHOR_LABEL}, live since {ANCHOR_HUMAN}, "
+    f"> **Live track record of the *current* configuration** — {ANCHOR_LABEL}, live since {ANCHOR_HUMAN} "
+    f"({n_pop} popper trade{'' if n_pop==1 else 's'} in the record), "
     f"auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). "
     f"Small sample, honest record. Prior configs and the −84% research tuition are a different story — "
     f"[read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.\n"
