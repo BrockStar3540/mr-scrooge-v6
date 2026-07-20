@@ -1756,6 +1756,13 @@ function renderPartyPackage(){
       return `<span class="pill pill-block" title="spent — re-arms on re-cross of ${px}">-${i*step}</span>`;
     }).join(' ');
     const net=(g.green_pips||0)+(g.knife_pips||0);
+    const subs=(g.open||[]).map(p=>{
+      const eng=p.engaged
+        ?`🔒 engaged · peak ${fmtPips(p.peak_pips)} · SL locked <b>${fmtPips(p.sl_locked_pips)}</b>`
+        :`peak ${fmtPips(p.peak_pips??0)} · needs +${(pp.config||{}).trigger_pips||8.5} to engage · hard SL −${(pp.config||{}).sl_pips||60}`;
+      return `<tr style="background:rgba(255,255,255,.02)"><td></td><td colspan="8" class="mono muted" style="font-size:11px;text-align:left">
+        🎇 popper #${p.level*step} · ${p.units} units @ ${p.entry} · ${eng} · trade ${p.trade_id}</td></tr>`;
+    }).join('');
     return `<tr>
       <td><b>${g.pair.replace('_','/')}</b></td>
       <td>${dirPill(g.side)}</td>
@@ -1766,7 +1773,7 @@ function renderPartyPackage(){
       <td class="mono" style="color:var(--pass)">${g.greens||0} (${fmtPips(g.green_pips||0)})</td>
       <td class="mono" style="color:var(--fail)">${g.knives||0} (${fmtPips(g.knife_pips||0)})</td>
       <td class="mono ${colorPips(net)}">${fmtPips(net)}</td>
-    </tr>`;
+    </tr>`+subs;
   }).join('');
 }
 

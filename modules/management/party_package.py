@@ -439,9 +439,15 @@ class PartyPackage:
                 mgr = self.poppers.get(tid)
                 if mgr is None:
                     continue
+                sgn = 1.0 if mgr.direction == "long" else -1.0
+                peak_pips = sgn * (mgr.peak_price - mgr.position.entry_price) / mgr.pip
+                locked = mgr.sl_locked_pips
                 popper_rows.append({"trade_id": tid, "level": lvl,
                                     "entry": mgr.position.entry_price,
-                                    "units": mgr.position.units})
+                                    "units": mgr.position.units,
+                                    "peak_pips": round(peak_pips, 1),
+                                    "sl_locked_pips": round(locked, 1) if locked is not None else None,
+                                    "engaged": bool(locked is not None and locked > 0)})
             d["open"] = popper_rows
             out["grids"].append(d)
         return out
