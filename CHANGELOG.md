@@ -45,6 +45,17 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
 ## [Unreleased]
 
 ### Fixed
+- **Poppers were invisible while being managed.** The first live popper engaged its ratchet
+  (+8.5 -> lock +6, stepped to +10) but nothing on the dashboard showed it — poppers weren't in
+  the positions table and the Party Package card had no manager state. Now: the card shows
+  per-popper peak / engaged / locked-SL, and every popper is a first-class row in the positions
+  table with full ratchet columns and a `POPPER` chip carrying its grid marker.
+
+### Changed
+- Dashboard "Open Positions" card renamed **"Open Trades"** — with popper grids live, multiple
+  independent trades can share one pair; the table now lists trades, not net positions. (The
+  broker layer always polled `/openTrades` and per-trade stop orders; verified live with a
+  parent and popper both long AUD_USD under independent stops.)
 - **Setup Scoreboard sim column was silently dead (B-class bug).** `research/tools/cell_setup_score.py` requested OANDA candles with `from` + `to` + `count` together, which the v20 API rejects (HTTP 400) — so the dashboard's "simulated EV vs expected" card showed stamp counts but never a simulated EV. Dropped `count`; the card now scores stamps again.
 - **Credential resolver parity (broker ↔ feed).** The OANDA feed client now resolves credentials
   through the same `config.credentials.resolve_oanda_creds()` path as the broker
