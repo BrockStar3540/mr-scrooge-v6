@@ -150,6 +150,7 @@ def _aggregate(db):
         groups[key]["rows"].append(ep)
         groups[key]["status"] = ep["status"]  # provisional; overridden by config below
     out = []
+    _cfgst = _config_status()
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
