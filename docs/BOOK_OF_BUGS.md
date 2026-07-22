@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-090, all recoverable, all present below. See *Records not recovered*
+**Coverage:** B-001 → B-095, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -514,6 +514,51 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 
 ---
 
+
+## V6.1 live era (Jul 2026 — Party Package + instrumentation)
+
+### B-091 — Public trade log labeled every direction backwards (and hid the poppers)
+- **Date:** 2026-07-20 (Brock: "the live trade window isn't reflecting the closed popper" — it was, invisibly)
+- **Area:** `ops/livelog_update.py` trade-row builder
+- **Symptom:** first closed popper (long, +$115.88) appeared in `livelog/trades.csv` as an anonymous "AUD_USD short". Every historical row likewise inverted.
+- **Root cause:** direction was taken from the CLOSING fill's unit sign — a sell closes a long. And rows carried no parent/popper attribution at all.
+- **Fix:** one row per closed trade from `tradesClosed[]`; direction from the trade's own `initialUnits`; new `source` column (parent/popper) from broker client-extension tags. CSV rebuilds from transactions, so history self-healed.
+- **Lesson:** a closing fill describes the CLOSE, not the trade. Attribution columns must exist before you need them.
+
+### B-092 — Hourly cron kept reverting the README (template carried the config)
+- **Date:** 2026-07-19/20 (Brock saw stale gear text after it had been "fixed")
+- **Area:** `ops/livelog_update.py` README block template
+- **Symptom:** README's live-config blurb showed engage 7.5 after the book moved to 8.5 — repeatedly, even after a manual edit.
+- **Root cause:** the blurb lives between LIVE_BALANCE markers regenerated hourly from a hardcoded template string; editing the README edited the artifact, not the generator.
+- **Fix:** gear text corrected in the template (ANCHOR_LABEL + SVG caption); regenerated immediately.
+- **Lesson:** the find-the-real-tool rule applies to docs: never edit generated output, edit its generator.
+
+### B-093 — Setup Scoreboard's sim column was dead on arrival (candle 400s)
+- **Date:** 2026-07-20 (found while explaining the card to Brock)
+- **Area:** `research/tools/cell_setup_score.py` `_fetch_candles`
+- **Symptom:** dashboard "simulated EV vs expected" card showed stamp counts but `sim_ev = None` for every row, always.
+- **Root cause:** candle request sent `from` + `to` + `count=500` together; OANDA v20 rejects the combination with HTTP 400 — every fetch, silently warned, never surfaced.
+- **Fix:** dropped `count`. Card scored again on the next refresh.
+- **Lesson:** a WARN that fires on 100% of calls is an outage, not a warning. Surface fetch-failure rates, not lines.
+
+### B-094 — The whole shadow stack read retired journals after the cutover
+- **Date:** 2026-07-22 (Brock: "the shadow tab isn't entirely accurate")
+- **Area:** `cell_setup_score.py` + 5 research tools (`mr-scrooge-v5`); `ops/server.py` + `ops/shadowboard.py` + EC2 t20 scorer (default `mr-scrooge-v6-dryrun`)
+- **Symptom:** stamp feed frozen at Jul 17; Setup Scoreboard scoring V5-era stamps; shadowboard/t20 boards stale — while the live V6 unit wrote 470+ fresh stamps nobody read.
+- **Root cause:** journald unit names hardcoded/defaulted to units retired at the 2026-07-18 cutover. The known deferred item ("v5 namespaces are load-bearing") came due.
+- **Fix:** every consumer pointed at `mr-scrooge-v6` (env-overridable). Disclosure logged: shadow-tab reads before the fix — including one promotion round — were prior-era data.
+- **Lesson:** a rename/cutover isn't done when the service runs; it's done when every READER of the service's outputs is migrated. Keep a consumer inventory per producer.
+
+### B-095 — Scoreboards keyed rows by status-at-stamp-time (and a silent worker ate the fix)
+- **Date:** 2026-07-22
+- **Area:** `ops/shadowboard.py` `_aggregate` + `cell_setup_score.py` grouping
+- **Symptom:** promoted setups still showed SHADOW rows; setups that changed status split into two rows with divided stats; after the first fix attempt, the shadowboard rendered EMPTY.
+- **Root cause:** (a) status captured at stamp time was used as row identity/label; (b) the fix's `_cfgst` binding missed its anchor → NameError inside the refresh worker, which swallows exceptions and cached nothing — the board failed silent.
+- **Fix:** rows group by setup identity only; status joined LIVE from config/cells at aggregate time; binding placed correctly and verified by direct `_aggregate` call (36 rows).
+- **Lesson:** decision surfaces must show what a thing IS, not what it was when observed. And background workers that swallow exceptions turn one-line bugs into invisible outages — log them loud.
+
+---
+
 # Recurring patterns (architectural lessons)
 
 These bug families repeat across versions:
@@ -533,6 +578,8 @@ These bug families repeat across versions:
 | **Box / reference-geometry contamination** | B-068 → B-074 | Sanity-guard the reference; carry contaminated-window notes into backtests |
 | **A config value silently overridden by a scaler** | B-090 | When a fixed value must hold, zero out the multiplier that can override it |
 | **A rule validated on a long average, wrong in-regime** | B-082 | Walk-forward + regime labels; the current year isn't the average |
+| **Readers left behind by a producer rename/cutover** | B-092, B-094 | Edit generators not artifacts; keep a consumer inventory and migrate it with the producer |
+| **Silent failure in a background worker / 100%-rate WARN** | B-093, B-095 | Failure-rate telemetry; workers must log exceptions loud, never cache-nothing |
 
 ## Bugs that shaped the current architecture
 
