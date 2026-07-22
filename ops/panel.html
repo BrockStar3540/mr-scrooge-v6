@@ -765,7 +765,7 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
       Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m.
-      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow beating the live book's median.
+      Cumulative since the cell-era cutover (2026-07-04). 🏆 = meets the ACTIVATION BAR (n≥20 episodes, avg ≥ +2.0p/ep — see RESEARCH_PROGRAM §activation-bar). ⚠️ = ACTIVE without current-era bar evidence.
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
@@ -1031,7 +1031,8 @@ async function pollShadowboard(){
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
     document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
-      const beat=(x.status==='SHADOW'&&d.active_median!=null&&x.avg_net240>d.active_median)?' 🏆':'';
+      const beat=x.bar_met?' 🏆':'';
+      const belowBar=(x.status==='ACTIVE'&&!x.bar_met)?' <span class="pill pill-warn" title="ACTIVE without current-era bar evidence (n≥20 & avg ≥ +2p/ep)">⚠️ no bar</span>':'';
       const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
       const ncls=x.avg_net240>0?'pos':'neg';
       // cell is "PAIR/session" → split for the status control
@@ -1041,7 +1042,7 @@ async function pollShadowboard(){
       const ctrl=(pair&&session&&x.setup)?statusControl(pair,session,x.setup,liveStatus,'sb')
         :'<span class="muted">—</span>';
       return `<tr>
-        <td class="mono" style="font-size:11px">${x.setup}${beat}</td>
+        <td class="mono" style="font-size:11px">${x.setup}${beat}${belowBar}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
         <td class="mono ${ncls}"><b>${x.avg_net240>0?'+':''}${x.avg_net240}p</b></td>

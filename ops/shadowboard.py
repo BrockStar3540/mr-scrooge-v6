@@ -170,6 +170,11 @@ def _aggregate(db):
             "last7_avg": round(sum(last7)/len(last7), 2) if last7 else None,
             "last7_n": len(last7),
             "first": min(r["t"] for r in rows)[:10],
+            # ACTIVATION BAR (2026-07-22, post-storm doctrine): current-era
+            # evidence of n>=20 episodes AND avg net240 >= +2.0p (a margin that
+            # clears toll uncertainty). ACTIVE without the bar = on borrowed
+            # status; SHADOW meeting it = promotable.
+            "bar_met": bool(len(rows) >= 20 and (sum(nets)/len(nets)) >= 2.0),
         })
     out.sort(key=lambda r: r["avg_net240"], reverse=True)
     return out

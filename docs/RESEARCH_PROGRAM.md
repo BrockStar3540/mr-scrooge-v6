@@ -508,3 +508,25 @@ The program adds one boundary the operator's doctrine runs into on this venue: m
 redistributes the win/loss geometry but cannot manufacture expectancy — the doctrine is the
 correct way to trade, and the execution toll decides whether trading is worth doing at all.
 At a round-trip cost under ~0.4 pips, the system described above wins as already built.
+
+## The Activation Bar (2026-07-22, post-storm doctrine)
+
+The first live kill-week (B-091–B-095 era) exposed a governance gap: **ACTIVE had no
+entry requirement** — it meant "survived some earlier era's validation and nobody demoted
+it." The storm's entire realized red column came from one setup whose claimed edge
+(+0.6p/trade in walk-forward) was smaller than our uncertainty about the execution toll,
+carried live on legacy status and stale instruments.
+
+**The bar:** a setup may be ACTIVE only with **current-era shadow evidence of n ≥ 20
+episodes at avg ≥ +2.0 pips/episode** (net-240, stamp-forward — the Shadowboard metric).
+The +2p margin exists because the toll knife-edge is ~0.4–0.5p and a sub-1p claimed edge
+is indistinguishable from zero at any n the book reaches in weeks.
+
+- The Shadowboard awards 🏆 only when the bar is met, and flags ACTIVE setups without
+  current-era bar evidence (⚠️). The promote/demote buttons sit next to the evidence.
+- Re-checked at every monthly refit; a setup that loses the bar reverts to SHADOW —
+  where watching it costs nothing.
+- The bar governs entry to ACTIVE. Exit from ACTIVE can (and should) be faster on
+  broker-fill evidence — fills convict quicker than stamps (the storm needed two).
+- Era boundaries matter: evidence must come from the current engine/config era. A
+  cutover or gear change restarts the clock (see B-094 for what stale-era evidence does).
