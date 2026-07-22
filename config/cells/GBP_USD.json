@@ -280,7 +280,7 @@
           "id": "rvol_low_240",
           "side": "long",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -437,7 +437,7 @@
           "id": "control_rvol_60_t20s",
           "side": "short",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 60,
           "conditions": [
             {
