@@ -63,20 +63,47 @@ try:
     for u in idx.get("pages", []):
         txns += fetch(u)
     rows, realized, financing = [], 0.0, 0.0
-    _trade_meta_cache = {}
+    # (direction, source) per trade id. Strategy (B-091 follow-up: per-trade GETs
+    # rate-limited -> "?" rows): persistent cache + ONE batch closed-trades call;
+    # per-trade GET only as last resort. Trade metadata is immutable, so cached
+    # entries never expire (unknown "?" entries are retried).
+    _META_F = LIVELOG / ".trade_meta_cache.json"
+    try:
+        _trade_meta_cache = {k: tuple(v) for k, v in json.load(open(_META_F)).items()
+                             if v[0] != "?" and v[1] != "?"}
+    except Exception:
+        _trade_meta_cache = {}
+    def _absorb(tr):
+        tid = str(tr.get("id", ""))
+        iu = float(tr.get("initialUnits", 0) or 0)
+        d = "long" if iu > 0 else "short" if iu < 0 else "?"
+        tag = (tr.get("clientExtensions") or {}).get("tag", "")
+        src = "popper" if tag == "pp_v1" else "parent" if tag == "cell_v1" else "-"
+        _trade_meta_cache[tid] = (d, src)
+    # PRIMARY meta source: the OPENING fills in the same transaction window.
+    # tradeOpened carries tradeID + units sign + clientExtensions.tag — no extra
+    # API calls, and immune to the trades-endpoint retention quirk (some closed
+    # trade ids 404 on /trades/{id} yet are fully present in transactions).
+    for t in txns:
+        if t.get("type") != "ORDER_FILL":
+            continue
+        to = t.get("tradeOpened")
+        if to:
+            _absorb({"id": to.get("tradeID"), "initialUnits": to.get("units"),
+                     "clientExtensions": to.get("clientExtensions")})
+    try:  # secondary: open trades batch (covers pre-window opens still running)
+        for tr in api(f"/v3/accounts/{ACCT}/trades?state=OPEN&count=500").get("trades", []):
+            _absorb(tr)
+    except Exception as e:
+        print(f"livelog: open-trades meta failed ({e})", file=sys.stderr)
     def _trade_meta(tid):
-        """(direction, source) for a trade id — direction from the TRADE's own
-        initialUnits (closing-fill sign is inverted!), source from its client
-        extension tag (pp_v1 = popper, cell_v1 = parent)."""
         if tid in _trade_meta_cache:
             return _trade_meta_cache[tid]
         d, src = "?", "?"
         try:
             tr = api(f"/v3/accounts/{ACCT}/trades/{tid}").get("trade", {})
-            iu = float(tr.get("initialUnits", 0))
-            d = "long" if iu > 0 else "short" if iu < 0 else "?"
-            tag = (tr.get("clientExtensions") or {}).get("tag", "")
-            src = "popper" if tag == "pp_v1" else "parent" if tag == "cell_v1" else "-"
+            _absorb(tr)
+            return _trade_meta_cache.get(tid, (d, src))
         except Exception:
             pass
         _trade_meta_cache[tid] = (d, src)
@@ -96,6 +123,10 @@ try:
             for c in closed:   # one row PER CLOSED TRADE (a fill can close several)
                 tid = c.get("tradeID", "")
                 d, src = _trade_meta(tid)
+                if d == "?":   # last resort: invert the closing fill's sign
+                    u = float(c.get("units", t.get("units", 0)) or 0)
+                    d = "short" if u > 0 else "long" if u < 0 else "?"
+                    src = src if src != "?" else "-"
                 rows.append([t["time"][:19] + "Z", t.get("instrument", "?"),
                              d, abs(int(float(c.get("units", 0)))),
                              f"{float(c.get('realizedPL', 0)):.2f}", src])
@@ -103,6 +134,10 @@ try:
     with open(TRADES, "w", newline="") as f:
         w = csv.writer(f); w.writerow(["close_utc", "instrument", "direction", "units", "realized_usd", "source"])
         w.writerows(rows)
+    try:
+        _META_F.write_text(json.dumps({k: list(v) for k, v in _trade_meta_cache.items()}))
+    except Exception:
+        pass
     n_tr = len(rows); n_green = sum(1 for r in rows if float(r[4]) > 0); n_red = n_tr - n_green
     n_pop = sum(1 for r in rows if r[5] == "popper")
     wr = (n_green / n_tr * 100) if n_tr else 0.0
