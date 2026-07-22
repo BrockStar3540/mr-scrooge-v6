@@ -71,7 +71,7 @@
           "id": "kc_breakout_long",
           "side": "long",
           "class": "LEAN",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
