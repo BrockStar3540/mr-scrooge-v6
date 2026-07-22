@@ -234,7 +234,7 @@
           "id": "timing_lean_30",
           "side": "long",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 30,
           "conditions": [
             {

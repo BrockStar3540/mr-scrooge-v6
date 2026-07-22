@@ -381,7 +381,7 @@
         },
         {
           "id": "classic_box_fade_long",
-          "side": "long",
+          "side": "short",
           "class": "classic",
           "status": "ACTIVE",
           "horizon_min": 240,
@@ -417,7 +417,8 @@
             "source": "classics-retrial 2026-07-09: YTD +5.0 drift, edge vs baseline +3.3 (strongest of batch)",
             "drift": "STABLE"
           },
-          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard."
+          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard.",
+          "_side_note": "flipped long->short 2026-07-22 (Brock, MAE-flip: entry timing right, wiring wrong; storm evidence)"
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
