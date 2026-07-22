@@ -45,7 +45,7 @@ RX = re.compile(r"SHADOW_PROFILE (\w+)/(\w+) "
 
 def parse_journal(since: str) -> list[dict]:
     raw = subprocess.run(
-        ["journalctl", "--user", "-u", "mr-scrooge-v5", "--since", since, "--no-pager", "-o", "cat"],
+        ["journalctl", "--user", "-u", "mr-scrooge-v6", "--since", since, "--no-pager", "-o", "cat"],
         env={**os.environ, "XDG_RUNTIME_DIR": f"/run/user/{os.getuid()}", "SYSTEMD_PAGER": ""},
         capture_output=True, text=True).stdout
     sigs = []

@@ -210,10 +210,10 @@ def _simulate_ratchet(
 def _grep_journal(since: str) -> list[str]:
     """Return CELLSHADOW lines from journalctl.
 
-    The bot runs as the USER unit mr-scrooge-v5 (see ops/server.py _sysinfo);
+    The bot runs as the USER unit mr-scrooge-v6 (see ops/server.py _sysinfo);
     the old system-unit name scrooge.service is kept as a fallback only."""
     cmds = [
-        ["journalctl", "--user", "-u", "mr-scrooge-v5", "--no-pager",
+        ["journalctl", "--user", "-u", "mr-scrooge-v6", "--no-pager",
          "--output=short-iso", f"--since={since}"],
         ["journalctl", "-u", "scrooge.service", "--no-pager",
          "--output=short-iso", f"--since={since}"],
@@ -245,7 +245,31 @@ def main():
           file=sys.stderr if args.json else sys.stdout)
 
     # Parse stamps
-    # Group by (pair, session, setup_id, status)
+    
+
+def _config_status():
+    """(pair, session, setup_id) -> CURRENT status from config/cells (read fresh).
+    The stamped status is what the setup WAS when it fired; promote/demote
+    decisions need what it IS (2026-07-22, Brock)."""
+    import json as _json
+    from pathlib import Path as _P
+    out = {}
+    cdir = _P(__file__).resolve().parents[2] / "config" / "cells"
+    try:
+        for f in cdir.glob("*.json"):
+            try:
+                d = _json.loads(f.read_text())
+            except Exception:
+                continue
+            pair = d.get("pair") or f.stem
+            for sess, b in (d.get("sessions") or {}).items():
+                for su in (b.get("setups") or []):
+                    out[(pair, sess, su.get("id"))] = su.get("status", "?")
+    except OSError:
+        pass
+    return out
+
+# Group by (pair, session, setup_id) — status joined LIVE from config
     stamps: dict[tuple, list] = defaultdict(list)
     for ln in lines:
         m  = RX.search(ln)
@@ -255,7 +279,7 @@ def main():
         pair, sess, setup_id, side, conds_s, exp_ev_s, status = m.groups()
         if args.setup and setup_id != args.setup:
             continue
-        key = (pair, sess, setup_id, side, status)
+        key = (pair, sess, setup_id, side)   # status NOT in key (2026-07-22)
         try:
             ts = datetime.fromisoformat(tm.group(1)).replace(tzinfo=timezone.utc)
         except Exception:
@@ -294,7 +318,9 @@ def main():
         print("-" * 90)
 
     json_rows = []
-    for (pair, sess, setup_id, side, status), stamp_list in sorted(stamps.items()):
+    _cfgst = _config_status()
+    for (pair, sess, setup_id, side), stamp_list in sorted(stamps.items()):
+        status = _cfgst.get((pair, sess, setup_id), "?")
         n = len(stamp_list)
         exp_ev = stamp_list[0][1] if stamp_list else 0.0
 

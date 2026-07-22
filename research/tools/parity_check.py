@@ -161,7 +161,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", required=True)
     ap.add_argument("--until", default=None)
-    ap.add_argument("--live-unit", default="mr-scrooge-v5")
+    ap.add_argument("--live-unit", default="mr-scrooge-v6")
     ap.add_argument("--shadow-unit", default="mr-scrooge-v6-dryrun")
     a = ap.parse_args()
     live, shadow = journal(a.live_unit, a.since, a.until), journal(a.shadow_unit, a.since, a.until)

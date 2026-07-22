@@ -56,7 +56,7 @@ def _journal_unit() -> str:
     SCROOGE_JOURNAL_UNIT (default = the V6 dry-run shadow). Matches the exact
     pattern in ops/shadowboard.py so both read the same unit's journal."""
     import os
-    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6-dryrun")
+    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6")
 
 # ── Exit-tuning config (TUNE tab) ───────────────────────────────────────────
 _EXIT_CONFIG_PATH = _REPO_ROOT / "config" / "exit_config.json"

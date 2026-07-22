@@ -23,7 +23,7 @@ def sess(h):
 def from_journal(since):
     ENT=re.compile(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ INFO v5\.engine\s+ENTERED (\w+) (long|short) @ ([\d.]+) \| \d+ units \| SL [+-]?[\d.]+p \| trade_id=(\d+)")
     EXI=re.compile(r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}),\d+ INFO v5\.engine\s+EXIT.*?trade_id=(\d+) \| approx_net=([+-]?[\d.]+)p")
-    raw=subprocess.check_output(["journalctl","--user","-u","mr-scrooge-v5","--since",since,"--no-pager","-o","cat"],text=True)
+    raw=subprocess.check_output(["journalctl","--user","-u","mr-scrooge-v6","--since",since,"--no-pager","-o","cat"],text=True)
     ents={}; exts={}
     for l in raw.splitlines():
         if m:=ENT.search(l): ents[m.group(5)]={"utc":datetime.strptime(m.group(1),"%Y-%m-%d %H:%M:%S"),"pair":m.group(2),"dir":m.group(3)}

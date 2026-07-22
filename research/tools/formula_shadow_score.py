@@ -107,7 +107,7 @@ def _build_status_map() -> dict[str, str]:
 
 def parse_journal(since: str) -> list[dict]:
     raw = subprocess.run(
-        ["journalctl", "--user", "-u", "mr-scrooge-v5",
+        ["journalctl", "--user", "-u", "mr-scrooge-v6",
          "--since", since, "--no-pager", "-o", "short-iso"],
         env={**os.environ,
              "XDG_RUNTIME_DIR": f"/run/user/{os.getuid()}",

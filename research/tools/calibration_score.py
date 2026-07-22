@@ -62,7 +62,7 @@ RX = re.compile(
 
 def parse_journal(since: str) -> list[dict]:
     raw = subprocess.run(
-        ["journalctl", "--user", "-u", "mr-scrooge-v5",
+        ["journalctl", "--user", "-u", "mr-scrooge-v6",
          "--since", since, "--no-pager", "-o", "cat"],
         env={**os.environ,
              "XDG_RUNTIME_DIR": f"/run/user/{os.getuid()}",
@@ -80,7 +80,7 @@ def parse_journal(since: str) -> list[dict]:
             pass
     # Re-run with short-iso to get timestamps
     raw2 = subprocess.run(
-        ["journalctl", "--user", "-u", "mr-scrooge-v5",
+        ["journalctl", "--user", "-u", "mr-scrooge-v6",
          "--since", since, "--no-pager", "-o", "short-iso"],
         env={**os.environ,
              "XDG_RUNTIME_DIR": f"/run/user/{os.getuid()}",

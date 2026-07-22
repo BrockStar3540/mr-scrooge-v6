@@ -33,7 +33,7 @@ _SINCE     = "2026-07-04 08:00"   # journal query lower bound (cell-era cutover)
 
 # (a) parameterized journald unit — default to the V6 dry-run shadow.
 def _journal_unit() -> str:
-    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6-dryrun")
+    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6")
 
 def _pip(pair): return 0.01 if "JPY" in pair else 0.0001
 
@@ -116,15 +116,39 @@ def _refresh(max_new_scores=40):
     _save(db)
     return db
 
+
+
+def _config_status():
+    """(pair, session, setup_id) -> CURRENT status from config/cells (read fresh).
+    The stamped status is what the setup WAS when it fired; promote/demote
+    decisions need what it IS (2026-07-22, Brock)."""
+    import json as _json
+    from pathlib import Path as _P
+    out = {}
+    cdir = _P(__file__).resolve().parents[1] / "config" / "cells"
+    try:
+        for f in cdir.glob("*.json"):
+            try:
+                d = _json.loads(f.read_text())
+            except Exception:
+                continue
+            pair = d.get("pair") or f.stem
+            for sess, b in (d.get("sessions") or {}).items():
+                for su in (b.get("setups") or []):
+                    out[(pair, sess, su.get("id"))] = su.get("status", "?")
+    except OSError:
+        pass
+    return out
+
 def _aggregate(db):
     import statistics as st
     groups = {}
     for ep in db["episodes"].values():
         if not ep["scores"]: continue
         key = (ep["cell"], ep["setup"], ep["side"])
-        groups.setdefault(key, {"status": ep["status"], "rows": []})
+        groups.setdefault(key, {"status": ep["status"], "rows": []})  # fallback: stamped
         groups[key]["rows"].append(ep)
-        groups[key]["status"] = ep["status"]  # latest wins
+        groups[key]["status"] = ep["status"]  # provisional; overridden by config below
     out = []
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     for (cell, setup, side), g in groups.items():
@@ -132,7 +156,8 @@ def _aggregate(db):
         nets = [x["net240"] for x in s]
         last7 = [r["scores"]["net240"] for r in rows if r["t"] >= cutoff7]
         out.append({
-            "cell": cell, "setup": setup, "side": side, "status": g["status"],
+            "cell": cell, "setup": setup, "side": side,
+            "status": _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup), g["status"]),
             "episodes": len(rows),
             "cum_net240": round(sum(nets), 1),
             "avg_net240": round(sum(nets)/len(nets), 2),
