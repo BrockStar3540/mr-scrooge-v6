@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-095, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-096, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -556,6 +556,16 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** (a) status captured at stamp time was used as row identity/label; (b) the fix's `_cfgst` binding missed its anchor → NameError inside the refresh worker, which swallows exceptions and cached nothing — the board failed silent.
 - **Fix:** rows group by setup identity only; status joined LIVE from config/cells at aggregate time; binding placed correctly and verified by direct `_aggregate` call (36 rows).
 - **Lesson:** decision surfaces must show what a thing IS, not what it was when observed. And background workers that swallow exceptions turn one-line bugs into invisible outages — log them loud.
+
+---
+
+### B-096 — Ladder deploy insta-fired a marker 85p below its level (and a config scp ate the per-cell switch)
+- **Date:** 2026-07-23 (caught within minutes of the marker-ladder deploy)
+- **Area:** `party_package.py` tick (new-marker arming) + deploy procedure
+- **Symptom:** seconds after the ladder restart, a "-10" popper fired on the switched-OFF GBP/london grid — at market, ~85p below the marker's nominal price.
+- **Root cause:** two compounding errors. (1) New ladder keys added to an EXISTING deep-underwater grid were armed `True`; the fire check saw price beyond the marker and fired immediately at the current (much worse) price. (2) The deploy scp'd a scratchpad `pp_config.json` over the live file, silently erasing the `per_cell: {GBP_USD|london: false}` opt-out — the artifact-over-generator sin (B-092) applied to config.
+- **Fix:** new markers on a live grid arm only if price is still on the favorable side (else disarmed, waiting for re-cross); inert off-config slots are pruned; regression tests for both. per_cell restored via the API. Deploy rule: merge-managed configs are never scp'd whole — only touched via their write endpoints.
+- **Lesson:** "armed" is a statement about the PATH (price hasn't crossed yet), not a default. And any config a dashboard writes is a generator's output — edit it through the writer, never by file copy.
 
 ---
 

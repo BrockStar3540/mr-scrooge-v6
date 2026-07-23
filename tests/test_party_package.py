@@ -254,6 +254,29 @@ def test_pre_ladder_state_migration(pp, tmp_path, monkeypatch):
     assert g.greens == 1 and g.fired_total == 1
 
 
+def test_new_marker_on_underwater_grid_does_not_instafire(pp, tmp_path, monkeypatch):
+    """B-096: adding a marker to a live grid whose price is already beyond it
+    must arm DISARMED (waits for re-cross) — never fire at the current worse price."""
+    pp.on_parent_open(_parent(), "setup_x")
+    # simulate ladder change: drop -10 from config, price dives, then re-add -10
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path, marker_pips=[15, 20, 30, 40, 60]))
+    pp.tick(NOW, set(pp.poppers.keys()) or set(), {"EUR_USD"}, _pricing(1.09640))  # -36p deep
+    n = len(pp.broker.orders)
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path))                        # -10 returns
+    pp.tick(NOW, set(pp.poppers.keys()), {"EUR_USD"}, _pricing(1.09640))            # still deep
+    assert len(pp.broker.orders) == n                            # NO insta-fire at -36
+    assert pp.grids["EUR_USD"].levels["10"]["armed"] is False    # waits for re-cross
+    pp.tick(NOW, set(pp.poppers.keys()), {"EUR_USD"}, _pricing(1.09950))            # recover above -10
+    assert pp.grids["EUR_USD"].levels["10"]["armed"] is True
+
+
+def test_prune_inert_offconfig_slots(pp, tmp_path, monkeypatch):
+    pp.on_parent_open(_parent(), "setup_x")
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path, marker_pips=[15, 30]))
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09990))
+    assert set(pp.grids["EUR_USD"].levels.keys()) == {"15", "30"}
+
+
 def test_dashboard_state_shape(pp):
     pp.on_parent_open(_parent(), "setup_x")
     pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))

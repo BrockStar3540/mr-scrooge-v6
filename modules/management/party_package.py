@@ -345,10 +345,23 @@ class PartyPackage:
                 self._save_state()
                 continue
 
+            # prune inert slots that left the config ladder (no open popper)
+            _cfg_keys = {_okey(o) for o in cfg["marker_pips"]}
+            for _k in [k for k in g.levels
+                       if k not in _cfg_keys and not g.levels[k]["trade_id"]]:
+                del g.levels[_k]
+
             for off in cfg["marker_pips"]:
                 key = _okey(off)
-                lv = g.levels.setdefault(key, {"armed": True, "trade_id": None})
                 price = g.level_price(off)
+                lv = g.levels.get(key)
+                if lv is None:
+                    # NEW marker on a live grid: arm only if price is still on
+                    # the favorable side — never insta-fire at a worse price
+                    # than the marker itself (B-096: ladder deploy fired a
+                    # "-10" popper 85p below its level on an underwater grid).
+                    _crossed = mid <= price if g.side == "long" else mid >= price
+                    lv = g.levels[key] = {"armed": not _crossed, "trade_id": None}
                 if lv["trade_id"]:
                     continue                       # popper open at this marker
                 crossed_back = mid > price if g.side == "long" else mid < price

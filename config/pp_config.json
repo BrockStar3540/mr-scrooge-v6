@@ -15,5 +15,8 @@
     30.0,
     40.0,
     60.0
-  ]
+  ],
+  "per_cell": {
+    "GBP_USD|london": false
+  }
 }
