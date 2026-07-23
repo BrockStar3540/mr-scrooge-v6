@@ -56,7 +56,7 @@ def _journal_unit() -> str:
     SCROOGE_JOURNAL_UNIT (default = the V6 dry-run shadow). Matches the exact
     pattern in ops/shadowboard.py so both read the same unit's journal."""
     import os
-    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6")
+    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6-dryrun")
 
 # ── Exit-tuning config (TUNE tab) ───────────────────────────────────────────
 _EXIT_CONFIG_PATH = _REPO_ROOT / "config" / "exit_config.json"
@@ -615,8 +615,6 @@ def _state(engine: "Engine") -> dict:
 
     # ── Poppers (V6.1): every open popper is its own row in Open Trades ──────
     try:
-        from modules.management.party_package import pp_config as _ppcfg
-        _step = float(_ppcfg().get("step_pips", 15.0))
         for _tid, _pmgr in engine.pp.poppers.items():
             _ppair = _pmgr.position.ticket.pair
             _mid = _pmgr.position.entry_price
@@ -633,7 +631,7 @@ def _state(engine: "Engine") -> dict:
                 "exit_mode":     "ratchet",
                 "exit_class":    "POPPER",
                 "popper_level":  _lvl,
-                "popper_marker": f"-{_lvl * _step:g}p",
+                "popper_marker": f"-{float(_lvl):g}p",
                 "engage_pips":   round(float(getattr(_pep, "trigger_pips", 0) or 0), 2),
                 "trail_pips":    round(float(getattr(_pep, "trail_pips", 0) or 0), 2),
                 "trail_mult":    None,

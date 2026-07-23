@@ -8,7 +8,12 @@
   "max_total_trades": 8,
   "max_margin_pct_total": 0.8,
   "grid_max_age_days": 7.0,
-  "per_cell": {
-    "GBP_USD|london": false
-  }
+  "marker_pips": [
+    10.0,
+    15.0,
+    20.0,
+    30.0,
+    40.0,
+    60.0
+  ]
 }

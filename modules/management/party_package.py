@@ -51,7 +51,10 @@ _STATE_PATH  = Path(__file__).resolve().parent.parent.parent / "data" / "pp_stat
 # Defaults mirror config/pp_config.json — used when the JSON is missing/corrupt.
 _DEFAULTS: dict = {
     "enabled":              True,
-    "step_pips":            15.0,   # adverse distance between grid levels (Brock 2026-07-19)
+    "step_pips":            15.0,   # LEGACY fallback when marker_pips absent
+    # Explicit marker ladder (Brock 2026-07-22, sim: dense top double-harvests
+    # shallow chop, skip -50, one deep rung): adverse offsets in pips.
+    "marker_pips":          [10.0, 15.0, 20.0, 30.0, 40.0, 60.0],
     "sl_pips":              60.0,   # popper server-side SL from ITS OWN fill
     "trigger_pips":         8.5,    # popper ratchet engage (lock = trigger - trail = +6)
     "trail_pips":           2.5,    # popper trail (lock = trigger - trail)
@@ -74,6 +77,12 @@ def pp_config() -> dict:
                 continue
             if isinstance(_DEFAULTS[k], dict):
                 cfg[k] = dict(v) if isinstance(v, dict) else {}
+            elif isinstance(_DEFAULTS[k], list):
+                try:
+                    lst = sorted(float(x) for x in v)
+                    cfg[k] = lst if lst and all(x > 0 for x in lst) else list(_DEFAULTS[k])
+                except (TypeError, ValueError):
+                    cfg[k] = list(_DEFAULTS[k])
             elif isinstance(_DEFAULTS[k], bool):
                 cfg[k] = bool(v)
             elif isinstance(_DEFAULTS[k], float):
@@ -103,11 +112,17 @@ def _popper_exit_params(cfg: dict):
                       mode="ratchet")
 
 
-def _popper_client_ext(cfg: dict, level_idx: int, anchor: float) -> dict:
+def _okey(offset_pips) -> str:
+    """Canonical string key for a marker offset (10.0 -> "10", 12.5 -> "12.5")."""
+    return "%g" % float(offset_pips)
+
+
+def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float) -> dict:
     """OANDA tradeClientExtensions for a popper. tag=pp_v1 routes recovery away
-    from the parent adopter; comment carries the gear + grid coordinates."""
+    from the parent adopter; comment carries the gear + grid coordinates.
+    lvl = the marker OFFSET in pips (ladder era, 2026-07-22)."""
     comment = json.dumps({"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
-                          "tp": cfg["trail_pips"], "lvl": level_idx,
+                          "tp": cfg["trail_pips"], "lvl": float(offset_pips),
                           "anc": round(anchor, 5), "su": "pp_v1"},
                          separators=(",", ":"))
     return {"tag": "pp_v1", "comment": comment}
@@ -124,8 +139,8 @@ class Grid:
         self.created = created
         self.parent_setup = parent_setup
         self.cell_key = cell_key            # "PAIR|session|setup" for the per-cell switch
-        # level idx (1-based) -> {"armed": bool, "trade_id": Optional[str]}
-        self.levels: dict[int, dict] = {}
+        # marker key (_okey(offset_pips)) -> {"armed": bool, "trade_id": Optional[str]}
+        self.levels: dict[str, dict] = {}
         # lifetime ledger (persisted)
         self.greens = 0
         self.knives = 0
@@ -133,9 +148,9 @@ class Grid:
         self.knife_pips = 0.0
         self.fired_total = 0
 
-    def level_price(self, idx: int, step_pips: float) -> float:
+    def level_price(self, offset_pips: float) -> float:
         pip = PIP[self.pair]
-        off = idx * step_pips * pip
+        off = float(offset_pips) * pip
         return self.anchor - off if self.side == "long" else self.anchor + off
 
     def to_dict(self) -> dict:
@@ -143,7 +158,8 @@ class Grid:
                 "created": self.created.isoformat(),
                 "parent_setup": self.parent_setup,
                 "cell_key": self.cell_key,
-                "levels": {str(k): v for k, v in self.levels.items()},
+                "fmt": "offsets",   # ladder era (2026-07-22): keys are pip offsets
+                "levels": dict(self.levels),
                 "greens": self.greens, "knives": self.knives,
                 "green_pips": round(self.green_pips, 1),
                 "knife_pips": round(self.knife_pips, 1),
@@ -154,7 +170,11 @@ class Grid:
         g = cls(d["pair"], d["side"], float(d["anchor"]),
                 datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"),
                 d.get("cell_key", ""))
-        g.levels = {int(k): dict(v) for k, v in (d.get("levels") or {}).items()}
+        raw = d.get("levels") or {}
+        if d.get("fmt") == "offsets":
+            g.levels = {str(k): dict(v) for k, v in raw.items()}
+        else:  # migrate pre-ladder state: index keys 1..N at the legacy 15p step
+            g.levels = {_okey(int(k) * 15.0): dict(v) for k, v in raw.items()}
         g.greens = int(d.get("greens", 0)); g.knives = int(d.get("knives", 0))
         g.green_pips = float(d.get("green_pips", 0.0))
         g.knife_pips = float(d.get("knife_pips", 0.0))
@@ -192,11 +212,12 @@ class PartyPackage:
                  pos.entry_time if pos.entry_time.tzinfo else
                  pos.entry_time.replace(tzinfo=timezone.utc), setup_id,
                  cell_key=f"{pair}|{session}|{setup_id}")
-        for idx in range(1, int(cfg["max_levels"]) + 1):
-            g.levels[idx] = {"armed": True, "trade_id": None}
+        for off in cfg["marker_pips"]:
+            g.levels[_okey(off)] = {"armed": True, "trade_id": None}
         self.grids[pair] = g
-        log.info("PP GRID armed %s %s anchor=%.5f step=%.1fp levels=%d | engine=pp_v1 setup=%s",
-                 pair, g.side, g.anchor, cfg["step_pips"], len(g.levels), setup_id)
+        log.info("PP GRID armed %s %s anchor=%.5f markers=%s | engine=pp_v1 setup=%s",
+                 pair, g.side, g.anchor,
+                 "/".join("-" + _okey(o) for o in cfg["marker_pips"]), setup_id)
         self._save_state()
 
     def recover(self, trade: dict) -> None:
@@ -213,19 +234,23 @@ class PartyPackage:
         entry_price = float(trade["price"])
         entry_time = datetime.fromisoformat(trade["openTime"].replace("Z", "+00:00"))
         trade_id = str(trade["id"])
-        lvl = int(d.get("lvl", 0))
+        _rawlvl = float(d.get("lvl", 0) or 0)
+        # migration: pre-ladder comments carried the level INDEX (1..8, 15p step);
+        # ladder-era comments carry the offset in pips directly.
+        lvl_off = _rawlvl * 15.0 if 0 < _rawlvl <= 9 else _rawlvl
         cfg = pp_config()
 
         if pair not in self.grids:
             anchor = float(d.get("anc", entry_price))
             g = Grid(pair, direction, anchor, entry_time, "recovered")
-            for idx in range(1, int(cfg["max_levels"]) + 1):
-                g.levels[idx] = {"armed": False, "trade_id": None}
+            for off in cfg["marker_pips"]:
+                g.levels[_okey(off)] = {"armed": False, "trade_id": None}
             self.grids[pair] = g
             log.info("PP GRID rebuilt from popper recovery %s anchor=%.5f | engine=pp_v1",
                      pair, anchor)
-        if lvl and lvl in self.grids[pair].levels:
-            self.grids[pair].levels[lvl] = {"armed": False, "trade_id": trade_id}
+        if lvl_off:
+            # ensure a state slot exists even if the offset left the config ladder
+            self.grids[pair].levels[_okey(lvl_off)] = {"armed": False, "trade_id": trade_id}
 
         ticket = TradeTicket(pair=pair, session="pp", direction=direction,
                              score=0.0, dir_certainty=0.0, mom_certainty=0.0,
@@ -244,9 +269,9 @@ class PartyPackage:
         self.poppers[trade_id] = RatchetManager(position=pos, broker=self.broker,
                                                 dry_run=self.dry_run,
                                                 initial_units=abs(units_signed))
-        self._popper_grid[trade_id] = (pair, lvl)
-        log.info("PP RECOVERED popper %s %s lvl=%d @ %.5f trade_id=%s | engine=pp_v1",
-                 pair, direction, lvl, entry_price, trade_id)
+        self._popper_grid[trade_id] = (pair, lvl_off)
+        log.info("PP RECOVERED popper %s %s marker=-%sp @ %.5f trade_id=%s | engine=pp_v1",
+                 pair, direction, _okey(lvl_off), entry_price, trade_id)
         self._save_state()
 
     # ── per-tick work ────────────────────────────────────────────────────────
@@ -306,10 +331,10 @@ class PartyPackage:
             spread_pips = (ask - bid) / pip
 
             # retire stale grids: no parent, no open poppers, price back above
-            # the first level (long) — or hard age cap
+            # the shallowest marker (long) — or hard age cap
             busy = any(v["trade_id"] for v in g.levels.values())
             age_days = (now - g.created).total_seconds() / 86400.0
-            first_lvl = g.level_price(1, cfg["step_pips"])
+            first_lvl = g.level_price(min(cfg["marker_pips"]))
             back_in_zone = mid > first_lvl if g.side == "long" else mid < first_lvl
             if (pair not in parent_pairs and not busy
                     and (back_in_zone or age_days > cfg["grid_max_age_days"])):
@@ -320,11 +345,12 @@ class PartyPackage:
                 self._save_state()
                 continue
 
-            for idx in sorted(g.levels.keys()):
-                lv = g.levels[idx]
-                price = g.level_price(idx, cfg["step_pips"])
+            for off in cfg["marker_pips"]:
+                key = _okey(off)
+                lv = g.levels.setdefault(key, {"armed": True, "trade_id": None})
+                price = g.level_price(off)
                 if lv["trade_id"]:
-                    continue                       # popper open at this level
+                    continue                       # popper open at this marker
                 crossed_back = mid > price if g.side == "long" else mid < price
                 crossed_into = mid <= price if g.side == "long" else mid >= price
                 if not lv["armed"]:
@@ -349,29 +375,30 @@ class PartyPackage:
                 n_open = len(parent_pairs) + len(self.poppers)
                 cap = min(int(cfg["max_total_trades"]), pm_max_concurrent())
                 if n_open >= cap:
-                    log.info("PP SKIP fire %s lvl=%d reason=trade_cap (%d/%d) | engine=pp_v1",
-                             pair, idx, n_open, cap)
+                    log.info("PP SKIP fire %s marker=-%sp reason=trade_cap (%d/%d) | engine=pp_v1",
+                             pair, key, n_open, cap)
                     continue
                 if (n_open + 1) * pm_margin_pct() > cfg["max_margin_pct_total"] + 1e-9:
-                    log.info("PP SKIP fire %s lvl=%d reason=margin_cap | engine=pp_v1", pair, idx)
+                    log.info("PP SKIP fire %s marker=-%sp reason=margin_cap | engine=pp_v1", pair, key)
                     continue
-                self._fire(g, idx, bid, ask, now, cfg)
+                self._fire(g, off, bid, ask, now, cfg)
 
     # ── internals ────────────────────────────────────────────────────────────
 
-    def _fire(self, g: Grid, idx: int, bid: float, ask: float,
+    def _fire(self, g: Grid, offset_pips: float, bid: float, ask: float,
               now: datetime, cfg: dict) -> None:
         pair = g.pair
+        key = _okey(offset_pips)
         entry_price = ask if g.side == "long" else bid
         try:
             units = self.broker.size_units(pair, g.side, margin_pct=pm_margin_pct())
             trade = self.broker.place_market(
                 pair, g.side, units=units, entry_price=entry_price,
                 sl_pips=float(cfg["sl_pips"]),
-                client_ext=_popper_client_ext(cfg, idx, g.anchor),
+                client_ext=_popper_client_ext(cfg, offset_pips, g.anchor),
             )
         except Exception as exc:
-            log.warning("PP FIRE failed %s lvl=%d: %s", pair, idx, exc)
+            log.warning("PP FIRE failed %s marker=-%sp: %s", pair, key, exc)
             return
         trade_id = str(trade["id"])
         pip = PIP[pair]
@@ -388,30 +415,31 @@ class PartyPackage:
         self.poppers[trade_id] = RatchetManager(position=pos, broker=self.broker,
                                                 dry_run=self.dry_run,
                                                 initial_units=units)
-        self._popper_grid[trade_id] = (pair, idx)
-        g.levels[idx] = {"armed": False, "trade_id": trade_id}
+        self._popper_grid[trade_id] = (pair, float(offset_pips))
+        g.levels[key] = {"armed": False, "trade_id": trade_id}
         g.fired_total += 1
-        log.info("POPPER FIRE %s %s lvl=%d @ %.5f | %d units | SL -%.1fp ratchet %.1f/%.1f "
+        log.info("POPPER FIRE %s %s marker=-%sp @ %.5f | %d units | SL -%.1fp ratchet %.1f/%.1f "
                  "| trade_id=%s | engine=pp_v1 anchor=%.5f",
-                 pair, g.side, idx, entry_price, units, cfg["sl_pips"],
+                 pair, g.side, key, entry_price, units, cfg["sl_pips"],
                  cfg["trigger_pips"], cfg["trail_pips"], trade_id, g.anchor)
         self._save_state()
 
-    def _book_exit(self, pair: str, lvl: int, trade_id: str, net_pips: float,
+    def _book_exit(self, pair: str, lvl_off: float, trade_id: str, net_pips: float,
                    reason: str, now: datetime) -> None:
         g = self.grids.get(pair)
+        key = _okey(lvl_off)
         if g is not None:
             if net_pips > 0:
                 g.greens += 1; g.green_pips += net_pips
             else:
                 g.knives += 1; g.knife_pips += net_pips
-            if lvl in g.levels and g.levels[lvl].get("trade_id") == trade_id:
-                # disarmed until price re-crosses the level from the favorable side
-                g.levels[lvl] = {"armed": False, "trade_id": None}
+            if key in g.levels and g.levels[key].get("trade_id") == trade_id:
+                # disarmed until price re-crosses the marker from the favorable side
+                g.levels[key] = {"armed": False, "trade_id": None}
         self.poppers.pop(trade_id, None)
         self._popper_grid.pop(trade_id, None)
-        log.info("POPPER EXIT %s lvl=%d | %s | net=%+.2fp | trade_id=%s | engine=pp_v1",
-                 pair, lvl, reason, net_pips, trade_id)
+        log.info("POPPER EXIT %s marker=-%sp | %s | net=%+.2fp | trade_id=%s | engine=pp_v1",
+                 pair, key, reason, net_pips, trade_id)
         self._save_state()
 
     # ── introspection / persistence ──────────────────────────────────────────
@@ -430,8 +458,8 @@ class PartyPackage:
                "open_poppers": len(self.poppers), "grids": []}
         for pair, g in self.grids.items():
             d = g.to_dict()
-            d["level_prices"] = {str(i): round(g.level_price(i, cfg["step_pips"]), 5)
-                                 for i in sorted(g.levels.keys())}
+            d["level_prices"] = {k: round(g.level_price(float(k)), 5)
+                                 for k in sorted(g.levels.keys(), key=float)}
             popper_rows = []
             for tid, (p, lvl) in self._popper_grid.items():
                 if p != pair:

@@ -4,6 +4,18 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [Unreleased]
+
+### Changed
+- **Popper marker ladder** (Brock, 2026-07-22): grid markers are now an explicit offsets list
+  `pp_config.marker_pips` — default **−10, −15, −20, −30, −40, −60** — replacing the uniform
+  −15 step. Sim on the live era's real parents/candles: ladder +115.0p popper P&L vs +21.2p
+  current scheme (complex +46.3 vs −47.5); the dense top double-harvests shallow chop, the
+  skipped −50 rung cost nothing. Warning label attached: denser ladders roughly double storm-grid
+  bleed (−334 vs −153 on the rvol slide) — mitigated by the Activation Bar and per-cell popper
+  switches. Level state, client extensions (`lvl` = offset pips), persistence, and recovery all
+  migrated; pre-ladder state/comments auto-migrate (index × 15p).
+
 ## [6.2.0] — 2026-07-22
 
 ### Fixed

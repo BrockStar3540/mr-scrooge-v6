@@ -765,7 +765,7 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
       Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m.
-      Cumulative since the cell-era cutover (2026-07-04). 🏆 = meets the ACTIVATION BAR (n≥20 episodes, avg ≥ +2.0p/ep — see RESEARCH_PROGRAM §activation-bar). ⚠️ = ACTIVE without current-era bar evidence.
+      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow beating the live book's median.
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
@@ -1031,8 +1031,7 @@ async function pollShadowboard(){
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
     document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
-      const beat=x.bar_met?' 🏆':'';
-      const belowBar=(x.status==='ACTIVE'&&!x.bar_met)?' <span class="pill pill-warn" title="ACTIVE without current-era bar evidence (n≥20 & avg ≥ +2p/ep)">⚠️ no bar</span>':'';
+      const beat=(x.status==='SHADOW'&&d.active_median!=null&&x.avg_net240>d.active_median)?' 🏆':'';
       const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
       const ncls=x.avg_net240>0?'pos':'neg';
       // cell is "PAIR/session" → split for the status control
@@ -1042,7 +1041,7 @@ async function pollShadowboard(){
       const ctrl=(pair&&session&&x.setup)?statusControl(pair,session,x.setup,liveStatus,'sb')
         :'<span class="muted">—</span>';
       return `<tr>
-        <td class="mono" style="font-size:11px">${x.setup}${beat}${belowBar}</td>
+        <td class="mono" style="font-size:11px">${x.setup}${beat}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
         <td class="mono ${ncls}"><b>${x.avg_net240>0?'+':''}${x.avg_net240}p</b></td>
@@ -1749,15 +1748,14 @@ function renderPartyPackage(){
   const grids=pp.grids||[];
   if(!grids.length){tb.innerHTML='';no.style.display='block';return}
   no.style.display='none';
-  const step=(pp.config||{}).step_pips||15;
   tb.innerHTML=grids.map(g=>{
     const ageH=((Date.now()-new Date(g.created).getTime())/36e5);
     const lv=Object.keys(g.levels||{}).sort((a,b)=>a-b).map(i=>{
       const l=g.levels[i];
       const px=(g.level_prices||{})[i]||'';
-      if(l.trade_id)return `<span class="pill pill-warn" title="popper open @ ${px}">-${i*step}</span>`;
-      if(l.armed)  return `<span class="pill pill-pass" title="armed @ ${px}">-${i*step}</span>`;
-      return `<span class="pill pill-block" title="spent — re-arms on re-cross of ${px}">-${i*step}</span>`;
+      if(l.trade_id)return `<span class="pill pill-warn" title="popper open @ ${px}">-${i}</span>`;
+      if(l.armed)  return `<span class="pill pill-pass" title="armed @ ${px}">-${i}</span>`;
+      return `<span class="pill pill-block" title="spent — re-arms on re-cross of ${px}">-${i}</span>`;
     }).join(' ');
     const net=(g.green_pips||0)+(g.knife_pips||0);
     const subs=(g.open||[]).map(p=>{
@@ -1765,7 +1763,7 @@ function renderPartyPackage(){
         ?`🔒 engaged · peak ${fmtPips(p.peak_pips)} · SL locked <b>${fmtPips(p.sl_locked_pips)}</b>`
         :`peak ${fmtPips(p.peak_pips??0)} · needs +${(pp.config||{}).trigger_pips||8.5} to engage · hard SL −${(pp.config||{}).sl_pips||60}`;
       return `<tr style="background:rgba(255,255,255,.02)"><td></td><td colspan="8" class="mono muted" style="font-size:11px;text-align:left">
-        🎇 popper #${p.level*step} · ${p.units} units @ ${p.entry} · ${eng} · trade ${p.trade_id}</td></tr>`;
+        🎇 popper −${p.level}p · ${p.units} units @ ${p.entry} · ${eng} · trade ${p.trade_id}</td></tr>`;
     }).join('');
     return `<tr>
       <td><b>${g.pair.replace('_','/')}</b></td>
