@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-097, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-098, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -576,6 +576,16 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** two. (1) OANDA's FIFO safeguard rejected the new same-instrument long's on-fill SL while older UJ longs were open — with opaque logic (an identical 5-deep AUD stack passed all day). (2) OUR bug: `_fire` took `trade["id"]` from a fill-less response as an empty string, registered it as success — and since `""` is falsy, the marker never read as busy, so every re-cross re-fired.
 - **Fix:** fires verify a real fill; a rejected fire marks the marker with a 30-min cooldown; 3 straight rejections suspend the grid's fires for 2h (any real fill resets the streak). Regression test simulates the FIFO cancel.
 - **Lesson:** a broker response is not a fill until it contains one — and every external rejection path needs backoff, or the market's oscillation becomes your retry loop.
+
+---
+
+### B-098 — Setup Scoreboard + stamp feed dead since 07-22: a mid-function paste truncated main()
+- **Date:** 2026-07-24 (Brock: "these dashboard sections are not working")
+- **Area:** `research/tools/cell_setup_score.py` + `ops/server.py` (`_journal_unit`, `_cellscore_refresh`)
+- **Symptom:** Setup Scoreboard showed `scorer error: Expecting value: line 1 column 1`; CELLSHADOW stamp feed showed 0 stamps / 48h — while the engine stamped ~400/day and shadowboard read them fine.
+- **Root cause:** three, all latent since the 07-22 staleness overhaul. (1) The status-join edit pasted `def _config_status():` into the MIDDLE of `main()` at column 0 — syntactically valid Python that ended `main()` after the "Found N lines" print and swallowed the rest of the body as unreachable code inside the new function. The scorer exited 0 with empty stdout. (2) `server.py`'s `_journal_unit()` still defaulted to the retired `mr-scrooge-v6-dryrun` unit — the 07-22 fix updated shadowboard.py and the scorer but missed the third copy of the same default. (3) `_cellscore_refresh()` reset its `refreshing` flag AFTER the `return` (unreachable), so the first failed refresh wedged the error in the cache until the next process restart.
+- **Fix:** `_config_status` moved above `main()` and the body re-stitched; `_journal_unit()` default → `mr-scrooge-v6`; flag reset moved into `finally`; scorer subprocess timeout 120s → 600s (verified real run 66s, 31 setups).
+- **Lesson:** an insert-a-helper edit can silently bisect the enclosing function — Python won't object if the orphaned remainder still indents under the new def. Smoke-test the artifact the edit serves (run the scorer, curl the endpoint), not just the importability. And a default that exists in three files isn't a default, it's three bugs waiting to drift.
 
 ---
 
