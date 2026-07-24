@@ -229,24 +229,6 @@ def _grep_journal(since: str) -> list[str]:
     return []
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--since", default="2026-07-04", help="YYYY-MM-DD")
-    ap.add_argument("--setup", default=None, help="Filter to one setup_id")
-    ap.add_argument("--horizon", type=int, default=None, help="Override horizon (min)")
-    ap.add_argument("--json", action="store_true",
-                    help="Emit machine-readable JSON on stdout (for ops/server.py /api/cellscore); "
-                         "human chatter goes to stderr. Default CLI table output is unchanged.")
-    args = ap.parse_args()
-
-    lines = _grep_journal(args.since)
-    print(f"Found {len(lines)} CELLSHADOW lines since {args.since}",
-          file=sys.stderr if args.json else sys.stdout)
-
-    # Parse stamps
-    
-
 def _config_status():
     """(pair, session, setup_id) -> CURRENT status from config/cells (read fresh).
     The stamped status is what the setup WAS when it fired; promote/demote
@@ -269,7 +251,23 @@ def _config_status():
         pass
     return out
 
-# Group by (pair, session, setup_id) — status joined LIVE from config
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--since", default="2026-07-04", help="YYYY-MM-DD")
+    ap.add_argument("--setup", default=None, help="Filter to one setup_id")
+    ap.add_argument("--horizon", type=int, default=None, help="Override horizon (min)")
+    ap.add_argument("--json", action="store_true",
+                    help="Emit machine-readable JSON on stdout (for ops/server.py /api/cellscore); "
+                         "human chatter goes to stderr. Default CLI table output is unchanged.")
+    args = ap.parse_args()
+
+    lines = _grep_journal(args.since)
+    print(f"Found {len(lines)} CELLSHADOW lines since {args.since}",
+          file=sys.stderr if args.json else sys.stdout)
+
+    # Group by (pair, session, setup_id) — status joined LIVE from config
     stamps: dict[tuple, list] = defaultdict(list)
     for ln in lines:
         m  = RX.search(ln)

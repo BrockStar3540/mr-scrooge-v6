@@ -53,10 +53,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 
 def _journal_unit() -> str:
     """journald unit for CELLSHADOW / journal reads — parameterized via
-    SCROOGE_JOURNAL_UNIT (default = the V6 dry-run shadow). Matches the exact
+    SCROOGE_JOURNAL_UNIT (default = the live V6 unit). Matches the exact
     pattern in ops/shadowboard.py so both read the same unit's journal."""
     import os
-    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6-dryrun")
+    return os.environ.get("SCROOGE_JOURNAL_UNIT", "mr-scrooge-v6")
 
 # ── Exit-tuning config (TUNE tab) ───────────────────────────────────────────
 _EXIT_CONFIG_PATH = _REPO_ROOT / "config" / "exit_config.json"
@@ -1206,7 +1206,7 @@ def _cellscore_refresh():
     try:
         out = subprocess.check_output(
             ["python3", str(_CELLSCORE_SCRIPT), "--json"],
-            text=True, timeout=120, stderr=subprocess.DEVNULL,
+            text=True, timeout=600, stderr=subprocess.DEVNULL,
             cwd=str(_REPO_ROOT),
         )
         data = _j.loads(out)
@@ -1215,14 +1215,15 @@ def _cellscore_refresh():
         if not data.get("setups"):
             data.setdefault("note", "no CELLSHADOW stamps scored yet — market opens Sunday 21:00 UTC")
     except subprocess.TimeoutExpired:
-        data = {"setups": [], "note": "scorer timed out (>120s)"}
+        data = {"setups": [], "note": "scorer timed out (>600s)"}
     except Exception as exc:
         data = {"setups": [], "note": f"scorer error: {exc}"}
+    finally:
+        _CELLSCORE_CACHE["refreshing"] = False
     data["generated_at"] = datetime.now(timezone.utc).isoformat()
     _CELLSCORE_CACHE["ts"] = time.time()
     _CELLSCORE_CACHE["data"] = data
     return data
-    _CELLSCORE_CACHE["refreshing"] = False
 
 
 def _cellscore() -> dict:
