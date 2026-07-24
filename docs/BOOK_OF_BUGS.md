@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-096, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-097, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -566,6 +566,16 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** two compounding errors. (1) New ladder keys added to an EXISTING deep-underwater grid were armed `True`; the fire check saw price beyond the marker and fired immediately at the current (much worse) price. (2) The deploy scp'd a scratchpad `pp_config.json` over the live file, silently erasing the `per_cell: {GBP_USD|london: false}` opt-out — the artifact-over-generator sin (B-092) applied to config.
 - **Fix:** new markers on a live grid arm only if price is still on the favorable side (else disarmed, waiting for re-cross); inert off-config slots are pruned; regression tests for both. per_cell restored via the API. Deploy rule: merge-managed configs are never scp'd whole — only touched via their write endpoints.
 - **Lesson:** "armed" is a statement about the PATH (price hasn't crossed yet), not a default. And any config a dashboard writes is a generator's output — edit it through the writer, never by file copy.
+
+---
+
+### B-097 — Broker-cancelled fire treated as a fill: phantom popper + 82-attempt retry storm
+- **Date:** 2026-07-23/24 (Brock: "dozens of cancelled trades — FIFO requirement")
+- **Area:** `party_package.py` `_fire` + OANDA US FIFO safeguard
+- **Symptom:** 82 ORDER_CANCEL(FIFO_VIOLATION_SAFEGUARD_VIOLATION) in ~9h — all the SAME USD_JPY −10 popper, re-fired every oscillation of price across its marker. A phantom popper with `trade_id=""` sat in the registry. (No fills, no fees, no naked trades — FOK orders died cleanly.)
+- **Root cause:** two. (1) OANDA's FIFO safeguard rejected the new same-instrument long's on-fill SL while older UJ longs were open — with opaque logic (an identical 5-deep AUD stack passed all day). (2) OUR bug: `_fire` took `trade["id"]` from a fill-less response as an empty string, registered it as success — and since `""` is falsy, the marker never read as busy, so every re-cross re-fired.
+- **Fix:** fires verify a real fill; a rejected fire marks the marker with a 30-min cooldown; 3 straight rejections suspend the grid's fires for 2h (any real fill resets the streak). Regression test simulates the FIFO cancel.
+- **Lesson:** a broker response is not a fill until it contains one — and every external rejection path needs backoff, or the market's oscillation becomes your retry loop.
 
 ---
 

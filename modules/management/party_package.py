@@ -351,10 +351,16 @@ class PartyPackage:
                        if k not in _cfg_keys and not g.levels[k]["trade_id"]]:
                 del g.levels[_k]
 
+            _now_ts = now.timestamp()
+            if getattr(g, "suspended_until", 0) > _now_ts:
+                continue   # grid fires suspended after repeated broker rejections
+
             for off in cfg["marker_pips"]:
                 key = _okey(off)
                 price = g.level_price(off)
                 lv = g.levels.get(key)
+                if lv is not None and lv.get("cooldown_until", 0) > _now_ts:
+                    continue   # marker cooling down after a rejected fire
                 if lv is None:
                     # NEW marker on a live grid: arm only if price is still on
                     # the favorable side — never insta-fire at a worse price
@@ -412,8 +418,17 @@ class PartyPackage:
             )
         except Exception as exc:
             log.warning("PP FIRE failed %s marker=-%sp: %s", pair, key, exc)
+            self._fire_rejected(g, key, now, str(exc))
             return
-        trade_id = str(trade["id"])
+        trade_id = str(trade.get("id") or "")
+        if not trade_id:
+            # Order placed but NOT filled (e.g. OANDA FIFO_VIOLATION_SAFEGUARD
+            # cancels the FOK market order, B-097). Treating this as a fill
+            # created a phantom popper and an 82-attempt retry storm.
+            log.warning("PP FIRE rejected (no fill) %s marker=-%sp — broker cancelled "
+                        "the order (FIFO safeguard?) | engine=pp_v1", pair, key)
+            self._fire_rejected(g, key, now, "no-fill")
+            return
         pip = PIP[pair]
         sl_price = (entry_price - cfg["sl_pips"] * pip if g.side == "long"
                     else entry_price + cfg["sl_pips"] * pip)
@@ -431,11 +446,29 @@ class PartyPackage:
         self._popper_grid[trade_id] = (pair, float(offset_pips))
         g.levels[key] = {"armed": False, "trade_id": trade_id}
         g.fired_total += 1
+        g.fire_fails = 0                      # a real fill resets the rejection streak
         log.info("POPPER FIRE %s %s marker=-%sp @ %.5f | %d units | SL -%.1fp ratchet %.1f/%.1f "
                  "| trade_id=%s | engine=pp_v1 anchor=%.5f",
                  pair, g.side, key, entry_price, units, cfg["sl_pips"],
                  cfg["trigger_pips"], cfg["trail_pips"], trade_id, g.anchor)
         self._save_state()
+
+    _FIRE_COOLDOWN_S = 1800      # 30 min per-marker cooldown after a rejected fire
+    _GRID_SUSPEND_S  = 7200      # 2 h grid-wide fire suspension after 3 straight rejections
+
+    def _fire_rejected(self, g: Grid, key: str, now: datetime, why: str) -> None:
+        """A fire attempt produced no fill: cool the marker down and, on repeated
+        rejections, suspend the whole grid's fires — never retry-storm (B-097)."""
+        ts = now.timestamp()
+        lv = g.levels.get(key) or {}
+        lv.update({"armed": False, "trade_id": None, "cooldown_until": ts + self._FIRE_COOLDOWN_S})
+        g.levels[key] = lv
+        g.fire_fails = getattr(g, "fire_fails", 0) + 1
+        if g.fire_fails >= 3:
+            g.suspended_until = ts + self._GRID_SUSPEND_S
+            log.warning("PP GRID %s fires SUSPENDED %dmin after %d straight rejections (%s) "
+                        "| engine=pp_v1", g.pair, self._GRID_SUSPEND_S // 60, g.fire_fails, why)
+            g.fire_fails = 0
 
     def _book_exit(self, pair: str, lvl_off: float, trade_id: str, net_pips: float,
                    reason: str, now: datetime) -> None:

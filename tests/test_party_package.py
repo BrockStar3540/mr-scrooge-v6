@@ -277,6 +277,30 @@ def test_prune_inert_offconfig_slots(pp, tmp_path, monkeypatch):
     assert set(pp.grids["EUR_USD"].levels.keys()) == {"15", "30"}
 
 
+def test_rejected_fire_no_phantom_and_cooldown(pp):
+    """B-097: a broker-cancelled order (no fill -> id '') must NOT register a
+    phantom popper, must cool the marker down, and 3 straight rejections
+    suspend the grid's fires."""
+    pp.broker.place_market = lambda *a, **k: {"id": ""}          # FIFO-style cancel
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09895))          # -10 fire -> rejected
+    assert pp.open_popper_count() == 0
+    assert "" not in pp.poppers
+    g = pp.grids["EUR_USD"]
+    assert g.levels["10"]["trade_id"] is None
+    assert g.levels["10"]["cooldown_until"] > NOW.timestamp()
+    # oscillation may re-cross, but cooldown blocks the retry storm
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09950))
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09895))
+    assert pp.open_popper_count() == 0
+    # two more rejections at other markers -> grid suspended
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))          # -15 rejected (2nd)
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09795))          # -20 rejected (3rd)
+    assert getattr(g, "suspended_until", 0) > NOW.timestamp()
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09690))          # -30 would fire, suspended
+    assert pp.open_popper_count() == 0
+
+
 def test_dashboard_state_shape(pp):
     pp.on_parent_open(_parent(), "setup_x")
     pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))
