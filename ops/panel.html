@@ -766,10 +766,12 @@ body.has-ticker{padding-bottom:32px}
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
       Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m.
       Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow beating the live book's median.
+      Sorted by LCB = 95% lower confidence bound on avg net/ep — small samples rank below proven ones; — = &lt;2 episodes.
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
         <th>setup</th><th>cell</th><th>side</th><th>status</th><th>eps</th>
+        <th title="avg - 1.645·sd/√n — the board's sort key">LCB</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
@@ -1044,7 +1046,8 @@ async function pollShadowboard(){
         <td class="mono" style="font-size:11px">${x.setup}${beat}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
-        <td class="mono ${ncls}"><b>${x.avg_net240>0?'+':''}${x.avg_net240}p</b></td>
+        <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
+        <td class="mono ${ncls}">${x.avg_net240>0?'+':''}${x.avg_net240}p</td>
         <td class="mono ${x.cum_net240>0?'pos':'neg'}">${x.cum_net240>0?'+':''}${x.cum_net240}p</td>
         <td>${Math.round(x.wr*100)}%</td><td>${Math.round(x.hit6*100)}%</td>
         <td class="mono muted" style="font-size:11px">${x.med_mfe}/${x.med_mae}</td>

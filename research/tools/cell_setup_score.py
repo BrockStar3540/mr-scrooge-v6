@@ -331,7 +331,10 @@ def main():
 
         evs = []
         wins = 0
-        for ts, _ in stamp_list[:50]:  # cap at 50 to avoid rate-limiting
+        # Cap at 50 sims to avoid rate-limiting — the MOST RECENT 50 (journal is
+        # oldest-first; taking the head simmed early-July stamps whose candle
+        # windows can fail, blanking SimEV on exactly the highest-n setups).
+        for ts, _ in stamp_list[-50:]:
             ev = _simulate_ratchet(pair, ts, side, sl_pips, trig_pips, trail_pips, horizon)
             if not math.isnan(ev):
                 evs.append(ev)

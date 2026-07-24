@@ -156,12 +156,20 @@ def _aggregate(db):
         rows = g["rows"]; s = [r["scores"] for r in rows]
         nets = [x["net240"] for x in s]
         last7 = [r["scores"]["net240"] for r in rows if r["t"] >= cutoff7]
+        # LCB (2026-07-24, Brock): 95% one-sided lower confidence bound on the
+        # MEAN net240 — lcb = avg - 1.645*sd/sqrt(n). Small-n glamour rows
+        # (3 eps, +8p avg) rank below big-n proven rows; n<2 has no variance
+        # estimate -> None, sorts to the bottom ("too new, no sample").
+        avg = sum(nets) / len(nets)
+        lcb = (round(avg - 1.645 * st.stdev(nets) / len(nets) ** 0.5, 2)
+               if len(nets) >= 2 else None)
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup), g["status"]),
             "episodes": len(rows),
             "cum_net240": round(sum(nets), 1),
-            "avg_net240": round(sum(nets)/len(nets), 2),
+            "avg_net240": round(avg, 2),
+            "lcb": lcb,
             "wr": round(sum(1 for n in nets if n > 0)/len(nets), 3),
             "hit6": round(sum(1 for x in s if x["mfe240"] >= 6)/len(s), 3),
             "med_mfe": round(st.median(x["mfe240"] for x in s), 1),
@@ -176,7 +184,9 @@ def _aggregate(db):
             # status; SHADOW meeting it = promotable.
             "bar_met": bool(len(rows) >= 20 and (sum(nets)/len(nets)) >= 2.0),
         })
-    out.sort(key=lambda r: r["avg_net240"], reverse=True)
+    # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last.
+    out.sort(key=lambda r: (r["lcb"] is not None, r["lcb"] if r["lcb"] is not None else 0.0,
+                            r["avg_net240"]), reverse=True)
     return out
 
 _REFRESHING = {"on": False}

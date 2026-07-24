@@ -530,3 +530,29 @@ is indistinguishable from zero at any n the book reaches in weeks.
   broker-fill evidence — fills convict quicker than stamps (the storm needed two).
 - Era boundaries matter: evidence must come from the current engine/config era. A
   cutover or gear change restarts the clock (see B-094 for what stale-era evidence does).
+
+
+## Open dockets (2026-07-24, from the outside-review triage)
+
+An external review of the dashboard (2026-07-24) proposed ten changes; most were either
+already doctrine (the bar IS confidence-gated promotion) or already falsified (regime
+scoring and meta-allocators are price prediction re-skinned; graduation ladders assume
+config stability we deliberately don't have). Two items survived triage and await a
+Brock docket because they touch book governance:
+
+- **D-1 — Wire exp_ev to current-era measured EV.** Most CELLSHADOW stamps carry
+  `exp_ev=+0.000` (controls and un-scored setups stamp a placeholder), so the Setup
+  Scoreboard's Δ (sim vs expected) only carries information on the few setups with an
+  assigned ev_seq. Proposal: stamp exp_ev from the setup's current-era Shadowboard avg
+  at stamp time, making Δ a real calibration signal across the whole board. Cost: the
+  stamp path gains a dependency on the aggregate store; era boundaries must reset it.
+- **D-2 — Evidence-tiered sizing.** Units tied to the activation bar: bar-met = full
+  10%/trade, ACTIVE-without-bar (era too young) = half. Not prediction — capital
+  geometry, consistent with the 2026-07-20 Kelly measurement (book runs ~quarter-Kelly).
+  Reduces the cost of being wrong about young setups without claiming to know regimes.
+
+Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
+**LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw
+avg — small-n glamour rows sink below proven ones, n<2 shows "—" and sorts last. The
+Setup Scoreboard sim cap now takes the most recent 50 stamps (was oldest-50, which
+blanked SimEV on exactly the highest-n setups).
