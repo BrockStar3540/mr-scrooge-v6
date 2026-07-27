@@ -598,6 +598,26 @@ Brock docket because they touch book governance:
   condition schema — wiring them would need new feed features (BB_compress, ADX,
   bar-range ratios): a candidate follow-on if the threshold five earn anything.
 
+- **D-5 — Execution truth (external review, finding 3; QUEUED — touches the live order
+  path, gets its own session).** The engine builds Position, stop distance, and ratchet
+  baseline from the pre-order quote and ignores the broker's returned fill price;
+  management runs on mid rather than executable bid/ask. Work package: adopt
+  orderFillTransaction.price as the entry everywhere; bid-for-long / ask-for-short
+  liquidation and MFE in management and scoring; record spread+slippage per trade;
+  durable client order ids + reconciliation so an accepted-order-then-timeout can never
+  orphan or duplicate. At an 8.5p trigger these are not bookkeeping — they may decide
+  whether the edge exists.
+- **D-6 — The statistics program (external review, finding 6; QUEUED).** The governor
+  promotes on frictionless stamp-forward drift and demotes on broker P&L — different
+  distributions; overlapping 240m labels on ~30min episodes make the LCB overconfident;
+  ~150 setups examined daily is a multiple-testing machine with no deflation. Work
+  package: cluster-aware scoring (grid episodes and same-currency trades as units), one
+  cost-adjusted utility for promotion AND demotion, era resets on any config-hash change
+  (not just governor flips), an explicit hypothesis registry, and PBO/Deflated-Sharpe-
+  style controls on the promotion gate (Bailey & Lopez de Prado). SHIPPED from the same
+  review, 2026-07-27: trial-fairness stamping (every setup, every cycle), validator
+  sync + test enforcement, same-origin dashboard writes, fail-closed runtime controls.
+
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw
 avg — small-n glamour rows sink below proven ones, n<2 shows "—" and sorts last. The
