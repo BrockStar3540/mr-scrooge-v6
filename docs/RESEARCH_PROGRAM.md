@@ -598,8 +598,16 @@ Brock docket because they touch book governance:
   condition schema — wiring them would need new feed features (BB_compress, ADX,
   bar-range ratios): a candidate follow-on if the threshold five earn anything.
 
-- **D-5 — Execution truth (external review, finding 3; QUEUED — touches the live order
-  path, gets its own session).** The engine builds Position, stop distance, and ratchet
+- **D-5 — Execution truth (external review, finding 3; SHIPPED 2026-07-28 in four
+  staged commits, each restart-verified against the live book).** Delivered: server-side
+  SL as a fill-anchored DISTANCE (slippage can no longer resize the real stop); parents
+  and poppers adopt orderFillTransaction.price as the true entry with per-fill
+  quoted/filled/slippage/spread logging; parent and popper management (peak, engage,
+  lock, trail, net) runs on executable bid/ask instead of mid; durable sv6-* order
+  intent ids with broker reconciliation on transport errors (accepted-then-timeout is
+  adopted, never orphaned; never-arrived raises safely). Grid marker crossing stays
+  mid-based by design (level definition, documented inline). Residuals: bracket-mode TP
+  remains quote-anchored (no distance form; unused by the live book). Original spec:** The engine builds Position, stop distance, and ratchet
   baseline from the pre-order quote and ignores the broker's returned fill price;
   management runs on mid rather than executable bid/ask. Work package: adopt
   orderFillTransaction.price as the entry everywhere; bid-for-long / ask-for-short
