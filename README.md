@@ -2,9 +2,11 @@
 
 # Mr. Scrooge V6
 
-### A forex bot with no strategy — on purpose.
+### A forex bot that puts strategies on trial.
 
-*Six versions · 8 years of data · 20 pairs · 100+ strategies · 50+ indicators — boiled down to one falsifiable idea:*
+*Every strategy and entry/exit indicator runs as a **shadow** first — stamped on live markets, scored against forward broker-verified movement, and **promoted to live capital only when it clears an evidence bar**. Setups that degrade get demoted by the same evidence. The book is whatever survives.*
+
+*Six versions · 8 years of data · 18 pairs scanning · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
 **you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, a full backtesting research program, and an honest, broker-verified track record.*
@@ -44,6 +46,36 @@ Most bots wager that some indicator reveals *which way* price will go. We spent 
 - **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+8.5 → lock +6 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
 - **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired every 15p of adverse movement, each with its own 60p server-side SL and its own ratchet (+8.5 → lock +6 → trail 2.5). One popper per level at a time; a level re-arms only after its popper clears and price re-crosses it, so oscillating tape harvests repeatedly without stacking duplicates. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in spread+slippage toll — this deployment is the live practice-tape test of exactly that claim ([full paper: hypothesis → ten falsification rounds → why it shipped anyway](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). **Don't like the strategy? Turn it off**: global kill switch + per-cell opt-out toggles on the dashboard (`config/pp_config.json`, hot-reloaded). Every popper is tagged `pp_v1` for broker-truth attribution.
 - **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers), `max_per_currency_direction = 4`, 10% of balance notional per trade, ~80% total exposure ceiling.
+
+## The trial system — how a strategy earns (and loses) its seat
+
+Nothing in this repo trades because we believe in it. Every setup — ours, resurrected from old
+tapes, or contributed — walks the same ladder:
+
+1. **Shadow.** The setup is wired into a cell with explicit entry conditions and stamps a
+   `CELLSHADOW` line every time it would have fired — zero orders, zero risk. Stamps are
+   episode-deduped and scored on the **forward M5 path** (net pips at 240m) — market truth,
+   not our own exit luck.
+2. **The Shadowboard.** Every setup, ACTIVE and SHADOW alike, is ranked on the identical
+   metric, sorted by a **95% lower confidence bound** (`avg − 1.645·σ/√n`) so a lucky
+   3-episode row can never outrank a proven 30-episode one.
+3. **Promotion — the activation bar.** A setup may go ACTIVE only with **current-era evidence
+   of n ≥ 20 episodes at ≥ +2.0 pips/episode** — a margin chosen because the measured
+   execution toll makes any sub-1p claimed edge indistinguishable from zero. The dashboard
+   marks bar-met shadows 🏆 (promotable) and ACTIVE setups without current-era bar evidence ⚠️.
+4. **Demotion — fills convict faster than stamps.** Live setups are audited against
+   **broker-verified fills** (`research/tools/broker_setup_audit.py`), never our own journal.
+   A setup whose recent fills and shadow tape both turn red gets demoted back to SHADOW —
+   where watching it costs nothing and it can re-earn the bar. Config changes reset the clock:
+   evidence never blends across eras.
+
+**Currently on trial (v6.3.0):** 10 pairs the book has never traded — CAD, CHF and NZD
+crosses plus GBP/JPY — resurrected from this account's own March/April 2026 tapes, where
+session-extreme fades and trend-pullback entries kept winning on instruments we later dropped.
+Their setups (`ps_floor_fade_long`, `ps_ceil_fade_short`, `trend_pullback_long`) now stamp as
+shadows on 18 scanning pairs. The old tape supplied the hypotheses; the bar supplies the
+verdict — and if the crosses' 2–3× spread toll eats the edge, the bar will say no, which is
+the system working.
 
 ## The pipeline
 
@@ -94,6 +126,11 @@ Everything live is a **forward experiment on a practice account**, scored agains
    Every popper is broker-tagged (`pp_v1`), so real fills will confirm or refute the *cost
    model itself* — the one variable no offline sim can settle. Per-cell opt-out + global kill
    switch on the dashboard.
+4. **The replay shadow book (v6.3.0)** — 10 never-traded pairs (CAD/CHF/NZD crosses + GBP/JPY)
+   running the shapes that won on them in this account's own March/April 2026 tapes, as
+   shadows only. Each (pair × session × setup) must independently clear the activation bar;
+   the standing prior is that cross-pair spread toll kills most of them, and the stamps will
+   settle it either way.
 
 Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md](docs/ROADMAP.md).
 
@@ -103,7 +140,7 @@ Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md]
 |---|---|
 | 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | **start here** — the falsification method, open questions |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
-| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-090 — every dead end and defect, on purpose |
+| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-098 — every dead end and defect, on purpose |
 | 📄 **[Papers index](docs/papers/)** | incl. the [cost-aware exit-classes paper](docs/PAPER_cost_aware_exit_classes_2026-07-05.md) (the chapter the wide-stop turn revised) |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
 | 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | the readable research record — papers, session notes, backtest results & version history (raw corpora / models / code are privately archived, available on request) |

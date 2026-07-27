@@ -4,9 +4,28 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
-## [Unreleased]
+## [6.3.0] — 2026-07-27 — "Strategies on trial"
+
+The release where the README stopped underselling the system: Scrooge is not "a bot with no
+strategy" — it is a bot that **puts strategies and entry/exit indicators on trial**, promotes
+the ones that prove themselves as shadows, and demotes the ones that degrade. This release
+ships the trial machinery upgrades (LCB ranking, honest chips, broker-truth audit) and the
+biggest expansion of the trial docket since the cell cutover: 10 replay pairs, 18 scanning.
 
 ### Added
+- **The replay shadow book — 10 never-traded pairs on trial (D-3)** (Brock, 2026-07-27):
+  CAD_JPY, AUD_CAD, EUR_CAD, GBP_CAD (March tape), EUR_CHF, CHF_JPY, AUD_CHF (April 1–7 tape),
+  NZD_USD, NZD_JPY, GBP_JPY (April 16–17 tape) — resurrected from this account's own pre-V5
+  transaction history, where session-extreme fades and trend-pullback entries recurred as
+  winners. All SHADOW-only: `ps_floor_fade_long` (asia), `ps_ceil_fade_short` (asia + ny, and
+  USD_CHF london/ny), `trend_pullback_long` (london/ny — the 2026-06-14 discovery-engine entry,
+  first time wired). Promotion strictly via the activation bar (n≥20 eps @ ≥+2p/ep); the
+  standing prior is that cross spread toll kills most of them — that verdict is the point.
+  Evidence and counter-examples (the USD_MXN broken-floor knife; the NZD_USD 990/1014
+  identical-entry loss/win pair) are written into the cell files and RESEARCH_PROGRAM §D-3.
+- **`research/tools/view_at_time.py`**: replay the live feed's exact `_compute_features` on
+  candle windows ending at any historical instant — "what did the indicators say when this
+  trade was entered," for any OANDA instrument, using the same formulas the bot trades with.
 - **INDICATORS tab: why-is/isn't-it-firing** (Brock, 2026-07-26): each pair card leads with the
   current session's ACTIVE setups and their live condition bars (range zone + marker, server-
   computed pass/fail), a READY badge + green card glow when all conditions pass, an "n/m OUT"
@@ -40,6 +59,9 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   activation bar met; the panel never wired `bar_met` (a 3-episode row edging the ACTIVE median
   by 0.07p wore a trophy) and the ⚠️ ACTIVE-without-bar-evidence chip was never rendered. Both
   now live; first honest census: zero shadows hold the bar, 2 of 10 ACTIVE setups do.
+- **The pair universe existed in three files** (2026-07-27, B-098 family): the dashboard
+  server carried its own hardcoded 8-pair list, so new pairs scanned and stamped but never
+  appeared on the book endpoint. `config/pairs.py` is now the single source of truth.
 
 ### Changed
 - **Popper marker ladder** (Brock, 2026-07-22): grid markers are now an explicit offsets list
