@@ -71,7 +71,66 @@
         "ev_gross_short": -1.141,
         "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      "setups": [],
+      "setups": [
+        {
+          "id": "trend_pullback_short",
+          "side": "short",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "4h downtrend (paper: below-EMA context)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": -0.0015,
+              "max": 0.0,
+              "note": "below the H1 EMA20 but SHALLOW (within ~15p) \u2014 sell the bounce into resistance, not the extended drop (paper cond. 1+2)"
+            },
+            {
+              "feature": "rsi14",
+              "min": 40.0,
+              "max": 60.0,
+              "note": "paper RSI3+RSI4 zones \u2014 the two cells that backtested positive; the claimed gradient peaks at 50-60"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "signal bar turning back down (paper cond. 4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "StrategyE_EURUSD_WhitePaper (2026-06-07) re-adjudication: claimed +3.6p/trade in the strong cell, but numbers predate the 2026-07-03 H1 look-ahead fix (upper bounds) and used the falsified ladder/tight-stop exit family. This shadow re-tests the ENTRY claim forward, under the live wide-stop ratchet, judged only by the activation bar.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27)."
+        }
+      ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     },
     "ny": {
@@ -127,6 +186,64 @@
             "drift": "STABLE"
           },
           "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+        },
+        {
+          "id": "trend_pullback_short",
+          "side": "short",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "4h downtrend (paper: below-EMA context)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": -0.0015,
+              "max": 0.0,
+              "note": "below the H1 EMA20 but SHALLOW (within ~15p) \u2014 sell the bounce into resistance, not the extended drop (paper cond. 1+2)"
+            },
+            {
+              "feature": "rsi14",
+              "min": 40.0,
+              "max": 60.0,
+              "note": "paper RSI3+RSI4 zones \u2014 the two cells that backtested positive; the claimed gradient peaks at 50-60"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "signal bar turning back down (paper cond. 4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "StrategyE_EURUSD_WhitePaper (2026-06-07) re-adjudication: claimed +3.6p/trade in the strong cell, but numbers predate the 2026-07-03 H1 look-ahead fix (upper bounds) and used the falsified ladder/tight-stop exit family. This shadow re-tests the ENTRY claim forward, under the live wide-stop ratchet, judged only by the activation bar.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27)."
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.196 ev_gross_short=-3.193, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
