@@ -280,7 +280,7 @@
           "id": "rvol_low_240",
           "side": "long",
           "class": "FORMULA",
-          "status": "DISABLED",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -340,7 +340,7 @@
           "id": "timing_lean_30",
           "side": "short",
           "class": "TIMING",
-          "status": "DISABLED",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {

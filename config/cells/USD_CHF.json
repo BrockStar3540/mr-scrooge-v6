@@ -17,7 +17,7 @@
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=None ev_gross_short=None. Source: config/cell_calibration.json metadata.killed_note."
     },
     "london": {
-      "enabled": false,
+      "enabled": true,
       "structure": {
         "tier": 2,
         "rh_offer_rate_60m": 0.3281,
@@ -73,10 +73,10 @@
           "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape."
         }
       ],
-      "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note."
+      "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
     },
     "ny": {
-      "enabled": false,
+      "enabled": true,
       "structure": {
         "tier": 3,
         "rh_offer_rate_60m": 0.2626,
@@ -132,7 +132,7 @@
           "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape."
         }
       ],
-      "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note."
+      "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
     }
   }
 }
