@@ -4,7 +4,12 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
-## [Unreleased]
+## [6.5.0] — 2026-07-27 — "The Governor"
+
+The autonomy release. The project's thesis was always an autonomous trading bot; this is
+the version where the loop actually closes — hundreds of strategies earn or lose their own
+seats, by a published standard, with the switch and the spec on the dashboard for any
+operator.
 
 ### Added
 - **The Bar Governor — autonomous promote/demote** (Brock, 2026-07-27): `ops/governor.py`
@@ -16,6 +21,30 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   data/governor_ledger.jsonl, per-setup era clocks in governor state (a flip restarts the
   evidence window). Tunables in config/governor_config.json. The bot now grants and
   revokes its own seats; the humans set the standard.
+
+- **Governor dashboard card** (SHADOW tab): AUTO-PROMOTE/DEMOTE ON/OFF toggle for any
+  operator (GET/POST `/api/governor`, atomic merge-preserving write, confirm dialogs both
+  ways), the standard inline, the ledger tail, and a How-it-works link to the new
+  **[docs/GOVERNOR.md](docs/GOVERNOR.md)** — the loop, the numbers, why they are what they
+  are, the rails, the era clocks, every tuning knob.
+- **MAE-flip counterpart audit — standing daily rule**: if a losing setup's median adverse
+  excursion outsizes its favorable by >=1.5x (n>=5), it needs a counterpart firing the
+  opposite direction at the same trigger — `research/tools/counterpart_audit.py` wires them
+  automatically (daily 06:30Z, before the governor), SHADOW, fresh era, honest
+  `_counter_<side>` names. First sweep: 3 signatures, 1 new counterpart
+  (`timing_lean_30_counter_long` GBP/asia); harvest-problem losers (MFE >= MAE) correctly
+  excluded.
+- **Counterpart policy replaces in-place side flips**: setups keep their name-true
+  direction forever; promising mirrors get their own setup, name, and record
+  (`classic_box_fade_long` restored LONG/SHADOW; `classic_box_break_short` carries the
+  winning direction with its 12-ep history via the new `config/setup_aliases.json`;
+  `rvol_low_240_short` wired). The Shadowboard and governor are alias-aware, and the
+  status join is side-aware — a retired side can never wear the live side's badge.
+
+### Changed
+- **All DISABLED setups -> SHADOW** (nothing is beyond the reach of evidence; under the
+  governor, a seat can only be re-earned through the bar). Also enabled the USD_CHF
+  london/ny session blocks that had been silently muting their april-replay setups.
 
 ## [6.4.0] — 2026-07-27 — "The trial docket"
 
