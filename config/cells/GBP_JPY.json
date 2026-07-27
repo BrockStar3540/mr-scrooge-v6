@@ -1,0 +1,280 @@
+{
+  "pair": "GBP_JPY",
+  "generated": "2026-07-27T15:30:00Z",
+  "generator": "april16-2026-replay hand-authored 2026-07-27 (SHADOW-only; NOT generate_cell_configs.py)",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis; measure the toll before believing"
+      },
+      "setups": [
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "unbroken floor only"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-16/17-2026 replay (acct txns 990-1344): NZD_USD ceil-fade net +$633 across the 990/1014 loss-then-win pair (identical indicators 29min apart \u2014 the one-trade-proves-nothing exhibit); NZD_JPY/GBP_JPY micro-scalp fills only (hypothesis-grade). Descriptive, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "April 1217 AUD_USD longed the literal day low (cposD 0.04, rvol 2.64) +$1,168 \u2014 the recurring washout-long shape."
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "unbroken ceiling only"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-16/17-2026 replay (acct txns 990-1344): NZD_USD ceil-fade net +$633 across the 990/1014 loss-then-win pair (identical indicators 29min apart \u2014 the one-trade-proves-nothing exhibit); NZD_JPY/GBP_JPY micro-scalp fills only (hypothesis-grade). Descriptive, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes."
+        }
+      ],
+      "notes": "april16-replay shadow cell"
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis; measure the toll before believing"
+      },
+      "setups": [
+        {
+          "id": "trend_pullback_long",
+          "side": "long",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "min": 0.5
+            },
+            {
+              "feature": "h1_ret_4bar",
+              "min": 10.0
+            },
+            {
+              "feature": "willr_m5",
+              "max": -85.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-16/17-2026 replay (acct txns 990-1344): NZD_USD ceil-fade net +$633 across the 990/1014 loss-then-win pair (identical indicators 29min apart \u2014 the one-trade-proves-nothing exhibit); NZD_JPY/GBP_JPY micro-scalp fills only (hypothesis-grade). Descriptive, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k."
+        }
+      ],
+      "notes": "april16-replay shadow cell"
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis; measure the toll before believing"
+      },
+      "setups": [
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "unbroken ceiling only"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-16/17-2026 replay (acct txns 990-1344): NZD_USD ceil-fade net +$633 across the 990/1014 loss-then-win pair (identical indicators 29min apart \u2014 the one-trade-proves-nothing exhibit); NZD_JPY/GBP_JPY micro-scalp fills only (hypothesis-grade). Descriptive, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes."
+        },
+        {
+          "id": "trend_pullback_long",
+          "side": "long",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "min": 0.5
+            },
+            {
+              "feature": "h1_ret_4bar",
+              "min": 10.0
+            },
+            {
+              "feature": "willr_m5",
+              "max": -85.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-16/17-2026 replay (acct txns 990-1344): NZD_USD ceil-fade net +$633 across the 990/1014 loss-then-win pair (identical indicators 29min apart \u2014 the one-trade-proves-nothing exhibit); NZD_JPY/GBP_JPY micro-scalp fills only (hypothesis-grade). Descriptive, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k."
+        }
+      ],
+      "notes": "april16-replay shadow cell"
+    }
+  }
+}

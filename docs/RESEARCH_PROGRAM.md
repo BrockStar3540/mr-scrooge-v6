@@ -565,7 +565,12 @@ Brock docket because they touch book governance:
   and to USD_CHF london/ny SHADOW (txns 458/466 were this pair, this shape). April also
   supplied the floor-fade counter-example: USD_MXN 435 (-$1,197) longed a BROKEN floor in a
   4h downtrend — the ps_low_dist>=0 condition refuses exactly that trade. USD_MXN not added
-  (exotic spread, and its tape is the cautionary example, not the edge).
+  (exotic spread, and its tape is the cautionary example, not the edge). EXTENDED AGAIN
+  2026-07-27 with the April 16-17 tape (txns 990-1344): +NZD_USD, NZD_JPY, GBP_JPY (18 pairs
+  scanning, 54 cells). Star exhibit: NZD_USD 990/1014 — identical ceil-fade indicators 29
+  minutes apart, -$746 then +$1,379; one trade proves nothing, the bar aggregates. That tape
+  also ran a micro limit-chaser scalper whose ceil-fades LOST on a minutes-horizon while the
+  big book's won at 240m — horizon is part of the edge.
 
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw

@@ -11,6 +11,9 @@ PIP = {
     # April-2026 replay CHF crosses (2026-07-27, Brock): same deal — SHADOW-only.
     "CHF_JPY": 0.01,
     "EUR_CHF": 0.0001, "AUD_CHF": 0.0001,
+    # April-16/17 replay additions (2026-07-27, Brock): SHADOW-only.
+    "NZD_JPY": 0.01, "GBP_JPY": 0.01,
+    "NZD_USD": 0.0001,
 }
 
 PAIRS = list(PIP.keys())
@@ -33,4 +36,7 @@ PAIR_SESSIONS = {
     "CHF_JPY":  ["asia", "london", "ny"],
     "EUR_CHF":  ["asia", "london", "ny"],
     "AUD_CHF":  ["asia", "london", "ny"],
+    "NZD_USD":  ["asia", "london", "ny"],
+    "NZD_JPY":  ["asia", "london", "ny"],
+    "GBP_JPY":  ["asia", "london", "ny"],
 }
