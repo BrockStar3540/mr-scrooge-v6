@@ -1473,7 +1473,10 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 
         self.send_response(code)
         self.send_header("Content-Type", ctype)
-        self.send_header("Access-Control-Allow-Origin", "*")
+        # No CORS header on purpose (2026-07-27 external-review fix):
+        # the old Access-Control-Allow-Origin:* invited any webpage the
+        # operator visits to script this API cross-origin. The panel is
+        # same-origin; nothing legitimate needs CORS here.
         # HTML/JS is versionless — stale cached panel JS against new state
         # renders garbage (2026-07-23: cached level*15 vs offset keys)
         self.send_header("Cache-Control", "no-cache")
@@ -1485,7 +1488,41 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length else b""
         return _j.loads(raw.decode() or "{}")
 
+    def _write_allowed(self) -> bool:
+        """Same-origin guard for mutating endpoints (2026-07-27 review fix).
+
+        Browsers attach an Origin header to cross-site requests; a page on any
+        website the operator visits could otherwise fire POSTs at this API
+        (localhost is reachable from the browser, and DNS-rebinding defeats a
+        pure Host check). Policy: no Origin header (curl / same-machine tools)
+        -> allowed; Origin present -> its host:port must equal the Host header
+        (true same-origin). Anything else is rejected 403.
+        """
+        origin = self.headers.get("Origin")
+        if not origin:
+            return True
+        host = self.headers.get("Host", "")
+        from urllib.parse import urlparse
+        try:
+            o = urlparse(origin)
+            return bool(host) and o.netloc == host
+        except Exception:
+            return False
+
     def do_POST(self):
+        if not self._write_allowed():
+            body = _j.dumps({"ok": False,
+                             "error": "cross-origin write rejected"}).encode()
+            self.send_response(403)
+            self.send_header("Content-Type", "application/json")
+            self.end_headers()
+            self.wfile.write(body)
+            log.warning("dashboard: rejected cross-origin POST %s from Origin=%s",
+                        self.path, self.headers.get("Origin"))
+            return
+        return self._do_post_inner()
+
+    def _do_post_inner(self):
         try:
             if self.path.startswith("/api/pp/toggle"):
                 length = int(self.headers.get("Content-Length", "0") or 0)
@@ -1584,7 +1621,6 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             ctype, code = "application/json", 500
         self.send_response(code)
         self.send_header("Content-Type", ctype)
-        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cache-Control", "no-cache")
         self.end_headers()
         self.wfile.write(body)
