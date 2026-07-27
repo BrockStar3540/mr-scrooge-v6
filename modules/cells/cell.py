@@ -224,9 +224,14 @@ class CellModule:
         self._cfg    = config
 
     def evaluate(self, view, now: datetime) -> Optional[CellIntent]:
-        """Evaluate all setups in this cell against *view*.
+        """Evaluate ALL setups in this cell against *view*, then return the
+        first qualifying ACTIVE setup as a CellIntent (or None).
 
-        Returns the first qualifying ACTIVE setup as a CellIntent, or None.
+        EVERY setup is evaluated and every qualifying setup STAMPS, every
+        cycle — an early ACTIVE qualifier no longer short-circuits the loop
+        (2026-07-27 external-review fix: the old early return silently starved
+        later setups of stamps, biasing the shadow trials by config order —
+        and the newest hypotheses always sit last in the list).
 
         PHASE-C LOCK: CELL_EXECUTION_ENABLED=False forces None regardless of status.
         SHADOW/SUSPENDED setups always return None.
@@ -236,6 +241,7 @@ class CellModule:
         setups = self._cfg.get("setups", [])
         if not setups:
             return None   # NO-SIDE cell — silent
+        intent: Optional[CellIntent] = None   # first qualifying ACTIVE, returned after the loop
 
         for setup in setups:
             status = setup.get("status", "SHADOW")
@@ -329,9 +335,10 @@ class CellModule:
                 stamp_status,
             )
 
-            # Return intent only when execution is truly enabled AND setup is ACTIVE
-            if would_trade:
-                return CellIntent(
+            # Capture the FIRST qualifying ACTIVE as the intent — but keep
+            # looping so every remaining setup still evaluates and stamps.
+            if would_trade and intent is None:
+                intent = CellIntent(
                     pair           = self.pair,
                     session        = self.session,
                     side           = side,
@@ -346,4 +353,4 @@ class CellModule:
                         "lineage": evidence.get("source", ""),
                     },
                 )
-        return None
+        return intent
