@@ -15,12 +15,23 @@ from typing import Any
 
 VALID_SESSIONS = {"asia", "london", "ny"}
 VALID_SIDES = {"long", "short"}
-VALID_CLASSES = {"FORMULA", "LEAN", "TIMING"}
-VALID_STATUSES = {"ACTIVE", "SHADOW", "SUSPENDED"}
-VALID_PAIRS = {
-    "AUD_JPY", "AUD_USD", "EUR_JPY", "EUR_USD",
-    "GBP_USD", "USD_CAD", "USD_CHF", "USD_JPY",
+# Schema synced to live reality 2026-07-27 (external-review finding: the
+# validator had drifted to the July-04 era and rejected all 18 live files while
+# nothing enforced it — tests/test_cell_config_schema.py now makes schema drift
+# a failing test instead of a silent gap).
+VALID_CLASSES = {
+    "FORMULA", "LEAN", "TIMING",              # generator-era classes
+    "session_structure", "trend_pullback",    # ps-wall + discovery-engine shapes
+    "book_replay",                            # D-4 strategy-book trials
+    "classic", "box", "control",              # classic/control probe families
 }
+VALID_STATUSES = {"ACTIVE", "SHADOW", "SUSPENDED", "DISABLED"}
+# Pair universe: single source of truth is config/pairs.py — a list that exists
+# in two files is two bugs (B-098 family; the dashboard server had the same
+# defect until 2026-07-27).
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from config.pairs import PAIRS as _PAIRS
+VALID_PAIRS = set(_PAIRS)
 
 # ── Error collector ────────────────────────────────────────────────────────────
 
@@ -162,8 +173,15 @@ def _validate_exit(exit_block: Any, ctx: str, errs: ValidationErrors) -> None:
     _require_number(exit_block, "sl_pips", ctx + ".exit", errs)
     _require_number(exit_block, "trigger_pips", ctx + ".exit", errs)
     _require_number(exit_block, "trail_pips", ctx + ".exit", errs)
-    allowed = {"sl_pips", "trigger_pips", "trail_pips"}
+    # Full live exit vocabulary (engine ExitParams, 2026-07-27 sync): ratchet
+    # mode + ATR-scaled-trail bounds + display class + optional bracket fields.
+    allowed = {"sl_pips", "trigger_pips", "trail_pips",
+               "mode", "trail_mult", "trail_min", "trail_max",
+               "entry_cutoff_utc", "tp_pips", "timeout_min", "_class"}
     _no_unknown_fields(exit_block, allowed, ctx + ".exit", errs)
+    mode = exit_block.get("mode")
+    if mode is not None and mode not in ("ratchet", "bracket"):
+        errs.add(f"{ctx}.exit.mode: '{mode}' not in allowed values ['bracket', 'ratchet']")
 
 
 def _validate_sizing(sizing: Any, ctx: str, errs: ValidationErrors) -> None:
@@ -288,6 +306,8 @@ def _validate_setup(setup: Any, sess: str, errs: ValidationErrors) -> None:
     allowed_setup = {
         "id", "side", "class", "status", "horizon_min",
         "conditions", "exit", "sizing", "tripwires", "evidence", "notes",
+        "_note",         # operator margin notes (e.g. side-flip history)
+        "manual_only",   # governor opt-out: this setup is hand-ruled only
     }
     _no_unknown_fields(setup, allowed_setup, ctx, errs)
 
@@ -297,12 +317,19 @@ def _validate_structure(struct: Any, sess: str, errs: ValidationErrors) -> None:
     if not isinstance(struct, dict):
         errs.add(f"{ctx}: must be a dict")
         return
-    _require_int(struct, "tier", ctx, errs)
+    # tier/rates are nullable (2026-07-27): hand-authored new-pair hypothesis
+    # cells carry null structure — "no truth-matrix evidence yet" is a valid,
+    # explicit state, distinct from a missing field.
     tier = struct.get("tier")
-    if tier is not None and tier not in (1, 2, 3):
-        errs.add(f"{ctx}.tier: must be 1, 2, or 3")
-    _require_number(struct, "rh_offer_rate_60m", ctx, errs)
-    _require_number(struct, "dead_rate_60m", ctx, errs)
+    if "tier" not in struct:
+        errs.add(f"{ctx}: missing 'tier' (use null for no-evidence cells)")
+    elif tier is not None and tier not in (1, 2, 3):
+        errs.add(f"{ctx}.tier: must be 1, 2, 3, or null")
+    for k in ("rh_offer_rate_60m", "dead_rate_60m"):
+        if k not in struct:
+            errs.add(f"{ctx}: missing '{k}' (use null for no-evidence cells)")
+        elif struct[k] is not None and not isinstance(struct[k], (int, float)):
+            errs.add(f"{ctx}.{k}: must be a number or null")
     if "lineage" not in struct:
         errs.add(f"{ctx}: missing 'lineage' (lineage requirement for structure block)")
     allowed = {"tier", "rh_offer_rate_60m", "dead_rate_60m", "lineage", "ev_gross_long",
