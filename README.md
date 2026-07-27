@@ -18,13 +18,13 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%24668.38_(%2B4.01%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-66/76_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-4_(−%2468)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%24616.23_(%2B3.70%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-65/75_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-5_(−%24104)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
 </div>
 
-> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1), live since 2026-07-16 (41 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
+> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1), live since 2026-07-16 (40 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
 <!-- LIVE_BALANCE_END -->
 
 ---
@@ -76,6 +76,21 @@ Their setups (`ps_floor_fade_long`, `ps_ceil_fade_short`, `trend_pullback_long`)
 shadows on 18 scanning pairs. The old tape supplied the hypotheses; the bar supplies the
 verdict — and if the crosses' 2–3× spread toll eats the edge, the bar will say no, which is
 the system working.
+
+**Until a strategy cell has proven its edge, this is a forward-testing bot** — the live book
+is only the setups currently holding the bar.
+
+## 🏆 The $10,000 Strategy Contest
+
+Think you have a strategy that can survive this harness? **Our sponsor has put $10,000 on
+it.** Submit a fully mechanical strategy — pairs, sessions, exact entry indicators, exact exit
+rules, plus your own evidence it works — and we'll put it on trial in the same forward-testing
+harness everything here faces. Run **90% winners (profitably)** or **net +500 pips in 30
+days** under our measurement and the prize is yours. Standing contest until someone wins;
+if two qualify in the same window, best takes $10,000 and the runner-up $5,000.
+
+**Read the full rules: [CONTEST.md](CONTEST.md)** · submit via the
+[contest issue template](.github/ISSUE_TEMPLATE/contest_submission.md).
 
 ## The pipeline
 
@@ -146,6 +161,7 @@ Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md]
 | 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | the readable research record — papers, session notes, backtest results & version history (raw corpora / models / code are privately archived, available on request) |
 | ⚙️ **[Setup](docs/SETUP.md)** | from-zero install: OANDA **practice** account, venv, credentials (dashboard **or** env vars), run |
 | 📊 **[Dashboard](docs/DASHBOARD.md)** | the local control panel at `:8084` — read it and drive it: setup status toggles, live exit tuning, risk caps, credentials, and the trading pause |
+| 🏆 **[Contest Terms](CONTEST.md)** | the standing $10,000 strategy challenge — rules, criteria, how to submit |
 | 🤝 **[Contributing](CONTRIBUTING.md)** | external ideas welcome, treated as untrusted input — same falsification gauntlet our own ideas face |
 | ⚖️ **[License](LICENSE)** | Apache-2.0 |
 
