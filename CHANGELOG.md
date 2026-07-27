@@ -6,6 +6,41 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
 
 ## [Unreleased]
 
+### Added
+- **INDICATORS tab: why-is/isn't-it-firing** (Brock, 2026-07-26): each pair card leads with the
+  current session's ACTIVE setups and their live condition bars (range zone + marker, server-
+  computed pass/fail), a READY badge + green card glow when all conditions pass, an "n/m OUT"
+  badge naming what's blocking, and an explicit "no ACTIVE setups this session — this pair
+  cannot fire" note. Legacy V4 furniture (mcert/dcert/dir.sc gauges, direction/vol pills)
+  removed; sparklines fixed (ring buffer was keyed on always-empty legacy tickets — willr/rsi/
+  vortex/kc_up/cpos sparks had never drawn in the cell era).
+- **Shadowboard LCB column + sort** (2026-07-24): `LCB = avg − 1.645·sd/√n` (95% one-sided
+  lower bound on avg net/ep) per row, now the board's sort key — small-n glamour rows rank
+  below proven ones; n<2 shows "—" and sorts last.
+- **`research/tools/broker_setup_audit.py`** (2026-07-24): per-setup broker-truth scoreboard —
+  joins `tradeOpened` client-extension setup ids to closed fills over an era window. Fills
+  convict faster than stamps; this is the tool for that doctrine.
+- **`DASHBOARD_HOST` env var** ([#2](https://github.com/BrockStar3540/mr-scrooge-v6/issues/2),
+  2026-07-26): configurable dashboard bind address (first community feature request). Default
+  stays `127.0.0.1`; the panel is unauthenticated with write endpoints, so wider binds are
+  opt-in — security note in `docs/DASHBOARD.md`.
+
+### Fixed
+- **Setup Scoreboard + stamp feed dead since the 07-22 overhaul** (B-098, 2026-07-24): a
+  status-join edit pasted a helper into the middle of the scorer's `main()`, silently
+  truncating it (exit 0, empty stdout); the server's journal-unit default still pointed at the
+  retired dry-run unit; and the scoreboard cache's refresh flag reset sat after a `return`, so
+  one failure wedged the error until restart. All three fixed; scorer sim cap now takes the
+  most recent 50 stamps (was oldest-50, which blanked SimEV on the highest-n setups).
+- **Broker-cancelled fire treated as a fill** (B-097, 2026-07-24): OANDA's FIFO safeguard
+  rejected a popper's on-fill SL and `_fire` registered the fill-less response as success —
+  82 re-fires on one marker in ~9h (no fills, no fees). Fires now verify a real fill; rejected
+  fires cool the marker 30 min; 3 straight rejections suspend the grid 2h.
+- **Shadowboard trophy was still beat-the-median** (2026-07-27): the 07-22 doctrine says 🏆 =
+  activation bar met; the panel never wired `bar_met` (a 3-episode row edging the ACTIVE median
+  by 0.07p wore a trophy) and the ⚠️ ACTIVE-without-bar-evidence chip was never rendered. Both
+  now live; first honest census: zero shadows hold the bar, 2 of 10 ACTIVE setups do.
+
 ### Changed
 - **Popper marker ladder** (Brock, 2026-07-22): grid markers are now an explicit offsets list
   `pp_config.marker_pips` — default **−10, −15, −20, −30, −40, −60** — replacing the uniform
