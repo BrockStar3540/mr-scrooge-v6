@@ -1,7 +1,12 @@
 # Mr. Scrooge V6 — Control Panel
 
 The dashboard is a self-contained control panel served by `ops/server.py` on
-`127.0.0.1:8084` (set `DASHBOARD_PORT` to change). `ops/panel.html` is read
+`127.0.0.1:8084` (set `DASHBOARD_PORT` to change the port, `DASHBOARD_HOST`
+to change the bind address — e.g. `0.0.0.0` or the machine's LAN IP to reach
+the panel from another device on your network). SECURITY: the panel is
+unauthenticated and has write endpoints (setup status, credentials,
+practice/live mode, trading pause) — only bind beyond 127.0.0.1 on a network
+where every host is trusted, never on an internet-facing interface. `ops/panel.html` is read
 **fresh on every request**, so HTML/CSS/JS edits are live with no restart; only
 `ops/server.py` changes need a process restart.
 

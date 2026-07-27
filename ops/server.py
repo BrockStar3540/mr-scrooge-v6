@@ -1323,16 +1323,25 @@ def _sysinfo() -> dict:
     }
 
 
-def start_dashboard(engine: "Engine", port: int = 8084) -> None:
-    """Start the dashboard HTTP server in a background daemon thread."""
+def start_dashboard(engine: "Engine", port: int = 8084,
+                    host: str | None = None) -> None:
+    """Start the dashboard HTTP server in a background daemon thread.
+
+    Bind address comes from the host arg, else DASHBOARD_HOST, else 127.0.0.1.
+    SECURITY: the dashboard is UNAUTHENTICATED and has write endpoints
+    (cell status, credentials, practice/live mode, trading pause). Bind a
+    LAN address (e.g. 0.0.0.0 or the machine's IP) only on a network where
+    every host is trusted — never on an internet-facing interface."""
+    import os
+    host = host or os.environ.get("DASHBOARD_HOST", "127.0.0.1")
 
     def handler_factory(*args, **kwargs):
         return _Handler(engine, *args, **kwargs)
 
-    srv = http.server.HTTPServer(("127.0.0.1", port), handler_factory)
+    srv = http.server.HTTPServer((host, port), handler_factory)
     t = threading.Thread(target=srv.serve_forever, daemon=True, name="dashboard")
     t.start()
-    log.info("Dashboard started on 127.0.0.1:%d", port)
+    log.info("Dashboard started on %s:%d", host, port)
 
 
 class _Handler(http.server.BaseHTTPRequestHandler):

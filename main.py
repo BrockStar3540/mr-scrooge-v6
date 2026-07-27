@@ -29,7 +29,8 @@ def main():
 
     from ops.server import start_dashboard
     import os
-    start_dashboard(engine, port=int(os.environ.get("DASHBOARD_PORT", "8084")))
+    start_dashboard(engine, port=int(os.environ.get("DASHBOARD_PORT", "8084")),
+                    host=os.environ.get("DASHBOARD_HOST", "127.0.0.1"))
 
     engine.run_forever(scan_interval_seconds=300, manage_interval_seconds=5)  # scan per M5 bar; trail stops every 5s (tightened 2026-06-23: catch peak crossings between bands; ratchet MFE was missing trigger boundaries at 30s)
 
