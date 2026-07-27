@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/images/contest_badge.png" alt="\$10,000 Contest Prize — Verified Winning Forex Strategy" width="420">
+<img src="docs/images/contest_badge.png" alt="$10,000 Contest Prize — Verified Winning Forex Strategy" width="420">
 
 </div>
 
