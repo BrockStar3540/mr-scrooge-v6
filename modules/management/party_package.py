@@ -40,6 +40,7 @@ from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct,
                                           pm_max_concurrent,
                                           _MAX_SPREAD, _DEFAULT_MAX_SPREAD)
 from config.runtime import trading_enabled
+from core.exec_truth import adopt_fill, executable_price
 from .base import Position, in_rollover_freeze
 from .ratchet import RatchetManager
 
@@ -446,6 +447,17 @@ class PartyPackage:
             self._fire_rejected(g, key, now, "no-fill")
             return
         pip = PIP[pair]
+        # D-5 (external review): adopt the broker fill as the popper's true
+        # entry — SL reference and ratchet baseline follow it (the server-side
+        # SL is already fill-anchored via place_market's distance form).
+        quoted = entry_price
+        entry_price, slippage = adopt_fill(quoted, trade, g.side, pip)
+        if slippage is None:
+            log.warning("PP FILL price missing %s trade_id=%s — using pre-order "
+                        "quote %.5f (entry truth degraded)", pair, trade_id, quoted)
+        else:
+            log.info("PP FILL %s %s quoted=%.5f filled=%.5f slippage=%+.2fp | engine=pp_v1",
+                     pair, g.side, quoted, entry_price, slippage)
         sl_price = (entry_price - cfg["sl_pips"] * pip if g.side == "long"
                     else entry_price + cfg["sl_pips"] * pip)
         ticket = TradeTicket(pair=pair, session="pp", direction=g.side,

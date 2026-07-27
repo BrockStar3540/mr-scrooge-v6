@@ -37,6 +37,7 @@ from modules.management.party_package import PartyPackage
 from modules.cells import PairModule, CELL_EXECUTION_ENABLED
 from modules.cells.portfolio import select_intent
 from config.runtime import trading_enabled
+from core.exec_truth import adopt_fill, executable_price
 
 log = logging.getLogger("v5.engine")
 
@@ -506,6 +507,21 @@ class Engine:
             entry_price=entry_price, sl_pips=initial_sl, tp_pips=_tp_pips,
             client_ext=_encode_exit_ext(_ep, _it.setup_id) if _ep is not None else None,
         )
+
+        # D-5 (external review): the broker's fill is the ONLY true entry.
+        # Position, SL reference, and every ratchet baseline derive from it —
+        # the pre-order quote was just the estimate we sized against. (The
+        # server-side SL is already fill-anchored: place_market sends distance.)
+        quoted = entry_price
+        entry_price, slippage = adopt_fill(quoted, trade, ticket.direction, pip)
+        if slippage is None:
+            log.warning("FILL price missing from broker response %s trade_id=%s — "
+                        "falling back to pre-order quote %.5f (entry truth degraded)",
+                        ticket.pair, trade.get("id"), quoted)
+        else:
+            log.info("FILL %s %s quoted=%.5f filled=%.5f slippage=%+.2fp spread=%.1fp",
+                     ticket.pair, ticket.direction, quoted, entry_price, slippage,
+                     float(getattr(view, "spread_pips", 0.0) or 0.0))
 
         initial_sl_price = (entry_price - initial_sl * pip
                             if ticket.direction == "long"

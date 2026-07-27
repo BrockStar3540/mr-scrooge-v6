@@ -217,7 +217,7 @@ class OandaBroker:
                 raise RuntimeError(f"Cannot fetch pricing for SL calc: {exc}") from exc
 
         sl_price = (entry_price - sl_pips * pip if direction == "long"
-                    else entry_price + sl_pips * pip)
+                    else entry_price + sl_pips * pip)   # estimate, for the log line only
 
         # OANDA price precision: JPY pairs 3dp, others 5dp
         prec = 3 if "JPY" in pair else 5
@@ -226,7 +226,11 @@ class OandaBroker:
             "type":       "MARKET",
             "instrument": pair,
             "units":      str(signed),
-            "stopLossOnFill": {"price": f"{sl_price:.{prec}f}"},
+            # D-5 (2026-07-28, external review): SL as a DISTANCE — OANDA
+            # anchors it to the ACTUAL fill. The old absolute price was
+            # computed from the pre-order quote, so entry slippage silently
+            # widened or narrowed the real stop distance.
+            "stopLossOnFill": {"distance": f"{sl_pips * pip:.{prec}f}"},
         }
         # Exit-gear persistence: survives restarts so recovery re-adopts the
         # trade's ENTRY gear instead of exit_config defaults (AUDIT_TODO item).
@@ -234,6 +238,9 @@ class OandaBroker:
             order["tradeClientExtensions"] = client_ext
         # FAST slice class: server-side limit TP — fills at price or better,
         # cannot slip (stop-lock exits measured med 0.0 / p90 0.8p slippage).
+        # NOTE (D-5): takeProfitOnFill has no distance form, so the TP remains
+        # quote-anchored and inherits entry slippage. Bracket mode is currently
+        # unused by the live book; revisit if it ever returns.
         if tp_pips and tp_pips > 0:
             tp_price = (entry_price + tp_pips * pip if direction == "long"
                         else entry_price - tp_pips * pip)
