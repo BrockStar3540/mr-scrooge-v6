@@ -1057,17 +1057,18 @@ async function pollShadowboard(){
       const liveStatus=currentSetupStatus(pair,session,x.setup)||x.status;
       const ctrl=(pair&&session&&x.setup)?statusControl(pair,session,x.setup,liveStatus,'sb')
         :'<span class="muted">—</span>';
-      return `<tr>
-        <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}</td>
+      const pn=(v,d=0)=>v==null?'—':(v>0?'+':'')+v+'p';   // null-safe pips
+      return `<tr${x.queued?' style="opacity:.55"':''}>
+        <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
         <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
-        <td class="mono ${ncls}">${x.avg_net240>0?'+':''}${x.avg_net240}p</td>
-        <td class="mono ${x.cum_net240>0?'pos':'neg'}">${x.cum_net240>0?'+':''}${x.cum_net240}p</td>
-        <td>${Math.round(x.wr*100)}%</td><td>${Math.round(x.hit6*100)}%</td>
-        <td class="mono muted" style="font-size:11px">${x.med_mfe}/${x.med_mae}</td>
+        <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
+        <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>
+        <td>${x.wr==null?'—':Math.round(x.wr*100)+'%'}</td><td>${x.hit6==null?'—':Math.round(x.hit6*100)+'%'}</td>
+        <td class="mono muted" style="font-size:11px">${x.med_mfe==null?'—':x.med_mfe+'/'+x.med_mae}</td>
         <td class="mono" style="font-size:11px">${x.last7_avg==null?'—':(x.last7_avg>0?'+':'')+x.last7_avg+'p ('+x.last7_n+')'}</td>
-        <td class="muted" style="font-size:10px">${x.first}</td>
+        <td class="muted" style="font-size:10px">${x.first==null?'—':x.first}</td>
         <td style="white-space:nowrap">${ctrl}</td>
       </tr>`;
     }).join('');

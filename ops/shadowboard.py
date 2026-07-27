@@ -119,9 +119,10 @@ def _refresh(max_new_scores=40):
 
 
 def _config_status():
-    """(pair, session, setup_id) -> CURRENT status from config/cells (read fresh).
-    The stamped status is what the setup WAS when it fired; promote/demote
-    decisions need what it IS (2026-07-22, Brock)."""
+    """(pair, session, setup_id) -> (CURRENT status, side) from config/cells
+    (read fresh). The stamped status is what the setup WAS when it fired;
+    promote/demote decisions need what it IS (2026-07-22, Brock). Side rides
+    along so wired-but-unscored setups can appear as queued rows (2026-07-27)."""
     import json as _json
     from pathlib import Path as _P
     out = {}
@@ -135,7 +136,8 @@ def _config_status():
             pair = d.get("pair") or f.stem
             for sess, b in (d.get("sessions") or {}).items():
                 for su in (b.get("setups") or []):
-                    out[(pair, sess, su.get("id"))] = su.get("status", "?")
+                    out[(pair, sess, su.get("id"))] = (su.get("status", "?"),
+                                                       su.get("side", "?"))
     except OSError:
         pass
     return out
@@ -163,9 +165,10 @@ def _aggregate(db):
         avg = sum(nets) / len(nets)
         lcb = (round(avg - 1.645 * st.stdev(nets) / len(nets) ** 0.5, 2)
                if len(nets) >= 2 else None)
+        _st = _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup))
         out.append({
             "cell": cell, "setup": setup, "side": side,
-            "status": _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup), g["status"]),
+            "status": _st[0] if _st else g["status"],
             "episodes": len(rows),
             "cum_net240": round(sum(nets), 1),
             "avg_net240": round(avg, 2),
@@ -184,9 +187,26 @@ def _aggregate(db):
             # status; SHADOW meeting it = promotable.
             "bar_met": bool(len(rows) >= 20 and (sum(nets)/len(nets)) >= 2.0),
         })
-    # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last.
-    out.sort(key=lambda r: (r["lcb"] is not None, r["lcb"] if r["lcb"] is not None else 0.0,
-                            r["avg_net240"]), reverse=True)
+    # QUEUED rows (2026-07-27, Brock: "I don't see the new pairs on the board"):
+    # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a
+    # row, so the docket is visible — waiting is a state, not an absence.
+    have = {(r["cell"], r["setup"]) for r in out}
+    for (pair, sess, sid), (status, side) in _cfgst.items():
+        cell = f"{pair}/{sess}"
+        if status in ("ACTIVE", "SHADOW") and (cell, sid) not in have:
+            out.append({
+                "cell": cell, "setup": sid, "side": side, "status": status,
+                "episodes": 0, "cum_net240": None, "avg_net240": None,
+                "lcb": None, "wr": None, "hit6": None, "med_mfe": None,
+                "med_mae": None, "avg_net60": None, "last7_avg": None,
+                "last7_n": 0, "first": None, "bar_met": False, "queued": True,
+            })
+    # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last,
+    # queued (no episodes) after everything scored.
+    out.sort(key=lambda r: (r["lcb"] is not None,
+                            r["lcb"] if r["lcb"] is not None else 0.0,
+                            r["avg_net240"] if r["avg_net240"] is not None else -1e9),
+             reverse=True)
     return out
 
 _REFRESHING = {"on": False}
@@ -196,7 +216,8 @@ def _refresh_worker():
     try:
         db = _refresh()
         rows = _aggregate(db)
-        active = [r["avg_net240"] for r in rows if r["status"] == "ACTIVE"]
+        active = [r["avg_net240"] for r in rows
+                  if r["status"] == "ACTIVE" and r["avg_net240"] is not None]
         data = {"rows": rows,
                 "active_median": round(sorted(active)[len(active)//2], 2) if active else None,
                 "pending": sum(1 for e in db["episodes"].values() if not e["scores"]),
