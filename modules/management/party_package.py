@@ -66,8 +66,17 @@ _DEFAULTS: dict = {
 }
 
 
+_PP_LKG: dict = {}   # last-known-good config — survives a corrupted file
+
 def pp_config() -> dict:
-    """Hot-reloaded pp config (same pattern as exit_config)."""
+    """Hot-reloaded pp config (same pattern as exit_config).
+
+    FAIL-CLOSED (2026-07-27, external-review fix): a corrupted pp_config.json
+    used to fall back to _DEFAULTS — which has enabled=True and an EMPTY
+    per_cell map, i.e. corruption silently re-armed every grid and erased the
+    operator's opt-outs (the B-096 accident class). Now: last-known-good if we
+    have one, else defaults with the poppers OFF.
+    """
     try:
         with open(_CONFIG_PATH) as fh:
             raw = json.load(fh)
@@ -89,9 +98,16 @@ def pp_config() -> dict:
                 cfg[k] = float(v)
             else:
                 cfg[k] = int(v)
-        return cfg
-    except (OSError, ValueError, TypeError, json.JSONDecodeError):
-        return dict(_DEFAULTS)
+        _PP_LKG.clear(); _PP_LKG.update(cfg)
+        return dict(cfg)
+    except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
+        if _PP_LKG:
+            return dict(_PP_LKG)
+        log.warning("pp_config.json unreadable (%s) with no last-known-good — "
+                    "FAILING CLOSED (poppers disabled)", exc)
+        safe = dict(_DEFAULTS)
+        safe["enabled"] = False
+        return safe
 
 
 def pp_cell_enabled(cfg: dict, pair: str, session: str, setup_id: str) -> bool:

@@ -7,10 +7,15 @@ config/runtime.json:  {"trading_enabled": true}
 The engine reads trading_enabled() EACH CYCLE (same hot-reload pattern as the
 cell configs), so the dashboard toggle takes effect without a restart.
 
-FAIL-SAFE: a missing or unreadable file defaults to ENABLED — we never silently
-halt a running bot on a read error. The pause is a *soft* gate: it blocks NEW
-entries only; management/exits of existing positions keep running. It is NOT a
-process kill (the dashboard runs inside the engine process). A full stop is
+FAIL-CLOSED (2026-07-27, external-review fix — this used to fail OPEN):
+a corrupted pause file must never restart trading. Policy:
+  - valid file             -> the value, cached as last-known-good (LKG)
+  - unreadable / malformed -> the LKG if one exists, else False (PAUSED)
+  - file genuinely absent  -> the LKG if one exists, else True
+    (fresh install with no runtime.json ever written = never configured;
+     the dashboard writes the file on first toggle)
+The pause is a *soft* gate: it blocks NEW entries only; management/exits of
+existing positions keep running. A full stop is
 `systemctl --user stop mr-scrooge-v6`.
 """
 from __future__ import annotations
@@ -26,6 +31,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_PATH = _REPO_ROOT / "config" / "runtime.json"
 
 _last_warn = {"t": 0.0}
+_lkg: dict = {}   # last-known-good parsed values, survives read errors
 
 
 def _warn_once(msg: str) -> None:
@@ -35,39 +41,58 @@ def _warn_once(msg: str) -> None:
         log.warning(msg)
 
 
+def _coerce_bool(v) -> bool | None:
+    """Strict-ish bool coercion; None = malformed (NOT a silent default)."""
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, (int, float)) and v in (0, 1):
+        return bool(v)
+    if isinstance(v, str) and v.strip().lower() in ("1", "true", "yes", "on"):
+        return True
+    if isinstance(v, str) and v.strip().lower() in ("0", "false", "no", "off"):
+        return False
+    return None
+
+
 def load_runtime() -> dict:
-    """Parse runtime.json → dict. Missing file → {} (defaults apply). A read/parse
-    error → {} too, but logged (rate-limited) so the fail-safe is visible."""
+    """Parse runtime.json → dict, or None-marker dicts on failure paths."""
     try:
-        return json.loads(RUNTIME_PATH.read_text())
+        return {"_ok": True, "data": json.loads(RUNTIME_PATH.read_text())}
     except FileNotFoundError:
-        return {}
+        return {"_ok": False, "missing": True}
     except Exception as exc:
-        _warn_once(f"runtime.json unreadable ({exc}) — failing safe to trading_enabled=True")
-        return {}
+        _warn_once(f"runtime.json unreadable ({exc}) — FAILING CLOSED "
+                   f"(last-known-good or paused); fix or delete the file")
+        return {"_ok": False, "missing": False}
 
 
 def trading_enabled() -> bool:
-    """True unless the operator has explicitly paused trading. Fail-safe: any
-    ambiguity (missing key/file, bad value, read error) → True (keep trading)."""
-    v = load_runtime().get("trading_enabled", True)
-    if isinstance(v, bool):
+    """The soft trading gate. Fail-CLOSED: corruption can never re-enable."""
+    r = load_runtime()
+    if r["_ok"]:
+        v = _coerce_bool(r["data"].get("trading_enabled", True))
+        if v is None:
+            _warn_once("runtime.json trading_enabled is malformed — FAILING "
+                       "CLOSED (last-known-good or paused)")
+            return _lkg.get("trading_enabled", False)
+        _lkg["trading_enabled"] = v
         return v
-    if isinstance(v, (int, float)):
-        return bool(v)
-    if isinstance(v, str):
-        return v.strip().lower() in ("1", "true", "yes", "on")
-    return True   # fail-safe: never halt on a malformed value
+    if r.get("missing"):
+        # absent file = never configured; LKG wins if we ever read one
+        return _lkg.get("trading_enabled", True)
+    return _lkg.get("trading_enabled", False)   # unreadable → LKG or PAUSED
 
 
 def set_trading_enabled(enabled: bool) -> dict:
-    """Atomically persist the trading_enabled flag (preserving other keys)."""
-    d = load_runtime()
-    if not isinstance(d, dict):
-        d = {}
+    """Atomically persist the trading_enabled flag (preserving other keys).
+    A corrupted existing file is replaced rather than merged — the write is
+    the operator's explicit intent and re-establishes a valid file."""
+    r = load_runtime()
+    d = r["data"] if r["_ok"] and isinstance(r.get("data"), dict) else {}
     d["trading_enabled"] = bool(enabled)
     RUNTIME_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = RUNTIME_PATH.with_suffix(".tmp")
     tmp.write_text(json.dumps(d, indent=2))
     tmp.replace(RUNTIME_PATH)
+    _lkg["trading_enabled"] = bool(enabled)
     return d

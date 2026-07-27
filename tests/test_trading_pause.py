@@ -42,9 +42,16 @@ def test_set_preserves_other_keys(runtime_path):
     assert on_disk["_note"] == "keep me"
 
 
-def test_fail_safe_on_unreadable_file(runtime_path):
+def test_fail_closed_on_unreadable_file(runtime_path):
+    # DOCTRINE REVERSED 2026-07-27 (external review): a corrupted pause file
+    # must NEVER restart trading. No last-known-good -> PAUSED.
+    runtime._lkg.clear()
     runtime_path.write_text("{ this is not json")
-    # a corrupt file must NEVER silently halt a running bot → default ENABLED
+    assert runtime.trading_enabled() is False
+    # ...and with a last-known-good, corruption preserves the last state:
+    runtime_path.write_text(json.dumps({"trading_enabled": True}))
+    assert runtime.trading_enabled() is True
+    runtime_path.write_text("{ corrupted again")
     assert runtime.trading_enabled() is True
 
 

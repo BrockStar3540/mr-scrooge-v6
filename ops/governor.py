@@ -46,11 +46,18 @@ DEFAULT_CFG = {
 
 
 def cfg():
+    """FAIL-CLOSED (2026-07-27): a corrupted governor config must not run the
+    governor on defaults — a missing file uses defaults (never configured),
+    but an unreadable/malformed one disables the run until a human looks."""
     c = dict(DEFAULT_CFG)
     try:
         c.update(json.loads(CFG_F.read_text()))
-    except Exception:
+    except FileNotFoundError:
         pass
+    except Exception as exc:
+        print(f"governor: config unreadable ({exc}) — FAILING CLOSED (disabled)",
+              file=sys.stderr)
+        c["enabled"] = False
     return c
 
 
