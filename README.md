@@ -82,6 +82,8 @@ is only the setups currently holding the bar.
 
 ## 🏆 The $10,000 Strategy Contest
 
+<div align="center"><a href="CONTEST.md"><img src="docs/images/contest_badge.png" alt="\$10,000 Contest Prize" width="300"></a></div>
+
 Think you have a strategy that can survive this harness? **Our sponsor has put $10,000 on
 it.** Submit a fully mechanical strategy — pairs, sessions, exact entry indicators, exact exit
 rules, plus your own evidence it works — and we'll put it on trial in the same forward-testing
