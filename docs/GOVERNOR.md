@@ -34,6 +34,35 @@ but **broker-verified fills** (via `research/tools/broker_setup_audit.py`) inclu
 slippage, and the live exit — and they convict faster. A setup that is net-negative on ≥ 5
 real fills loses its seat even if its stamp tape still looks acceptable.
 
+## The statistics (D-6, 2026-07-28)
+
+Three corrections keep the standard honest (shared by the governor and the
+Shadowboard via `core/trial_stats.py`, knobs in `config/governor_config.json`):
+
+- **Net-of-cost utility.** Every stamp is haircut by its stamped entry-time
+  spread (per-pair fallback for older stamps) plus a slippage constant
+  (`slippage_pips`, default 0.5 — calibratable from the live `FILL` slippage
+  log). Promotion and demotion finally judge the same currency: the bar's
+  "+2.0 pips/episode" means +2 **after** the toll, literally.
+- **Overlap-aware effective n.** Episodes are spaced ≥30 min but labeled on
+  240-minute windows — neighbours share most of their label, so they are not
+  independent observations. Each episode contributes min(1, gap/240min) to an
+  effective sample size used in the confidence bound (raw episode count still
+  gates the bar's n ≥ 20).
+- **Deflated confidence.** With ~150 hypotheses under daily examination
+  (`data/hypothesis_registry.json` — every setup ever tried, with its config
+  hashes), a 95% bound per test is a false-discovery machine. The promotion
+  bound uses `z_promote` (default **2.33** ≈ 99% one-sided) — partial
+  deflation chosen over full Šidák (z≈3.7 at M=150, which would freeze
+  promotion at reachable sample sizes); the registry count is printed every
+  run so the knob can be tightened on evidence. See Bailey & López de Prado
+  (Probability of Backtest Overfitting / Deflated Sharpe Ratio).
+
+**Era clocks got stricter too:** any change to a setup's *mechanics*
+(conditions, exit, side, sizing, horizon — prose excluded) resets its
+evidence clock automatically via config-hash comparison, ledgered as
+`ERA-RESET`. Manual dashboard tuning counts; nothing trades on stale proof.
+
 ## The rails
 
 - **Max 2 promotions and 4 demotions per run** — evidence-strongest first; the rest wait.

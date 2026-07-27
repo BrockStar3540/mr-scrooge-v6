@@ -786,9 +786,10 @@ body.has-ticker{padding-bottom:32px}
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
     </div>
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
-      Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m.
-      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow meeting the activation bar (n≥20 eps @ ≥+2p/ep) — promotable. ⚠️ = ACTIVE without current-era bar evidence.
-      Sorted by LCB = 95% lower confidence bound on avg net/ep — small samples rank below proven ones; — = &lt;2 episodes.
+      Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m,
+      <b>minus spread + slippage</b> (D-6: all averages here are NET-OF-COST — the exact numbers the governor judges).
+      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow meeting the activation bar (n≥20 eps @ ≥+2p/ep after costs) — promotable. ⚠️ = ACTIVE without current-era bar evidence.
+      Sorted by LCB: deflated (z≈2.33) lower bound on net avg with an <b>overlap-aware effective n</b> (240m labels on 30m-spaced episodes are not independent) — small or dense samples rank below proven ones; — = insufficient sample.
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
@@ -1089,7 +1090,7 @@ async function pollShadowboard(){
       return `<tr${x.queued?' style="opacity:.55"':''}>
         <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
-        <td ${stcls}>${x.status}</td><td>${x.episodes}</td>
+        <td ${stcls}>${x.status}</td><td title="raw episodes (overlap-adjusted effective n)">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}</td>
         <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
         <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
         <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>

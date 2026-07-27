@@ -615,7 +615,7 @@ Brock docket because they touch book governance:
   durable client order ids + reconciliation so an accepted-order-then-timeout can never
   orphan or duplicate. At an 8.5p trigger these are not bookkeeping — they may decide
   whether the edge exists.
-- **D-6 — The statistics program (external review, finding 6; QUEUED).** The governor
+- **D-6 — The statistics program (external review, finding 6; SHIPPED 2026-07-28 — see docs/GOVERNOR.md §statistics).** Delivered: one net-of-cost utility for promotion AND demotion (stamped entry spread + slippage haircut; stamps now carry spread=X.X); overlap-aware effective n in the confidence bound; deflated z_promote (2.33 default) with the hypothesis registry (data/hypothesis_registry.json, M=146 at ship) reported every run; config-hash era resets on any mechanics change. Remaining as future work: grid-episode/currency clustering beyond time-overlap, and full DSR on a per-hypothesis trial count. Original spec:** The governor
   promotes on frictionless stamp-forward drift and demotes on broker P&L — different
   distributions; overlapping 240m labels on ~30min episodes make the LCB overconfident;
   ~150 setups examined daily is a multiple-testing machine with no deflation. Work

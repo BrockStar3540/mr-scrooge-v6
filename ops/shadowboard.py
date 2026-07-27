@@ -57,7 +57,9 @@ def _stamps():
             parts = line[i:].split()
             cell, setup, side = parts[1], parts[2].split("=")[1], parts[3].split("=")[1]
             status = next((p.split("=")[1] for p in parts if p.startswith("status=")), "?")
-            rows.append((datetime.fromisoformat(ts).astimezone(timezone.utc), cell, setup, side, status))
+            spread = next((p.split("=")[1] for p in parts if p.startswith("spread=")), None)
+            spread = float(spread) if spread is not None else None
+            rows.append((datetime.fromisoformat(ts).astimezone(timezone.utc), cell, setup, side, status, spread))
         except Exception:
             continue
     return rows
@@ -93,14 +95,15 @@ def _refresh(max_new_scores=40):
     db = _load()
     eps = db["episodes"]
     last_by_key = {}
-    for t, cell, setup, side, status in sorted(_stamps()):
+    for t, cell, setup, side, status, spread in sorted(_stamps()):
         key = f"{cell}|{setup}|{side}"
         prev = last_by_key.get(key)
         if prev is None or (t - prev).total_seconds() > _EP_GAP_S:
             ek = f"{key}|{t.strftime('%Y-%m-%dT%H:%M')}"
             if ek not in eps:
                 eps[ek] = {"cell": cell, "setup": setup, "side": side, "status": status,
-                           "t": t.isoformat(), "scores": None}
+                           "t": t.isoformat(), "scores": None,
+                           "spread": spread}   # D-6: entry-time cost, None for pre-D-6 stamps
         last_by_key[key] = t
     now = datetime.now(timezone.utc)
     n_scored = 0
@@ -167,17 +170,26 @@ def _aggregate(db):
     out = []
     _cfgst = _config_status()
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
+    # D-6 (external review): the board judges by the EXACT metric the governor
+    # promotes on — cost-adjusted nets (stamped spread or per-pair fallback +
+    # slippage), overlap-aware effective n, deflated z from governor config.
+    from core.trial_stats import cost_adjusted_nets, effective_n, lcb as _tlcb
+    try:
+        _gc = json.loads((_ROOT / "config" / "governor_config.json").read_text())
+    except Exception:
+        _gc = {}
+    _z = float(_gc.get("z_promote", 2.33))
+    _slip = float(_gc.get("slippage_pips", 0.5))
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
-        nets = [x["net240"] for x in s]
-        last7 = [r["scores"]["net240"] for r in rows if r["t"] >= cutoff7]
-        # LCB (2026-07-24, Brock): 95% one-sided lower confidence bound on the
-        # MEAN net240 — lcb = avg - 1.645*sd/sqrt(n). Small-n glamour rows
-        # (3 eps, +8p avg) rank below big-n proven rows; n<2 has no variance
-        # estimate -> None, sorts to the bottom ("too new, no sample").
+        pair = cell.split("/")[0]
+        gross = [x["net240"] for x in s]
+        spreads = [r.get("spread") for r in rows]
+        nets = cost_adjusted_nets(gross, spreads, pair, slippage_pips=_slip)
+        last7 = [net for r, net in zip(rows, nets) if r["t"] >= cutoff7]
         avg = sum(nets) / len(nets)
-        lcb = (round(avg - 1.645 * st.stdev(nets) / len(nets) ** 0.5, 2)
-               if len(nets) >= 2 else None)
+        n_eff = effective_n([r["t"] for r in rows])
+        lcb = _tlcb(nets, n_eff, _z)
         _st = _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup))
         # Side-aware status join (2026-07-27): a row whose side no longer matches
         # the config (an MAE-flip retired it) must not inherit the live side's
@@ -190,8 +202,8 @@ def _aggregate(db):
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
             "episodes": len(rows),
-            "cum_net240": round(sum(nets), 1),
-            "avg_net240": round(avg, 2),
+            "cum_net240": round(sum(nets), 1),      # net-of-cost (D-6)
+            "avg_net240": round(avg, 2),            # net-of-cost (D-6)
             "lcb": lcb,
             "wr": round(sum(1 for n in nets if n > 0)/len(nets), 3),
             "hit6": round(sum(1 for x in s if x["mfe240"] >= 6)/len(s), 3),
@@ -200,12 +212,13 @@ def _aggregate(db):
             "avg_net60": round(sum(x["net60"] for x in s)/len(s), 2),
             "last7_avg": round(sum(last7)/len(last7), 2) if last7 else None,
             "last7_n": len(last7),
+            "n_eff": n_eff,
             "first": min(r["t"] for r in rows)[:10],
-            # ACTIVATION BAR (2026-07-22, post-storm doctrine): current-era
-            # evidence of n>=20 episodes AND avg net240 >= +2.0p (a margin that
-            # clears toll uncertainty). ACTIVE without the bar = on borrowed
-            # status; SHADOW meeting it = promotable.
-            "bar_met": bool(len(rows) >= 20 and (sum(nets)/len(nets)) >= 2.0),
+            # ACTIVATION BAR, net-of-cost basis (D-6): n>=20 episodes AND
+            # avg >= +2.0p AFTER spread+slippage — "+2p clear of the toll"
+            # is now literal, not aspirational. ACTIVE without the bar = on
+            # borrowed status; SHADOW meeting it = promotable.
+            "bar_met": bool(len(rows) >= 20 and avg >= 2.0),
         })
     # QUEUED rows (2026-07-27, Brock: "I don't see the new pairs on the board"):
     # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a

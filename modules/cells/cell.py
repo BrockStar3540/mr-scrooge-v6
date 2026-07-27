@@ -326,13 +326,18 @@ class CellModule:
             # If CELL_EXECUTION_ENABLED=False and setup is ACTIVE, stamp shows status=ACTIVE
             # so the scorer can distinguish would-trade stamps.
 
+            # D-6: stamp the live spread — the cost this entry would actually
+            # pay — so scoring can judge net-of-cost instead of frictionless
+            # mid drift (all parsers tolerate the trailing token).
+            _spread = float(getattr(view, "spread_pips", 0.0) or 0.0)
             log.info(
-                "CELLSHADOW %s/%s setup=%s side=%s conds=%s exp_ev=%+.3f status=%s",
+                "CELLSHADOW %s/%s setup=%s side=%s conds=%s exp_ev=%+.3f status=%s spread=%.1f",
                 self.pair, self.session,
                 setup_id, side,
                 compact,
                 float(ev_seq or 0.0),
                 stamp_status,
+                _spread,
             )
 
             # Capture the FIRST qualifying ACTIVE as the intent — but keep

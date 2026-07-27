@@ -27,10 +27,16 @@ import argparse, json, math, statistics, subprocess, sys, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
+import hashlib
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from core.trial_stats import cost_adjusted_nets, effective_n, lcb as _lcb
+
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "data" / "shadowboard.json"
 STATE_F = REPO / "data" / "governor_state.json"
 LEDGER = REPO / "data" / "governor_ledger.jsonl"
+REGISTRY = REPO / "data" / "hypothesis_registry.json"
 CELLS = REPO / "config" / "cells"
 CFG_F = REPO / "config" / "governor_config.json"
 API = "http://127.0.0.1:8084/api/cell/status"
@@ -41,6 +47,7 @@ DEFAULT_CFG = {
     "recent_n": 5, "recent_min": 0.0,
     "fills_n": 5, "fills_avg_max": 0.0,
     "max_promotions": 2, "max_demotions": 4,
+    "z_promote": 2.33, "slippage_pips": 0.5,
     "default_era_start": "2026-07-19T00:00:00+00:00",
 }
 
@@ -82,14 +89,22 @@ def book():
             continue
         for sess, b in (d.get("sessions") or {}).items():
             for su in (b.get("setups") or []):
+                # Era identity = the setup's MECHANICS (conditions/exit/side/
+                # sizing), not its prose — notes and evidence edits must not
+                # reset anyone's clock.
+                core = {k: su.get(k) for k in
+                        ("side", "conditions", "exit", "sizing", "horizon_min")}
+                h = hashlib.sha256(json.dumps(core, sort_keys=True,
+                                              default=str).encode()).hexdigest()[:16]
                 out[(d.get("pair") or f.stem, sess, su.get("id"))] = {
                     "status": su.get("status", "?"), "side": su.get("side"),
                     "manual_only": bool(su.get("manual_only", False)),
+                    "cfg_hash": h,
                 }
     return out
 
 
-def era_stats(era_start_by_key, default_era, book_map):
+def era_stats(era_start_by_key, default_era, book_map, gov_cfg):
     """Aggregate scored episodes per (pair, sess, setup) — CONFIG side only,
     episodes at/after that setup's era start."""
     try:
@@ -115,17 +130,27 @@ def era_stats(era_start_by_key, default_era, book_map):
         era = era_start_by_key.get("|".join(key), default_era)
         if ep["t"] < era:
             continue
-        agg.setdefault(key, []).append((ep["t"], ep["scores"]["net240"]))
+        agg.setdefault(key, []).append((ep["t"], ep["scores"]["net240"],
+                                        ep.get("spread")))
     out = {}
+    z = float(gov_cfg.get("z_promote", 2.33))
+    slip = float(gov_cfg.get("slippage_pips", 0.5))
     cutoff7 = datetime.now(timezone.utc).timestamp() - 7 * 86400
     for key, rows in agg.items():
-        nets = [n for _, n in rows]
+        pair = key[0]
+        times = [t for t, _, _ in rows]
+        gross = [n for _, n, _ in rows]
+        spreads = [sp for _, _, sp in rows]
+        # D-6: ONE cost-adjusted utility for every verdict — stamps pay the
+        # stamped (or default) spread + slippage before being judged.
+        nets = cost_adjusted_nets(gross, spreads, pair, slippage_pips=slip)
         n = len(nets)
+        n_eff = effective_n(times)
         avg = sum(nets) / n
-        lcb = (avg - 1.645 * statistics.stdev(nets) / math.sqrt(n)) if n >= 2 else None
-        r7 = [net for t, net in rows
+        lcb = _lcb(nets, n_eff, z)
+        r7 = [net for (t, _, _), net in zip(rows, nets)
               if datetime.fromisoformat(t).timestamp() >= cutoff7]
-        out[key] = {"n": n, "avg": avg, "lcb": lcb,
+        out[key] = {"n": n, "n_eff": n_eff, "avg": avg, "lcb": lcb,
                     "n7": len(r7), "avg7": (sum(r7) / len(r7)) if r7 else None}
     return out
 
@@ -166,8 +191,47 @@ def main():
         return
     st = load_state()
     eras = st.setdefault("era_start", {})
+    hashes = st.setdefault("cfg_hash", {})
     bmap = book()
-    stats = era_stats(eras, c["default_era_start"], bmap)
+    now_iso = datetime.now(timezone.utc).isoformat()
+
+    # D-6: ANY change to a setup's mechanics restarts its evidence clock —
+    # not just governor flips. Manual dashboard exit-tuning counts.
+    resets = []
+    for key, meta in bmap.items():
+        k = "|".join(key)
+        old_h = hashes.get(k)
+        if old_h is not None and old_h != meta["cfg_hash"]:
+            eras[k] = now_iso
+            resets.append(k)
+        hashes[k] = meta["cfg_hash"]
+    if resets:
+        with open(LEDGER, "a") as led:
+            for k in resets:
+                led.write(json.dumps({"t": now_iso, "action": "ERA-RESET",
+                                      "key": k, "why": "setup mechanics changed",
+                                      "dry_run": args.dry_run}) + "\n")
+        print(f"governor: era clocks reset for {len(resets)} changed setup(s)")
+    if not args.dry_run:
+        save_state(st)
+
+    # D-6: hypothesis registry — every (cell, setup) ever examined, so the
+    # deflation denominator is explicit and public.
+    try:
+        reg = json.loads(REGISTRY.read_text())
+    except Exception:
+        reg = {}
+    for key, meta in bmap.items():
+        k = "|".join(key)
+        e = reg.setdefault(k, {"first_seen": now_iso, "hashes": []})
+        if meta["cfg_hash"] not in e["hashes"]:
+            e["hashes"].append(meta["cfg_hash"])
+    if not args.dry_run:
+        REGISTRY.write_text(json.dumps(reg, indent=1))
+    m_live = sum(1 for m in bmap.values() if m["status"] in ("ACTIVE", "SHADOW"))
+    print(f"governor: hypothesis registry M_ever={len(reg)} M_live={m_live} "
+          f"z_promote={c.get('z_promote', 2.33)}")
+    stats = era_stats(eras, c["default_era_start"], bmap, c)
     fills = era_fills(c["default_era_start"])
     now = datetime.now(timezone.utc).isoformat()
 
@@ -207,8 +271,11 @@ def main():
             for (pair, sess, sid), s, f in batch:
                 why = []
                 if s:
-                    why.append(f"era n={s['n']} avg={s['avg']:+.2f}p "
-                               f"lcb={s['lcb']:+.2f} 7d={s['avg7'] if s['avg7'] is None else round(s['avg7'],2)}({s['n7']})")
+                    _l = "None" if s["lcb"] is None else f"{s['lcb']:+.2f}"
+                    why.append(f"era n={s['n']} n_eff={s['n_eff']} "
+                               f"net_avg={s['avg']:+.2f}p lcb={_l} "
+                               f"7d={s['avg7'] if s['avg7'] is None else round(s['avg7'], 2)}({s['n7']}) "
+                               f"[net-of-cost]")
                 if f:
                     why.append(f"fills n={f['n']} avg={f['avg']:+.2f}p")
                 res = flip(pair, sess, sid, new_status, args.dry_run)
