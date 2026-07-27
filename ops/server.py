@@ -1196,6 +1196,46 @@ def _cellshadow(n: int = 200) -> dict:
             "generated_at": data["generated_at"]}
 
 
+# ── Bar Governor (autonomous promote/demote) — status + ON/OFF ───────────────
+_GOVERNOR_CFG = _REPO_ROOT / "config" / "governor_config.json"
+_GOVERNOR_LEDGER = _REPO_ROOT / "data" / "governor_ledger.jsonl"
+
+def _governor_get() -> dict:
+    """GET /api/governor — config, enabled state, and the recent ledger tail."""
+    try:
+        cfg = _j.loads(_GOVERNOR_CFG.read_text())
+    except Exception:
+        cfg = {}
+    ledger = []
+    try:
+        lines = _GOVERNOR_LEDGER.read_text().strip().splitlines()
+        for ln in lines[-5:]:
+            try:
+                ledger.append(_j.loads(ln))
+            except Exception:
+                continue
+    except Exception:
+        pass
+    return {"enabled": bool(cfg.get("enabled", False)), "config": cfg,
+            "ledger_tail": list(reversed(ledger)),
+            "generated_at": datetime.now(timezone.utc).isoformat()}
+
+def _governor_post(payload: dict) -> tuple[int, dict]:
+    """POST /api/governor {enabled: bool} — merge-preserving atomic write."""
+    if not isinstance(payload, dict) or not isinstance(payload.get("enabled"), bool):
+        return 400, {"ok": False, "error": "payload must be {\"enabled\": true|false}"}
+    try:
+        cfg = _j.loads(_GOVERNOR_CFG.read_text())
+    except Exception:
+        cfg = {}
+    cfg["enabled"] = payload["enabled"]
+    tmp = _GOVERNOR_CFG.with_suffix(".tmp")
+    tmp.write_text(_j.dumps(cfg, indent=2) + "\n")
+    tmp.replace(_GOVERNOR_CFG)
+    log.info("governor %s via dashboard", "ENABLED" if cfg["enabled"] else "DISABLED")
+    return 200, {"ok": True, "enabled": cfg["enabled"]}
+
+
 # ── Cell scoreboard (cell_setup_score.py --json, cached 300s) ────────────────
 _CELLSCORE_CACHE = {"ts": 0, "data": None, "refreshing": False}
 _CELLSCORE_SCRIPT = _REPO_ROOT / "research" / "tools" / "cell_setup_score.py"
@@ -1371,6 +1411,10 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_sb.get_board(), default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/governor"):
+                body = _j.dumps(_governor_get(), default=str).encode()
+                ctype = "application/json"
+                code = 200
             elif self.path.startswith("/api/sysinfo"):
                 body = _j.dumps(_sysinfo(), default=str).encode()
                 ctype = "application/json"
@@ -1525,6 +1569,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             elif self.path.startswith("/api/trading"):
                 payload = self._read_json()
                 code, obj = _set_trading(payload)
+                body = _j.dumps(obj).encode()
+                ctype = "application/json"
+            elif self.path.startswith("/api/governor"):
+                payload = self._read_json()
+                code, obj = _governor_post(payload)
                 body = _j.dumps(obj).encode()
                 ctype = "application/json"
             else:

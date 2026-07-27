@@ -763,6 +763,24 @@ body.has-ticker{padding-bottom:32px}
 
 <!-- ─── SHADOW TAB (Phase C shadow-week scoreboard + stamp feed) ─────────── -->
 <div id="tab-shadow" class="pane">
+  <div class="card" style="margin:14px 14px 0">
+    <div class="card-title">🤖 Bar Governor — autonomous promote / demote
+      <span id="gov-toggle" style="margin-left:12px"></span>
+      <a href="https://github.com/BrockStar3540/mr-scrooge-v6/blob/main/docs/GOVERNOR.md"
+         target="_blank" rel="noopener"
+         style="margin-left:12px;font-size:11px;font-weight:normal;text-transform:none;letter-spacing:0">
+         How it works &amp; what it&#39;s tuned to →</a>
+    </div>
+    <div class="muted" style="padding:0 12px 6px;font-size:11px">
+      The bot flips its own switches, daily at 06:35 UTC. <b>Promote</b> SHADOW→ACTIVE:
+      current-era n≥20 eps · avg ≥ +2.0p/ep · LCB &gt; 0 · 7-day ≥ 0.
+      <b>Demote</b> ACTIVE→SHADOW: bar lost on era stamps, or era broker fills n≥5 net-negative.
+      Rails: max 2 promotions + 4 demotions/day · sides never flipped · every flip restarts that
+      setup&#39;s evidence clock · decisions logged to <code>data/governor_ledger.jsonl</code>.
+    </div>
+    <div id="gov-ledger" class="mono muted" style="padding:0 12px 10px;font-size:10.5px"></div>
+  </div>
+
   <div class="card" style="margin:14px">
     <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
@@ -1075,6 +1093,34 @@ async function pollShadowboard(){
   }catch(e){}
 }
 setInterval(pollShadowboard,60000); pollShadowboard();
+
+/* ── Bar Governor card (SHADOW tab) ────────────────────────────────────── */
+async function pollGovernor(){
+  try{
+    const r=await fetch('/api/governor'); if(!r.ok)return;
+    const d=await r.json();
+    const on=!!d.enabled;
+    document.getElementById('gov-toggle').innerHTML=
+      `<button class="pill ${on?'pill-pass':'pill-fail'}" style="cursor:pointer;border:none;font-weight:700"
+        onclick="setGovernor(${!on})" title="Toggle autonomous promote/demote (writes config/governor_config.json)">
+        AUTO-PROMOTE/DEMOTE: ${on?'ON':'OFF'}</button>`;
+    const led=(d.ledger_tail||[]).slice(0,3).map(e=>
+      `${(e.t||'').slice(0,16).replace('T',' ')}Z ${e.action} ${e.pair}/${e.session}/${e.setup}${e.dry_run?' (dry-run)':''} — ${e.why||''}`);
+    document.getElementById('gov-ledger').innerHTML=
+      led.length?('recent decisions:<br>'+led.map(escape).join('<br>'))
+                :'no governor decisions yet — first setups reach the bar as era episodes accumulate';
+  }catch(e){}
+}
+async function setGovernor(enabled){
+  if(enabled && !confirm('Enable the Bar Governor?\n\nThe bot will AUTONOMOUSLY promote shadows to ACTIVE (live trading) and demote actives to SHADOW, daily at 06:35 UTC, by the published standard. Continue?'))return;
+  if(!enabled && !confirm('Disable the Bar Governor?\n\nNo automatic promotions or demotions will run until re-enabled; the book only changes by hand.'))return;
+  try{
+    await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({enabled})});
+  }catch(e){}
+  pollGovernor();
+}
+setInterval(pollGovernor,60000); pollGovernor();
 function fmtPips(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+n.toFixed(1)+'p'}
 function fmtDollar(v){if(v==null)return '—';const n=Number(v);return (n>=0?'+':'')+'$'+Math.abs(n).toFixed(2)}
 function colorPips(v){if(v==null)return '';return v>=0?'pos':'neg'}
