@@ -166,9 +166,16 @@ def _aggregate(db):
         lcb = (round(avg - 1.645 * st.stdev(nets) / len(nets) ** 0.5, 2)
                if len(nets) >= 2 else None)
         _st = _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup))
+        # Side-aware status join (2026-07-27): a row whose side no longer matches
+        # the config (an MAE-flip retired it) must not inherit the live side's
+        # ACTIVE badge — it shows EX-SIDE and keeps its history as the autopsy.
+        if _st and _st[1] not in (side, "?"):
+            _status = "EX-SIDE"
+        else:
+            _status = _st[0] if _st else g["status"]
         out.append({
             "cell": cell, "setup": setup, "side": side,
-            "status": _st[0] if _st else g["status"],
+            "status": _status,
             "episodes": len(rows),
             "cum_net240": round(sum(nets), 1),
             "avg_net240": round(avg, 2),
