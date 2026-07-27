@@ -381,9 +381,9 @@
         },
         {
           "id": "classic_box_fade_long",
-          "side": "short",
+          "side": "long",
           "class": "classic",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -417,8 +417,7 @@
             "source": "classics-retrial 2026-07-09: YTD +5.0 drift, edge vs baseline +3.3 (strongest of batch)",
             "drift": "STABLE"
           },
-          "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard.",
-          "_side_note": "flipped long->short 2026-07-22 (Brock, MAE-flip: entry timing right, wiring wrong; storm evidence)"
+          "notes": "Restored to name-true LONG (Brock 2026-07-27: sides are never flipped in place). Its own long tape is the honest record (16 eps, -10.99/ep \u2014 the MAE-flip specimen). The winning opposite direction lives in classic_box_break_short."
         },
         {
           "id": "alpha_extended_fade_short",
@@ -720,6 +719,105 @@
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
           "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
+        },
+        {
+          "id": "classic_box_break_short",
+          "side": "short",
+          "class": "classic",
+          "status": "ACTIVE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03,
+              "note": "price at/below lower Bollinger (box_fade long)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "flip-era tape 2026-07-22..27: 12 eps +11.07/ep (aliased); governor owns the seat from here",
+            "drift": "UNKNOWN",
+            "n_floor_status": "building toward the bar under its own name"
+          },
+          "notes": "Counterpart of classic_box_fade_long: SHORTS the lower-band tag (breakdown-follow \u2014 'through the wall, follow'). Carries Brock's 2026-07-22 promotion; its 12 eps @ +11.07/ep (2026-07-22..27) were stamped under the pre-rename flipped setup and are aliased in (config/setup_aliases.json)."
+        },
+        {
+          "id": "rvol_low_240_short",
+          "side": "short",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rvol_5bar",
+              "pct_window_days": 90,
+              "pct_lo": 4.8,
+              "pct_hi": 25.2,
+              "resolved": [
+                0.670362,
+                0.861514
+              ],
+              "resolved_at": "2026-07-04T04:20:49.522289Z",
+              "note": "Rolling-pct band [p4.8, p25.2] of rvol_5bar in GBP_USD london-session bars, trailing 90d. Engine reads 'resolved'; monthly refit updates resolved values. 2026 absolute fallback: [0.371479, 0.669169].",
+              "lineage": "formula-rolling-pct-2026-07-04/config/formula_rolling_pct.json; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            },
+            {
+              "feature": "pdl_dist",
+              "max": 57.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.5
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "mirror of the storm-loser long tape \u2014 descriptive only, NOT validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no sample \u2014 activation bar governs"
+          },
+          "notes": "Counterpart of rvol_low_240 (which stays name-true LONG): same low-rvol trigger, opposite direction. Motivation: the long tape's flip signature (t20s twin: 27 eps -14.08/ep, WR 26%, medMFE/MAE 7.9/18.6, hit6 63%) \u2014 mirrored path math reads ~+14/ep, but that is one regime's artifact until proven forward. Fresh era clock; the governor judges.",
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_h1_relative_monthly_mean",
+              "gte": null,
+              "action": "size_down"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          }
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."

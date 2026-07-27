@@ -1,0 +1,8 @@
+[
+ {
+  "cell": "GBP_USD/london",
+  "setup": "classic_box_fade_long",
+  "side": "short",
+  "as": "classic_box_break_short"
+ }
+]

@@ -531,6 +531,13 @@ is indistinguishable from zero at any n the book reaches in weeks.
 - Era boundaries matter: evidence must come from the current engine/config era. A
   cutover or gear change restarts the clock (see B-094 for what stale-era evidence does).
 
+**SIDES ARE NEVER FLIPPED IN PLACE (2026-07-27, Brock).** A setup keeps its name-true
+direction forever. When the mirror looks better (the MAE-flip signature), a COUNTERPART
+setup with its own honest name fires the opposite direction at the same trigger
+(classic_box_fade_long / classic_box_break_short is the template) and earns its own
+evidence. Renamed history flows through config/setup_aliases.json so records survive
+reorganization. Nobody reading the book should ever meet a long that trades short.
+
 **AUTOMATED 2026-07-27 (the Bar Governor).** Promotion and demotion are no longer manual
 dockets: `ops/governor.py` runs daily and flips statuses by the standard above (promote:
 era n>=20, avg>=+2.0, LCB>0, 7d not negative; demote: bar lost on era stamps, or era

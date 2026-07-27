@@ -142,12 +142,25 @@ def _config_status():
         pass
     return out
 
+def _setup_aliases():
+    """(cell, setup, side) -> new setup id. Continuity across renames (a setup
+    reorganized under an honest name keeps its stamped history — 2026-07-27,
+    Brock: sides are never flipped in place; counterparts get their own names)."""
+    import json as _json
+    try:
+        rows = _json.loads((_ROOT / "config" / "setup_aliases.json").read_text())
+        return {(r["cell"], r["setup"], r["side"]): r["as"] for r in rows}
+    except Exception:
+        return {}
+
 def _aggregate(db):
     import statistics as st
+    aliases = _setup_aliases()
     groups = {}
     for ep in db["episodes"].values():
         if not ep["scores"]: continue
-        key = (ep["cell"], ep["setup"], ep["side"])
+        _sid = aliases.get((ep["cell"], ep["setup"], ep["side"]), ep["setup"])
+        key = (ep["cell"], _sid, ep["side"])
         groups.setdefault(key, {"status": ep["status"], "rows": []})  # fallback: stamped
         groups[key]["rows"].append(ep)
         groups[key]["status"] = ep["status"]  # provisional; overridden by config below

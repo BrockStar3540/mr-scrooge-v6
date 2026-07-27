@@ -89,13 +89,19 @@ def era_stats(era_start_by_key, default_era, book_map):
         eps = json.loads(STORE.read_text())["episodes"]
     except Exception:
         return {}
+    try:
+        aliases = {(r["cell"], r["setup"], r["side"]): r["as"]
+                   for r in json.loads((REPO / "config" / "setup_aliases.json").read_text())}
+    except Exception:
+        aliases = {}
     now = datetime.now(timezone.utc).isoformat()
     agg = {}
     for ep in eps.values():
         if not ep.get("scores"):
             continue
         pair, sess = (ep["cell"].split("/") + ["?"])[:2]
-        key = (pair, sess, ep["setup"])
+        sid = aliases.get((ep["cell"], ep["setup"], ep["side"]), ep["setup"])
+        key = (pair, sess, sid)
         meta = book_map.get(key)
         if meta is None or ep.get("side") != meta["side"]:
             continue
