@@ -11,7 +11,7 @@ and **its leak status**, so a public reader can re-run or challenge any result i
 > https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
 >
 > Entry points inside the archive: `00_MASTER_INDEX.md`, `00_HISTORY_V1-V6.md`,
-> `00_BOOK_OF_BUGS_V4-V5.md`. Paths below are archive-relative (`/SCROOGE ARCHIVE/…`). The archive is
+> `00_BOOK_OF_BUGS_V4-V5.md`. Paths below are archive-relative (`/SCROOGE/SCROOGE ARCHIVE/…`). The archive is
 > being consolidated into `models/` and `corpora/` subfolders; the paths below are the canonical
 > post-consolidation locations.
 
@@ -29,7 +29,7 @@ bar. Labels used here:
 
 ---
 
-## Models — `/SCROOGE ARCHIVE/models/`
+## Models — `/SCROOGE/SCROOGE ARCHIVE/models/`
 
 All tree models are LightGBM unless noted; `model.txt` artifacts load with
 `lightgbm.Booster(model_file="model.txt")`, with feature order/categorical levels in the accompanying
@@ -56,7 +56,7 @@ bugs were models silently fed dead or truncated features (B-085; the 60-bar `OBV
 
 ---
 
-## Corpora — `/SCROOGE ARCHIVE/corpora/`
+## Corpora — `/SCROOGE/SCROOGE ARCHIVE/corpora/`
 
 | Tarball | Contents / schema | Granularity · window | Leak status | Size |
 |---|---|---|---|---|
@@ -73,8 +73,8 @@ bugs were models silently fed dead or truncated features (B-085; the 60-bar `OBV
 (`mr-scrooge-v3-full`, `MR-SCROOGE-V4-MIRROR`), the research/lab script bundles
 (`scrooge_research_scripts.tar.gz` — build_allbars / discover_NxM / walkfwd / retrain scripts;
 `scrooge_lab_code.tar.gz`), lab datasets, and git mirrors under the former `research-corpora/`
-subtrees; the session diaries under `/SCROOGE ARCHIVE/session-notes/`; and the retired repo docs under
-`/SCROOGE ARCHIVE/docs-harvest/`. Indexed in [`../research/README.md`](../research/README.md) §4.
+subtrees; the session diaries under `/SCROOGE/SCROOGE ARCHIVE/session-notes/`; and the retired repo docs under
+`/SCROOGE/SCROOGE ARCHIVE/docs-harvest/`. Indexed in [`../research/README.md`](../research/README.md) §4.
 
 ---
 

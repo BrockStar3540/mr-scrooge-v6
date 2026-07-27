@@ -477,8 +477,8 @@ pre-repo era are cited by archive location and date: the OANDA-agent genesis and
 incident are from the operator's dated session archives (Dropbox `/LLM Sessions/…/Trading/`,
 2026-02-14 and 2026-03-02); the Strategy E white paper and the retired-strategy catalog are imported
 under [`papers/historical/`](papers/historical/) with their era clearly marked; the V4/V5 findings are
-from the retired-repo docs (`/SCROOGE ARCHIVE/docs-harvest/`) and the research session diaries
-(`/SCROOGE ARCHIVE/session-notes/`), both indexed in [`../research/README.md`](../research/README.md).
+from the retired-repo docs (`/SCROOGE/SCROOGE ARCHIVE/docs-harvest/`) and the research session diaries
+(`/SCROOGE/SCROOGE ARCHIVE/session-notes/`), both indexed in [`../research/README.md`](../research/README.md).
 No number here is uncited, and no scope (sim/live/broker) is upgraded from its source.
 
 **Data availability.** Every corpus and retired model behind these hypotheses is publicly downloadable

@@ -4,6 +4,20 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.3.1] — 2026-07-27
+
+### Added
+- **Shadowboard queued rows**: every wired ACTIVE/SHADOW setup with zero scored episodes now
+  shows as a dimmed ⏳ row (sorted below all scored rows) — the trial docket is visible;
+  waiting is a state, not an absence. Board went 41 → 94 rows across 17 pairs.
+- **Automated live-bot backup** (infrastructure, off-repo): daily verified tarball of the full
+  bot + dashboard working tree to two destinations (cloud + cold drive), change-gated,
+  secrets excluded, 14-generation retention.
+
+### Changed
+- Docs: Dropbox archive paths updated to the consolidated `/SCROOGE/` folder structure
+  (the public share link is unchanged and survived the move).
+
 ## [6.3.0] — 2026-07-27 — "Strategies on trial"
 
 The release where the README stopped underselling the system: Scrooge is not "a bot with no

@@ -346,8 +346,8 @@ and is documented. Until then, **the bot's intelligence is its measurement.**
 Every model and corpus named here is catalogued with framework, training data, era, leak status, and
 archive path in [`../DATA_AND_MODELS.md`](../DATA_AND_MODELS.md) (public archive link at the top of that
 file). Primary written sources: the operator's dated research-session notes (Dropbox
-`/SCROOGE ARCHIVE/session-notes/`, 2026-06-04 → 2026-06-15 for the systems here), the retired V4 repo
-docs (`/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`: `RESEARCH_METHODOLOGY.md`, `BACKTEST_RESULTS.md`,
+`/SCROOGE/SCROOGE ARCHIVE/session-notes/`, 2026-06-04 → 2026-06-15 for the systems here), the retired V4 repo
+docs (`/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`: `RESEARCH_METHODOLOGY.md`, `BACKTEST_RESULTS.md`,
 `STRATEGY_ENCYCLOPEDIA.md`, `FACTOR_RESEARCH_VERDICT.md`), and the ML-lab build/findings/wiring notes
 (2026-06-04). Related defects: B-076 (exit bottleneck), B-078 (H1 leak), B-084 (journal gap), B-085
 (dead live factors). See [`../BOOK_OF_BUGS.md`](../BOOK_OF_BUGS.md).

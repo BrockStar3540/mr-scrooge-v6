@@ -12,7 +12,7 @@ Live config currently has `step_trigger=7.5 / trail=2.5 / size=2.5`. Diagnosed 2
 - **Hybrid** `4.5 / 2.5 / 2.5` — keep the new step+trail shape, lower the trigger.
 - **Keep current** — accept the new trade distribution.
 
-The launch-week smoke data is archived under `/SCROOGE ARCHIVE/session-notes/2026-06-19_*` (indexed in [research/README.md](../research/README.md) §4).
+The launch-week smoke data is archived under `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-06-19_*` (indexed in [research/README.md](../research/README.md) §4).
 
 ### Activate direction_v2 + momentum_v3
 
@@ -87,6 +87,6 @@ The 2026-06-18 forexsb.com H1 cross-validation showed broker-portable methodolog
 
 ## How items move on/off the roadmap
 
-- A new research session (diaries archived under `/SCROOGE ARCHIVE/session-notes/`, indexed in [research/README.md](../research/README.md)) often surfaces new items.
+- A new research session (diaries archived under `/SCROOGE/SCROOGE ARCHIVE/session-notes/`, indexed in [research/README.md](../research/README.md)) often surfaces new items.
 - Items in flight have a session folder + a CHANGELOG entry when they land.
 - "Off-roadmap" items stay here as a record of "considered, not pursuing."

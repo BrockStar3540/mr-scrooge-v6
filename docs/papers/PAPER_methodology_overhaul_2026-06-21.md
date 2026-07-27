@@ -127,7 +127,7 @@ measurement artifacts, which is the more valuable and more transferable result.
 
 ## 6. Data availability
 
-- Session diaries: `/SCROOGE ARCHIVE/session-notes/2026-06-21_full_weekend/` and
+- Session diaries: `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-06-21_full_weekend/` and
   `.../2026-06-21_master_matrix_broker_validation/`; 48-cell ruleset at
   `research/sessions/2026-06-21_cell_ruleset/data/cell_ruleset.csv` (archived).
 - Early V5 live-trade matrices: [`../../research/matrices/`](../../research/matrices/)

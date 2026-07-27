@@ -219,8 +219,8 @@ was actively harmful and survivorship-biased, and the honest verdict is pending 
 - Scripts (lab hardware): `tf_sweep.py`, `tf_regime.py`, `cta_backtest.py`, `cta_diag.py`, the SL sweep
   and 29-cell scan, and the 6-cell portfolio sim; equity curve `cta_equity.csv`.
 - Corpora: leak-safe 8yr/16yr M5/H1/D feature sets and the broker-anchored truth matrix, archived at
-  `/SCROOGE ARCHIVE/research-corpora/` (indexed in [`../../research/README.md`](../../research/README.md) §4).
-- Session diaries: `/SCROOGE ARCHIVE/session-notes/2026-07-14 Edge Hunt/` and
+  `/SCROOGE/SCROOGE ARCHIVE/research-corpora/` (indexed in [`../../research/README.md`](../../research/README.md) §4).
+- Session diaries: `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-14 Edge Hunt/` and
   `.../2026-07-14 Deep-Dive Dial-In/`.
 - Related defects: B-086 (rollover spread blowout), B-090 (trail_mult). See
   [`../BOOK_OF_BUGS.md`](../BOOK_OF_BUGS.md).

@@ -5,7 +5,7 @@
 > Feb–Jun 2026), distilled from the V4-era *Strategy Encyclopedia* (211 live plugins across 9 families
 > at its peak, 2026-06-16). It exists so a public reader can see **what was tried and why it was
 > retired** without wading through the full plugin dump (archived at
-> `/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/STRATEGY_ENCYCLOPEDIA.md`).
+> `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/STRATEGY_ENCYCLOPEDIA.md`).
 >
 > **The whole roster is retired.** At the V5 cell-era cutover (2026-07-04) named strategies were
 > abolished: the (pair × session) **cell** became the unit of decision, and no strategy trades under
@@ -69,4 +69,4 @@ Almost none of the strategies; several of the *findings*:
 
 Everything else is in the graveyard, referenced and reproducible, not carried. For the full plugin-level
 detail (specs, conditions, per-bucket survival), see the archived encyclopedia and
-`/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`.
+`/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`.

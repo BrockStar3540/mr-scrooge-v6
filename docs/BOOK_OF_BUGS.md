@@ -7,7 +7,7 @@ surfaces, this book answers *"have we seen this before?"* before anyone re-deriv
 This is the single canonical copy. It began as a vault-hosted catalog (V1–V3) plus a repo
 stub (V4–V5); the two were merged here so a reader with only this public repo has the whole
 book. Nothing points off-repo for the content itself — the only external references are the
-Dropbox `/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
+Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
 **Coverage:** B-001 → B-098, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
@@ -22,8 +22,8 @@ read those first if you want the compressed lessons rather than the chronology.
 
 Source material: `scrooge-v1-exec-summary-feb-2026` (3 audit passes), `AUDIT.md` from the V1
 repo, daily notes Mar 6/11/12/19/20/24. Public-safe forensic export archived at
-`/SCROOGE ARCHIVE/V3/scrooge-bug-catalog-V1-V3-export-2026-07-05.md`; raw daily notes at
-`/SCROOGE ARCHIVE/session-notes/2026-03-*`.
+`/SCROOGE/SCROOGE ARCHIVE/V3/scrooge-bug-catalog-V1-V3-export-2026-07-05.md`; raw daily notes at
+`/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-03-*`.
 
 ## Pre-deployment audit (Feb 2026)
 
@@ -387,7 +387,7 @@ The experiment failed; reverting introduced 17 incidental fixes. Source: `AUDIT.
 The box (daily PDH/PDL liquidity zone) is the foundational reference for every V1/V2 trade.
 When it draws wrong, every trade off it is contaminated — so these carry explicit
 **contaminated-window** notes for anyone backtesting on live-truth data. Forensic detail:
-`/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/` and the V1–V3 bug export.
+`/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/` and the V1–V3 bug export.
 
 ### B-068 — Inverted boxes from a stale 200-bar slice (pre-2026-03-09)
 - **Root cause:** `zone_detector._get_prior_day_hourly()` used `iloc[:24]` (OLDEST 24 of 200 bars), pulling data 8+ days old; the percentile filter "cleaned" yesterday's PDH/PDL using ancient bars, producing wildly wrong and sometimes fully inverted boxes (PDL > PDH). Bot took longs in clear downtrends.
@@ -659,10 +659,10 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
 record and appears above.** There are no gaps and no invented entries. If a future gap is
 discovered, list it here as a one-liner (id + best-known era + where a trace might exist in
-`/SCROOGE ARCHIVE/`) rather than reconstructing it from memory — a partial-but-true book beats
+`/SCROOGE/SCROOGE ARCHIVE/`) rather than reconstructing it from memory — a partial-but-true book beats
 a complete-but-invented one.
 
 *Source-of-record note: the V1–V3 catalog (B-001→B-074) was originally maintained in the
 Obsidian ops vault and is reproduced here in full; its public-safe export lives at
-`/SCROOGE ARCHIVE/V3/scrooge-bug-catalog-V1-V3-export-2026-07-05.md`. V4–V5 entries
+`/SCROOGE/SCROOGE ARCHIVE/V3/scrooge-bug-catalog-V1-V3-export-2026-07-05.md`. V4–V5 entries
 (B-075→B-090) were authored in-repo. This file is now the single canonical Book of Bugs.*

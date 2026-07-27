@@ -106,7 +106,7 @@ Per the evaluation doctrine: judge ONLY trades tagged engine=cell_v1 with the ne
 
 ## 9. Artifact index
 
-- Cost matrix, slippage, conversion, mechanics addendum + reusable `analyze_transaction_costs.py`: archived at `/SCROOGE ARCHIVE/session-notes/2026-07-05 Ratchet Exit Research/` (indexed in [`../research/README.md`](../research/README.md) §4)
+- Cost matrix, slippage, conversion, mechanics addendum + reusable `analyze_transaction_costs.py`: archived at `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-05 Ratchet Exit Research/` (indexed in [`../research/README.md`](../research/README.md) §4)
 - Feature-scaling CSV, cell classes, `fill_probabilities.csv`: same archive folder
-- 230-trade MAE/MFE excursion table: same archive folder, built on the truth-matrix corpus `/SCROOGE ARCHIVE/research-corpora/mini/v5-truth-matrix.tar.gz`
+- 230-trade MAE/MFE excursion table: same archive folder, built on the truth-matrix corpus `/SCROOGE/SCROOGE ARCHIVE/research-corpora/mini/v5-truth-matrix.tar.gz`
 - Code: tag `pre-exit-classes-2026-07-05`

@@ -2,7 +2,7 @@
 
 **The log.** One entry per era: the thesis it bet on, the method it used, the numbers it
 actually measured, what falsified or superseded it, and what carried forward. The git repo
-stays clean and current; the **Dropbox `/SCROOGE ARCHIVE/` is the graveyard** — every retired
+stays clean and current; the **Dropbox `/SCROOGE/SCROOGE ARCHIVE/` is the graveyard** — every retired
 version, corpus and session diary is filed there by era and referenced from this log, never
 copied back in. Full forensic bug history: [BOOK_OF_BUGS.md](BOOK_OF_BUGS.md).
 
@@ -68,8 +68,8 @@ repo README and is auto-updated on every push.)
   spec had *called for* exactly those breakers, which the first live build shipped without.
 - **Carried forward:** geometric anchoring of behavioural rules; pip-normalized thresholds;
   fixed-pip stops over equity-%; single-process enforcement; the no-reactive-market-order rule.
-- **Graveyard:** `/SCROOGE ARCHIVE/V3/archives/mr-scrooge-v1/` (code, Trade-Strategy PDFs, exec
-  summaries, AUDIT.md) and `/SCROOGE ARCHIVE/session-notes/2026-03-*` (daily notes).
+- **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V3/archives/mr-scrooge-v1/` (code, Trade-Strategy PDFs, exec
+  summaries, AUDIT.md) and `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-03-*` (daily notes).
 
 ## V2 — transitional agent era (Mar 21 – Apr 15, 2026)
 
@@ -84,7 +84,7 @@ repo README and is auto-updated on every push.)
   *heavy compute never on the live-trader host* rule.
 - **Carried forward:** the shared-state `TradeCoordinator` pattern; single-resource ownership
   protocols; live zero-signal counters.
-- **Graveyard:** `/SCROOGE ARCHIVE/V3/archives/legacy/.../mr-scrooge-v2/`.
+- **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V3/archives/legacy/.../mr-scrooge-v2/`.
 
 ## V3 — "The Matrix Era" (Apr 15 – 2026-06-16)
 
@@ -101,10 +101,10 @@ repo README and is auto-updated on every push.)
   its exit-design lessons, and its attribution rigor all carried forward.
 - **Carried forward:** the Book of Bugs itself; "exit design dominates results"; broker-vs-live
   divergence needs institutional memory; the box contaminated-window notes.
-- **Graveyard:** `/SCROOGE ARCHIVE/V3/` (`SCROOGE_MASTER_INDEX.md` inside; code + data tarballs,
+- **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V3/` (`SCROOGE_MASTER_INDEX.md` inside; code + data tarballs,
   matrix-era routing tables, a ~25 GB research corpus, the V1–V3 bug-catalog export). Retired
   V3/V4 repo docs (ADRs, evolution timeline, execution physics, research methodology) are
-  harvested under `/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/`.
+  harvested under `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/`.
 
 ## V4 — "Bucket-Keyed" (2026-06-11 → 2026-06-18)
 
@@ -129,15 +129,15 @@ repo README and is auto-updated on every push.)
 - **Carried forward:** the ratchet runner exit; the cell (pair × session × direction) framing;
   Brock's pip-utility objective (floor +6, 20+/30+ bonuses, losses count 2×); the no-bias
   training principle (train on all pairs / all strategies / winners **and** losers).
-- **Graveyard:** `/SCROOGE ARCHIVE/V4/` (`SCROOGE_V4_INDEX.md`; `archives/V4-Archive-2026-06-18/`
+- **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V4/` (`SCROOGE_V4_INDEX.md`; `archives/V4-Archive-2026-06-18/`
   code+data tarballs, verified 3,924 members intact after B-083; `backtest-sources/`). Retired
   V4 repo docs (strategy encyclopedia, backtest results, research methodology) are under
-  `/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`.
+  `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`.
 
 ## V5 — "Strategy-Free / The Cell Era" (2026-06-18 → present)
 
 A ground-up rebuild that grew through several distinct arcs. Day-by-day detail is in
-[`../CHANGELOG.md`](../CHANGELOG.md); session diaries are in `/SCROOGE ARCHIVE/session-notes/`.
+[`../CHANGELOG.md`](../CHANGELOG.md); session diaries are in `/SCROOGE/SCROOGE ARCHIVE/session-notes/`.
 
 ### Arc 1 — Launch (2026-06-18 → 06-20)
 - **Thesis:** replace named strategies with per-(pair × session × direction) `direction_v2` /
@@ -275,9 +275,9 @@ lock a stop within a spread of entry.
   telegraphs WHEN and HOW FAR but not WHICH WAY (five falsifications, sim + broker); tight stops
   were converting a thin-but-real edge into losses (sim head-to-head); exit geometry must match
   cell excursion class.
-- **Graveyard:** `/SCROOGE ARCHIVE/V5/` (`SCROOGE_V5_INDEX.md`, archives, test data);
-  session diaries under `/SCROOGE ARCHIVE/session-notes/`; research corpora and truth-matrix
-  parquets under `/SCROOGE ARCHIVE/research-corpora/`.
+- **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V5/` (`SCROOGE_V5_INDEX.md`, archives, test data);
+  session diaries under `/SCROOGE/SCROOGE ARCHIVE/session-notes/`; research corpora and truth-matrix
+  parquets under `/SCROOGE/SCROOGE ARCHIVE/research-corpora/`.
 
 ## V6 — public rebuild (repo created 2026-07-05; pre-live)
 
@@ -297,19 +297,19 @@ lock a stop within a spread of entry.
 
 ---
 
-## Graveyard map (Dropbox `/SCROOGE ARCHIVE/`)
+## Graveyard map (Dropbox `/SCROOGE/SCROOGE ARCHIVE/`)
 
 The archive is the single consolidated graveyard + research library. Its own entry points are
 `00_MASTER_INDEX.md`, `00_HISTORY_V1-V6.md`, and `00_BOOK_OF_BUGS_V4-V5.md`.
 
 | Path | Contents |
 |---|---|
-| `/SCROOGE ARCHIVE/V3/` | V1+V2+V3 complete: code, data, matrix-era routing tables, V3-era master index, the V1–V3 bug-catalog export, the original box bot + Trade-Strategy library |
-| `/SCROOGE ARCHIVE/V4/` | Bucket-keyed era: code+data tarballs (verified intact), backtest sources, `SCROOGE_V4_INDEX.md` |
-| `/SCROOGE ARCHIVE/V5/` | Strategy-free/cell era: `SCROOGE_V5_INDEX.md`, archives, test + H1 trade data |
-| `/SCROOGE ARCHIVE/session-notes/` | Dated research-session diaries (2026-03 daily notes → present) — the working record behind every CHANGELOG entry, plus Brock's Bot Strategy Book |
-| `/SCROOGE ARCHIVE/docs-harvest/` | Full `docs/` trees lifted from the retired V3 and V4 repos: ADRs, evolution timeline, strategy encyclopedia, execution physics, research methodology, fix postmortems |
-| `/SCROOGE ARCHIVE/research-corpora/` | Backtest corpora and truth-matrix parquets (8 pairs × 8yr forward MFE/MAE, broker-anchored), qtl 8yr feature sets, ML-lab and direction-ML artifacts — everything needed to reproduce or challenge the research |
+| `/SCROOGE/SCROOGE ARCHIVE/V3/` | V1+V2+V3 complete: code, data, matrix-era routing tables, V3-era master index, the V1–V3 bug-catalog export, the original box bot + Trade-Strategy library |
+| `/SCROOGE/SCROOGE ARCHIVE/V4/` | Bucket-keyed era: code+data tarballs (verified intact), backtest sources, `SCROOGE_V4_INDEX.md` |
+| `/SCROOGE/SCROOGE ARCHIVE/V5/` | Strategy-free/cell era: `SCROOGE_V5_INDEX.md`, archives, test + H1 trade data |
+| `/SCROOGE/SCROOGE ARCHIVE/session-notes/` | Dated research-session diaries (2026-03 daily notes → present) — the working record behind every CHANGELOG entry, plus Brock's Bot Strategy Book |
+| `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/` | Full `docs/` trees lifted from the retired V3 and V4 repos: ADRs, evolution timeline, strategy encyclopedia, execution physics, research methodology, fix postmortems |
+| `/SCROOGE/SCROOGE ARCHIVE/research-corpora/` | Backtest corpora and truth-matrix parquets (8 pairs × 8yr forward MFE/MAE, broker-anchored), qtl 8yr feature sets, ML-lab and direction-ML artifacts — everything needed to reproduce or challenge the research |
 
 *The archive is shared publicly, read-only (post-sanitization review):*
 https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0

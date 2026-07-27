@@ -5,7 +5,7 @@ Created at the 2026-07-05 port. Rule: anything that could change live behavior i
 ## Done at port (2026-07-05)
 - [x] Fresh git history; no private-era commits carried.
 - [x] `modules/archive/signals_legacy/` left behind (V5 repo + graveyard keep it).
-- [x] `research/sessions/` left behind (V5 repo + `/SCROOGE ARCHIVE/session-notes/`); `research/` here keeps the index + live tools only.
+- [x] `research/sessions/` left behind (V5 repo + `/SCROOGE/SCROOGE ARCHIVE/session-notes/`); `research/` here keeps the index + live tools only.
 - [x] lock_guard fingerprint check: graceful skip when legacy profile modules absent (was CRITICAL log spam every boot — locks retired at cell-era cutover).
 - [x] `.env.example` + `.gitignore`; credentials environment-only.
 - [x] v6 service unit; v5 unit not ported.

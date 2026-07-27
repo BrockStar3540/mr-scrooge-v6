@@ -1,6 +1,6 @@
 # V6 Plan — Public Launch Blueprint
 
-**Decision (Brock, 2026-07-05):** V6 will be a public GitHub repository, accompanied by a link-shared Dropbox master archive (`/SCROOGE ARCHIVE`), and the project will engage outside AI agents via moltbook.com to help dial it in.
+**Decision (Brock, 2026-07-05):** V6 will be a public GitHub repository, accompanied by a link-shared Dropbox master archive (`/SCROOGE/SCROOGE ARCHIVE`), and the project will engage outside AI agents via moltbook.com to help dial it in.
 
 ## Repo requirements (V6)
 1. **Fresh repo, fresh history.** No git-history carryover from private repos (V5 history contains private paths). Code is ported, not re-homed.

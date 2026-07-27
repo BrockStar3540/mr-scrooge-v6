@@ -86,7 +86,7 @@ Same shape as exit_config: `per_pair: { "<PAIR>": { ... } }`. Any field present 
 
 NOT a config — a calibration data file. Holds D1-D10 per-feature percentile anchors per (pair × session) used by both Direction and Momentum modules for normalization.
 
-- Updated only when a new aggregator sweep is run (last: 2026-06-18; the sweep output is archived at `/SCROOGE ARCHIVE/research-corpora/alien/scrooge-research.tar.gz` — the lab drive that held it was wiped after archival).
+- Updated only when a new aggregator sweep is run (last: 2026-06-18; the sweep output is archived at `/SCROOGE/SCROOGE ARCHIVE/research-corpora/alien/scrooge-research.tar.gz` — the lab drive that held it was wiped after archival).
 - Read on module `__init__`; cached for the life of the process.
 - Restart V5 after editing.
 

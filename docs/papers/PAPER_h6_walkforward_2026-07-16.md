@@ -244,7 +244,7 @@ Scope: the registered 3-cell wide-stop book, the leak-clean M5 truth corpus (the
 logic is pure OHLC path, so the H1-leak note does not bind), 2023-26 test window, trig 7.5 / trail
 2.5, range-tier SL, the same tiered-slippage portfolio mechanics; T\* train-selected only, no cell
 re-selection. Artifacts (pre-registered design, sweep tables, decomposition, extended-horizon probe):
-`/SCROOGE ARCHIVE/session-notes/2026-07-16_stale_exit/`.
+`/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-16_stale_exit/`.
 
 The addendum strengthens the paper's conclusion from a second angle: not only does the wide-stop
 book fail net of cost -- its loss profile has no exploitable time structure left to rescue it. The
@@ -300,7 +300,7 @@ feature with possible end-of-day look-ahead; the finding does not rest on it (it
 intraday cousins agree in sign). Placebo N = 40, so p = 0.025 is indicative, not tight.
 
 Scope: this book + corpus + exit, not general. Artifacts (pipeline, per-feature and calendar tables,
-frozen filter, placebo runs): `/SCROOGE ARCHIVE/session-notes/2026-07-16_red_denominator/`.
+frozen filter, placebo runs): `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-16_red_denominator/`.
 
 Together the two addenda complete the autopsy: the wide-stop book's reds have no exploitable time
 structure (Addendum 1) and no exploitable entry-state structure beyond a real-but-diffuse quiet-tape
@@ -373,7 +373,7 @@ slippage and fill behavior on the arm before any promotion question is even pose
 Scope: frozen books, leak-clean M5 truth corpus, extended 5-day horizon for slow arms (unresolved
 fractions ≤1.9%; baselines re-run at the same horizon for apples-to-apples). Artifacts (grids,
 adverse/engage surfaces, red-rate curves, frozen choice, equity curves):
-`/SCROOGE ARCHIVE/session-notes/2026-07-16_wider_sl_engage/`.
+`/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-16_wider_sl_engage/`.
 
 The three addenda now read as one arc: the reds have no time structure (1), no entry-state structure
 beyond a diffuse quiet-tape regime (2), and no rescue by stop width (3) — but the exit *geometry*
@@ -384,12 +384,12 @@ ledger has recorded. Material, unpromoted, and owed a live shadow.
 
 - Full pre-registered results file, frozen design, selection table (all 29 candidate verdicts), main
   and robustness runs, per-cell test contributions, slippage sweep, and daily test-window equity
-  curve: `/SCROOGE ARCHIVE/session-notes/2026-07-16_h6_walkforward/` (`wf.py`, `probe.py`,
+  curve: `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-16_h6_walkforward/` (`wf.py`, `probe.py`,
   `gear_fresh.json` candidate universe, `selected_book.json`, `wf_results.csv`, `per_cell_test.csv`,
   `per_year_main.csv`, `slip_sweep_main.csv`, `equity_test_main.csv`).
 - Engine (reused unmodified for the reproduction gate): the 07-14 edge-hunt tools
   (`portfolio_sim.py`, `range_sized_sl.py`), archived with the edge-hunt session
-  (`/SCROOGE ARCHIVE/session-notes/2026-07-14 Edge Hunt/`).
+  (`/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-07-14 Edge Hunt/`).
 - Corpus: the leak-clean truth-matrix build (catalog: [`../DATA_AND_MODELS.md`](../DATA_AND_MODELS.md),
   `v5-truth-matrix.tar.gz` — CLEAN).
 - Antecedents: [`PAPER_edge_hunt_falsifications_2026-07-14.md`](PAPER_edge_hunt_falsifications_2026-07-14.md)
