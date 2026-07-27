@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "bar_n": 20,
+  "bar_avg": 2.0,
+  "lcb_min": 0.0,
+  "recent_n": 5,
+  "recent_min": 0.0,
+  "fills_n": 5,
+  "fills_avg_max": 0.0,
+  "max_promotions": 2,
+  "max_demotions": 4,
+  "default_era_start": "2026-07-19T00:00:00+00:00"
+}

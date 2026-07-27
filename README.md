@@ -59,15 +59,19 @@ tapes, or contributed — walks the same ladder:
 2. **The Shadowboard.** Every setup, ACTIVE and SHADOW alike, is ranked on the identical
    metric, sorted by a **95% lower confidence bound** (`avg − 1.645·σ/√n`) so a lucky
    3-episode row can never outrank a proven 30-episode one.
-3. **Promotion — the activation bar.** A setup may go ACTIVE only with **current-era evidence
-   of n ≥ 20 episodes at ≥ +2.0 pips/episode** — a margin chosen because the measured
-   execution toll makes any sub-1p claimed edge indistinguishable from zero. The dashboard
-   marks bar-met shadows 🏆 (promotable) and ACTIVE setups without current-era bar evidence ⚠️.
-4. **Demotion — fills convict faster than stamps.** Live setups are audited against
-   **broker-verified fills** (`research/tools/broker_setup_audit.py`), never our own journal.
-   A setup whose recent fills and shadow tape both turn red gets demoted back to SHADOW —
-   where watching it costs nothing and it can re-earn the bar. Config changes reset the clock:
-   evidence never blends across eras.
+3. **Promotion — the activation bar, flipped automatically.** The **Bar Governor**
+   (`ops/governor.py`, daily) promotes a shadow to ACTIVE when its **current-era** evidence
+   clears the bar: **n ≥ 20 episodes, ≥ +2.0 pips/episode, a positive 95% lower confidence
+   bound, and a non-negative last-7-days** — margins chosen because the measured execution
+   toll makes any sub-1p claimed edge indistinguishable from zero. No human in the loop;
+   the dashboard chips (🏆/⚠️) show the same evidence the governor acts on.
+4. **Demotion — fills convict faster than stamps, also automatic.** The governor demotes an
+   ACTIVE setup the day it loses the bar on era stamps (n ≥ 20, avg < +2.0) **or** goes net
+   negative on **broker-verified fills** (n ≥ 5) — audited against the broker, never our own
+   journal. Demoted setups keep stamping as shadows and can re-earn the seat. Every flip
+   restarts that setup's evidence clock: **proof never blends across eras**, and every
+   decision is written to a public ledger (`data/governor_ledger.jsonl`). Rails: max 2
+   promotions + 4 demotions per day, sides never flipped, `manual_only` respected.
 
 **Currently on trial (v6.3.0):** 10 pairs the book has never traded — CAD, CHF and NZD
 crosses plus GBP/JPY — resurrected from this account's own March/April 2026 tapes, where

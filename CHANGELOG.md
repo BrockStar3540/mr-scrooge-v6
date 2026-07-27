@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [Unreleased]
+
+### Added
+- **The Bar Governor — autonomous promote/demote** (Brock, 2026-07-27): `ops/governor.py`
+  (daily 06:35Z) closes the trial loop. SHADOW -> ACTIVE when current-era evidence clears
+  the bar (n>=20, avg>=+2.0p/ep, LCB>0, non-negative 7d); ACTIVE -> SHADOW when the bar is
+  lost on era stamps or era broker fills go net-negative (n>=5). Rails: 2 promotions +
+  4 demotions/day max, config-side evidence only, sides never flipped, manual_only
+  respected, all flips via the dashboard's own validated writer, every decision in
+  data/governor_ledger.jsonl, per-setup era clocks in governor state (a flip restarts the
+  evidence window). Tunables in config/governor_config.json. The bot now grants and
+  revokes its own seats; the humans set the standard.
+
 ## [6.4.0] — 2026-07-27 — "The trial docket"
 
 The release where the old research record was formally arraigned: errata published on the

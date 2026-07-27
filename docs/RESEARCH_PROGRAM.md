@@ -531,6 +531,14 @@ is indistinguishable from zero at any n the book reaches in weeks.
 - Era boundaries matter: evidence must come from the current engine/config era. A
   cutover or gear change restarts the clock (see B-094 for what stale-era evidence does).
 
+**AUTOMATED 2026-07-27 (the Bar Governor).** Promotion and demotion are no longer manual
+dockets: `ops/governor.py` runs daily and flips statuses by the standard above (promote:
+era n>=20, avg>=+2.0, LCB>0, 7d not negative; demote: bar lost on era stamps, or era
+broker fills net-negative at n>=5). The humans define the numbers; the bot flips the
+switches. Ledger: `data/governor_ledger.jsonl`. This is the loop the project was built
+for — hundreds of candidates earning seats, incumbents losing them, autonomously.
+
+
 
 ## Open dockets (2026-07-24, from the outside-review triage)
 
