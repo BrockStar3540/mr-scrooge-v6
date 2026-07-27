@@ -257,7 +257,11 @@ class Engine:
             mgr = self.managers[pair]
             try:
                 bid, ask = self.feed.pricing(pair)
-                mid = (bid + ask) / 2.0
+                # D-5 (external review): manage on the EXECUTABLE price — the
+                # one this position could actually exit at (long: bid, short:
+                # ask). Mid flattered peak/engage/lock by half the spread,
+                # which is not bookkeeping at an 8.5p trigger.
+                mid = executable_price(bid, ask, mgr.position.ticket.direction)
             except Exception as exc:
                 log.warning("pricing %s failed: %s -- using entry price", pair, exc)
                 mid = mgr.position.entry_price

@@ -311,10 +311,13 @@ class PartyPackage:
                 pair, lvl = self._popper_grid.get(tid, (mgr.position.ticket.pair, 0))
                 try:
                     bid, ask = pricing(pair)
-                    mid = (bid + ask) / 2.0
+                    # D-5: net measured at the EXECUTABLE side (long exits at
+                    # bid, short at ask) — mid flattered every popper by half
+                    # the spread.
+                    px = executable_price(bid, ask, mgr.position.ticket.direction)
                 except Exception:
-                    mid = mgr.position.entry_price
-                net = mgr.net_pips(mid)
+                    px = mgr.position.entry_price
+                net = mgr.net_pips(px)
                 self._book_exit(pair, lvl, tid, net, "server-stop", now)
 
         # 2) popper ratchet tick + local exit detect
@@ -323,11 +326,13 @@ class PartyPackage:
             pair, lvl = self._popper_grid.get(tid, (mgr.position.ticket.pair, 0))
             try:
                 bid, ask = pricing(pair)
-                mid = (bid + ask) / 2.0
+                # D-5: the ratchet keys off the price this popper could
+                # actually exit at — never mid.
+                px = executable_price(bid, ask, mgr.position.ticket.direction)
             except Exception as exc:
                 log.warning("PP pricing %s failed: %s", pair, exc)
                 continue
-            signal = mgr.update(mid, now)
+            signal = mgr.update(px, now)
             if signal:
                 try:
                     self.broker.close_position(tid)
@@ -337,6 +342,10 @@ class PartyPackage:
                 self._book_exit(pair, lvl, tid, signal.net_pips, signal.reason, now)
 
         # 3) re-arm + fire per grid
+        # NOTE (D-5): marker CROSSING below stays mid-based on purpose — a
+        # marker is a level definition (like the mid-based view features that
+        # define entries), not a liquidation decision. The fill itself is
+        # truth-adopted in _fire; management above uses executable prices.
         for pair in list(self.grids.keys()):
             g = self.grids[pair]
             try:
