@@ -1015,7 +1015,8 @@ body.has-ticker{padding-bottom:32px}
  * Helpers
  * ═════════════════════════════════════════════════════════════════════════ */
 const PAIRS_ALL = ["AUD_USD","AUD_JPY","EUR_JPY","EUR_USD","GBP_USD","USD_CAD","USD_CHF","USD_JPY",
-                   "CAD_JPY","AUD_CAD","EUR_CAD","GBP_CAD"];   // last 4: march-replay SHADOW crosses
+                   "CAD_JPY","AUD_CAD","EUR_CAD","GBP_CAD",    // march-replay SHADOW crosses
+                   "CHF_JPY","EUR_CHF","AUD_CHF"];             // april-replay SHADOW crosses
 const PAIR_SESSIONS = {
   "AUD_USD":["asia","london","ny"], "AUD_JPY":["asia","london","ny"],
   "EUR_JPY":["asia","london","ny"], "EUR_USD":["london","ny"],
@@ -1023,6 +1024,8 @@ const PAIR_SESSIONS = {
   "USD_CHF":["london","ny"],        "USD_JPY":["asia","london","ny"],
   "CAD_JPY":["asia","london","ny"], "AUD_CAD":["asia","london","ny"],
   "EUR_CAD":["london","ny"],        "GBP_CAD":["london","ny"],
+  "CHF_JPY":["asia","london","ny"], "EUR_CHF":["asia","london","ny"],
+  "AUD_CHF":["asia","london","ny"],
 };
 function showTab(name, btn){
   document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));

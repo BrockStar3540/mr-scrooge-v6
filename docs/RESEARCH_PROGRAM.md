@@ -559,7 +559,13 @@ Brock docket because they touch book governance:
   ps_ceil_fade_short (ny). Conditions copied verbatim from the majors' validated blocks.
   Promotion: activation bar only. Prior: crosses pay 2-3x major spread toll — the bar may
   correctly say no; that is a result, not a failure. Generator:
-  research/tools/build_march_replay_cells.py.
+  research/tools/build_march_replay_cells.py. EXTENDED 2026-07-27 with the April 1-7 tape
+  (txns 435-522): +3 CHF crosses (EUR_CHF, CHF_JPY, AUD_CHF — 15 pairs scanning),
+  ps_ceil_fade_short added to all cross asia sessions (April asia fades won: AUD_CHF +$815)
+  and to USD_CHF london/ny SHADOW (txns 458/466 were this pair, this shape). April also
+  supplied the floor-fade counter-example: USD_MXN 435 (-$1,197) longed a BROKEN floor in a
+  4h downtrend — the ps_low_dist>=0 condition refuses exactly that trade. USD_MXN not added
+  (exotic spread, and its tape is the cautionary example, not the edge).
 
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw

@@ -58,6 +58,51 @@
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
           "notes": "March-replay: txn 242 AUD_CAD long at psPos 0.00 won +$2.5k. Same conditions as the majors' validated floor fade."
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "april-2026 replay (acct txns 435-522): ceil-fade won on USD_CHF/AUD_CHF/CHF_JPY/GBP_USD incl. asia-session fades; descriptive n=11 \u2014 hypothesis",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. Asia wins: 485 AUD_CHF +$815, 494 AUD_CAD +$48."
         }
       ],
       "notes": "march-replay shadow cell"

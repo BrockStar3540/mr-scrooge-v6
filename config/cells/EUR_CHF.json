@@ -1,7 +1,7 @@
 {
-  "pair": "EUR_CAD",
-  "generated": "2026-07-27T04:45:00Z",
-  "generator": "march-2026-replay hand-authored 2026-07-27 (SHADOW-only; NOT generate_cell_configs.py)",
+  "pair": "EUR_CHF",
+  "generated": "2026-07-27T13:30:00Z",
+  "generator": "april-2026-replay hand-authored 2026-07-27 (SHADOW-only; NOT generate_cell_configs.py)",
   "sessions": {
     "asia": {
       "enabled": true,
@@ -11,7 +11,7 @@
         "dead_rate_60m": null,
         "ev_gross_long": null,
         "ev_gross_short": null,
-        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+        "lineage": "NONE \u2014 new-pair hypothesis; crosses pay 2-3x major spread toll"
       },
       "setups": [
         {
@@ -28,7 +28,7 @@
             {
               "feature": "ps_low_dist",
               "min": 0.0,
-              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+              "note": "at prev session floor, UNBROKEN \u2014 refuses the USD_MXN 435 knife (broken floor in a trend)"
             }
           ],
           "exit": {
@@ -53,11 +53,11 @@
           },
           "evidence": {
             "ev_seq": null,
-            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "source": "april-2026 replay (acct txns 435-522): ceil-fade won on USD_CHF/AUD_CHF/CHF_JPY/GBP_USD incl. asia-session fades; descriptive n=11 \u2014 hypothesis",
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 242 AUD_CAD long at psPos 0.00 won +$2.5k. Same conditions as the majors' validated floor fade."
+          "notes": "March-replay floor shape; April counter-example 435 documents why ps_low_dist>=0 matters."
         },
         {
           "id": "ps_ceil_fade_short",
@@ -102,10 +102,10 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. Asia wins: 485 AUD_CHF +$815, 494 AUD_CAD +$48."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments."
         }
       ],
-      "notes": "march-replay shadow cell"
+      "notes": "april-replay shadow cell"
     },
     "london": {
       "enabled": true,
@@ -115,7 +115,7 @@
         "dead_rate_60m": null,
         "ev_gross_long": null,
         "ev_gross_short": null,
-        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+        "lineage": "NONE \u2014 new-pair hypothesis; crosses pay 2-3x major spread toll"
       },
       "setups": [
         {
@@ -133,12 +133,12 @@
             {
               "feature": "h1_ret_4bar",
               "min": 10.0,
-              "note": "real H1 momentum, not drift"
+              "note": "real H1 momentum"
             },
             {
               "feature": "willr_m5",
               "max": -85.0,
-              "note": "M5 washed out \u2014 buy the dip, not the chase"
+              "note": "M5 washed out \u2014 buy the dip"
             }
           ],
           "exit": {
@@ -163,14 +163,14 @@
           },
           "evidence": {
             "ev_seq": null,
-            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "source": "april-2026 replay (acct txns 435-522): ceil-fade won on USD_CHF/AUD_CHF/CHF_JPY/GBP_USD incl. asia-session fades; descriptive n=11 \u2014 hypothesis",
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k."
         }
       ],
-      "notes": "march-replay shadow cell"
+      "notes": "april-replay shadow cell"
     },
     "ny": {
       "enabled": true,
@@ -180,7 +180,7 @@
         "dead_rate_60m": null,
         "ev_gross_long": null,
         "ev_gross_short": null,
-        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+        "lineage": "NONE \u2014 new-pair hypothesis; crosses pay 2-3x major spread toll"
       },
       "setups": [
         {
@@ -222,11 +222,11 @@
           },
           "evidence": {
             "ev_seq": null,
-            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "source": "april-2026 replay (acct txns 435-522): ceil-fade won on USD_CHF/AUD_CHF/CHF_JPY/GBP_USD incl. asia-session fades; descriptive n=11 \u2014 hypothesis",
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txns 228/270 shorted range tops (psPos 1.00/0.91) and won. Same conditions as the majors' ceil fade."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments."
         },
         {
           "id": "trend_pullback_long",
@@ -243,12 +243,12 @@
             {
               "feature": "h1_ret_4bar",
               "min": 10.0,
-              "note": "real H1 momentum, not drift"
+              "note": "real H1 momentum"
             },
             {
               "feature": "willr_m5",
               "max": -85.0,
-              "note": "M5 washed out \u2014 buy the dip, not the chase"
+              "note": "M5 washed out \u2014 buy the dip"
             }
           ],
           "exit": {
@@ -273,14 +273,14 @@
           },
           "evidence": {
             "ev_seq": null,
-            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "source": "april-2026 replay (acct txns 435-522): ceil-fade won on USD_CHF/AUD_CHF/CHF_JPY/GBP_USD incl. asia-session fades; descriptive n=11 \u2014 hypothesis",
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k."
         }
       ],
-      "notes": "march-replay shadow cell"
+      "notes": "april-replay shadow cell"
     }
   }
 }
