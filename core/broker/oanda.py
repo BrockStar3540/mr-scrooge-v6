@@ -11,7 +11,7 @@ Public API:
     size   = broker.size_units("EUR_USD", direction, sl_pips=20, risk_pct=0.005)
 """
 from __future__ import annotations
-import json, logging, os, urllib.request
+import json, logging, os, socket, time, urllib.error, urllib.request
 from typing import Optional
 
 from config.pairs import PIP
@@ -246,13 +246,59 @@ class OandaBroker:
                         else entry_price - tp_pips * pip)
             order["takeProfitOnFill"] = {"price": f"{tp_price:.{prec}f}"}
 
-        result = self._req("POST", f"/v3/accounts/{self._acct}/orders", {"order": order})
+        # D-5 stage D (external review): durable order INTENT id. If the POST
+        # times out AFTER OANDA accepted the order, the fill would otherwise
+        # become an unmanaged orphan (and a retry a duplicate). The id lets us
+        # reconcile against the broker instead of guessing.
+        intent_id = f"sv6-{int(time.time() * 1000)}-{os.urandom(3).hex()}"
+        order["clientExtensions"] = {"id": intent_id, "tag": "sv6-order"}
+
+        try:
+            result = self._req("POST", f"/v3/accounts/{self._acct}/orders", {"order": order})
+        except (socket.timeout, TimeoutError, urllib.error.URLError,
+                ConnectionError) as exc:
+            log.warning("place_market %s: transport error after send (%s) — "
+                        "reconciling intent %s against the broker", pair, exc, intent_id)
+            result = self._reconcile_order(intent_id)
+            if result is None:
+                raise RuntimeError(
+                    f"order intent {intent_id} not found at broker after "
+                    f"transport error ({exc}) — safe to treat as not placed") from exc
+            log.info("place_market %s: RECONCILED intent %s — order had filled "
+                     "despite the transport error (orphan averted)", pair, intent_id)
         trade  = result.get("orderFillTransaction", {})
         log.info("PLACED %s %s %d units | SL %.{prec}fp | trade_id=%s".replace("{prec}", str(prec)),
                  pair, direction, units, sl_price, trade.get("tradeOpened", {}).get("tradeID", "?"))
         return {"id": trade.get("tradeOpened", {}).get("tradeID", ""),
                 "price": trade.get("price", ""),
                 "raw": result}
+
+    def _reconcile_order(self, intent_id: str) -> Optional[dict]:
+        """Did an order we lost contact with actually execute? Look the order
+        up BY CLIENT ID (OANDA: /orders/@{clientID}) and, if it filled, fetch
+        the filling transaction so callers get the same shape a clean POST
+        returns. None = the broker never saw it (safe to treat as not placed).
+        """
+        time.sleep(2.0)   # give the broker a beat to settle the order state
+        try:
+            r = self._req("GET", f"/v3/accounts/{self._acct}/orders/@{intent_id}")
+        except urllib.error.HTTPError as exc:
+            if exc.code == 404:
+                return None
+            raise
+        order = r.get("order", {})
+        state = order.get("state")
+        if state != "FILLED":
+            log.warning("reconcile %s: order state=%s — treating as not placed",
+                        intent_id, state)
+            return None
+        fill_id = order.get("fillingTransactionID")
+        if not fill_id:
+            return None
+        tx = self._req("GET",
+                       f"/v3/accounts/{self._acct}/transactions/{fill_id}"
+                       ).get("transaction", {})
+        return {"orderFillTransaction": tx}
 
     def close_position(self, trade_id: str, units = "ALL") -> dict:
         """Close a trade by OANDA trade ID. units="ALL" = full close;

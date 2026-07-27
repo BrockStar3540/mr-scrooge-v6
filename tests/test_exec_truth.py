@@ -87,3 +87,62 @@ def test_place_market_jpy_distance_precision():
     order = captured[-1][2]["order"]
     assert order["stopLossOnFill"]["distance"] == "0.600"
     assert order["units"] == "-1000"
+
+
+# ── stage D: order intent ids + timeout reconciliation ───────────────────────
+
+def test_orders_carry_unique_intent_ids():
+    captured = []
+    b = _broker_with_captured_requests(captured)
+    b.place_market("EUR_USD", "long", units=1000, sl_pips=50, entry_price=1.1)
+    b.place_market("EUR_USD", "long", units=1000, sl_pips=50, entry_price=1.1)
+    ids = [c[2]["order"]["clientExtensions"]["id"] for c in captured
+           if c[0] == "POST"]
+    assert len(ids) == 2 and ids[0] != ids[1]
+    assert all(i.startswith("sv6-") for i in ids)
+
+
+def test_timeout_after_accepted_order_reconciles_to_fill(monkeypatch):
+    import socket
+    from core.broker.oanda import OandaBroker
+    b = object.__new__(OandaBroker)
+    b._base, b._token, b._acct = "https://test", "t", "acct"
+    calls = []
+
+    def fake_req(method, path, body=None):
+        calls.append((method, path))
+        if method == "POST":
+            raise socket.timeout("simulated transport loss after send")
+        if "/orders/@sv6-" in path:
+            return {"order": {"state": "FILLED", "fillingTransactionID": "777"}}
+        if "/transactions/777" in path:
+            return {"transaction": {"price": "1.10008",
+                                    "tradeOpened": {"tradeID": "888"}}}
+        raise AssertionError(f"unexpected call {method} {path}")
+
+    b._req = fake_req
+    monkeypatch.setattr("core.broker.oanda.time.sleep", lambda s: None)
+    out = b.place_market("EUR_USD", "long", units=1000, sl_pips=50,
+                         entry_price=1.10000)
+    assert out["id"] == "888" and out["price"] == "1.10008", \
+        "an accepted-then-timeout order must be adopted, not orphaned"
+
+
+def test_timeout_with_no_order_at_broker_raises(monkeypatch):
+    import socket
+    import urllib.error
+    from core.broker.oanda import OandaBroker
+    b = object.__new__(OandaBroker)
+    b._base, b._token, b._acct = "https://test", "t", "acct"
+
+    def fake_req(method, path, body=None):
+        if method == "POST":
+            raise socket.timeout("simulated")
+        raise urllib.error.HTTPError(path, 404, "not found", {}, None)
+
+    b._req = fake_req
+    monkeypatch.setattr("core.broker.oanda.time.sleep", lambda s: None)
+    import pytest as _pytest
+    with _pytest.raises(RuntimeError, match="safe to treat as not placed"):
+        b.place_market("EUR_USD", "long", units=1000, sl_pips=50,
+                       entry_price=1.10000)
