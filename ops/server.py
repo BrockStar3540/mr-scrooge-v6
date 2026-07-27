@@ -80,7 +80,10 @@ _EXIT_FIELDS_TP = {
     "tp2_close_pct": {"min": 0.0,  "max": 0.95,      "label": "TP2 close %"},
 }
 _EXIT_FIELDS.update(_EXIT_FIELDS_TP)
-_PAIRS_ALL = ["AUD_JPY","AUD_USD","EUR_JPY","EUR_USD","GBP_USD","USD_CAD","USD_CHF","USD_JPY"]
+# Single source of truth for the pair universe is config/pairs.py (B-098 family
+# lesson: a list that exists in three files is three bugs) — sorted for display.
+from config.pairs import PAIRS as _CFG_PAIRS
+_PAIRS_ALL = sorted(_CFG_PAIRS)
 
 def _read_exit_config() -> dict:
     try:

@@ -551,6 +551,16 @@ Brock docket because they touch book governance:
   geometry, consistent with the 2026-07-20 Kelly measurement (book runs ~quarter-Kelly).
   Reduces the cost of being wrong about young setups without claiming to know regimes.
 
+- **D-3 — March-replay cross-pair shadow book (RUNNING since 2026-07-27).** The 2026-03-23..26
+  winners (acct txns 209-324, V2 harvest era) carried exactly the shapes the cell era later
+  validated on the majors — on pairs the book has never traded (CAD_JPY, AUD_CAD, EUR_CAD,
+  GBP_CAD). Those 4 crosses now scan as SHADOW-only cells: ps_floor_fade_long (asia),
+  trend_pullback_long (london/ny — the discovery engine's one robust entry, first time wired),
+  ps_ceil_fade_short (ny). Conditions copied verbatim from the majors' validated blocks.
+  Promotion: activation bar only. Prior: crosses pay 2-3x major spread toll — the bar may
+  correctly say no; that is a result, not a failure. Generator:
+  research/tools/build_march_replay_cells.py.
+
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw
 avg — small-n glamour rows sink below proven ones, n<2 shows "—" and sorts last. The

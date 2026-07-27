@@ -1,0 +1,241 @@
+{
+  "pair": "CAD_JPY",
+  "generated": "2026-07-27T04:45:00Z",
+  "generator": "march-2026-replay hand-authored 2026-07-27 (SHADOW-only; NOT generate_cell_configs.py)",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+      },
+      "setups": [
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "March-replay: txn 242 AUD_CAD long at psPos 0.00 won +$2.5k. Same conditions as the majors' validated floor fade."
+        }
+      ],
+      "notes": "march-replay shadow cell"
+    },
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+      },
+      "setups": [
+        {
+          "id": "trend_pullback_long",
+          "side": "long",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "h1_ret_4bar",
+              "min": 10.0,
+              "note": "real H1 momentum, not drift"
+            },
+            {
+              "feature": "willr_m5",
+              "max": -85.0,
+              "note": "M5 washed out \u2014 buy the dip, not the chase"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+        }
+      ],
+      "notes": "march-replay shadow cell"
+    },
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": null,
+        "rh_offer_rate_60m": null,
+        "dead_rate_60m": null,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "NONE \u2014 new-pair hypothesis, no truth-matrix evidence; crosses pay 2-3x major spread toll (measure before believing)"
+      },
+      "setups": [
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "March-replay: txns 228/270 shorted range tops (psPos 1.00/0.91) and won. Same conditions as the majors' ceil fade."
+        },
+        {
+          "id": "trend_pullback_long",
+          "side": "long",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "h1_ret_4bar",
+              "min": 10.0,
+              "note": "real H1 momentum, not drift"
+            },
+            {
+              "feature": "willr_m5",
+              "max": -85.0,
+              "note": "M5 washed out \u2014 buy the dip, not the chase"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "march-2026 replay (acct txns 209-324): fade/floor/pullback shapes on CAD crosses, 8 green / 1 red fills, descriptive n=9 \u2014 hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+        }
+      ],
+      "notes": "march-replay shadow cell"
+    }
+  }
+}
