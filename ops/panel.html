@@ -1052,7 +1052,17 @@ function showTab(name, btn){
   document.getElementById('tab-'+name).classList.add('active');
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
+  try{history.replaceState(null,'','#'+name)}catch(e){}
 }
+// deep-link: open panel at #shadow, #indicators, #book, … (also used by the
+// README screenshot generator, research/tools/dashboard_shots.sh)
+window.addEventListener('DOMContentLoaded',()=>{
+  const want=(location.hash||'').slice(1);
+  if(!want)return;
+  const btn=[...document.querySelectorAll('.tab')].find(t=>t.textContent.trim().toLowerCase()===want.toLowerCase());
+  const pane=document.getElementById('tab-'+want.toLowerCase());
+  if(btn&&pane)showTab(want.toLowerCase(),btn);
+});
 function fmt(v,d=2){return v==null?'—':Number(v).toFixed(d)}
 
 /* ── Shadowboard ───────────────────────────────────────────────────────── */
