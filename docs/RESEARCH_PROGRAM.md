@@ -572,6 +572,17 @@ Brock docket because they touch book governance:
   also ran a micro limit-chaser scalper whose ceil-fades LOST on a minutes-horizon while the
   big book's won at 240m — horizon is part of the edge.
 
+- **D-4 — Strategy-Book cube on trial (RUNNING since 2026-07-27).** Five of the retired
+  book strategies whose entries are pure feature thresholds (alpha_extended_fade both
+  sides, echo_box_fade both sides, MR2 bb-reversion, RG1 range-scalp) run as SHADOW
+  setups on the cube backtest universe (AUD/EUR/GBP_USD, USD_CAD; london+ny), thresholds
+  verbatim from the book. Their cube EVs (+1.1..+4.5) are pre-leak upper bounds on the
+  retired ladder — the current-era stamps are the re-measurement. TF2_pullback is already
+  on trial as Strategy E; alpha_pullback skipped as duplicate. The six multi-bar pattern
+  strategies (CP1/CP2/charlie/delta/bravo x2, BR-family) are NOT expressible in the cell
+  condition schema — wiring them would need new feed features (BB_compress, ADX,
+  bar-range ratios): a candidate follow-on if the threshold five earn anything.
+
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw
 avg — small-n glamour rows sink below proven ones, n<2 shows "—" and sorts last. The
