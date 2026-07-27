@@ -4,6 +4,55 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.6.0] — 2026-07-28 — "The Review"
+
+An external code review found six real defects — and every one is now closed. This release
+is the project's doctrine applied to itself: outside scrutiny treated as evidence, verified
+against the code, fixed with regression tests, and credited. The bot now measures itself in
+the same units it trades in.
+
+### Fixed (review findings 1–4)
+- **Trial fairness**: cell evaluation returned on the first qualifying ACTIVE setup,
+  silently starving every later setup of evaluation and stamps that cycle — config-order
+  bias aimed straight at the newest hypotheses (always appended last). Every setup now
+  evaluates and stamps every cycle; selection semantics unchanged.
+- **The canonical config validator** had drifted to the July-04 schema (rejecting all 18
+  live files) while nothing enforced it. Schema synced (incl. the pair universe now
+  imported from config/pairs.py) and enforced in the test suite with anti-vacuity
+  corruption tests — schema drift is a failing test, in CI, forever.
+- **Dashboard writes reject cross-origin**: the Access-Control-Allow-Origin:* wildcard is
+  gone and every POST passes a same-origin guard (Origin must equal Host — DNS-rebinding
+  safe; curl/same-machine tools unaffected).
+- **Runtime controls fail CLOSED with last-known-good**: a corrupted pause file can never
+  restart trading, a corrupted popper config can never re-arm grids or erase per-cell
+  opt-outs, a corrupted governor config disables the run. The legacy fail-open test was
+  doctrine-reversed to pin the new contract.
+
+### Added (review findings 5–6, shipped as D-5 and D-6)
+- **D-5 — Execution truth** (staged, each restart-verified): the server-side SL is sent as
+  a fill-anchored DISTANCE (slippage can no longer resize the real stop); parents and
+  poppers adopt the broker's orderFillTransaction price as the true entry, with per-fill
+  quoted/filled/slippage/spread logging; parent and popper management (peak, engage, lock,
+  trail, net) runs on executable bid/ask instead of mid; every order carries a durable
+  sv6-* intent id with broker reconciliation on transport errors — an accepted-then-timeout
+  order is adopted, never orphaned; a never-arrived order raises with safe-to-retry
+  semantics.
+- **D-6 — The statistics program**: one net-of-cost utility for promotion AND demotion
+  (stamps carry their live entry spread; scoring pays spread + slippage before any
+  verdict — the +2p bar now means +2 after the toll, literally); overlap-aware effective
+  sample size (240m labels on 30m-spaced episodes are not independent); deflated promotion
+  confidence (z 1.645 → 2.33) with an explicit hypothesis registry (M=146 at ship) so the
+  multiple-testing denominator is public; era clocks reset on ANY change to a setup's
+  mechanics via config hash. The Shadowboard displays the exact metric the governor judges.
+
+### Changed
+- README overhauled: regenerating account tape (from broker balances, all eras marked),
+  trial-loop pipeline diagram, live dashboard screenshots (headless capture pipeline +
+  panel #tab deep links), text current through the governor era.
+
+Credit: the six findings came from an external reviewer's unsolicited audit. This is what
+CONTRIBUTING.md means by "external ideas welcome" — the gauntlet works in both directions.
+
 ## [6.5.0] — 2026-07-27 — "The Governor"
 
 The autonomy release. The project's thesis was always an autonomous trading bot; this is
