@@ -4,6 +4,31 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.4.0] — 2026-07-27 — "The trial docket"
+
+The release where the old research record was formally arraigned: errata published on the
+pre-V5 era's public documents, and every salvageable claim from them re-filed as a live
+shadow trial. Plus the contest that invites the world to join the docket.
+
+### Added
+- **The $10,000 Strategy Contest** ([CONTEST.md](CONTEST.md)): sponsor-funded standing
+  challenge — submit a fully mechanical, evidenced, novel strategy; it runs 30 days in the
+  forward-test harness. Path A: >=90% WR and profitable with avg winner >= half the avg
+  loser; Path B: net +500 pips; both >=20 trades, no >3-market-day gap. First qualifier
+  wins $10k ($10k/$5k on simultaneous qualifiers); maintainer is sole judge; measurements
+  final. Submission via issue template; badge graphic; README section.
+- **Strategy E on trial**: the June white paper's trend-pullback short (EUR/USD), wired as
+  a SHADOW setup with the paper's gates in MarketView terms. Errata prepended to the
+  archived paper (its numbers predate the 2026-07-03 H1 look-ahead fix and rode the
+  falsified ladder/tight-stop exits; the method graduated, the numbers must re-earn).
+- **D-4 — the Strategy-Book cube on trial**: five threshold-translatable book strategies
+  (alpha_extended_fade both sides, echo_box_fade both sides, MR2 bb-reversion, RG1
+  range-scalp) wired verbatim as 48 SHADOW setups on the cube backtest universe
+  (AUD/EUR/GBP_USD, USD_CAD x london/ny). Six multi-bar pattern strategies are not
+  expressible in the condition schema without new feed features — documented in
+  RESEARCH_PROGRAM section D-4. Errata sheets added to all archived Strategy Book
+  workbooks.
+
 ## [6.3.1] — 2026-07-27
 
 ### Added
