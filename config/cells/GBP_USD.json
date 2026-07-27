@@ -419,6 +419,307 @@
           },
           "notes": "V4 classic resurrected via retrial (regime-rider baseline control). SHADOW earns via scoreboard.",
           "_side_note": "flipped long->short 2026-07-22 (Brock, MAE-flip: entry timing right, wiring wrong; storm evidence)"
+        },
+        {
+          "id": "alpha_extended_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+        },
+        {
+          "id": "alpha_extended_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "direction-keyed amendment: fade edge exists on both sides"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 long side."
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -656,6 +957,307 @@
             "drift": "STABLE"
           },
           "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+        },
+        {
+          "id": "alpha_extended_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+        },
+        {
+          "id": "alpha_extended_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "direction-keyed amendment: fade edge exists on both sides"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 long side."
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
         }
       ],
       "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
