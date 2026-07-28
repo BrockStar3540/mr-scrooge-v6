@@ -172,7 +172,7 @@ journalctl --user -u mr-scrooge-v6 -f -o cat    # follow logs
 
 ## 8. Verify / operate
 
-- **Tests:** `python -m pytest tests/ -q`
+- **Tests:** `pip install -r requirements-dev.txt` once, then `python -m pytest tests/ -q`
 - **Live-edit config without a restart:** per-cell exits (TUNE tab), risk caps
   (RISK tab), setup status (BOOK/SHADOW tabs), and the trading pause all
   hot-reload on the next cycle. Only credential/mode changes and code changes
