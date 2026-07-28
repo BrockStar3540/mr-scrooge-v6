@@ -772,11 +772,19 @@ body.has-ticker{padding-bottom:32px}
          How it works &amp; what it&#39;s tuned to →</a>
     </div>
     <div class="muted" style="padding:0 12px 6px;font-size:11px">
-      The bot flips its own switches, daily at 06:35 UTC. <b>Promote</b> SHADOW→ACTIVE
-      (D-7 predicate, executable-exit-v2 evidence only): n≥20 eps · ≥10 independent
-      day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB &gt; 0 · 7-day guard ·
-      BH-FDR q ≤ 0.05 across the whole docket.
-      <b>Demote</b> ACTIVE→SHADOW: bar lost on era v2 stamps, or era broker fills n≥5 net-negative.
+      The bot flips its own switches, daily at 06:35 UTC.<br>
+      <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
+      only): n≥20 eps · ≥10 independent day-blocks · avg ≥ +2.0p/ep net ·
+      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket.<br>
+      <b>⬇ Demote — THE FAMILY RULE</b> (v6.7, net loss is the key): a parent setup and
+      the poppers its grid fired are <b>one economic unit in broker net pips</b> (every
+      popper fill carries its parent&#39;s id). Family n≥5 at <b>≤ −60p</b> (one popper SL)
+      → demoted <b>and the cell&#39;s poppers switched off with the seat</b>; a family at
+      <b>≥ +60p defends the seat</b> — real broker green outranks the worst-case stamp
+      simulator. <b>Judge-when-flat</b>: while ANY family trade is open there is no verdict
+      at all — a parent can stop −60 while its poppers ride toward +30, so the episode is
+      scored only when it completes. Setups with no family record fall back to the stamp
+      bar (era v2 n≥20, avg &lt; +2.0).<br>
       Rails: max 2 promotions + 4 demotions/day · sides never flipped · a failed setup is
       re-tested only after a NEW independent day-block (no re-rolling the same evidence) ·
       every flip restarts that setup&#39;s evidence clock · decisions logged to
@@ -790,19 +798,28 @@ body.has-ticker{padding-bottom:32px}
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
     </div>
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
-      Every setup (ACTIVE and SHADOW) scored on the identical metric. Since 2026-07-28 (D-7) new episodes use the
-      <b>executable-exit-v2</b> metric: the stamped executable entry (ask long / bid short), a bid/ask forward path, and the setup's
-      OWN exit geometry simulated worst-case intrabar — spread is paid inside the geometry, only slippage is deducted after.
-      Older lifetime rows are legacy-mid-v1 (mid drift at 240m, minus spread + slippage) and remain as research context only.
-      🏆 = shadow passing the governor's FULL promotion predicate on current-era v2 evidence: n≥20 · ≥10 independent day-blocks ·
-      avg ≥ +2p net · block-bootstrap LCB &gt; 0 · 7d guard · BH-FDR q ≤ 0.05 — the trophy and a promotion are the same test.
-      ⚠️ = ACTIVE without current-era v2 bar evidence (the v2 sample restarted at zero on 2026-07-28's metric change; expected until it accrues).
-      Sorted by lifetime LCB (z≈2.33, overlap-aware n) for continuity; capital decisions read only the era evidence.
+      <b>Sorted exactly as the governor acts</b> — best seats at the top, demote-due at the
+      bottom: 🛡 defended actives → holding/deferred actives → 🏆 promote-ready shadows →
+      shadows building evidence (ranked by how many bar conditions they already pass) →
+      queued → 🔻 demote-due. Each row&#39;s <b>verdict</b> is computed by the governor&#39;s own
+      code — the board can never disagree with the 06:35Z run.<br>
+      <b>family (broker)</b> = the setup + its poppers, one unit, era net pips on real
+      fills; ⏳ = family has open trades, verdict deferred until flat (judge-when-flat).
+      Stamp columns: since 2026-07-28 (D-7) new episodes use the <b>executable-exit-v2</b>
+      metric (stamped executable entry, bid/ask forward path, the setup&#39;s OWN exit
+      simulated worst-case intrabar; only slippage deducted after). Lifetime rows include
+      legacy-mid-v1 (mid drift at 240m − spread − slippage) as research context only.
+      🏆 = passes the FULL promotion bar on era v2 evidence — the trophy and a promotion
+      are the same test. ⚠️ = ACTIVE without era v2 bar evidence yet (sample restarted
+      2026-07-28; expected until it accrues).
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
-        <th>setup</th><th>cell</th><th>side</th><th>status</th><th>eps</th>
-        <th title="avg - 1.645·sd/√n — the board's sort key">LCB</th>
+        <th>setup</th><th>cell</th><th>side</th><th>status</th>
+        <th title="The governor's own call for this row, today: DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING (with the bar conditions still failing) / QUEUED / DEMOTE DUE">verdict</th>
+        <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
+        <th>eps</th>
+        <th title="lifetime avg − z·sd/√n_eff (display only — capital reads era v2 + family)">LCB</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
@@ -1102,7 +1119,18 @@ async function pollShadowboard(){
     const d=await r.json();
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
+    const TIER_ICON={1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',6:'🔻',7:'🪦'};
+    let lastTier=null;
     document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
+      const tier=x.gov?x.gov.tier:7;
+      let hdr='';
+      if(tier!==lastTier){
+        lastTier=tier;
+        const lbl=(d.tiers&&d.tiers[tier])||'';
+        hdr=`<tr><td colspan="16" style="padding:8px 10px 4px;font-size:10.5px;letter-spacing:.06em;
+          text-transform:uppercase;color:var(--fg3);border-bottom:1px solid rgba(255,255,255,.06)">
+          ${TIER_ICON[tier]||''} ${lbl}</td></tr>`;
+      }
       // D-7: bar_met IS the governor's promotion predicate (current-era v2
       // evidence, block bootstrap, BH-FDR) — trophy == promotable, exactly.
       const eraTip=x.era?`era v2: n=${x.era.n} days=${x.era.days} avg=${x.era.avg}p blcb=${x.era.lcb??'—'} q=${x.era.q??'—'}${x.era.codes&&x.era.codes.length?' fails:'+x.era.codes.join(','):''}`
@@ -1118,10 +1146,27 @@ async function pollShadowboard(){
       const ctrl=(pair&&session&&x.setup)?statusControl(pair,session,x.setup,liveStatus,'sb')
         :'<span class="muted">—</span>';
       const pn=(v,d=0)=>v==null?'—':(v>0?'+':'')+v+'p';   // null-safe pips
-      return `<tr${x.queued?' style="opacity:.55"':''}>
+      // the governor's verdict + the broker family cell (v6.8.0)
+      const g=x.gov;
+      const VCLS={'DEFENDED':'pill-pass','PROMOTE READY':'pill-pass','HOLDING':'pill-info',
+                  'DEFERRED':'pill-warn','BUILDING':'pill-block','QUEUED':'pill-block',
+                  'DEMOTE DUE':'pill-fail'};
+      const vcell=g?`<span class="pill ${VCLS[g.verdict]||'pill-block'}" title="${g.reason||''}"
+        style="font-size:9.5px">${g.verdict}</span>`:'<span class="muted">—</span>';
+      let fcell='<span class="muted">—</span>';
+      if(g&&g.family&&(g.family.n||g.family.n_open)){
+        const fn=g.family.net_pips, open=g.family.n_open;
+        fcell=`<span class="mono ${fn>0?'pos':(fn<0?'neg':'muted')}"
+          title="parent + its poppers, era broker net: ${fn>0?'+':''}${fn}p over ${g.family.n} closed trade(s) (\$${g.family.net_usd})${open?' · '+open+' open — verdict deferred until flat':''}">
+          ${g.family.n?((fn>0?'+':'')+fn+'p ('+g.family.n+')'):'no closes yet'}${open?' ⏳'+open:''}</span>`;
+      }
+      return hdr+`<tr${x.queued?' style="opacity:.55"':''}>
         <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
-        <td ${stcls}>${x.status}</td><td title="raw episodes (overlap-adjusted effective n) · v2 = executable-exit metric episodes">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}${x.n_v2?' <span style="font-size:9px;color:#4aa3ff" title="executable-exit-v2 episodes'+(x.n_ambig?' ('+x.n_ambig+' ambiguous-bar, scored worst-case)':'')+'">v2:'+x.n_v2+'</span>':''}</td>
+        <td ${stcls}>${x.status}</td>
+        <td>${vcell}</td>
+        <td style="font-size:11px">${fcell}</td>
+        <td title="raw episodes (overlap-adjusted effective n) · v2 = executable-exit metric episodes">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}${x.n_v2?' <span style="font-size:9px;color:#4aa3ff" title="executable-exit-v2 episodes'+(x.n_ambig?' ('+x.n_ambig+' ambiguous-bar, scored worst-case)':'')+'">v2:'+x.n_v2+'</span>':''}</td>
         <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
         <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
         <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>
@@ -1146,8 +1191,10 @@ async function pollGovernor(){
       `<button class="pill ${on?'pill-pass':'pill-fail'}" style="cursor:pointer;border:none;font-weight:700"
         onclick="setGovernor(${!on})" title="Toggle autonomous promote/demote (writes config/governor_config.json)">
         AUTO-PROMOTE/DEMOTE: ${on?'ON':'OFF'}</button>`;
-    const led=(d.ledger_tail||[]).slice(0,3).map(e=>
-      `${(e.t||'').slice(0,16).replace('T',' ')}Z ${e.action} ${e.pair}/${e.session}/${e.setup}${e.dry_run?' (dry-run)':''} — ${e.why||''}`);
+    const led=(d.ledger_tail||[]).slice(0,3).map(e=>{
+      // flip entries carry pair/session/setup; ERA-RESET entries carry "key"
+      const who=e.pair?`${e.pair}/${e.session}/${e.setup}`:(e.key||'').replace(/\|/g,'/');
+      return `${(e.t||'').slice(0,16).replace('T',' ')}Z ${e.action} ${who}${e.dry_run?' (dry-run)':''} — ${e.why||''}`;});
     document.getElementById('gov-ledger').innerHTML=
       led.length?('recent decisions:<br>'+led.map(escape).join('<br>'))
                 :'no governor decisions yet — first setups reach the bar as era episodes accumulate';

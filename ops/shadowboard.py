@@ -234,6 +234,70 @@ def _setup_aliases():
     except Exception:
         return {}
 
+_FAM_CACHE: dict = {"ts": 0.0, "data": {}}
+_FAM_TTL_S = 600     # broker families view refreshed at most every 10 min
+
+
+def _families():
+    """(pair, family_setup) -> broker families row (parent + poppers, one
+    unit, incl. n_open). Cached; runs only inside the refresh daemon thread,
+    never in a request handler. Empty dict on any failure — the board then
+    simply shows no family column, it never breaks."""
+    now = time.time()
+    if now - _FAM_CACHE["ts"] < _FAM_TTL_S:
+        return _FAM_CACHE["data"]
+    try:
+        import sys as _sys
+        out = subprocess.run(
+            [_sys.executable, str(_ROOT / "research" / "tools" / "broker_setup_audit.py"),
+             "--json"], capture_output=True, text=True, timeout=180)
+        fams = {(r["instrument"], r["setup"]): r
+                for r in json.loads(out.stdout).get("families", [])}
+        _FAM_CACHE.update(ts=now, data=fams)
+    except Exception:
+        _FAM_CACHE["ts"] = now          # don't hammer a failing audit
+    return _FAM_CACHE["data"]
+
+
+# Governor-ordered tiers — the board sorts EXACTLY the way capital moves.
+TIER_LABELS = {
+    1: "DEFENDED — broker family green, seat safe",
+    2: "ACTIVE — holding (or episode open, verdict deferred)",
+    3: "PROMOTE READY — passes the full bar at the next 06:35Z run",
+    4: "BUILDING EVIDENCE — shadows accruing the era-v2 sample",
+    5: "QUEUED — wired, no scored era evidence yet",
+    6: "DEMOTE DUE — loses the seat at the next 06:35Z run",
+    7: "RETIRED / EX-SIDE — history kept as the autopsy",
+}
+
+
+def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw):
+    """One row's governor view -> (tier, verdict, reason, score).
+    Mirrors ops.governor exactly: ACTIVE rows through active_verdict (family
+    rule + judge-when-flat, e_obj = the SetupEvidence the governor reads),
+    SHADOW rows through the promotion predicate (era_dict = its display form)."""
+    from ops.governor import active_verdict as _av
+    if status == "ACTIVE":
+        demote, reason = _av(e_obj, f, gc, min_raw)
+        famnet = f["net_pips"] if f else 0.0
+        if demote:
+            return 6, "DEMOTE DUE", reason, famnet
+        if reason == "family_green":
+            return 1, "DEFENDED", reason, famnet
+        if reason == "episode_open":
+            return 2, "DEFERRED", reason, famnet
+        return 2, "HOLDING", reason, \
+            (famnet or (era_dict.get("avg") if era_dict else 0) or 0)
+    # SHADOW
+    if era_dict and era_dict.get("promotable"):
+        return 3, "PROMOTE READY", "passes full bar", (era_dict.get("lcb") or 0)
+    if era_dict:
+        passed = 6 - len(era_dict.get("codes") or [])
+        return 4, "BUILDING", "needs " + ",".join(era_dict.get("codes") or []), \
+            passed * 1000 + (era_dict.get("avg") or 0)
+    return 5, "QUEUED", "no scored era evidence yet", 0.0
+
+
 def _aggregate(db):
     import statistics as st
     aliases = _setup_aliases()
@@ -262,14 +326,21 @@ def _aggregate(db):
     # D-7: the trophy IS the governor's promotion predicate — one shared
     # engine (current era, executable-exit-v2 only, block bootstrap, BH-FDR).
     # Lifetime columns stay as research context; only `era` governs capital.
+    _gov_ok = False
     try:
         from core.trial_evidence import current_era_evidence
         from ops.governor import book as _gbook, cfg as _gcfg, \
-            load_state as _gstate, _aliases as _gal
+            load_state as _gstate, _aliases as _gal, \
+            family_era_view as _fview, active_verdict as _averdict
+        _gc_full = _gcfg()
+        _eras = (_gstate() or {}).get("era_start", {})
         _ev = current_era_evidence(db["episodes"], _gbook(), _gstate(),
-                                   _gcfg(), aliases=_gal())
+                                   _gc_full, aliases=_gal())
+        _gov_ok = True
     except Exception:
-        _ev = {}
+        _ev, _gc_full, _eras = {}, dict(_gc), {}
+    _fams = _families() if _gov_ok else {}
+    _min_raw = int(_gc_full.get("min_raw_episodes", _gc_full.get("bar_n", 20)))
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
         pair = cell.split("/")[0]
@@ -297,6 +368,23 @@ def _aggregate(db):
                    "avg": _e.net_avg, "lcb": _e.block_lcb, "q": _e.q_value,
                    "promotable": _e.promotable,
                    "codes": list(_e.reason_codes)}
+        # THE GOVERNOR'S OWN VIEW (v6.8.0): each row carries the verdict the
+        # governor would reach today — family rule, judge-when-flat, promotion
+        # predicate — plus the tier that orders the board exactly as capital
+        # moves. Best seats at the top, demote-due at the bottom.
+        gov = None
+        if _gov_ok and _status in ("ACTIVE", "SHADOW"):
+            sess = cell.split("/")[1] if "/" in cell else "?"
+            fam_row = _fams.get((pair, setup))
+            f = None
+            if fam_row is not None:
+                era_start = _eras.get("|".join((pair, sess, setup)),
+                                      str(_gc_full.get("default_era_start", "")))
+                f = _fview(fam_row, era_start)
+            tier, verdict, reason, score = _gov_verdict(
+                _status, era, _e, f, _gc_full, _min_raw)
+            gov = {"tier": tier, "verdict": verdict, "reason": reason,
+                   "score": round(float(score), 2), "family": f}
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
@@ -324,6 +412,7 @@ def _aggregate(db):
             # the board can never award what the governor would reject.
             "era": era,
             "bar_met": bool(era and era["promotable"]),
+            "gov": gov,
         })
     # QUEUED rows (2026-07-27, Brock: "I don't see the new pairs on the board"):
     # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a
@@ -332,6 +421,16 @@ def _aggregate(db):
     for (pair, sess, sid), (status, side) in _cfgst.items():
         cell = f"{pair}/{sess}"
         if status in ("ACTIVE", "SHADOW") and (cell, sid) not in have:
+            gov = None
+            if _gov_ok:
+                fam_row = _fams.get((pair, sid))
+                f = _fview(fam_row, _eras.get(
+                    "|".join((pair, sess, sid)),
+                    str(_gc_full.get("default_era_start", "")))) if fam_row else None
+                tier, verdict, reason, score = _gov_verdict(
+                    status, None, None, f, _gc_full, _min_raw)
+                gov = {"tier": tier, "verdict": verdict, "reason": reason,
+                       "score": round(float(score), 2), "family": f}
             out.append({
                 "cell": cell, "setup": sid, "side": side, "status": status,
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
@@ -339,13 +438,19 @@ def _aggregate(db):
                 "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
                 "last7_avg": None, "era": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,
+                "gov": gov,
             })
-    # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last,
-    # queued (no episodes) after everything scored.
-    out.sort(key=lambda r: (r["lcb"] is not None,
-                            r["lcb"] if r["lcb"] is not None else 0.0,
-                            r["avg_net240"] if r["avg_net240"] is not None else -1e9),
-             reverse=True)
+    # GOVERNOR ORDER (v6.8.0): tier asc (defended seats first, demote-due
+    # last-but-for-retired), score desc inside a tier — the board reads
+    # top-to-bottom exactly as the governor ranks the book. Rows without a
+    # gov view (EX-SIDE, engine-degraded) fall back to the old LCB order.
+    def _key(r):
+        g = r.get("gov")
+        tier = g["tier"] if g else 7
+        score = g["score"] if g else (r["lcb"] if r["lcb"] is not None else -1e9)
+        return (tier, -score,
+                -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
+    out.sort(key=_key)
     return out
 
 _REFRESHING = {"on": False}
@@ -358,6 +463,7 @@ def _refresh_worker():
         active = [r["avg_net240"] for r in rows
                   if r["status"] == "ACTIVE" and r["avg_net240"] is not None]
         data = {"rows": rows,
+                "tiers": TIER_LABELS,
                 "active_median": round(sorted(active)[len(active)//2], 2) if active else None,
                 "pending": sum(1 for e in db["episodes"].values() if not e["scores"]),
                 "generated": datetime.now(timezone.utc).isoformat()}

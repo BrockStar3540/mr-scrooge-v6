@@ -57,10 +57,13 @@ tapes, or contributed — walks the same ladder:
    `CELLSHADOW` line every time it would have fired — zero orders, zero risk. Stamps are
    episode-deduped and scored on the **forward M5 path** (net pips at 240m) — market truth,
    not our own exit luck.
-2. **The Shadowboard.** Every setup, ACTIVE and SHADOW alike, is ranked on the identical
-   metric, sorted by a **95% lower confidence bound** (`avg − 1.645·σ/√n`) so a lucky
-   3-episode row can never outrank a proven 30-episode one. Wired-but-unscored setups show
-   as queued ⏳ rows — the whole docket is visible, waiting is a state, not an absence.
+2. **The Shadowboard.** Every setup, ACTIVE and SHADOW alike, is scored on the identical
+   metric and **sorted exactly as the governor acts** — defended actives at the top, then
+   holding/deferred, promote-ready shadows, shadows building evidence (ranked by how many
+   bar conditions they already pass), queued ⏳ rows, and demote-due at the bottom. Each
+   row's **verdict** (DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING / DEMOTE
+   DUE) is computed by the governor's own code, so the board can never disagree with the
+   06:35Z run — the whole docket is visible, waiting is a state, not an absence.
 3. **Promotion — the activation bar, flipped automatically.** The **[Bar Governor](docs/GOVERNOR.md)**
    (`ops/governor.py`, daily) promotes a shadow to ACTIVE when its **current-era** evidence
    clears the full predicate: **n ≥ 20 executable-exit episodes across ≥ 10 independent
@@ -79,7 +82,10 @@ tapes, or contributed — walks the same ladder:
    cell's poppers are switched off with it; family at **+60p or better defends the seat** —
    real broker green outranks the worst-case stamp simulator. Only unfamilied actives fall
    back to the stamp bar (era v2 n ≥ 20, avg < +2.0) — audited against the broker, never
-   our own journal. Demoted setups keep stamping as shadows and can re-earn the seat. Every flip
+   our own journal. **Judge-when-flat:** while any family trade is open there is no verdict
+   at all — a parent can stop −60p while its poppers are still riding toward +30p, so the
+   episode is scored only when it completes, never mid-scale-in. Demoted setups keep
+   stamping as shadows and can re-earn the seat. Every flip
    restarts that setup's evidence clock: **proof never blends across eras**, and every
    decision is written to a public ledger (`data/governor_ledger.jsonl`). Rails: max 2
    promotions + 4 demotions per day, sides never flipped, `manual_only` respected.
@@ -129,10 +135,12 @@ flowchart LR
 
 A self-contained local control panel (`127.0.0.1:8084` — [bind elsewhere](docs/DASHBOARD.md) with `DASHBOARD_HOST`): live account + open trades, per-pair signal cards, the cell book, live exit tuning, popper switches, credentials, and the trading pause. Two tabs worth showing:
 
-**SHADOW — the trial courtroom.** The Bar Governor card (ON/OFF switch, the standard, recent
-decisions) above the LCB-ranked Shadowboard with promote/demote controls on every row:
+**SHADOW — the trial courtroom.** The Bar Governor card states the full standard — the
+promotion bar, the family rule, judge-when-flat — above a Shadowboard sorted exactly as the
+governor acts (defended seats first, demote-due last), with each row carrying the governor's
+own verdict, its broker family net pips, and promote/demote controls:
 
-![The SHADOW tab: Bar Governor card + LCB-ranked Shadowboard](docs/images/dashboard-shadow.png)
+![The SHADOW tab: the governor's standard + the verdict-ranked Shadowboard](docs/images/dashboard-shadow.png)
 
 **INDICATORS — why is/isn't it firing.** Every pair leads with its current session's ACTIVE
 setups as live condition bars — green zone + marker when in range, the blocking condition
@@ -169,6 +177,10 @@ Everything live is a **forward experiment on a practice account**, scored agains
 3. **The Party Package (V6.1)** — re-arming popper grids, deployed *against* their own sim
    verdict on purpose: real fills will confirm or refute the *cost model itself* — the one
    variable no offline sim can settle ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)).
+   First 12 days of tape (90 fills): one family produced the entire net loss — GBP/USD-long
+   parents+poppers −$858 while every other family ran green — which is what motivated the
+   **family rule** (v6.7): the parent and its poppers are judged as one unit, in broker net
+   pips, only when the episode is flat.
 4. **The replay shadow book (v6.3)** — 10 never-traded pairs running the shapes that won on
    them in the March/April 2026 tapes, shadows only, activation bar as the sole judge.
 5. **The arraigned record (v6.4)** — Strategy E and the Strategy-Book five, re-tested forward

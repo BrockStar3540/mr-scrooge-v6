@@ -4,6 +4,31 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.8.0] — 2026-07-28 — "The Board Explains Itself"
+
+The SHADOW tab now states the whole standard and sorts the whole docket exactly as the
+governor acts — the dashboard and the 06:35Z run can never tell different stories.
+
+### Added
+- **Governor verdicts on every Shadowboard row** (`ops/shadowboard.py`): each ACTIVE/SHADOW
+  row carries the verdict the governor's own code would reach today — DEFENDED / HOLDING /
+  DEFERRED (episode open) / PROMOTE READY / BUILDING (with the bar conditions still
+  failing) / QUEUED / DEMOTE DUE — plus its broker **family** view (era net pips, closed
+  trades, open-trade count). Family data comes from the same `broker_setup_audit` families
+  block the governor reads, cached 10 min, fetched only in the board's daemon thread.
+- **Governor-ordered board**: rows sort by verdict tier — defended seats first, then
+  holding/deferred, promote-ready, building (ranked by conditions passed), queued, and
+  demote-due at the bottom — with tier group headers in the SHADOW tab. The old lifetime-LCB
+  order remains only as the fallback for rows outside the governor's view (EX-SIDE).
+- **SHADOW tab explains the rules**: the Bar Governor card now states the full promotion
+  bar, the FAMILY RULE with thresholds (−60p demote + poppers off / +60p defends), and
+  judge-when-flat; the Shadowboard legend explains the sort, the verdict column, and the
+  family column. New columns: **verdict**, **family (broker)** with ⏳ open-trade badges.
+
+### Fixed
+- Governor ledger card rendered `undefined/undefined/undefined` for ERA-RESET entries
+  (they carry `key`, not pair/session/setup).
+
 ## [6.7.1] — 2026-07-28 — "Judge When Flat"
 
 Brock's boundary case: a parent stops −60p while its poppers are still riding toward +30 —
