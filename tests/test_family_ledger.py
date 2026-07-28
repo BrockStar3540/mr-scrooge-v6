@@ -160,8 +160,9 @@ _CFG = {"family_min_trades": 5, "family_demote_pips": -60.0,
         "family_defend_pips": 60.0, "bar_avg": 2.0}
 
 
-def _fam(n, net_pips):
-    return {"n": n, "net_pips": net_pips, "net_usd": net_pips * 2.6}
+def _fam(n, net_pips, n_open=0):
+    return {"n": n, "net_pips": net_pips, "net_usd": net_pips * 2.6,
+            "n_open": n_open}
 
 
 def _ev(raw_n, net_avg):
@@ -208,3 +209,35 @@ def test_small_family_neither_convicts_nor_defends():
 def test_healthy_family_holds_seat():
     demote, why = gov.active_verdict(_ev(10, 5.0), _fam(8, 20.0), _CFG, 20)
     assert not demote and why == "hold"
+
+
+# ── judge-when-flat: no verdict while the episode is open ────────────────────
+
+def test_open_episode_defers_conviction():
+    # Brock's scenario: parent stopped −60 onto a red ledger, poppers still
+    # riding — deep red realized, but the episode is open: NO demotion.
+    demote, why = gov.active_verdict(None, _fam(5, -65.0, n_open=3), _CFG, 20)
+    assert not demote and why == "episode_open"
+
+
+def test_open_episode_defers_defense_and_bar_lost():
+    # while open, the family can't defend either — and bar_lost is deferred
+    # too (a mid-episode demote would switch the poppers off pre-harvest)
+    demote, why = gov.active_verdict(_ev(25, 1.0), _fam(24, 103.0, n_open=1), _CFG, 20)
+    assert not demote and why == "episode_open"
+
+
+def test_flat_family_judged_normally():
+    # the same ledger with the poppers closed +30 later: net −30, above the
+    # −60 line, family holds; deep red flat family still convicts
+    demote, why = gov.active_verdict(None, _fam(8, -30.0), _CFG, 20)
+    assert not demote and why == "hold"
+    demote, why = gov.active_verdict(None, _fam(8, -65.0), _CFG, 20)
+    assert demote and why == "family_red"
+
+
+def test_family_era_view_passes_n_open_unclocked():
+    fam = {"trades": [{"t": "2026-07-19T10:00", "pips": -60.0, "usd": -156.0}],
+           "n_open": 2}
+    v = gov.family_era_view(fam, "2026-07-24T00:00:00+00:00")
+    assert v["n"] == 0 and v["n_open"] == 2   # closes era-filtered, opens never

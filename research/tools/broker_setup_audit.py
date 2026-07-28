@@ -153,23 +153,41 @@ def main():
                     fg["n_poppers" if src == "popper" else "n_parents"] += 1
                     fg["trades"].append(dict(trade, src=src))
 
-    # open exposure by setup
+    # open exposure by setup — also family-attributed, because an open trade
+    # DEFERS its family's verdict (judge-when-flat, Brock 2026-07-28: a parent
+    # can stop −60 while its poppers are still riding toward +30; convicting
+    # or defending mid-episode judges half a scale-in).
     open_rows = []
     try:
         for tr in api(f"/v3/accounts/{acct}/trades?state=OPEN&count=500").get("trades", []):
             ext = tr.get("clientExtensions") or {}
-            su = "?"
+            meta = {}
             c = ext.get("comment", "")
             if c.startswith("{"):
                 try:
-                    su = json.loads(c).get("su", "?")
+                    meta = json.loads(c)
                 except json.JSONDecodeError:
                     pass
+            units = float(tr.get("currentUnits", 0))
+            op = {"instrument": tr["instrument"], "dir": 1 if units > 0 else -1,
+                  "su": meta.get("su") or "?", "tag": ext.get("tag", ""),
+                  "psu": meta.get("psu"), "anc": meta.get("anc")}
+            fam = (family_setup(op, parent_opens)
+                   if op["tag"] in ("cell_v1", "pp_v1") else "?")
             open_rows.append({"id": tr["id"], "instrument": tr["instrument"],
-                              "su": su, "tag": ext.get("tag", ""),
+                              "su": op["su"], "tag": op["tag"], "family": fam,
                               "upl": float(tr.get("unrealizedPL", 0))})
     except Exception as e:
         print(f"open-trades fetch failed: {e}", file=sys.stderr)
+
+    open_by_fam = defaultdict(lambda: {"n": 0, "upl": 0.0})
+    for o in open_rows:
+        if o["family"] != "?":
+            ob = open_by_fam[(o["instrument"], o["family"])]
+            ob["n"] += 1
+            ob["upl"] += o["upl"]
+    for k in open_by_fam:        # open-only families must still reach callers
+        fams[k]                  # defaultdict: materializes an empty closed row
 
     rows = []
     for (instr, su, tag), g in groups.items():
@@ -182,12 +200,16 @@ def main():
 
     fam_rows = []
     for (instr, fam), g in fams.items():
+        ob = open_by_fam.get((instr, fam), {"n": 0, "upl": 0.0})
         fam_rows.append({"instrument": instr, "setup": fam, "n": g["n"],
                          "greens": g["greens"], "usd": round(g["usd"], 2),
                          "pips": round(g["pips"], 1),
-                         "avg_pips": round(g["pips"] / g["n"], 2),
+                         "avg_pips": (round(g["pips"] / g["n"], 2)
+                                      if g["n"] else None),
                          "n_parents": g["n_parents"],
                          "n_poppers": g["n_poppers"],
+                         "n_open": ob["n"],
+                         "open_upl": round(ob["upl"], 2),
                          "trades": g["trades"]})
     fam_rows.sort(key=lambda r: r["pips"])
 
@@ -207,15 +229,17 @@ def main():
         gr = f"{r['greens']}/{r['n'] - r['greens']}"
         print(f"{r['instrument']:<10} {r['setup']:<34} {r['tag']:<8} {r['n']:>3}"
               f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {r['avg_pips']:>7.2f}")
-    print("\nFAMILIES (parent setup + its poppers, one economic unit):")
+    print("\nFAMILIES (parent setup + its poppers, one economic unit; "
+          "open>0 = verdict deferred until flat):")
     print(f"{'instrument':<10} {'family setup':<34} {'n':>3} {'P/pp':>7} {'G/R':>6}"
-          f" {'USD':>10} {'pips':>8} {'avg p':>7}")
-    print("-" * 92)
+          f" {'USD':>10} {'pips':>8} {'avg p':>7} {'open':>5}")
+    print("-" * 99)
     for r in fam_rows:
         gr = f"{r['greens']}/{r['n'] - r['greens']}"
         pp = f"{r['n_parents']}/{r['n_poppers']}"
+        avg = f"{r['avg_pips']:7.2f}" if r["avg_pips"] is not None else "      —"
         print(f"{r['instrument']:<10} {r['setup']:<34} {r['n']:>3} {pp:>7}"
-              f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {r['avg_pips']:>7.2f}")
+              f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {avg} {r['n_open']:>5}")
     if open_rows:
         print("\nOPEN exposure (unrealized, not scored):")
         for o in open_rows:

@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.7.1] — 2026-07-28 — "Judge When Flat"
+
+Brock's boundary case: a parent stops −60p while its poppers are still riding toward +30 —
+convicting (or defending) mid-episode judges half a scale-in, and a mid-episode demotion
+would switch the poppers off right before the harvest.
+
+### Changed
+- **No family verdict while any family trade is open.** `broker_setup_audit.py` now
+  family-attributes OPEN trades too (`n_open`/`open_upl` per family; open-only families
+  emitted); `active_verdict` returns `episode_open` and defers ALL demote/defend judgment
+  until the family is flat. Closes are era-clocked; open exposure never is. Natural
+  backstop: grids age out at 7 days, so "never flat" isn't a path. Tests 283 → 287.
+
 ## [6.7.0] — 2026-07-28 — "The Family Rule"
 
 Demotion re-grounded in broker truth at the FAMILY level (Brock: "net loss is the key").

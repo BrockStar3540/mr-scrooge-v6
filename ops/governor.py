@@ -20,9 +20,11 @@ behind the dashboard trophy — and counts executable-exit-v2 episodes only):
                               poppers are switched off with it. A family
                               net pips >= +60 DEFENDS its seat: real broker
                               green outranks the worst-case stamp simulator,
-                              so bar_lost cannot demote it. Only unfamilied
-                              actives fall back to bar_lost (era v2 n >= 20,
-                              net avg < +2.0).
+                              so bar_lost cannot demote it. JUDGE-WHEN-FLAT:
+                              while any family trade is open, no verdict —
+                              the episode is scored when it completes. Only
+                              unfamilied actives fall back to bar_lost (era
+                              v2 n >= 20, net avg < +2.0).
 SEQUENTIAL-PEEKING GUARD: a setup that failed the bar is not re-tested until
 it has at least one NEW independent block — daily re-rolls of the same
 evidence cannot fish their way over the line.
@@ -174,10 +176,17 @@ def family_fills(default_era):
 
 def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
     """FAMILY RULE for one ACTIVE setup -> (demote: bool, reason: str).
-    f = era-clocked family view {n, net_pips, net_usd} or None; e = stamp
-    evidence (SetupEvidence) or None. Broker family net pips outranks the
-    stamp simulator in BOTH directions: deep red convicts, solid green
-    defends; bar_lost applies only when the family doesn't defend."""
+    f = era-clocked family view {n, net_pips, net_usd, n_open} or None; e =
+    stamp evidence (SetupEvidence) or None. Broker family net pips outranks
+    the stamp simulator in BOTH directions: deep red convicts, solid green
+    defends; bar_lost applies only when the family doesn't defend.
+
+    JUDGE-WHEN-FLAT (Brock, 2026-07-28): while ANY family trade is open, NO
+    verdict at all — a parent can stop −60 while its poppers ride toward +30;
+    a mid-episode demotion judges half a scale-in AND switches the poppers
+    off right before the harvest. The episode is scored when it completes."""
+    if f and f.get("n_open"):
+        return False, "episode_open"
     fam_min = int(c.get("family_min_trades", 5))
     family_red = bool(f and f["n"] >= fam_min
                       and f["net_pips"] <= float(c["family_demote_pips"]))
@@ -195,11 +204,14 @@ def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
 def family_era_view(fam: dict, era_start: str) -> dict:
     """A family row re-clocked to one setup's era: only trades opened at/after
     era_start count, so a mechanics change can't be convicted (or defended) on
-    the old config's trades. Times compare as ISO strings (minute precision)."""
+    the old config's trades. Times compare as ISO strings (minute precision).
+    n_open passes through un-clocked — an open trade defers the verdict
+    regardless of when it was opened (it is current exposure either way)."""
     cut = (era_start or "")[:16]
     trades = [t for t in fam.get("trades", []) if (t.get("t") or "") >= cut]
     return {"n": len(trades), "net_pips": round(sum(t["pips"] for t in trades), 1),
-            "net_usd": round(sum(t["usd"] for t in trades), 2)}
+            "net_usd": round(sum(t["usd"] for t in trades), 2),
+            "n_open": int(fam.get("n_open", 0))}
 
 
 def _post(url, payload, dry):
