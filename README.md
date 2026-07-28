@@ -18,7 +18,7 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%24860.79_(%2B5.17%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-71/81_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-7_(−%24110)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%24875.13_(%2B5.25%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-71/81_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-7_(−%2496)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
