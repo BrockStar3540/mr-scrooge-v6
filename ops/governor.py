@@ -6,12 +6,17 @@ switches. Shadows that clear the activation bar on CURRENT-ERA evidence go
 ACTIVE; actives that lose the bar — or go net-negative on broker fills — go
 back to SHADOW, where stamping costs nothing and a seat can be re-earned.
 
-THE STANDARD (all evidence is current-era, config-side only):
-  PROMOTE  SHADOW -> ACTIVE   when  n >= 20  AND  avg net240 >= +2.0 p/ep
-                              AND  LCB(95%) > 0
-                              AND  (last-7d avg >= 0 when it has >= 5 episodes)
-  DEMOTE   ACTIVE -> SHADOW   when  n >= 20  AND  avg net240 < +2.0   (bar lost)
-                              OR   era broker fills n >= 5 with avg pips < 0
+THE STANDARD (D-7: evidence comes from core/trial_evidence — the SAME engine
+behind the dashboard trophy — and counts executable-exit-v2 episodes only):
+  PROMOTE  SHADOW -> ACTIVE   when promotion_predicate passes ALL of:
+                              raw n >= 20 · independent day/session blocks
+                              >= 10 · net avg >= +2.0p · block-bootstrap
+                              LCB > 0 · 7d recent guard · BH-FDR q <= 0.05
+  DEMOTE   ACTIVE -> SHADOW   when era v2 n >= 20 with net avg < +2.0 (bar
+                              lost)  OR  era broker fills n >= 5, avg < 0
+SEQUENTIAL-PEEKING GUARD: a setup that failed the bar is not re-tested until
+it has at least one NEW independent block — daily re-rolls of the same
+evidence cannot fish their way over the line.
 
 RAILS: max 2 promotions + 4 demotions per run · DISABLED and "manual_only"
 setups never touched · sides never flipped · flips go through the dashboard's
@@ -23,14 +28,13 @@ evidence window, so a config-era change can never trade on stale proof.
 Cron (EC2): 35 6 * * *  — after the nightly scorers. Manual: --dry-run first.
 """
 from __future__ import annotations
-import argparse, json, math, statistics, subprocess, sys, urllib.request
+import argparse, json, subprocess, sys, urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
-import hashlib
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from core.trial_stats import cost_adjusted_nets, effective_n, lcb as _lcb
+from core.trial_events import METRIC_V2, mechanics_hash
+from core.trial_evidence import current_era_evidence
 
 REPO = Path(__file__).resolve().parents[1]
 STORE = REPO / "data" / "shadowboard.json"
@@ -51,13 +55,17 @@ DEFAULT_CFG = {
     # when it ships; the switch remains one edit away.
     "allow_promotions": True,
     "allow_demotions": True,
-    "bar_n": 20, "bar_avg": 2.0, "lcb_min": 0.0,
+    # D-7 evidence bar (core/trial_evidence.promotion_predicate):
+    "min_raw_episodes": 20,        # bar_n honored as a deprecated alias
+    "min_independent_days": 10,
+    "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,
+    "bootstrap_reps": 10000, "bootstrap_confidence": 0.95,
+    "fdr_q": 0.05,
     "fills_n": 5, "fills_avg_max": 0.0,
     "max_promotions": 2, "max_demotions": 4,
-    # per_test_z: a PER-TEST 99% one-sided bound. It is NOT a multiple-testing
-    # correction and NOT the Deflated Sharpe Ratio (we mislabeled it for a
-    # day; review round 2 called it out). Real FDR control lands with D-7.
+    # per_test_z survives for the board's legacy-display LCB only; the
+    # PROMOTION denominator is the day/session block bootstrap + BH-FDR (D-7).
     "per_test_z": 2.33,
     "slippage_pips": 0.5,
     "default_era_start": "2026-07-19T00:00:00+00:00",
@@ -103,68 +111,34 @@ def book():
             for su in (b.get("setups") or []):
                 # Era identity = the setup's MECHANICS (conditions/exit/side/
                 # sizing), not its prose — notes and evidence edits must not
-                # reset anyone's clock.
-                core = {k: su.get(k) for k in
-                        ("side", "conditions", "exit", "sizing", "horizon_min")}
-                h = hashlib.sha256(json.dumps(core, sort_keys=True,
-                                              default=str).encode()).hexdigest()[:16]
+                # reset anyone's clock. ONE implementation everywhere:
+                # core.trial_events.mechanics_hash also signs every TRIALSTAMP.
                 out[(d.get("pair") or f.stem, sess, su.get("id"))] = {
                     "status": su.get("status", "?"), "side": su.get("side"),
                     "manual_only": bool(su.get("manual_only", False)),
-                    "cfg_hash": h,
+                    "cfg_hash": mechanics_hash(su),
                 }
     return out
 
 
-def era_stats(era_start_by_key, default_era, book_map, gov_cfg):
-    """Aggregate scored episodes per (pair, sess, setup) — CONFIG side only,
-    episodes at/after that setup's era start."""
+def _aliases():
+    try:
+        return {(r["cell"], r["setup"], r["side"]): r["as"]
+                for r in json.loads((REPO / "config" / "setup_aliases.json").read_text())}
+    except Exception:
+        return {}
+
+
+def evidence(book_map, gov_state, gov_cfg):
+    """All promote/demote statistics via the ONE shared engine (D-7):
+    executable-exit-v2 episodes, current era, mechanics-matched, block
+    bootstrap + BH-FDR. The dashboard trophy reads the same function."""
     try:
         eps = json.loads(STORE.read_text())["episodes"]
     except Exception:
         return {}
-    try:
-        aliases = {(r["cell"], r["setup"], r["side"]): r["as"]
-                   for r in json.loads((REPO / "config" / "setup_aliases.json").read_text())}
-    except Exception:
-        aliases = {}
-    now = datetime.now(timezone.utc).isoformat()
-    agg = {}
-    for ep in eps.values():
-        if not ep.get("scores"):
-            continue
-        pair, sess = (ep["cell"].split("/") + ["?"])[:2]
-        sid = aliases.get((ep["cell"], ep["setup"], ep["side"]), ep["setup"])
-        key = (pair, sess, sid)
-        meta = book_map.get(key)
-        if meta is None or ep.get("side") != meta["side"]:
-            continue
-        era = era_start_by_key.get("|".join(key), default_era)
-        if ep["t"] < era:
-            continue
-        agg.setdefault(key, []).append((ep["t"], ep["scores"]["net240"],
-                                        ep.get("spread")))
-    out = {}
-    z = float(gov_cfg.get("per_test_z", gov_cfg.get("z_promote", 2.33)))
-    slip = float(gov_cfg.get("slippage_pips", 0.5))
-    cutoff7 = datetime.now(timezone.utc).timestamp() - 7 * 86400
-    for key, rows in agg.items():
-        pair = key[0]
-        times = [t for t, _, _ in rows]
-        gross = [n for _, n, _ in rows]
-        spreads = [sp for _, _, sp in rows]
-        # D-6: ONE cost-adjusted utility for every verdict — stamps pay the
-        # stamped (or default) spread + slippage before being judged.
-        nets = cost_adjusted_nets(gross, spreads, pair, slippage_pips=slip)
-        n = len(nets)
-        n_eff = effective_n(times)
-        avg = sum(nets) / n
-        lcb = _lcb(nets, n_eff, z)
-        r7 = [net for (t, _, _), net in zip(rows, nets)
-              if datetime.fromisoformat(t).timestamp() >= cutoff7]
-        out[key] = {"n": n, "n_eff": n_eff, "avg": avg, "lcb": lcb,
-                    "n7": len(r7), "avg7": (sum(r7) / len(r7)) if r7 else None}
-    return out
+    return current_era_evidence(eps, book_map, gov_state, gov_cfg,
+                                aliases=_aliases())
 
 
 def era_fills(default_era):
@@ -247,66 +221,98 @@ def main():
         REGISTRY.write_text(json.dumps(reg, indent=1))
     m_live = sum(1 for m in bmap.values() if m["status"] in ("ACTIVE", "SHADOW"))
     print(f"governor: hypothesis registry M_ever={len(reg)} M_live={m_live} "
-          f"per_test_z={c.get('per_test_z', 2.33)} "
-          f"promotions={'ON' if c.get('allow_promotions', True) else 'GATED-OFF (D-7)'}")
-    stats = era_stats(eras, c["default_era_start"], bmap, c)
+          f"fdr_q={c.get('fdr_q', 0.05)} "
+          f"promotions={'ON' if c.get('allow_promotions', True) else 'OFF'}")
+
+    # METRIC-ERA-RESET (D-7, one-time): the promotion metric moved from
+    # legacy-mid-v1 to executable-exit-v2. Old-metric evidence measured a
+    # different (frictionless, mid-anchored) quantity, so every setup's
+    # evidence restarts under the new metric — recorded per setup, once.
+    if st.get("metric_version") != METRIC_V2:
+        live = [k for k, m in sorted(bmap.items())
+                if m["status"] in ("ACTIVE", "SHADOW")]
+        with open(LEDGER, "a") as led:
+            for key in live:
+                led.write(json.dumps({
+                    "t": now_iso, "action": "METRIC-ERA-RESET",
+                    "key": "|".join(key),
+                    "why": f"promotion metric -> {METRIC_V2}; evidence "
+                           f"restarts under the executable-exit metric",
+                    "dry_run": args.dry_run}) + "\n")
+        st["metric_version"] = METRIC_V2
+        print(f"governor: METRIC-ERA-RESET recorded for {len(live)} setups "
+              f"(promotion metric -> {METRIC_V2})")
+        if not args.dry_run:
+            save_state(st)
+
+    ev_all = evidence(bmap, st, c)
     fills = era_fills(c["default_era_start"])
+    last_eval = st.setdefault("last_eval_blocks", {})
     now = datetime.now(timezone.utc).isoformat()
 
+    min_raw = int(c.get("min_raw_episodes", c.get("bar_n", 20)))
     promotions, demotions = [], []
     for key, meta in sorted(bmap.items()):
         pair, sess, sid = key
         if meta["manual_only"] or meta["status"] not in ("ACTIVE", "SHADOW"):
             continue
-        s = stats.get(key)
+        e = ev_all.get(key)
         f = fills.get((pair, sid))
-        if meta["status"] == "SHADOW" and s:
-            ok = (s["n"] >= c["bar_n"] and s["avg"] >= c["bar_avg"]
-                  and s["lcb"] is not None and s["lcb"] > c["lcb_min"]
-                  and not (s["n7"] >= c["recent_n"] and s["avg7"] is not None
-                           and s["avg7"] < c["recent_min"]))
-            if ok:
-                promotions.append((key, s, None))
+        if meta["status"] == "SHADOW" and e:
+            k = "|".join(key)
+            prev_blocks = last_eval.get(k)
+            # SEQUENTIAL-PEEKING GUARD: no new independent block since the
+            # last failed test => same evidence, no re-roll.
+            if prev_blocks is not None and e.independent_days <= prev_blocks:
+                continue
+            if e.promotable:
+                promotions.append((key, e, None))
+            else:
+                last_eval[k] = e.independent_days
         elif meta["status"] == "ACTIVE":
-            bar_lost = s and s["n"] >= c["bar_n"] and s["avg"] < c["bar_avg"]
+            bar_lost = e and e.raw_n >= min_raw and (
+                e.net_avg is None or e.net_avg < float(c["bar_avg"]))
             fills_red = f and f["n"] >= c["fills_n"] and f["avg"] < c["fills_avg_max"]
             if bar_lost or fills_red:
-                demotions.append((key, s, f))
+                demotions.append((key, e, f))
 
     # strongest evidence first; rails cap the day's changes
-    promotions.sort(key=lambda x: -(x[1]["lcb"] or 0))
-    demotions.sort(key=lambda x: (x[1]["avg"] if x[1] else 0))
+    promotions.sort(key=lambda x: -(x[1].block_lcb or 0))
+    demotions.sort(key=lambda x: (x[1].net_avg if x[1] and x[1].net_avg
+                                  is not None else 0))
     promotions = promotions[:c["max_promotions"]]
     demotions = demotions[:c["max_demotions"]]
     if not c.get("allow_promotions", True) and promotions:
         print(f"governor: {len(promotions)} setup(s) meet the bar but promotions "
-              f"are GATED OFF pending D-7 (shared evidence engine + shadow-exit "
-              f"simulation) — logged, not flipped")
+              f"are switched OFF — logged, not flipped")
         with open(LEDGER, "a") as led:
-            for (pair, sess, sid), st_, f_ in promotions:
+            for (pair, sess, sid), e_, f_ in promotions:
                 led.write(json.dumps({"t": now, "action": "PROMOTE-GATED",
                                       "pair": pair, "session": sess, "setup": sid,
-                                      "why": "allow_promotions=false (D-7 pending)",
+                                      "why": "allow_promotions=false",
                                       "dry_run": args.dry_run}) + "\n")
         promotions = []
     if not c.get("allow_demotions", True):
         demotions = []
 
     if not promotions and not demotions:
-        print(f"governor: no setups due ({len(stats)} era-scored, {len(bmap)} in book)")
+        print(f"governor: no setups due ({len(ev_all)} era-scored v2, "
+              f"{len(bmap)} in book)")
+        if not args.dry_run:
+            save_state(st)   # peeking-guard block counts still advance
         return
 
     with open(LEDGER, "a") as led:
         for kind, batch, new_status in (("PROMOTE", promotions, "ACTIVE"),
                                         ("DEMOTE", demotions, "SHADOW")):
-            for (pair, sess, sid), s, f in batch:
+            for (pair, sess, sid), e, f in batch:
                 why = []
-                if s:
-                    _l = "None" if s["lcb"] is None else f"{s['lcb']:+.2f}"
-                    why.append(f"era n={s['n']} n_eff={s['n_eff']} "
-                               f"net_avg={s['avg']:+.2f}p lcb={_l} "
-                               f"7d={s['avg7'] if s['avg7'] is None else round(s['avg7'], 2)}({s['n7']}) "
-                               f"[net-of-cost]")
+                if e:
+                    _l = "None" if e.block_lcb is None else f"{e.block_lcb:+.2f}"
+                    _q = "None" if e.q_value is None else f"{e.q_value:.3f}"
+                    why.append(f"v2 n={e.raw_n} days={e.independent_days} "
+                               f"net_avg={e.net_avg:+.2f}p blcb={_l} q={_q} "
+                               f"7d={e.recent_avg}({e.recent_n}) [{METRIC_V2}]")
                 if f:
                     why.append(f"fills n={f['n']} avg={f['avg']:+.2f}p")
                 res = flip(pair, sess, sid, new_status, args.dry_run)
@@ -317,7 +323,9 @@ def main():
                 print(f"GOVERNOR {kind} {pair}/{sess}/{sid}  [{'; '.join(why)}]"
                       f"{'  (dry-run)' if args.dry_run else ''}")
                 if not args.dry_run and res.get("ok"):
-                    eras["|".join((pair, sess, sid))] = now   # evidence clock restarts
+                    k = "|".join((pair, sess, sid))
+                    eras[k] = now                # evidence clock restarts
+                    last_eval.pop(k, None)       # fresh era, fresh peeking count
     if not args.dry_run:
         save_state(st)
 
