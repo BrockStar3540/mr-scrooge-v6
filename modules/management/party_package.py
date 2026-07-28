@@ -435,6 +435,12 @@ class PartyPackage:
               now: datetime, cfg: dict) -> None:
         pair = g.pair
         key = _okey(offset_pips)
+        # Review round 2: quarantined order intents halt ALL new entries,
+        # popper fires included — management of existing trades continues.
+        if getattr(self.broker, "quarantined", None):
+            log.warning("PP FIRE BLOCKED %s marker=-%sp — order quarantine active",
+                        pair, key)
+            return
         entry_price = ask if g.side == "long" else bid
         try:
             units = self.broker.size_units(pair, g.side, margin_pct=pm_margin_pct())

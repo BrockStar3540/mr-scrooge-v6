@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from config.pairs import PAIRS, PIP
-from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS
+from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS, OrderUncertain
 from modules.signals import formula_shadow as _formula_shadow
 from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct,
                                           pm_max_concurrent,
@@ -325,6 +325,15 @@ class Engine:
             self._trading_enabled_prev = _trading_on
 
         # Step 3: full candles for signal evaluation
+        # Review round 2: try to resolve quarantined order intents each cycle
+        # (no-op when the quarantine is empty; a proven rejection clears it,
+        # a proven fill stays flagged until a restart adopts the orphan).
+        try:
+            if getattr(self.broker, "quarantined", None):
+                self.broker.retry_quarantine()
+        except Exception as exc:
+            log.warning("quarantine retry pass failed: %s", exc)
+
         views = self.feed.get_views(PAIRS)
         self.last_feed_time = now
         self.feed_views_n   = len(views)
@@ -490,6 +499,13 @@ class Engine:
             self._open_trade(trade_ticket, views, now)
 
     def _open_trade(self, ticket: TradeTicket, views: list, now: datetime):
+        # Review round 2: while ANY order intent is quarantined (fate unproven
+        # at the broker), no new entries — management continues elsewhere.
+        if getattr(self.broker, "quarantined", None):
+            log.critical("ENTRY BLOCKED %s — %d order intent(s) in quarantine; "
+                         "no new entries until the broker proves their fate",
+                         ticket.pair, len(self.broker.quarantined))
+            return
         view = next(v for v in views if v.pair == ticket.pair)
         pip  = PIP[ticket.pair]
 
@@ -506,11 +522,28 @@ class Engine:
                                        margin_pct=pm_margin_pct())
         _mode    = str(getattr(_ep, "mode", "ratchet") or "ratchet") if _ep else "ratchet"
         _tp_pips = float(getattr(_ep, "tp_pips", 0.0) or 0.0) if _mode == "bracket" else 0.0
-        trade = self.broker.place_market(
-            ticket.pair, ticket.direction, units=units,
-            entry_price=entry_price, sl_pips=initial_sl, tp_pips=_tp_pips,
-            client_ext=_encode_exit_ext(_ep, _it.setup_id) if _ep is not None else None,
-        )
+        try:
+            trade = self.broker.place_market(
+                ticket.pair, ticket.direction, units=units,
+                entry_price=entry_price, sl_pips=initial_sl, tp_pips=_tp_pips,
+                client_ext=_encode_exit_ext(_ep, _it.setup_id) if _ep is not None else None,
+            )
+        except OrderUncertain as exc:
+            log.critical("ORDER QUARANTINE intent=%s (%s) — new entries disabled "
+                         "pending broker reconciliation; existing management "
+                         "unaffected", exc.intent_id, ticket.pair)
+            self.recent_events.append(
+                f"{now.strftime('%H:%M:%S')} QUARANTINE {ticket.pair} intent={exc.intent_id}")
+            return
+
+        # Review round 2: an empty trade id is a broker-proven NO-FILL (the
+        # poppers already refused these, B-097) — a parent Position must never
+        # be built around oanda_trade_id="".
+        if not str(trade.get("id") or ""):
+            log.warning("ENTRY REJECTED %s %s — broker returned no filled trade "
+                        "(order cancelled/rejected); no position created",
+                        ticket.pair, ticket.direction)
+            return
 
         # D-5 (external review): the broker's fill is the ONLY true entry.
         # Position, SL reference, and every ratchet baseline derive from it —

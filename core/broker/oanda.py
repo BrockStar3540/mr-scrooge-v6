@@ -18,6 +18,15 @@ from config.pairs import PIP
 
 log = logging.getLogger("v5.broker")
 
+
+class OrderUncertain(RuntimeError):
+    """Transport failed AND the broker could not prove the order's fate.
+    The intent may still fill. Callers must QUARANTINE new entries — never
+    retry, never assume absence (external review round 2)."""
+    def __init__(self, intent_id: str, message: str):
+        super().__init__(message)
+        self.intent_id = intent_id
+
 # Hard initial stop placed on OANDA server at trade entry — ultimate fallback
 # value used only when exit_config.json is missing/corrupt. The live value
 # comes from exit_config.json "initial_sl_pips" (currently 20.0) which is
@@ -63,6 +72,7 @@ class OandaBroker:
         self._base  = s.get("OANDA_API_URL",   "").rstrip("/")
         self._token = s.get("OANDA_API_TOKEN",  "")
         self._acct  = s.get("OANDA_ACCOUNT_ID", "")
+        self._quarantine: dict = {}   # intent_id -> context (review round 2)
 
     # ── Raw HTTP ─────────────────────────────────────────────────────────────
 
@@ -255,17 +265,30 @@ class OandaBroker:
 
         try:
             result = self._req("POST", f"/v3/accounts/{self._acct}/orders", {"order": order})
+        except urllib.error.HTTPError:
+            # The broker RESPONDED — this is a rejection/business error, not
+            # transport loss. It must not enter the reconciliation path
+            # (review round 2: HTTPError subclasses URLError; order matters).
+            raise
         except (socket.timeout, TimeoutError, urllib.error.URLError,
                 ConnectionError) as exc:
             log.warning("place_market %s: transport error after send (%s) — "
                         "reconciling intent %s against the broker", pair, exc, intent_id)
-            result = self._reconcile_order(intent_id)
-            if result is None:
-                raise RuntimeError(
-                    f"order intent {intent_id} not found at broker after "
-                    f"transport error ({exc}) — safe to treat as not placed") from exc
-            log.info("place_market %s: RECONCILED intent %s — order had filled "
-                     "despite the transport error (orphan averted)", pair, intent_id)
+            state, result = self._reconcile_order(intent_id)
+            if state == "FILLED":
+                log.info("place_market %s: RECONCILED intent %s — order had filled "
+                         "despite the transport error (orphan averted)", pair, intent_id)
+            elif state == "REJECTED":
+                log.warning("place_market %s: intent %s was cancelled/rejected at "
+                            "the broker — treating as no-fill", pair, intent_id)
+                return {"id": "", "price": "", "raw": result}
+            else:
+                self._quarantine[intent_id] = {"pair": pair, "direction": direction,
+                                               "units": units}
+                raise OrderUncertain(
+                    intent_id,
+                    f"order fate unresolved after transport failure ({exc}) — "
+                    f"intent quarantined; new entries must halt") from exc
         trade  = result.get("orderFillTransaction", {})
         log.info("PLACED %s %s %d units | SL %.{prec}fp | trade_id=%s".replace("{prec}", str(prec)),
                  pair, direction, units, sl_price, trade.get("tradeOpened", {}).get("tradeID", "?"))
@@ -273,32 +296,69 @@ class OandaBroker:
                 "price": trade.get("price", ""),
                 "raw": result}
 
-    def _reconcile_order(self, intent_id: str) -> Optional[dict]:
-        """Did an order we lost contact with actually execute? Look the order
-        up BY CLIENT ID (OANDA: /orders/@{clientID}) and, if it filled, fetch
-        the filling transaction so callers get the same shape a clean POST
-        returns. None = the broker never saw it (safe to treat as not placed).
-        """
-        time.sleep(2.0)   # give the broker a beat to settle the order state
-        try:
-            r = self._req("GET", f"/v3/accounts/{self._acct}/orders/@{intent_id}")
-        except urllib.error.HTTPError as exc:
-            if exc.code == 404:
-                return None
-            raise
-        order = r.get("order", {})
-        state = order.get("state")
-        if state != "FILLED":
-            log.warning("reconcile %s: order state=%s — treating as not placed",
-                        intent_id, state)
-            return None
-        fill_id = order.get("fillingTransactionID")
-        if not fill_id:
-            return None
-        tx = self._req("GET",
-                       f"/v3/accounts/{self._acct}/transactions/{fill_id}"
-                       ).get("transaction", {})
-        return {"orderFillTransaction": tx}
+    _RECONCILE_DELAYS = (0.5, 1.0, 2.0, 4.0, 8.0)
+
+    def _reconcile_order(self, intent_id: str) -> tuple:
+        """What actually happened to an order we lost contact with? Polls the
+        broker BY CLIENT ID with backoff. Returns (state, payload):
+          ("FILLED",   {orderFillTransaction: ...})  — adopt the fill
+          ("REJECTED", raw)                          — provably no fill
+          ("UNKNOWN",  None)                         — NOT PROOF OF ABSENCE:
+        a delivered-but-not-yet-queryable order can 404 briefly, and PENDING
+        can still fill. Callers must treat UNKNOWN as quarantine, never as
+        safe-to-retry (review round 2)."""
+        last = None
+        for delay in self._RECONCILE_DELAYS:
+            time.sleep(delay)
+            try:
+                r = self._req("GET", f"/v3/accounts/{self._acct}/orders/@{intent_id}")
+            except urllib.error.HTTPError as exc:
+                if exc.code == 404:
+                    continue          # not yet visible — keep polling
+                raise
+            order = r.get("order", {})
+            state = order.get("state")
+            last = r
+            if state == "FILLED":
+                fill_id = order.get("fillingTransactionID")
+                if not fill_id:
+                    continue
+                tx = self._req("GET",
+                               f"/v3/accounts/{self._acct}/transactions/{fill_id}"
+                               ).get("transaction", {})
+                return ("FILLED", {"orderFillTransaction": tx})
+            if state in ("CANCELLED", "REJECTED"):
+                return ("REJECTED", r)
+            # PENDING / TRIGGERED / unknown: keep polling — never classify absent
+        return ("UNKNOWN", last)
+
+    @property
+    def quarantined(self) -> dict:
+        """Order intents whose fate is unproven. Non-empty = HALT new entries."""
+        if not hasattr(self, "_quarantine"):
+            self._quarantine = {}
+        return self._quarantine
+
+    def retry_quarantine(self) -> None:
+        """Background resolution pass (engine calls once per cycle). A proven
+        rejection clears the intent; a proven fill stays flagged LOUDLY until
+        an operator restart adopts the orphan via recovery (client extensions
+        carry the gear); UNKNOWN stays quarantined."""
+        for intent_id in list(self.quarantined.keys()):
+            try:
+                state, payload = self._reconcile_order(intent_id)
+            except Exception as exc:
+                log.warning("quarantine retry %s failed: %s", intent_id, exc)
+                continue
+            if state == "REJECTED":
+                log.warning("QUARANTINE CLEARED %s — broker proved no fill", intent_id)
+                self._quarantine.pop(intent_id, None)
+            elif state == "FILLED":
+                tx = (payload or {}).get("orderFillTransaction", {})
+                tid = tx.get("tradeOpened", {}).get("tradeID", "?")
+                log.critical("QUARANTINED INTENT %s FILLED as trade %s — trade is "
+                             "UNMANAGED until restart (recovery adopts it); "
+                             "entries remain halted", intent_id, tid)
 
     def close_position(self, trade_id: str, units = "ALL") -> dict:
         """Close a trade by OANDA trade ID. units="ALL" = full close;

@@ -128,12 +128,15 @@ def test_timeout_after_accepted_order_reconciles_to_fill(monkeypatch):
         "an accepted-then-timeout order must be adopted, not orphaned"
 
 
-def test_timeout_with_no_order_at_broker_raises(monkeypatch):
+def test_timeout_with_unproven_order_quarantines(monkeypatch):
+    # CONTRACT REVERSED (review round 2): endless 404 after a transport error
+    # is NOT proof of non-delivery — the intent quarantines, never "retry".
     import socket
     import urllib.error
-    from core.broker.oanda import OandaBroker
+    from core.broker.oanda import OandaBroker, OrderUncertain
     b = object.__new__(OandaBroker)
     b._base, b._token, b._acct = "https://test", "t", "acct"
+    b._quarantine = {}
 
     def fake_req(method, path, body=None):
         if method == "POST":
@@ -143,6 +146,7 @@ def test_timeout_with_no_order_at_broker_raises(monkeypatch):
     b._req = fake_req
     monkeypatch.setattr("core.broker.oanda.time.sleep", lambda s: None)
     import pytest as _pytest
-    with _pytest.raises(RuntimeError, match="safe to treat as not placed"):
+    with _pytest.raises(OrderUncertain):
         b.place_market("EUR_USD", "long", units=1000, sl_pips=50,
                        entry_price=1.10000)
+    assert b.quarantined
