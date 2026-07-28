@@ -100,6 +100,16 @@ Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TES
 - 07-28: the FAMILY RULE + judge-when-flat (v6.7.x) — demotion re-grounded in family
   broker net pips; motivated by this very tape's one losing family.
 
+## What 100 trades is — and isn't
+
+**100 trades in a two-week window is not proof of sustained edge — by any means.** It's one
+market regime and a sample small enough that variance alone could paint either verdict. It
+is enough for *us, personally,* to try live trading with a small stake — that is the whole
+claim. Use your own discernment; results vary over time, and when things go wrong the
+drawdown can be substantial (this account's history includes a −84% research tuition; the
+falsification record is public). The troublesome cells were demoted mid-window, and the
+system now promotes and demotes seats autonomously as each cell earns or loses them.
+
 ## The decision
 
 Per the pre-registered protocol: the practice account is closed with this report, and the

@@ -174,7 +174,10 @@ Everything live is a **forward experiment on a practice account**, scored agains
 > account closes, and the system goes **live with $2,500 real money** at 15%/trade,
 > 6 trades max — same hourly public livelog, same graph, real fills. The endpoint, the
 > consequences, and the live gearing were all declared *before* the result was known:
-> [docs/FORWARD_TEST_PROTOCOL.md](docs/FORWARD_TEST_PROTOCOL.md).
+> [docs/FORWARD_TEST_PROTOCOL.md](docs/FORWARD_TEST_PROTOCOL.md). To be plain: **100
+> trades in two weeks is not proof of sustained edge** — it's enough for *us personally*
+> to try live with a small stake. Use your own discernment; results vary over time, and
+> when things go wrong the drawdown can be substantial.
 
 1. **The wide-stop parent book** — the decisive walk-forward
    [falsified the level](docs/papers/PAPER_h6_walkforward_2026-07-16.md): gross Sharpe 1.26,

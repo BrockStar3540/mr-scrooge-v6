@@ -18,6 +18,24 @@ consequence. This page is the pre-registration.
   closes all count — broker fills, never our own journal). The hourly livelog cron raises
   the flag the hour trade #100 closes.
 
+## What 100 trades is — and isn't
+
+Let's be plain: **100 trades in a two-week window is not proof of sustained edge — by any
+means.** It's two weeks of one market regime, one config lineage, and a sample small enough
+that variance alone could paint either verdict. We know that.
+
+It is enough for **us, personally,** to be willing to try live trading with a small stake —
+that is the entire claim being made here. If you're reading this: use your own discernment.
+Results can and will vary over time, and if things go wrong the drawdown can be
+substantial — this account's own history includes a −84% research tuition, and the
+program's falsification record is public in this repo.
+
+What this protocol is, is honesty about how we got here and what we're doing next: the
+troublesome cells were demoted, and the system now promotes and demotes seats autonomously
+as each cell **earns them or loses them** — the Bar Governor on the promotion side, the
+family rule (broker net pips, judged when flat) on the demotion side. The live record will
+be public either way.
+
 ## At trade #100
 
 1. **Freeze** — no new practice entries; open positions are managed to their natural
