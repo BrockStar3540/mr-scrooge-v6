@@ -18,13 +18,13 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%241,422.50_(%2B8.54%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-81/91_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-6_(%2B%2428)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-%2B%241,432.18_(%2B8.59%25)-3fb950?style=flat-square) ![trades](https://img.shields.io/badge/trades-83/93_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-4_(−%2421)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
 </div>
 
-> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1), live since 2026-07-16 (52 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
+> **Live track record of the *current* configuration** — range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1), live since 2026-07-16 (54 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record. Prior configs and the −84% research tuition are a different story — [read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.
 <!-- LIVE_BALANCE_END -->
 
 ---
