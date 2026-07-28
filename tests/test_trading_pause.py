@@ -45,7 +45,7 @@ def test_set_preserves_other_keys(runtime_path):
 def test_fail_closed_on_unreadable_file(runtime_path):
     # DOCTRINE REVERSED 2026-07-27 (external review): a corrupted pause file
     # must NEVER restart trading. No last-known-good -> PAUSED.
-    runtime._lkg.clear()
+    runtime._runtime_lkg.forget()
     runtime_path.write_text("{ this is not json")
     assert runtime.trading_enabled() is False
     # ...and with a last-known-good, corruption preserves the last state:
@@ -57,7 +57,8 @@ def test_fail_closed_on_unreadable_file(runtime_path):
 
 @pytest.mark.parametrize("val,expected", [
     (True, True), (False, False), (1, True), (0, False),
-    ("true", True), ("off", False), ("yes", True), (None, True),
+    ("true", True), ("off", False), ("yes", True),
+    (None, False),  # review round 2: a PRESENT null is corruption -> fail closed
 ])
 def test_tolerant_value_parsing(runtime_path, val, expected):
     runtime_path.write_text(json.dumps({"trading_enabled": val}))

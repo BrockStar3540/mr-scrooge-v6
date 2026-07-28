@@ -19,7 +19,7 @@ import modules.management.party_package as pp
 def rt(tmp_path, monkeypatch):
     path = tmp_path / "runtime.json"
     monkeypatch.setattr(runtime, "RUNTIME_PATH", path)
-    runtime._lkg.clear()
+    runtime._runtime_lkg.forget()
     runtime._last_warn["t"] = 0.0
     return path
 
@@ -61,7 +61,7 @@ def test_runtime_missing_file_is_fresh_install_default(rt):
 def ppcfg(tmp_path, monkeypatch):
     path = tmp_path / "pp_config.json"
     monkeypatch.setattr(pp, "_CONFIG_PATH", path)
-    pp._PP_LKG.clear()
+    pp._pp_lkg.forget()
     return path
 
 
@@ -99,3 +99,23 @@ def test_governor_corrupted_config_fails_closed(tmp_path, monkeypatch):
     missing = tmp_path / "absent.json"
     monkeypatch.setattr(gov, "CFG_F", missing)
     assert gov.cfg()["enabled"] is True   # never configured → defaults
+
+
+@pytest.mark.parametrize("value,expected", [
+    ("true", True), ("false", False), (1, True), (0, False),
+    ("yes", True), ("off", False),
+])
+def test_runtime_coercions(rt, value, expected):
+    rt.write_text(json.dumps({"trading_enabled": value}))
+    assert runtime.trading_enabled() is expected
+
+
+def test_runtime_null_value_is_corruption_not_default(rt):
+    # review round 2: a PRESENT key with null is corruption -> fail closed
+    rt.write_text(json.dumps({"trading_enabled": None}))
+    assert runtime.trading_enabled() is False
+
+
+def test_runtime_absent_key_in_valid_file_is_default_enabled(rt):
+    rt.write_text(json.dumps({"_note": "no gate key"}))
+    assert runtime.trading_enabled() is True

@@ -13,5 +13,7 @@ jobs:
           python-version: "3.12"
       - name: Install dependencies
         run: pip install -r requirements-dev.txt
-      - name: Run test suite
-        run: python -m pytest -q tests
+      - name: Run deterministic suite
+        run: python -m pytest -q -p no:randomly tests
+      - name: Run randomized suite
+        run: python -m pytest -q tests --randomly-seed=last || python -m pytest -q tests

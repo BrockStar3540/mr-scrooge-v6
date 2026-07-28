@@ -2,3 +2,5 @@
 # Runtime deps for the bot itself live in requirements.txt.
 -r requirements.txt
 pytest>=8.0
+pytest-randomly>=3.15
+pytest-cov>=5.0

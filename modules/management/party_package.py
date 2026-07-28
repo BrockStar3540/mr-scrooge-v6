@@ -67,7 +67,8 @@ _DEFAULTS: dict = {
 }
 
 
-_PP_LKG: dict = {}   # last-known-good config — survives a corrupted file
+from config.safe_config import PathLKG
+_pp_lkg: PathLKG[dict] = PathLKG()   # path-scoped LKG (review round 2)
 
 def pp_config() -> dict:
     """Hot-reloaded pp config (same pattern as exit_config).
@@ -99,11 +100,11 @@ def pp_config() -> dict:
                 cfg[k] = float(v)
             else:
                 cfg[k] = int(v)
-        _PP_LKG.clear(); _PP_LKG.update(cfg)
-        return dict(cfg)
+        return _pp_lkg.remember(_CONFIG_PATH, cfg)
     except (OSError, ValueError, TypeError, json.JSONDecodeError) as exc:
-        if _PP_LKG:
-            return dict(_PP_LKG)
+        previous = _pp_lkg.get(_CONFIG_PATH)
+        if previous is not None:
+            return previous
         log.warning("pp_config.json unreadable (%s) with no last-known-good — "
                     "FAILING CLOSED (poppers disabled)", exc)
         safe = dict(_DEFAULTS)

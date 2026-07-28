@@ -30,8 +30,11 @@ log = logging.getLogger("v6.runtime")
 _REPO_ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_PATH = _REPO_ROOT / "config" / "runtime.json"
 
+from config.safe_config import PathLKG
+
 _last_warn = {"t": 0.0}
-_lkg: dict = {}   # last-known-good parsed values, survives read errors
+# Path-scoped LKG (review round 2): state can never leak across paths.
+_runtime_lkg: PathLKG[bool] = PathLKG()
 
 
 def _warn_once(msg: str) -> None:
@@ -67,20 +70,24 @@ def load_runtime() -> dict:
 
 
 def trading_enabled() -> bool:
-    """The soft trading gate. Fail-CLOSED: corruption can never re-enable."""
+    """The soft trading gate. Fail-CLOSED: corruption can never re-enable.
+    NOTE: a key present with a malformed value (incl. null) is CORRUPTION,
+    not a default — it fails closed (review round 2 contract)."""
     r = load_runtime()
+    previous = _runtime_lkg.get(RUNTIME_PATH)
     if r["_ok"]:
-        v = _coerce_bool(r["data"].get("trading_enabled", True))
+        if "trading_enabled" not in r["data"]:
+            return _runtime_lkg.remember(RUNTIME_PATH, True)  # valid file, key absent
+        v = _coerce_bool(r["data"].get("trading_enabled"))
         if v is None:
             _warn_once("runtime.json trading_enabled is malformed — FAILING "
                        "CLOSED (last-known-good or paused)")
-            return _lkg.get("trading_enabled", False)
-        _lkg["trading_enabled"] = v
-        return v
+            return previous if previous is not None else False
+        return _runtime_lkg.remember(RUNTIME_PATH, v)
     if r.get("missing"):
         # absent file = never configured; LKG wins if we ever read one
-        return _lkg.get("trading_enabled", True)
-    return _lkg.get("trading_enabled", False)   # unreadable → LKG or PAUSED
+        return previous if previous is not None else True
+    return previous if previous is not None else False   # unreadable
 
 
 def set_trading_enabled(enabled: bool) -> dict:
@@ -94,5 +101,5 @@ def set_trading_enabled(enabled: bool) -> dict:
     tmp = RUNTIME_PATH.with_suffix(".tmp")
     tmp.write_text(json.dumps(d, indent=2))
     tmp.replace(RUNTIME_PATH)
-    _lkg["trading_enabled"] = bool(enabled)
+    _runtime_lkg.remember(RUNTIME_PATH, bool(enabled))
     return d
