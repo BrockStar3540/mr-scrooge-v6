@@ -449,6 +449,12 @@ def _save_credentials(payload: dict) -> dict:
     else:
         api_url = _cred.default_url_for(account)
     # Verify against the chosen host — a non-OANDA URL fails here (deliberate guard).
+    if not allowed_oanda_api_url(api_url, account):
+        return 400, {"ok": False,
+                     "error": "api_url rejected: dashboard credentials may only "
+                              "be verified against the official OANDA host for "
+                              "this account type (see SCROOGE_OANDA_HOST_ALLOWLIST "
+                              "for lab overrides)"}
     ok, msg = _cred.verify_oanda_token(account, api_token, account_id, api_url=api_url)
     if not ok:
         raise ValueError(msg)
@@ -1196,6 +1202,46 @@ def _cellshadow(n: int = 200) -> dict:
             "generated_at": data["generated_at"]}
 
 
+# ── Dashboard security (external review round 2) ─────────────────────────────
+import secrets as _secrets_mod
+
+OFFICIAL_OANDA_HOSTS = {
+    "practice": "https://api-fxpractice.oanda.com",
+    "live":     "https://api-fxtrade.oanda.com",
+}
+
+def allowed_oanda_api_url(url: str, account_type: str) -> bool:
+    """Dashboard-submitted credentials may only ever be sent to the official
+    OANDA host for their account type (or a startup-time allowlisted host via
+    SCROOGE_OANDA_HOST_ALLOWLIST). Review round 2: the old check accepted ANY
+    https URL — an attacker-shaped host could harvest the bearer token."""
+    import os as _os
+    normalized = (url or "").strip().rstrip("/").lower()
+    if normalized == OFFICIAL_OANDA_HOSTS.get(account_type, "").lower():
+        return True
+    extra = {u.strip().rstrip("/").lower()
+             for u in _os.environ.get("SCROOGE_OANDA_HOST_ALLOWLIST", "").split(",")
+             if u.strip()}
+    return normalized in extra
+
+
+def dashboard_allowed_hosts(bind_host: str, port: int) -> set:
+    """Host-header allowlist — defeats DNS rebinding, where Origin==Host both
+    carry the attacker's domain (equality checks pass; membership fails)."""
+    import os as _os
+    configured = {h.strip().lower()
+                  for h in _os.environ.get("DASHBOARD_ALLOWED_HOSTS", "").split(",")
+                  if h.strip()}
+    if bind_host in ("127.0.0.1", "::1", "localhost"):
+        return configured | {f"localhost:{port}", f"127.0.0.1:{port}", f"[::1]:{port}"}
+    return configured
+
+
+def _dashboard_token() -> str:
+    import os as _os
+    return _os.environ.get("DASHBOARD_TOKEN", "")
+
+
 # ── Bar Governor (autonomous promote/demote) — status + ON/OFF ───────────────
 _GOVERNOR_CFG = _REPO_ROOT / "config" / "governor_config.json"
 _GOVERNOR_LEDGER = _REPO_ROOT / "data" / "governor_ledger.jsonl"
@@ -1378,10 +1424,26 @@ def start_dashboard(engine: "Engine", port: int = 8084,
     import os
     host = host or os.environ.get("DASHBOARD_HOST", "127.0.0.1")
 
+    # Review round 2: a non-loopback bind REQUIRES the full secure config —
+    # a token, an explicit host allowlist, and an explicit opt-in. Refusing
+    # to serve remotely (downgrading to loopback) is chosen over refusing to
+    # start: the dashboard runs inside the trading process, and a dashboard
+    # misconfig must never kill the trader.
+    loopback = host in ("127.0.0.1", "::1", "localhost")
+    if not loopback:
+        if not (_dashboard_token() and os.environ.get("DASHBOARD_ALLOWED_HOSTS")
+                and os.environ.get("DASHBOARD_ALLOW_REMOTE") == "1"):
+            log.critical("DASHBOARD_HOST=%s requires DASHBOARD_TOKEN + "
+                         "DASHBOARD_ALLOWED_HOSTS + DASHBOARD_ALLOW_REMOTE=1 — "
+                         "REFUSING remote bind, serving on 127.0.0.1 instead", host)
+            host = "127.0.0.1"
+            loopback = True
+
     def handler_factory(*args, **kwargs):
         return _Handler(engine, *args, **kwargs)
 
     srv = http.server.HTTPServer((host, port), handler_factory)
+    srv.allowed_hosts = dashboard_allowed_hosts(host, port)
     t = threading.Thread(target=srv.serve_forever, daemon=True, name="dashboard")
     t.start()
     log.info("Dashboard started on %s:%d", host, port)
@@ -1393,6 +1455,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         super().__init__(*args, **kwargs)
 
     def do_GET(self):
+        if not self._host_allowed():
+            return self._deny(421, "host rejected")
         try:
             if self.path in ("/", ""):
                 if _PANEL.exists():
@@ -1488,38 +1552,60 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         raw = self.rfile.read(length) if length else b""
         return _j.loads(raw.decode() or "{}")
 
-    def _write_allowed(self) -> bool:
-        """Same-origin guard for mutating endpoints (2026-07-27 review fix).
+    def _deny(self, code: int, why: str):
+        body = _j.dumps({"ok": False, "error": why}).encode()
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.end_headers()
+        self.wfile.write(body)
+        log.warning("dashboard: %s (%d) %s from %s Origin=%s Host=%s",
+                    why, code, self.path, self.client_address[0],
+                    self.headers.get("Origin"), self.headers.get("Host"))
 
-        Browsers attach an Origin header to cross-site requests; a page on any
-        website the operator visits could otherwise fire POSTs at this API
-        (localhost is reachable from the browser, and DNS-rebinding defeats a
-        pure Host check). Policy: no Origin header (curl / same-machine tools)
-        -> allowed; Origin present -> its host:port must equal the Host header
-        (true same-origin). Anything else is rejected 403.
-        """
+    def _host_allowed(self) -> bool:
+        """Host-header ALLOWLIST membership (review round 2): Origin==Host
+        equality does not defeat DNS rebinding — a rebinding domain matches
+        itself. Membership in the configured set does."""
+        allowed = getattr(self.server, "allowed_hosts", None)
+        if not allowed:
+            return True     # not configured (legacy start path) — other guards apply
+        return self.headers.get("Host", "").strip().lower() in allowed
+
+    def _origin_allowed(self) -> bool:
         origin = self.headers.get("Origin")
         if not origin:
-            return True
-        host = self.headers.get("Host", "")
-        from urllib.parse import urlparse
+            # non-browser tools; require a loopback peer
+            return self.client_address[0] in ("127.0.0.1", "::1")
+        from urllib.parse import urlsplit
         try:
-            o = urlparse(origin)
-            return bool(host) and o.netloc == host
+            parsed = urlsplit(origin)
         except Exception:
             return False
+        if parsed.scheme not in ("http", "https"):
+            return False
+        allowed = getattr(self.server, "allowed_hosts", None)
+        if allowed:
+            return parsed.netloc.lower() in allowed
+        return parsed.netloc.lower() == self.headers.get("Host", "").strip().lower()
+
+    def _authenticated(self) -> bool:
+        """DASHBOARD_TOKEN auth (constant-time). Unset token = permitted ONLY
+        because non-loopback binds refuse to start without one (see
+        start_dashboard); on loopback an unset token preserves the local
+        zero-friction workflow and same-machine automation."""
+        expected = _dashboard_token()
+        if not expected:
+            return True
+        supplied = self.headers.get("X-Scrooge-Token", "")
+        return bool(supplied) and _secrets_mod.compare_digest(supplied, expected)
 
     def do_POST(self):
-        if not self._write_allowed():
-            body = _j.dumps({"ok": False,
-                             "error": "cross-origin write rejected"}).encode()
-            self.send_response(403)
-            self.send_header("Content-Type", "application/json")
-            self.end_headers()
-            self.wfile.write(body)
-            log.warning("dashboard: rejected cross-origin POST %s from Origin=%s",
-                        self.path, self.headers.get("Origin"))
-            return
+        if not self._host_allowed():
+            return self._deny(421, "host rejected")
+        if not self._origin_allowed():
+            return self._deny(403, "origin rejected")
+        if not self._authenticated():
+            return self._deny(401, "authentication required")
         return self._do_post_inner()
 
     def _do_post_inner(self):

@@ -174,10 +174,15 @@ def era_fills(default_era):
 def flip(pair, sess, setup_id, status, dry):
     if dry:
         return {"ok": True, "dry_run": True}
+    import os as _os
+    headers = {"Content-Type": "application/json"}
+    tok = _os.environ.get("DASHBOARD_TOKEN", "")
+    if tok:
+        headers["X-Scrooge-Token"] = tok
     req = urllib.request.Request(API, method="POST",
         data=json.dumps({"pair": pair, "session": sess,
                          "setup_id": setup_id, "status": status}).encode(),
-        headers={"Content-Type": "application/json"})
+        headers=headers)
     return json.loads(urllib.request.urlopen(req, timeout=15).read())
 
 

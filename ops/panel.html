@@ -1066,6 +1066,27 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 function fmt(v,d=2){return v==null?'—':Number(v).toFixed(d)}
 
+/* ── Dashboard token (review round 2) ─────────────────────────────────────
+   If the server runs with DASHBOARD_TOKEN set, every API call must carry it.
+   Stored in sessionStorage ONLY (cleared when the tab closes), prompted on
+   first 401, never logged, never echoed into the DOM. */
+const _rawFetch = window.fetch.bind(window);
+window.fetch = async function(url, options = {}){
+  const headers = new Headers(options.headers || {});
+  const tok = sessionStorage.getItem('scrooge.dashboard.token');
+  if (tok) headers.set('X-Scrooge-Token', tok);
+  let r = await _rawFetch(url, {...options, headers});
+  if (r.status === 401){
+    const t = prompt('Dashboard access token');
+    if (t){
+      sessionStorage.setItem('scrooge.dashboard.token', t);
+      headers.set('X-Scrooge-Token', t);
+      r = await _rawFetch(url, {...options, headers});
+    }
+  }
+  return r;
+};
+
 /* ── Shadowboard ───────────────────────────────────────────────────────── */
 async function pollShadowboard(){
   try{
