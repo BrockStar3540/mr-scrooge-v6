@@ -626,6 +626,24 @@ Brock docket because they touch book governance:
   review, 2026-07-27: trial-fairness stamping (every setup, every cycle), validator
   sync + test enforcement, same-origin dashboard writes, fail-closed runtime controls.
 
+- **D-7 — Statistics v2 + shadow execution truth (external review round 2; QUEUED —
+  promotions gated off until it ships).** The full spec lives in docs/REVIEW_R2_PLAN.md
+  (the reviewer's implementation plan, adopted). Work package: day/session-block
+  bootstrap inference (gap-weighted n_eff demoted to a display diagnostic);
+  Benjamini–Hochberg FDR across each run's candidate docket + sequential-peeking
+  guards (re-test only on new independent blocks, weekly promotion cadence); ONE
+  shared current-era evidence engine + promotion predicate for governor AND
+  Shadowboard (trophy == predicate, current-era vs lifetime split); versioned
+  structured TRIALSTAMPs carrying the stamped executable entry; bid/ask candle
+  scoring from the stamped entry; setup-specific exit-geometry simulation with
+  worst-case ambiguous-bar handling; metric-version isolation + METRIC-ERA-RESET
+  migration. SHIPPED from the same review, 2026-07-28: path-keyed LKG + randomized
+  CI (4/5 seeds failed before), live hot-loader schema enforcement with
+  retain-last-valid, order-finality quarantine (HTTPError-order bug, PENDING/404
+  never = absent, empty parent fills rejected), full dashboard security model
+  (host allowlist, token auth, OANDA host allowlist token-exfil fix), per_test_z
+  honesty + allow_promotions gate.
+
 Adopted immediately (same triage, no governance impact): the Shadowboard now sorts by
 **LCB = avg − 1.645·sd/√n** (95% one-sided lower bound on avg net/ep) instead of raw
 avg — small-n glamour rows sink below proven ones, n<2 shows "—" and sorts last. The

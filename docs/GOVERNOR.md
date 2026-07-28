@@ -49,14 +49,18 @@ Shadowboard via `core/trial_stats.py`, knobs in `config/governor_config.json`):
   independent observations. Each episode contributes min(1, gap/240min) to an
   effective sample size used in the confidence bound (raw episode count still
   gates the bar's n ≥ 20).
-- **Deflated confidence.** With ~150 hypotheses under daily examination
-  (`data/hypothesis_registry.json` — every setup ever tried, with its config
-  hashes), a 95% bound per test is a false-discovery machine. The promotion
-  bound uses `z_promote` (default **2.33** ≈ 99% one-sided) — partial
-  deflation chosen over full Šidák (z≈3.7 at M=150, which would freeze
-  promotion at reachable sample sizes); the registry count is printed every
-  run so the knob can be tightened on evidence. See Bailey & López de Prado
-  (Probability of Backtest Overfitting / Deflated Sharpe Ratio).
+- **A stricter per-test bound — honestly labeled.** The promotion bound uses
+  `per_test_z` (default **2.33** ≈ 99% one-sided). Review round 2 corrected
+  our language: this is a per-test bound, **not** a multiple-testing
+  correction and **not** the Deflated Sharpe Ratio. Real cross-docket control
+  (day/session-block bootstrap p-values + Benjamini–Hochberg FDR, a shared
+  evidence engine, and setup-specific shadow-exit simulation) is the D-7
+  program — **and until D-7 ships, `allow_promotions` is `false`**: the
+  governor logs bar-met setups as PROMOTE-GATED instead of flipping them,
+  while demotions (risk reduction) continue daily. The hypothesis registry
+  (`data/hypothesis_registry.json`, M printed every run) is the future FDR
+  denominator. See Bailey & López de Prado (PBO / Deflated Sharpe), and
+  docs/REVIEW_R2_PLAN.md for the full D-7 spec.
 
 **Era clocks got stricter too:** any change to a setup's *mechanics*
 (conditions, exit, side, sizing, horizon — prose excluded) resets its

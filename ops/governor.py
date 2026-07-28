@@ -43,11 +43,21 @@ API = "http://127.0.0.1:8084/api/cell/status"
 
 DEFAULT_CFG = {
     "enabled": True,
+    # Review round 2: promotions are GATED OFF until the shared evidence
+    # engine + setup-specific shadow-exit simulation (D-7) are deployed and
+    # verified — the reviewer's own migration guidance. Demotions (risk
+    # reduction) continue daily.
+    "allow_promotions": False,
+    "allow_demotions": True,
     "bar_n": 20, "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,
     "fills_n": 5, "fills_avg_max": 0.0,
     "max_promotions": 2, "max_demotions": 4,
-    "z_promote": 2.33, "slippage_pips": 0.5,
+    # per_test_z: a PER-TEST 99% one-sided bound. It is NOT a multiple-testing
+    # correction and NOT the Deflated Sharpe Ratio (we mislabeled it for a
+    # day; review round 2 called it out). Real FDR control lands with D-7.
+    "per_test_z": 2.33,
+    "slippage_pips": 0.5,
     "default_era_start": "2026-07-19T00:00:00+00:00",
 }
 
@@ -133,7 +143,7 @@ def era_stats(era_start_by_key, default_era, book_map, gov_cfg):
         agg.setdefault(key, []).append((ep["t"], ep["scores"]["net240"],
                                         ep.get("spread")))
     out = {}
-    z = float(gov_cfg.get("z_promote", 2.33))
+    z = float(gov_cfg.get("per_test_z", gov_cfg.get("z_promote", 2.33)))
     slip = float(gov_cfg.get("slippage_pips", 0.5))
     cutoff7 = datetime.now(timezone.utc).timestamp() - 7 * 86400
     for key, rows in agg.items():
@@ -235,7 +245,8 @@ def main():
         REGISTRY.write_text(json.dumps(reg, indent=1))
     m_live = sum(1 for m in bmap.values() if m["status"] in ("ACTIVE", "SHADOW"))
     print(f"governor: hypothesis registry M_ever={len(reg)} M_live={m_live} "
-          f"z_promote={c.get('z_promote', 2.33)}")
+          f"per_test_z={c.get('per_test_z', 2.33)} "
+          f"promotions={'ON' if c.get('allow_promotions', True) else 'GATED-OFF (D-7)'}")
     stats = era_stats(eras, c["default_era_start"], bmap, c)
     fills = era_fills(c["default_era_start"])
     now = datetime.now(timezone.utc).isoformat()
@@ -265,6 +276,19 @@ def main():
     demotions.sort(key=lambda x: (x[1]["avg"] if x[1] else 0))
     promotions = promotions[:c["max_promotions"]]
     demotions = demotions[:c["max_demotions"]]
+    if not c.get("allow_promotions", True) and promotions:
+        print(f"governor: {len(promotions)} setup(s) meet the bar but promotions "
+              f"are GATED OFF pending D-7 (shared evidence engine + shadow-exit "
+              f"simulation) — logged, not flipped")
+        with open(LEDGER, "a") as led:
+            for (pair, sess, sid), st_, f_ in promotions:
+                led.write(json.dumps({"t": now, "action": "PROMOTE-GATED",
+                                      "pair": pair, "session": sess, "setup": sid,
+                                      "why": "allow_promotions=false (D-7 pending)",
+                                      "dry_run": args.dry_run}) + "\n")
+        promotions = []
+    if not c.get("allow_demotions", True):
+        demotions = []
 
     if not promotions and not demotions:
         print(f"governor: no setups due ({len(stats)} era-scored, {len(bmap)} in book)")
