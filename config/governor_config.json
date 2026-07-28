@@ -11,6 +11,6 @@
   "max_demotions": 4,
   "default_era_start": "2026-07-19T00:00:00+00:00",
   "per_test_z": 2.33,
-  "allow_promotions": false,
+  "allow_promotions": true,
   "allow_demotions": true
 }

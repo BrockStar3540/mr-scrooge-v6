@@ -55,9 +55,10 @@ Shadowboard via `core/trial_stats.py`, knobs in `config/governor_config.json`):
   correction and **not** the Deflated Sharpe Ratio. Real cross-docket control
   (day/session-block bootstrap p-values + Benjamini–Hochberg FDR, a shared
   evidence engine, and setup-specific shadow-exit simulation) is the D-7
-  program — **and until D-7 ships, `allow_promotions` is `false`**: the
-  governor logs bar-met setups as PROMOTE-GATED instead of flipping them,
-  while demotions (risk reduction) continue daily. The hypothesis registry
+  program. The reviewer recommended gating promotions off until D-7 ships;
+  the operator ruled promotions **ON** (2026-07-28) under the already-strict
+  bar — `allow_promotions` remains a one-edit kill switch, and demotions
+  run daily regardless. The hypothesis registry
   (`data/hypothesis_registry.json`, M printed every run) is the future FDR
   denominator. See Bailey & López de Prado (PBO / Deflated Sharpe), and
   docs/REVIEW_R2_PLAN.md for the full D-7 spec.

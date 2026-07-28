@@ -43,11 +43,13 @@ API = "http://127.0.0.1:8084/api/cell/status"
 
 DEFAULT_CFG = {
     "enabled": True,
-    # Review round 2: promotions are GATED OFF until the shared evidence
-    # engine + setup-specific shadow-exit simulation (D-7) are deployed and
-    # verified — the reviewer's own migration guidance. Demotions (risk
-    # reduction) continue daily.
-    "allow_promotions": False,
+    # Promotions ON by operator ruling (Brock, 2026-07-28), overriding the
+    # review's interim gate: the bar is already strict (net-of-cost, n>=20,
+    # per_test_z=2.33 LCB on overlap-adjusted n_eff, 7d guard, 2/day rail),
+    # and the autonomy loop is the project's thesis. D-7 (block bootstrap,
+    # BH-FDR, shared evidence engine, exit simulation) upgrades the math
+    # when it ships; the switch remains one edit away.
+    "allow_promotions": True,
     "allow_demotions": True,
     "bar_n": 20, "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,

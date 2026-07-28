@@ -626,8 +626,9 @@ Brock docket because they touch book governance:
   review, 2026-07-27: trial-fairness stamping (every setup, every cycle), validator
   sync + test enforcement, same-origin dashboard writes, fail-closed runtime controls.
 
-- **D-7 — Statistics v2 + shadow execution truth (external review round 2; QUEUED —
-  promotions gated off until it ships).** The full spec lives in docs/REVIEW_R2_PLAN.md
+- **D-7 — Statistics v2 + shadow execution truth (external review round 2; QUEUED).
+  Reviewer recommended gating promotions until it ships; operator ruled promotions ON
+  2026-07-28 under the strict per-test bar (allow_promotions stays a one-edit switch).** The full spec lives in docs/REVIEW_R2_PLAN.md
   (the reviewer's implementation plan, adopted). Work package: day/session-block
   bootstrap inference (gap-weighted n_eff demoted to a display diagnostic);
   Benjamini–Hochberg FDR across each run's candidate docket + sequential-peeking
