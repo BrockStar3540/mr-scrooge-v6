@@ -4,6 +4,59 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.6.1] — 2026-07-28 — "Honest to the Pip"
+
+D-7 shipped whole: the statistics-v2 + shadow-execution-truth program from external review
+round 2 (spec: docs/REVIEW_R2_PLAN.md). Shadow trials are now measured the way live trades
+are paid, and a dashboard trophy is *computed by* the governor's promotion predicate — the
+two can never disagree.
+
+### Added
+- **TRIALSTAMP v2 events** (`core/trial_events.py`): one structured JSON stamp per
+  qualifying setup carrying bid/ask, the EXECUTABLE entry (ask long / bid short), spread,
+  horizon, the setup's exit geometry, and a mechanics hash. Legacy CELLSHADOW lines still
+  emit for old consumers.
+- **Shadow exit simulation** (`core/shadow_execution.py`): each shadow episode is scored by
+  replaying the setup's OWN exit — the live ratchet's floor-step lock (cadence-gated) or
+  bracket TP/SL/timeout — over executable bid/ask candles from the stamped entry.
+  Intrabar ambiguity resolves worst-case (stop first) and is flagged.
+- **One shared evidence engine** (`core/trial_evidence.py`): day/session **block
+  bootstrap** (deterministic seeds — identical evidence yields identical bounds),
+  **Benjamini–Hochberg FDR** across the whole candidate docket, and a single
+  `promotion_predicate` with explicit failure codes (RAW_N / INDEPENDENT_DAYS / AVG /
+  LCB / RECENT / FDR), consumed by the governor AND the Shadowboard trophy.
+- **Sequential-peeking guard**: a setup that failed the bar is re-tested only after at
+  least one NEW independent day-block — daily re-rolls of unchanged evidence can't fish
+  over the line.
+- Board rows expose per-row `era` evidence, `n_v2`, and ambiguous-bar counts; trophy/warn
+  chips carry the full evidence tooltip.
+
+### Changed
+- **Promotion standard** (governor + trophy, identically): raw n ≥ 20 executable-exit-v2
+  episodes · ≥ 10 independent day/session blocks · avg ≥ +2.0p net · block-bootstrap
+  LCB > 0 · 7-day guard · BH-FDR q ≤ 0.05. New knobs in `config/governor_config.json`
+  (`min_raw_episodes`, `min_independent_days`, `bootstrap_reps`, `bootstrap_confidence`,
+  `fdr_q`).
+- **Version-aware costs** (`core.trial_stats.episode_net`): v2 episodes pay slippage only —
+  the spread is already inside their executable geometry; legacy episodes keep paying
+  stamped-spread + slippage. No double-charging, no free rides.
+- **METRIC-ERA-RESET**: ledgered for all 146 live setups — legacy-mid-v1 evidence measured
+  a different (frictionless) quantity and does not carry over. Every trophy restarts from
+  zero under the honest metric; broker-fills demotion keeps guarding the ACTIVE book daily.
+- README, GOVERNOR.md, and RESEARCH_PROGRAM.md (D-7 → SHIPPED) track the new standard.
+
+### Fixed
+- **Remote dashboard access after the R2-4 hardening**: the Host allowlist knew only
+  loopback names, so Tailscale-serve / SSH-tunnel hostnames got 421s. Documented
+  `DASHBOARD_ALLOWED_HOSTS` (docs/DASHBOARD.md) and allowlisted the operator's access
+  names via a systemd drop-in; rebinding protection unchanged (unknown hosts still 421).
+
+### Tests
+- Suite 223 → **268** across randomized orders: simulator geometry (trail-out at the exact
+  lock, worst-case ambiguity, short symmetry, brackets), stamp fold semantics
+  (no double-count, no late re-anchor, idempotence), version-aware costs, bootstrap
+  determinism, BH known values, every predicate failure code, era clocks end-to-end.
+
 ## [6.6.0] — 2026-07-28 — "The Review"
 
 An external code review found six real defects — and every one is now closed. This release

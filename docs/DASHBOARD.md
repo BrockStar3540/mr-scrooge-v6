@@ -165,3 +165,24 @@ credentials load at engine init, **a restart is required for a mode/credential
 change to take effect** — the UI says so and does not pretend it is live
 instantly. Defence in depth: even if the local file says `mode:"live"`, the
 broker refuses to resolve live creds unless `SCROOGE_ALLOW_LIVE=1`.
+
+## Remote access & the Host allowlist
+
+The dashboard's security model (review round 2) rejects any request whose
+`Host` header is not on the allowlist — this is what defeats DNS-rebinding.
+On a loopback bind the loopback names (`localhost:PORT`, `127.0.0.1:PORT`,
+`[::1]:PORT`) are always allowed; **any other name you reach it through must
+be declared**, or every API call returns 421 and the panel loads but
+"does nothing":
+
+```bash
+# comma-separated host:port values, exactly as the browser sends them
+DASHBOARD_ALLOWED_HOSTS=my-box.tailnet-name.ts.net:8084,localhost:18084
+```
+
+Typical names to declare: a Tailscale-serve hostname, a Tailscale IP, or the
+local end of an SSH tunnel (`localhost:18084` for
+`ssh -L 18084:127.0.0.1:8084 …`). Set it in the service environment (a
+systemd drop-in works well). Binding to a non-loopback address additionally
+requires `DASHBOARD_TOKEN` and `DASHBOARD_ALLOW_REMOTE=1`, otherwise the
+server downgrades to loopback.
