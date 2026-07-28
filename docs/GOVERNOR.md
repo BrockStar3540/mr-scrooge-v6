@@ -26,7 +26,7 @@ never governs capital.
 | Switch | Fires when |
 |---|---|
 | **PROMOTE** SHADOW → ACTIVE | the full predicate (`core/trial_evidence.promotion_predicate`): raw n ≥ **20** v2 episodes **AND** ≥ **10 independent day/session blocks** **AND** average ≥ **+2.0 pips/episode net** **AND** the day-block **bootstrap** lower confidence bound > **0** **AND** the last-7-days average ≥ 0 (when it has ≥ 5 episodes) **AND** Benjamini–Hochberg **q ≤ 0.05** across the run's whole candidate docket |
-| **DEMOTE** ACTIVE → SHADOW | era v2 n ≥ 20 with average < +2.0 (**the bar is lost on stamps**), **OR** era **broker fills** n ≥ 5 with a negative average (**fills convict faster than stamps**) |
+| **DEMOTE** ACTIVE → SHADOW | **THE FAMILY RULE** (2026-07-28): the parent setup + the poppers its grid fired are ONE unit in **broker net pips** — family n ≥ 5 at **≤ −60p** (one popper SL) → demoted **and the cell's poppers switched off**; a family at **≥ +60p defends the seat** (broker green outranks the stamp simulator). Without family evidence: era v2 n ≥ 20 with average < +2.0 (**the bar is lost on stamps**) |
 
 Why these numbers: the measured retail execution toll on majors is ~0.4–0.5 pips per round
 trip, and six of seven edge families this program falsified died at exactly that wall — so
@@ -36,10 +36,15 @@ average starts to mean something; the **LCB > 0** requirement stops a lucky low-
 streak from sneaking over the bar; and the **7-day check** stops a decaying setup from being
 promoted on the strength of its own past.
 
-Demotion is deliberately double-tracked: shadow stamps measure the *entry's* forward path,
-but **broker-verified fills** (via `research/tools/broker_setup_audit.py`) include spread,
-slippage, and the live exit — and they convict faster. A setup that is net-negative on ≥ 5
-real fills loses its seat even if its stamp tape still looks acceptable.
+Demotion runs on **family accounting** (Brock, 2026-07-28: "net loss is the key"). The
+7/16→7/28 forward test showed per-leg views mislead in both directions: one family's parents
+looked red (−$74) inside a +$718 family, while the book's one true loser hid a −$858 family
+behind a 2-trade parent leg — invisible to a parents-only fills rule. So every popper fill now
+carries its parent's setup id (`psu` in client extensions; older fills join via the grid
+anchor = parent entry price), `research/tools/broker_setup_audit.py` aggregates the
+**families** view, and the governor convicts or defends on the family's era net pips —
+spread, slippage, manual closes and the live exit all included, because it IS the broker
+record. Stamps still decide promotion and still demote setups with no family record.
 
 ## The statistics (D-6 → D-7, 2026-07-28)
 
@@ -131,7 +136,9 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | `bootstrap_reps` / `bootstrap_confidence` | `10000` / `0.95` | block bootstrap settings |
 | `fdr_q` | `0.05` | Benjamini–Hochberg q-value ceiling across the docket |
 | `recent_n` / `recent_min` | `5` / `0.0` | the 7-day guard |
-| `fills_n` / `fills_avg_max` | `5` / `0.0` | broker-fills demotion trigger |
+| `family_min_trades` | `5` | minimum era family trades (parent + poppers) to convict or defend |
+| `family_demote_pips` | `-60.0` | family era net pips at/below this → demote + poppers off |
+| `family_defend_pips` | `60.0` | family era net pips at/above this → seat safe from bar_lost |
 | `max_promotions` / `max_demotions` | `2` / `4` | per-run rails |
 | `slippage_pips` | `0.5` | slippage haircut per episode |
 | `per_test_z` | `2.33` | legacy-display LCB only — **not** a promotion input since D-7 |

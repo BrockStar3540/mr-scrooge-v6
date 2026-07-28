@@ -4,6 +4,33 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.7.0] — 2026-07-28 — "The Family Rule"
+
+Demotion re-grounded in broker truth at the FAMILY level (Brock: "net loss is the key").
+The 7/16→7/28 forward test showed per-leg views mislead both ways: kc_up_long_lean's
+parents were red (−$74) inside a +$718 family, while rvol_low_240's 2-trade parent leg hid
+a −$858 family — the book's single loss driver, invisible to the old cell_v1-only fills
+rule (poppers were excluded from demotion evidence entirely).
+
+### Added
+- **Popper self-attribution**: every popper order's client-extension comment now carries
+  `psu` — the parent setup id that armed its grid (`modules/management/party_package.py`).
+  Recovery adopts it; comments stay within OANDA's 128-char cap.
+- **Families view** in `research/tools/broker_setup_audit.py` (`"families"` in `--json`,
+  FAMILIES table in text): parent + its poppers as one economic unit, per (instrument,
+  parent setup) — pre-psu fills join via grid anchor ≈ parent entry (≤30p, direction-matched).
+- **THE FAMILY RULE** in `ops/governor.py` (`active_verdict`, unit-tested): family era
+  net pips ≤ **−60p** with n ≥ 5 → DEMOTE **and the cell's popper switch goes off with the
+  seat** (`/api/pp/toggle`; the fire gate re-checks per-cell state, so armed grids stop);
+  family ≥ **+60p** → the seat is DEFENDED — bar_lost (worst-case stamp simulation) cannot
+  demote a family that is paying rent on the broker. Family evidence is era-clocked per
+  setup via per-trade open times, so a mechanics change is never convicted on old trades.
+- Config: `family_min_trades` (5), `family_demote_pips` (−60), `family_defend_pips` (+60);
+  `fills_n`/`fills_avg_max` retired with the parents-only rule.
+- 15 regression tests (`tests/test_family_ledger.py`): psu stamping/truncation/recovery,
+  family attribution (psu + anchor join, direction + distance guards), era re-clocking,
+  and the demote/defend verdict matrix. Suite 268 → 283.
+
 ## [6.6.1] — 2026-07-28 — "Honest to the Pip"
 
 D-7 shipped whole: the statistics-v2 + shadow-execution-truth program from external review

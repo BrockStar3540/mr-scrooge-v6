@@ -10,6 +10,14 @@ trades OPENED inside the era window — broker fills, not journal intent
 Trades opened before the era anchor are excluded (old-gear trades; counted in
 the exclusions line). Open trades are listed separately as exposure, unrealized.
 
+FAMILIES (2026-07-28): a parent and the poppers its grid fired are ONE economic
+unit — the 7/16→7/28 forward test showed per-leg views mislead in both
+directions (kc_up_long_lean parents red −$74 but family +$718; rvol_low_240
+parents −$130 hiding a −$858 family). The "families" output aggregates
+parent+popper fills per (instrument, family setup): poppers attribute via the
+stamped "psu" (2026-07-28+) or the grid-anchor→parent-entry price join for
+older fills. The governor's net-pips demote/defend rule reads this block.
+
 Usage: python3 research/tools/broker_setup_audit.py [--since 2026-07-19T00:00:00Z] [--json]
 """
 from __future__ import annotations
@@ -17,6 +25,30 @@ import argparse, json, os, sys, urllib.request
 from collections import defaultdict
 
 DEFAULT_SINCE = "2026-07-19T00:00:00Z"   # engage 8.5 / lock 6 gear era
+PP_ANC_JOIN_PIPS = 30.0   # max |grid anchor − parent open| for the backfill join
+
+
+def family_setup(op: dict, parent_opens: list) -> str:
+    """The FAMILY a fill belongs to. Parents (tag=cell_v1) are their own setup;
+    poppers (tag=pp_v1) belong to the parent setup that armed their grid —
+    via the stamped "psu", or for pre-stamp fills the grid anchor joined to
+    the nearest same-instrument/direction parent open (the anchor IS the
+    parent's entry price). Returns "?" when a popper can't be attributed."""
+    if op["tag"] != "pp_v1":
+        return op["su"]
+    if op.get("psu"):
+        return op["psu"]
+    anc = op.get("anc")
+    if not isinstance(anc, (int, float)):
+        return "?"
+    best, bestd = None, PP_ANC_JOIN_PIPS
+    for p in parent_opens:
+        if p["instrument"] != op["instrument"] or p["dir"] != op["dir"]:
+            continue
+        d = abs(p["price"] - anc) / _pip(op["instrument"])
+        if d <= bestd:
+            best, bestd = p["su"], d
+    return best or "?"
 
 
 def _secrets():
@@ -60,11 +92,11 @@ def main():
         if not to:
             continue
         ext = to.get("clientExtensions") or {}
-        su, tag = None, ext.get("tag", "")
+        tag, meta = ext.get("tag", ""), {}
         c = ext.get("comment", "")
         if c.startswith("{"):
             try:
-                su = json.loads(c).get("su")
+                meta = json.loads(c)
             except json.JSONDecodeError:
                 pass
         units = float(to.get("units", 0))
@@ -72,12 +104,17 @@ def main():
             "instrument": t.get("instrument"),
             "dir": 1 if units > 0 else -1,
             "price": float(to.get("price", t.get("price", 0))),
-            "su": su or "?", "tag": tag, "time": t.get("time", "")[:16],
+            "su": meta.get("su") or "?", "tag": tag,
+            "psu": meta.get("psu"), "anc": meta.get("anc"),
+            "time": t.get("time", "")[:16],
         }
 
     # closes: join tradesClosed / tradeReduced back to opens
     groups = defaultdict(lambda: {"n": 0, "greens": 0, "usd": 0.0, "pips": 0.0,
                                   "trades": []})
+    fams = defaultdict(lambda: {"n": 0, "greens": 0, "usd": 0.0, "pips": 0.0,
+                                "n_parents": 0, "n_poppers": 0, "trades": []})
+    parent_opens = [o for o in opens.values() if o["tag"] == "cell_v1"]
     excluded = 0
     for t in txns:
         if t.get("type") != "ORDER_FILL":
@@ -100,8 +137,21 @@ def main():
             g["greens"] += 1 if pl > 0 else 0
             g["usd"] += pl
             g["pips"] += pips
-            g["trades"].append({"id": tid, "usd": round(pl, 2),
-                                "pips": round(pips, 1), "t": op["time"]})
+            trade = {"id": tid, "usd": round(pl, 2),
+                     "pips": round(pips, 1), "t": op["time"]}
+            g["trades"].append(trade)
+            # family view: parents + their poppers as one economic unit
+            if op["tag"] in ("cell_v1", "pp_v1"):
+                fam = family_setup(op, parent_opens)
+                if fam != "?":
+                    fg = fams[(op["instrument"], fam)]
+                    fg["n"] += 1
+                    fg["greens"] += 1 if pl > 0 else 0
+                    fg["usd"] += pl
+                    fg["pips"] += pips
+                    src = "popper" if op["tag"] == "pp_v1" else "parent"
+                    fg["n_poppers" if src == "popper" else "n_parents"] += 1
+                    fg["trades"].append(dict(trade, src=src))
 
     # open exposure by setup
     open_rows = []
@@ -130,8 +180,20 @@ def main():
                      "trades": g["trades"]})
     rows.sort(key=lambda r: r["usd"])
 
+    fam_rows = []
+    for (instr, fam), g in fams.items():
+        fam_rows.append({"instrument": instr, "setup": fam, "n": g["n"],
+                         "greens": g["greens"], "usd": round(g["usd"], 2),
+                         "pips": round(g["pips"], 1),
+                         "avg_pips": round(g["pips"] / g["n"], 2),
+                         "n_parents": g["n_parents"],
+                         "n_poppers": g["n_poppers"],
+                         "trades": g["trades"]})
+    fam_rows.sort(key=lambda r: r["pips"])
+
     if args.json:
         print(json.dumps({"since": args.since, "rows": rows,
+                          "families": fam_rows,
                           "excluded_pre_era_closes": excluded,
                           "open": open_rows}))
         return
@@ -144,6 +206,15 @@ def main():
     for r in rows:
         gr = f"{r['greens']}/{r['n'] - r['greens']}"
         print(f"{r['instrument']:<10} {r['setup']:<34} {r['tag']:<8} {r['n']:>3}"
+              f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {r['avg_pips']:>7.2f}")
+    print("\nFAMILIES (parent setup + its poppers, one economic unit):")
+    print(f"{'instrument':<10} {'family setup':<34} {'n':>3} {'P/pp':>7} {'G/R':>6}"
+          f" {'USD':>10} {'pips':>8} {'avg p':>7}")
+    print("-" * 92)
+    for r in fam_rows:
+        gr = f"{r['greens']}/{r['n'] - r['greens']}"
+        pp = f"{r['n_parents']}/{r['n_poppers']}"
+        print(f"{r['instrument']:<10} {r['setup']:<34} {r['n']:>3} {pp:>7}"
               f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {r['avg_pips']:>7.2f}")
     if open_rows:
         print("\nOPEN exposure (unrealized, not scored):")

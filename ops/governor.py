@@ -12,8 +12,17 @@ behind the dashboard trophy — and counts executable-exit-v2 episodes only):
                               raw n >= 20 · independent day/session blocks
                               >= 10 · net avg >= +2.0p · block-bootstrap
                               LCB > 0 · 7d recent guard · BH-FDR q <= 0.05
-  DEMOTE   ACTIVE -> SHADOW   when era v2 n >= 20 with net avg < +2.0 (bar
-                              lost)  OR  era broker fills n >= 5, avg < 0
+  DEMOTE   ACTIVE -> SHADOW   FAMILY RULE (Brock, 2026-07-28 — "net loss is
+                              the key"): a parent setup and the poppers its
+                              grid fired are ONE unit tracked in broker
+                              net pips. Family n >= 5 with era net pips <=
+                              -60 (one popper SL) -> demoted, and the cell's
+                              poppers are switched off with it. A family
+                              net pips >= +60 DEFENDS its seat: real broker
+                              green outranks the worst-case stamp simulator,
+                              so bar_lost cannot demote it. Only unfamilied
+                              actives fall back to bar_lost (era v2 n >= 20,
+                              net avg < +2.0).
 SEQUENTIAL-PEEKING GUARD: a setup that failed the bar is not re-tested until
 it has at least one NEW independent block — daily re-rolls of the same
 evidence cannot fish their way over the line.
@@ -44,6 +53,7 @@ REGISTRY = REPO / "data" / "hypothesis_registry.json"
 CELLS = REPO / "config" / "cells"
 CFG_F = REPO / "config" / "governor_config.json"
 API = "http://127.0.0.1:8084/api/cell/status"
+PP_API = "http://127.0.0.1:8084/api/pp/toggle"
 
 DEFAULT_CFG = {
     "enabled": True,
@@ -62,7 +72,11 @@ DEFAULT_CFG = {
     "recent_n": 5, "recent_min": 0.0,
     "bootstrap_reps": 10000, "bootstrap_confidence": 0.95,
     "fdr_q": 0.05,
-    "fills_n": 5, "fills_avg_max": 0.0,
+    # FAMILY RULE (2026-07-28): parent + its poppers, broker net pips.
+    # -60p = one full popper SL; +60p of realized family green = seat safe.
+    "family_min_trades": 5,
+    "family_demote_pips": -60.0,
+    "family_defend_pips": 60.0,
     "max_promotions": 2, "max_demotions": 4,
     # per_test_z survives for the board's legacy-display LCB only; the
     # PROMOTION denominator is the day/session block bootstrap + BH-FDR (D-7).
@@ -141,23 +155,54 @@ def evidence(book_map, gov_state, gov_cfg):
                                 aliases=_aliases())
 
 
-def era_fills(default_era):
-    """(pair, setup_id) -> {n, avg_pips} from broker fills since default era.
+def family_fills(default_era):
+    """(pair, family_setup) -> family row from broker fills since default era:
+    parents + their poppers as ONE unit (broker_setup_audit "families" block).
+    Rows carry per-trade open times so callers can re-clock to a setup's era.
     (Fills carry setup id but not session; the rule convicts per pair+setup.)"""
     try:
         out = subprocess.run(
             [sys.executable, str(REPO / "research" / "tools" / "broker_setup_audit.py"),
              "--since", default_era.replace("+00:00", "Z"), "--json"],
             capture_output=True, text=True, timeout=180)
-        rows = json.loads(out.stdout)["rows"]
+        rows = json.loads(out.stdout).get("families", [])
     except Exception as exc:
         print(f"governor: fills audit unavailable ({exc}) — stamps-only run", file=sys.stderr)
         return {}
-    return {(r["instrument"], r["setup"]): {"n": r["n"], "avg": r["avg_pips"]}
-            for r in rows if r.get("tag") == "cell_v1"}
+    return {(r["instrument"], r["setup"]): r for r in rows}
 
 
-def flip(pair, sess, setup_id, status, dry):
+def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
+    """FAMILY RULE for one ACTIVE setup -> (demote: bool, reason: str).
+    f = era-clocked family view {n, net_pips, net_usd} or None; e = stamp
+    evidence (SetupEvidence) or None. Broker family net pips outranks the
+    stamp simulator in BOTH directions: deep red convicts, solid green
+    defends; bar_lost applies only when the family doesn't defend."""
+    fam_min = int(c.get("family_min_trades", 5))
+    family_red = bool(f and f["n"] >= fam_min
+                      and f["net_pips"] <= float(c["family_demote_pips"]))
+    family_green = bool(f and f["n"] >= fam_min
+                        and f["net_pips"] >= float(c["family_defend_pips"]))
+    bar_lost = bool((not family_green) and e and e.raw_n >= min_raw and (
+        e.net_avg is None or e.net_avg < float(c["bar_avg"])))
+    if family_red:
+        return True, "family_red"
+    if bar_lost:
+        return True, "bar_lost"
+    return False, "family_green" if family_green else "hold"
+
+
+def family_era_view(fam: dict, era_start: str) -> dict:
+    """A family row re-clocked to one setup's era: only trades opened at/after
+    era_start count, so a mechanics change can't be convicted (or defended) on
+    the old config's trades. Times compare as ISO strings (minute precision)."""
+    cut = (era_start or "")[:16]
+    trades = [t for t in fam.get("trades", []) if (t.get("t") or "") >= cut]
+    return {"n": len(trades), "net_pips": round(sum(t["pips"] for t in trades), 1),
+            "net_usd": round(sum(t["usd"] for t in trades), 2)}
+
+
+def _post(url, payload, dry):
     if dry:
         return {"ok": True, "dry_run": True}
     import os as _os
@@ -165,11 +210,24 @@ def flip(pair, sess, setup_id, status, dry):
     tok = _os.environ.get("DASHBOARD_TOKEN", "")
     if tok:
         headers["X-Scrooge-Token"] = tok
-    req = urllib.request.Request(API, method="POST",
-        data=json.dumps({"pair": pair, "session": sess,
-                         "setup_id": setup_id, "status": status}).encode(),
-        headers=headers)
+    req = urllib.request.Request(url, method="POST",
+        data=json.dumps(payload).encode(), headers=headers)
     return json.loads(urllib.request.urlopen(req, timeout=15).read())
+
+
+def flip(pair, sess, setup_id, status, dry):
+    return _post(API, {"pair": pair, "session": sess,
+                       "setup_id": setup_id, "status": status}, dry)
+
+
+def pp_off(pair, sess, setup_id, dry):
+    """Family demotion switches the cell's poppers off with the setup — the
+    grid is the family's loss engine, so it never outlives the seat."""
+    try:
+        return _post(PP_API, {"cell": f"{pair}|{sess}|{setup_id}",
+                              "enabled": False}, dry)
+    except Exception as exc:            # advisory: the demotion itself stands
+        return {"ok": False, "error": str(exc)}
 
 
 def main():
@@ -246,7 +304,7 @@ def main():
             save_state(st)
 
     ev_all = evidence(bmap, st, c)
-    fills = era_fills(c["default_era_start"])
+    fams = family_fills(c["default_era_start"])
     last_eval = st.setdefault("last_eval_blocks", {})
     now = datetime.now(timezone.utc).isoformat()
 
@@ -257,7 +315,9 @@ def main():
         if meta["manual_only"] or meta["status"] not in ("ACTIVE", "SHADOW"):
             continue
         e = ev_all.get(key)
-        f = fills.get((pair, sid))
+        fam_row = fams.get((pair, sid))
+        f = (family_era_view(fam_row, eras.get("|".join(key),
+                             c["default_era_start"])) if fam_row else None)
         if meta["status"] == "SHADOW" and e:
             k = "|".join(key)
             prev_blocks = last_eval.get(k)
@@ -270,16 +330,16 @@ def main():
             else:
                 last_eval[k] = e.independent_days
         elif meta["status"] == "ACTIVE":
-            bar_lost = e and e.raw_n >= min_raw and (
-                e.net_avg is None or e.net_avg < float(c["bar_avg"]))
-            fills_red = f and f["n"] >= c["fills_n"] and f["avg"] < c["fills_avg_max"]
-            if bar_lost or fills_red:
+            # FAMILY RULE — broker net pips of parent + its poppers, era-clocked.
+            demote, _reason = active_verdict(e, f, c, min_raw)
+            if demote:
                 demotions.append((key, e, f))
 
     # strongest evidence first; rails cap the day's changes
     promotions.sort(key=lambda x: -(x[1].block_lcb or 0))
-    demotions.sort(key=lambda x: (x[1].net_avg if x[1] and x[1].net_avg
-                                  is not None else 0))
+    demotions.sort(key=lambda x: (x[2]["net_pips"] if x[2] else
+                                  (x[1].net_avg if x[1] and x[1].net_avg
+                                   is not None else 0)))
     promotions = promotions[:c["max_promotions"]]
     demotions = demotions[:c["max_demotions"]]
     if not c.get("allow_promotions", True) and promotions:
@@ -314,11 +374,15 @@ def main():
                                f"net_avg={e.net_avg:+.2f}p blcb={_l} q={_q} "
                                f"7d={e.recent_avg}({e.recent_n}) [{METRIC_V2}]")
                 if f:
-                    why.append(f"fills n={f['n']} avg={f['avg']:+.2f}p")
+                    why.append(f"family n={f['n']} net={f['net_pips']:+.1f}p "
+                               f"(${f['net_usd']:+.2f}) [broker]")
                 res = flip(pair, sess, sid, new_status, args.dry_run)
                 line = {"t": now, "action": kind, "pair": pair, "session": sess,
                         "setup": sid, "why": "; ".join(why),
                         "dry_run": bool(args.dry_run), "result": res}
+                if kind == "DEMOTE" and res.get("ok"):
+                    # seat lost -> the family's grid loses its fire permit too
+                    line["pp_off"] = pp_off(pair, sess, sid, args.dry_run)
                 led.write(json.dumps(line) + "\n")
                 print(f"GOVERNOR {kind} {pair}/{sess}/{sid}  [{'; '.join(why)}]"
                       f"{'  (dry-run)' if args.dry_run else ''}")

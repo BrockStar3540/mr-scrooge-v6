@@ -135,15 +135,22 @@ def _okey(offset_pips) -> str:
     return "%g" % float(offset_pips)
 
 
-def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float) -> dict:
+def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
+                       parent_setup: str = "") -> dict:
     """OANDA tradeClientExtensions for a popper. tag=pp_v1 routes recovery away
     from the parent adopter; comment carries the gear + grid coordinates.
-    lvl = the marker OFFSET in pips (ladder era, 2026-07-22)."""
-    comment = json.dumps({"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
-                          "tp": cfg["trail_pips"], "lvl": float(offset_pips),
-                          "anc": round(anchor, 5), "su": "pp_v1"},
-                         separators=(",", ":"))
-    return {"tag": "pp_v1", "comment": comment}
+    lvl = the marker OFFSET in pips (ladder era, 2026-07-22).
+    psu = the PARENT setup id (family ledger, 2026-07-28): every popper fill
+    self-attributes to the family that spawned it — the governor's family
+    net-pips demote/defend rule reads it straight off the broker. OANDA caps
+    the comment at 128 chars, so psu is truncated defensively."""
+    fields = {"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
+              "tp": cfg["trail_pips"], "lvl": float(offset_pips),
+              "anc": round(anchor, 5), "su": "pp_v1"}
+    if parent_setup and parent_setup not in ("?", "recovered"):
+        fields["psu"] = parent_setup[:40]
+    return {"tag": "pp_v1",
+            "comment": json.dumps(fields, separators=(",", ":"))}
 
 
 class Grid:
@@ -260,7 +267,8 @@ class PartyPackage:
 
         if pair not in self.grids:
             anchor = float(d.get("anc", entry_price))
-            g = Grid(pair, direction, anchor, entry_time, "recovered")
+            g = Grid(pair, direction, anchor, entry_time,
+                     d.get("psu") or "recovered")
             for off in cfg["marker_pips"]:
                 g.levels[_okey(off)] = {"armed": False, "trade_id": None}
             self.grids[pair] = g
@@ -447,7 +455,8 @@ class PartyPackage:
             trade = self.broker.place_market(
                 pair, g.side, units=units, entry_price=entry_price,
                 sl_pips=float(cfg["sl_pips"]),
-                client_ext=_popper_client_ext(cfg, offset_pips, g.anchor),
+                client_ext=_popper_client_ext(cfg, offset_pips, g.anchor,
+                                              g.parent_setup),
             )
         except Exception as exc:
             log.warning("PP FIRE failed %s marker=-%sp: %s", pair, key, exc)

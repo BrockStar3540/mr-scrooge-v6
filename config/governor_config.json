@@ -5,8 +5,6 @@
  "lcb_min": 0.0,
  "recent_n": 5,
  "recent_min": 0.0,
- "fills_n": 5,
- "fills_avg_max": 0.0,
  "max_promotions": 2,
  "max_demotions": 4,
  "default_era_start": "2026-07-19T00:00:00+00:00",
@@ -17,5 +15,8 @@
  "min_independent_days": 10,
  "bootstrap_reps": 10000,
  "bootstrap_confidence": 0.95,
- "fdr_q": 0.05
+ "fdr_q": 0.05,
+ "family_min_trades": 5,
+ "family_demote_pips": -60.0,
+ "family_defend_pips": 60.0
 }

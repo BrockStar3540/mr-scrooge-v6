@@ -73,10 +73,13 @@ tapes, or contributed — walks the same ladder:
    intrabar), never frictionless mid drift. A setup that fails is re-tested only when it
    has *new* independent evidence. No human in the loop; the dashboard trophy is computed
    by the **same predicate** the governor promotes on — they can never disagree.
-4. **Demotion — fills convict faster than stamps, also automatic.** The governor demotes an
-   ACTIVE setup the day it loses the bar on era v2 stamps (n ≥ 20, avg < +2.0) **or** goes net
-   negative on **broker-verified fills** (n ≥ 5) — audited against the broker, never our own
-   journal. Demoted setups keep stamping as shadows and can re-earn the seat. Every flip
+4. **Demotion — the FAMILY RULE: net loss is the key.** A parent setup and the poppers its
+   grid fired are **one economic unit**, tracked in **broker net pips** (every popper fill
+   carries its parent's setup id). Family n ≥ 5 at **−60p or worse** → demoted, and the
+   cell's poppers are switched off with it; family at **+60p or better defends the seat** —
+   real broker green outranks the worst-case stamp simulator. Only unfamilied actives fall
+   back to the stamp bar (era v2 n ≥ 20, avg < +2.0) — audited against the broker, never
+   our own journal. Demoted setups keep stamping as shadows and can re-earn the seat. Every flip
    restarts that setup's evidence clock: **proof never blends across eras**, and every
    decision is written to a public ledger (`data/governor_ledger.jsonl`). Rails: max 2
    promotions + 4 demotions per day, sides never flipped, `manual_only` respected.
