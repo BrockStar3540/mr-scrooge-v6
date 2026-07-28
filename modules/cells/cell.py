@@ -141,14 +141,22 @@ def _load_pair_config(pair: str) -> Optional[dict]:
     cached = _config_cache.get(pair)
     if cached is not None and cached.mtime == cur_mtime:
         return cached.data
-    if cached is None and _mtime_cache.get(pair) == cur_mtime:
-        # Previously failed to parse; still same file → still broken
-        return None
+    if _mtime_cache.get(pair) == cur_mtime:
+        # This exact file version already failed validation — don't re-parse
+        # every cycle; serve the retained prior valid config (or nothing).
+        return cached.data if cached is not None else None
 
-    # (Re)load
+    # (Re)load — with STRUCTURAL validation and retain-last-valid semantics
+    # (review round 2): a malformed hot edit must neither reach the engine NOR
+    # dark the pair when a previously-valid config exists. First-ever invalid
+    # file -> pair absent (nothing safe to retain).
     try:
         raw = path.read_text(encoding="utf-8")
         data = json.loads(raw)
+        from config.cell_schema import validate_pair_config
+        result = validate_pair_config(data, path)
+        if not result.ok:
+            raise ValueError("schema: " + "; ".join(result.errors[:8]))
         _config_cache[pair] = _LoadedConfig(data=data, mtime=cur_mtime, path=path)
         _mtime_cache[pair]  = cur_mtime
         log.info("cells: loaded config for %s (%d sessions)", pair,
@@ -156,11 +164,17 @@ def _load_pair_config(pair: str) -> Optional[dict]:
         return data
     except (json.JSONDecodeError, ValueError, OSError) as exc:
         _mtime_cache[pair] = cur_mtime   # remember broken mtime so we don't retry every cycle
-        _config_cache[pair] = None
+        prior = _config_cache.get(pair)
         if _should_warn((pair, "parse_error"), _ONE_HOUR):
-            log.warning("cells: malformed config %s: %s — all setups for %s disabled (hourly reminder)",
-                        path.name, exc, pair)
-        return None
+            if prior is not None:
+                log.warning("cells: INVALID config %s: %s — RETAINING the prior "
+                            "valid config (fix the file; hourly reminder)",
+                            path.name, exc, )
+            else:
+                log.warning("cells: malformed config %s: %s — all setups for %s "
+                            "disabled (no prior valid config; hourly reminder)",
+                            path.name, exc, pair)
+        return prior.data if prior is not None else None
 
 
 # ── Condition evaluator ───────────────────────────────────────────────────────
