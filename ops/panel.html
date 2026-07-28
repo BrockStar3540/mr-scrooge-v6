@@ -805,6 +805,10 @@ body.has-ticker{padding-bottom:32px}
       code — the board can never disagree with the 06:35Z run.<br>
       <b>family (broker)</b> = the setup + its poppers, one unit, era net pips on real
       fills; ⏳ = family has open trades, verdict deferred until flat (judge-when-flat).
+      <b>era v2 bar</b> = the five promotion conditions with their live values —
+      n/20 episodes · d/10 day-blocks · avg vs +2.0p · L = block LCB vs 0 · q vs 0.05 —
+      each turns green as it&#39;s met; all green = PROMOTE READY (the 7-day guard is the
+      7d avg column). Shadows promote on this bar; actives are judged by family first.
       Stamp columns: since 2026-07-28 (D-7) new episodes use the <b>executable-exit-v2</b>
       metric (stamped executable entry, bid/ask forward path, the setup&#39;s OWN exit
       simulated worst-case intrabar; only slippage deducted after). Lifetime rows include
@@ -819,7 +823,7 @@ body.has-ticker{padding-bottom:32px}
         <th title="The governor's own call for this row, today: DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING (with the bar conditions still failing) / QUEUED / DEMOTE DUE">verdict</th>
         <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
         <th>eps</th>
-        <th title="lifetime avg − z·sd/√n_eff (display only — capital reads era v2 + family)">LCB</th>
+        <th title="THE BAR — the exact numbers the governor reads, era executable-exit-v2 evidence: n≥20 episodes · ≥10 independent day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB > 0 · BH-FDR q ≤ 0.05 (the 7-day guard is the 7d avg column). Green = condition met; all green = PROMOTE READY. ACTIVE rows are judged by the family column first — this bar applies only when the family can't speak (n<5).">era v2 bar</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
@@ -1153,6 +1157,21 @@ async function pollShadowboard(){
                   'DEMOTE DUE':'pill-fail'};
       const vcell=g?`<span class="pill ${VCLS[g.verdict]||'pill-block'}" title="${g.reason||''}"
         style="font-size:9.5px">${g.verdict}</span>`:'<span class="muted">—</span>';
+      // THE BAR cell: the five promotion conditions with live values —
+      // each element goes green the moment its condition is met.
+      let ecell='<span class="muted" title="no era-v2 episodes scored yet">—</span>';
+      if(x.era){
+        const e=x.era;
+        const el=(txt,ok,tip)=>`<span class="${ok?'pos':'muted'}" title="${tip}"
+          style="font-size:10px">${txt}</span>`;
+        ecell='<span class="mono">'+[
+          el(`n${e.n}/20`, e.n>=20, `era v2 episodes: ${e.n} of the 20 required`),
+          el(`d${e.days}/10`, e.days>=10, `independent day-blocks: ${e.days} of the 10 required`),
+          el(`${e.avg==null?'—':(e.avg>0?'+':'')+e.avg}p`, e.avg!=null&&e.avg>=2, `era net avg/ep: ${e.avg}p vs the +2.0p bar`),
+          el(`L${e.lcb==null?'—':(e.lcb>0?'+':'')+e.lcb}`, e.lcb!=null&&e.lcb>0, `block-bootstrap lower bound: ${e.lcb??'needs ≥2 day-blocks'} — must be > 0`),
+          el(`q${e.q==null?'—':e.q}`, e.q!=null&&e.q<=0.05, `BH-FDR q across the docket: ${e.q??'—'} — must be ≤ 0.05`),
+        ].join(' ')+'</span>';
+      }
       let fcell='<span class="muted">—</span>';
       if(g&&g.family&&(g.family.n||g.family.n_open)){
         const fn=g.family.net_pips, open=g.family.n_open;
@@ -1167,7 +1186,7 @@ async function pollShadowboard(){
         <td>${vcell}</td>
         <td style="font-size:11px">${fcell}</td>
         <td title="raw episodes (overlap-adjusted effective n) · v2 = executable-exit metric episodes">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}${x.n_v2?' <span style="font-size:9px;color:#4aa3ff" title="executable-exit-v2 episodes'+(x.n_ambig?' ('+x.n_ambig+' ambiguous-bar, scored worst-case)':'')+'">v2:'+x.n_v2+'</span>':''}</td>
-        <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
+        <td style="white-space:nowrap">${ecell}</td>
         <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
         <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>
         <td>${x.wr==null?'—':Math.round(x.wr*100)+'%'}</td><td>${x.hit6==null?'—':Math.round(x.hit6*100)+'%'}</td>

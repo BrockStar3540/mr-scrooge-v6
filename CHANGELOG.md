@@ -4,6 +4,16 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.8.1] — 2026-07-28 — "The Bar, Visible"
+
+### Added
+- **era v2 bar column** on the Shadowboard: the five promotion conditions with their live
+  values — n/20 episodes · d/10 day-blocks · avg vs +2.0p · block LCB vs 0 · q vs 0.05 —
+  each element turns green as it is met; all green = PROMOTE READY. The deciding numbers
+  for promotion now sit in a visible column beside the verdict, mirroring how the family
+  column already shows the deciding numbers for demotion. Replaces the lifetime-LCB
+  column (the old sort key, which decided nothing).
+
 ## [6.8.0] — 2026-07-28 — "The Board Explains Itself"
 
 The SHADOW tab now states the whole standard and sorts the whole docket exactly as the
