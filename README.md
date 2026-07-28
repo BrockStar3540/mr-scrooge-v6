@@ -11,7 +11,7 @@
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
 
-![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_practice-cf8e3e) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![release](https://img.shields.io/github/v/release/BrockStar3540/mr-scrooge-v6?color=3fb950&label=release)](https://github.com/BrockStar3540/mr-scrooge-v6/releases) &nbsp; [![governor](https://img.shields.io/badge/bar_governor-autonomous-58a6ff)](docs/GOVERNOR.md) &nbsp; **`forward test · verdict pending`**
+![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_practice-cf8e3e) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![release](https://img.shields.io/github/v/release/BrockStar3540/mr-scrooge-v6?color=3fb950&label=release)](https://github.com/BrockStar3540/mr-scrooge-v6/releases) &nbsp; [![governor](https://img.shields.io/badge/bar_governor-autonomous-58a6ff)](docs/GOVERNOR.md) &nbsp; **[`forward test · verdict at trade #100`](docs/FORWARD_TEST_PROTOCOL.md)**
 
 </div>
 
@@ -167,6 +167,14 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 
 Everything live is a **forward experiment on a practice account**, scored against **broker fills**
 (never our own logs), per configuration, at n≥20 before any verdict — no aggregate blending across eras.
+
+> **📜 The 100-trade protocol (pre-registered 2026-07-28):** the current-config window
+> **ends at its 100th closed trade** — then the full write-up publishes here (starting
+> balance **$16,665.12** broker-verified, ending balance, the whole tape), the practice
+> account closes, and the system goes **live with $2,500 real money** at 15%/trade,
+> 6 trades max — same hourly public livelog, same graph, real fills. The endpoint, the
+> consequences, and the live gearing were all declared *before* the result was known:
+> [docs/FORWARD_TEST_PROTOCOL.md](docs/FORWARD_TEST_PROTOCOL.md).
 
 1. **The wide-stop parent book** — the decisive walk-forward
    [falsified the level](docs/papers/PAPER_h6_walkforward_2026-07-16.md): gross Sharpe 1.26,

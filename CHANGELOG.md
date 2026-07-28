@@ -4,6 +4,26 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.9.0] — 2026-07-28 — "The Hundred-Trade Protocol"
+
+The forward test gets a pre-registered endpoint and a declared consequence — before the
+result is known.
+
+### Added
+- **docs/FORWARD_TEST_PROTOCOL.md**: the current-config window ends at its **100th closed
+  trade** (anchor 2026-07-16 01:11Z, starting balance **$16,665.12** broker-verified).
+  At n=100: freeze practice entries, manage open positions to natural exits (the record
+  ends flat), publish the write-up, close the practice account, and go **live with $2,500
+  real money** — `margin_pct_per_trade` 0.10→0.15, `max_concurrent_trades` 8→6, popper
+  `max_margin_pct_total` 0.8→0.9 (so the total-margin cap can't bind below 6×15%),
+  everything else exactly as tested. The live account publishes the same hourly livelog
+  (trades + equity graph, numbers only) so the record continues in public.
+- **research/tools/forward_test_100.py**: the write-up generator — start/end balance,
+  tape geometry, breakeven-WR vs delivered, per-family attribution, mid-window changes
+  disclosed. One command on the day.
+- **livelog trigger**: the hourly cron raises a one-time flag + operator alert the hour
+  trade #100 closes.
+
 ## [6.8.1] — 2026-07-28 — "The Bar, Visible"
 
 ### Added

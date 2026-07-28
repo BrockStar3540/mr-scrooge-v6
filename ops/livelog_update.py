@@ -144,6 +144,23 @@ try:
 except Exception as e:
     print(f"livelog: trade rebuild failed ({e})", file=sys.stderr); sys.exit(0)
 
+# FORWARD-TEST PROTOCOL (Brock, 2026-07-28): the test ENDS at trade #100 —
+# docs/FORWARD_TEST_PROTOCOL.md. One-time flag + operator alert when the tape
+# reaches n >= 100; the write-up and live cutover follow the protocol.
+_FT_FLAG = LIVELOG / ".ft100_alerted"
+if n_tr >= 100 and not _FT_FLAG.exists():
+    try:
+        _FT_FLAG.write_text(f"{now.isoformat()} n={n_tr}\n")
+        with open("/data/obsidian-vault/wiki/systems/agent-activity-log.md", "a") as _l:
+            _l.write(f"- {now.strftime('%Y-%m-%dT%H:%MZ')} [livelog-cron] 🏁 FORWARD TEST "
+                     f"COMPLETE: trade #{n_tr} closed. Protocol: freeze practice entries, "
+                     f"run research/tools/forward_test_100.py, publish write-up, close "
+                     f"practice, live cutover $2,500 @ 15%/trade x6 max "
+                     f"(docs/FORWARD_TEST_PROTOCOL.md)\n")
+        print(f"livelog: FORWARD TEST COMPLETE - {n_tr} trades (flag raised)")
+    except Exception:
+        pass
+
 # starting balance at anchor, reconstructed & self-consistent (no deposits on this acct)
 start_bal = bal - realized - financing
 tot = realized + upl  # config-to-date: booked greens + open marks
