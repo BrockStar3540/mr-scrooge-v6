@@ -353,6 +353,19 @@ class CellModule:
                 stamp_status,
                 _spread,
             )
+            # D-7: the structured, versioned stamp — carries the EXECUTABLE
+            # entry + the setup's own exit geometry for shadow-execution
+            # scoring. CELLSHADOW stays for legacy consumers.
+            try:
+                from core.trial_events import make_stamp
+                _ts = make_stamp(now=now, pair=self.pair, session=self.session,
+                                 setup=setup, status=stamp_status, view=view)
+                if _ts is not None:
+                    log.info("TRIALSTAMP %s", _ts.to_json())
+            except Exception as _tse:
+                if _should_warn((self.pair, "trialstamp"), _ONE_HOUR):
+                    log.warning("TRIALSTAMP emit failed for %s/%s: %s",
+                                self.pair, setup_id, _tse)
 
             # Capture the FIRST qualifying ACTIVE as the intent — but keep
             # looping so every remaining setup still evaluates and stamps.
