@@ -63,12 +63,18 @@ tapes, or contributed — walks the same ladder:
    as queued ⏳ rows — the whole docket is visible, waiting is a state, not an absence.
 3. **Promotion — the activation bar, flipped automatically.** The **[Bar Governor](docs/GOVERNOR.md)**
    (`ops/governor.py`, daily) promotes a shadow to ACTIVE when its **current-era** evidence
-   clears the bar: **n ≥ 20 episodes, ≥ +2.0 pips/episode, a positive 95% lower confidence
-   bound, and a non-negative last-7-days** — margins chosen because the measured execution
-   toll makes any sub-1p claimed edge indistinguishable from zero. No human in the loop;
-   the dashboard chips (🏆/⚠️) show the same evidence the governor acts on.
+   clears the full predicate: **n ≥ 20 executable-exit episodes across ≥ 10 independent
+   day/session blocks, ≥ +2.0 net pips/episode, a positive day-block bootstrap lower
+   bound, a non-negative last-7-days, and a Benjamini–Hochberg q ≤ 0.05 across the whole
+   candidate docket** — margins chosen because the measured execution toll makes any
+   sub-1p claimed edge indistinguishable from zero, with real multiple-testing control
+   because ~150 hypotheses run at once. Shadow trials are scored on **executable prices**
+   (entry at the stamped ask/bid, the setup's own exit geometry simulated worst-case
+   intrabar), never frictionless mid drift. A setup that fails is re-tested only when it
+   has *new* independent evidence. No human in the loop; the dashboard trophy is computed
+   by the **same predicate** the governor promotes on — they can never disagree.
 4. **Demotion — fills convict faster than stamps, also automatic.** The governor demotes an
-   ACTIVE setup the day it loses the bar on era stamps (n ≥ 20, avg < +2.0) **or** goes net
+   ACTIVE setup the day it loses the bar on era v2 stamps (n ≥ 20, avg < +2.0) **or** goes net
    negative on **broker-verified fills** (n ≥ 5) — audited against the broker, never our own
    journal. Demoted setups keep stamping as shadows and can re-earn the seat. Every flip
    restarts that setup's evidence clock: **proof never blends across eras**, and every
