@@ -63,6 +63,30 @@ be public either way.
 The wider per-trade sizing is a capital-scaling decision, not a strategy change — entries,
 exits, the governor, and the family rule carry over exactly as tested.
 
+## Book continuity at cutover
+
+**The book carries over exactly as it stands — actives stay ACTIVE, shadows stay SHADOW
+until promoted.** Nothing about the account switch re-derives, resets, or re-audits a
+cell's seat:
+
+- **Statuses are files, not account state.** Every seat lives in `config/cells/<PAIR>.json`
+  (version-controlled). Cutover changes sizing (`playmaker_config.json`), the popper margin
+  cap (`pp_config.json`), credentials, and the livelog anchor — it does not touch
+  `config/cells/`. Verification is one command: `git status config/cells/` must be clean
+  before and after the first live start.
+- **No spurious era resets.** A setup's era clock resets only when its own mechanics hash
+  changes (`side · conditions · exit · sizing · horizon_min`, per-setup). The live gearing
+  is account-level, outside every setup's hash — no clocks reset, no evidence is wiped.
+- **Stamp evidence rides through.** Shadow trials are hypothetical episodes on market data,
+  not account fills — the era-v2 samples shadows are accruing toward the promotion bar
+  continue across the switch without interruption.
+- **Family evidence restarts honestly.** The live account starts with zero fills, so
+  family verdicts (demote/defend) are silent until a real live sample exists
+  (`family_min_trades` = 5, judged only when flat). No cell can be convicted or defended
+  on the practice account's money.
+- **The governor remains the only thing that changes a status** — same bar, same rails,
+  same public ledger, before and after the switch.
+
 ## The live record — same glass house
 
 From the first live fill, the **same hourly livelog pipeline** publishes to this repo:
