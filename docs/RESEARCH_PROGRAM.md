@@ -626,9 +626,19 @@ Brock docket because they touch book governance:
   review, 2026-07-27: trial-fairness stamping (every setup, every cycle), validator
   sync + test enforcement, same-origin dashboard writes, fail-closed runtime controls.
 
-- **D-7 — Statistics v2 + shadow execution truth (external review round 2; QUEUED).
-  Reviewer recommended gating promotions until it ships; operator ruled promotions ON
-  2026-07-28 under the strict per-test bar (allow_promotions stays a one-edit switch).** The full spec lives in docs/REVIEW_R2_PLAN.md
+- **D-7 — Statistics v2 + shadow execution truth (external review round 2; SHIPPED 2026-07-28).** All six work-package items landed the same day
+  (commits 0cd3c3a→144be91+): versioned TRIALSTAMP events carrying the stamped
+  executable entry; core/shadow_execution replaying each setup's OWN exit geometry
+  over bid/ask candles (worst-case ambiguous bars); board v2 scoring with
+  version-aware costs (v2 pays slippage only — the spread is inside the geometry);
+  core/trial_evidence as the ONE engine behind both the governor and the board
+  trophy (day/session block bootstrap, deterministic seeds, BH-FDR q<=0.05,
+  explicit failure codes); governor rewired with the sequential-peeking guard
+  (re-test only on new independent blocks) and a METRIC-ERA-RESET ledgered for all
+  146 live setups — v2 evidence restarted at zero, promotions stayed ON per the
+  operator ruling (materially equivalent during the transition: nothing can pass
+  the predicate until its v2 sample accrues).
+  **Background:** The full spec lives in docs/REVIEW_R2_PLAN.md
   (the reviewer's implementation plan, adopted). Work package: day/session-block
   bootstrap inference (gap-weighted n_eff demoted to a display diagnostic);
   Benjamini–Hochberg FDR across each run's candidate docket + sequential-peeking

@@ -772,11 +772,15 @@ body.has-ticker{padding-bottom:32px}
          How it works &amp; what it&#39;s tuned to →</a>
     </div>
     <div class="muted" style="padding:0 12px 6px;font-size:11px">
-      The bot flips its own switches, daily at 06:35 UTC. <b>Promote</b> SHADOW→ACTIVE:
-      current-era n≥20 eps · avg ≥ +2.0p/ep · LCB &gt; 0 · 7-day ≥ 0.
-      <b>Demote</b> ACTIVE→SHADOW: bar lost on era stamps, or era broker fills n≥5 net-negative.
-      Rails: max 2 promotions + 4 demotions/day · sides never flipped · every flip restarts that
-      setup&#39;s evidence clock · decisions logged to <code>data/governor_ledger.jsonl</code>.
+      The bot flips its own switches, daily at 06:35 UTC. <b>Promote</b> SHADOW→ACTIVE
+      (D-7 predicate, executable-exit-v2 evidence only): n≥20 eps · ≥10 independent
+      day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB &gt; 0 · 7-day guard ·
+      BH-FDR q ≤ 0.05 across the whole docket.
+      <b>Demote</b> ACTIVE→SHADOW: bar lost on era v2 stamps, or era broker fills n≥5 net-negative.
+      Rails: max 2 promotions + 4 demotions/day · sides never flipped · a failed setup is
+      re-tested only after a NEW independent day-block (no re-rolling the same evidence) ·
+      every flip restarts that setup&#39;s evidence clock · decisions logged to
+      <code>data/governor_ledger.jsonl</code>.
     </div>
     <div id="gov-ledger" class="mono muted" style="padding:0 12px 10px;font-size:10.5px"></div>
   </div>
@@ -786,10 +790,14 @@ body.has-ticker{padding-bottom:32px}
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
     </div>
     <div class="muted" style="padding:0 12px 8px;font-size:11px">
-      Every setup (ACTIVE and SHADOW) scored on the identical metric: episode-deduped signal stamps → forward M5 path → net pips at 240m,
-      <b>minus spread + slippage</b> (D-6: all averages here are NET-OF-COST — the exact numbers the governor judges).
-      Cumulative since the cell-era cutover (2026-07-04). 🏆 = shadow meeting the activation bar (n≥20 eps @ ≥+2p/ep after costs) — promotable. ⚠️ = ACTIVE without current-era bar evidence.
-      Sorted by LCB: deflated (z≈2.33) lower bound on net avg with an <b>overlap-aware effective n</b> (240m labels on 30m-spaced episodes are not independent) — small or dense samples rank below proven ones; — = insufficient sample.
+      Every setup (ACTIVE and SHADOW) scored on the identical metric. Since 2026-07-28 (D-7) new episodes use the
+      <b>executable-exit-v2</b> metric: the stamped executable entry (ask long / bid short), a bid/ask forward path, and the setup's
+      OWN exit geometry simulated worst-case intrabar — spread is paid inside the geometry, only slippage is deducted after.
+      Older lifetime rows are legacy-mid-v1 (mid drift at 240m, minus spread + slippage) and remain as research context only.
+      🏆 = shadow passing the governor's FULL promotion predicate on current-era v2 evidence: n≥20 · ≥10 independent day-blocks ·
+      avg ≥ +2p net · block-bootstrap LCB &gt; 0 · 7d guard · BH-FDR q ≤ 0.05 — the trophy and a promotion are the same test.
+      ⚠️ = ACTIVE without current-era v2 bar evidence (the v2 sample restarted at zero on 2026-07-28's metric change; expected until it accrues).
+      Sorted by lifetime LCB (z≈2.33, overlap-aware n) for continuity; capital decisions read only the era evidence.
     </div>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
@@ -1095,10 +1103,12 @@ async function pollShadowboard(){
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
     document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
-      // 🏆 = activation bar met (n>=20 eps @ >=+2p/ep) while SHADOW — promotable.
-      // ⚠️ = ACTIVE without current-era bar evidence (on borrowed status).
-      const beat=(x.status==='SHADOW'&&x.bar_met)?' 🏆':'';
-      const warn=(x.status==='ACTIVE'&&!x.bar_met)?' ⚠️':'';
+      // D-7: bar_met IS the governor's promotion predicate (current-era v2
+      // evidence, block bootstrap, BH-FDR) — trophy == promotable, exactly.
+      const eraTip=x.era?`era v2: n=${x.era.n} days=${x.era.days} avg=${x.era.avg}p blcb=${x.era.lcb??'—'} q=${x.era.q??'—'}${x.era.codes&&x.era.codes.length?' fails:'+x.era.codes.join(','):''}`
+        :'no current-era v2 evidence yet (metric restarted 2026-07-28)';
+      const beat=(x.status==='SHADOW'&&x.bar_met)?` <span title="${eraTip}">🏆</span>`:'';
+      const warn=(x.status==='ACTIVE'&&!x.bar_met)?` <span title="${eraTip}">⚠️</span>`:'';
       const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
       const ncls=x.avg_net240>0?'pos':'neg';
       // cell is "PAIR/session" → split for the status control
@@ -1111,7 +1121,7 @@ async function pollShadowboard(){
       return `<tr${x.queued?' style="opacity:.55"':''}>
         <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
-        <td ${stcls}>${x.status}</td><td title="raw episodes (overlap-adjusted effective n)">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}</td>
+        <td ${stcls}>${x.status}</td><td title="raw episodes (overlap-adjusted effective n) · v2 = executable-exit metric episodes">${x.episodes}${x.n_eff!=null?' <span class="muted" style="font-size:9px">('+x.n_eff+')</span>':''}${x.n_v2?' <span style="font-size:9px;color:#4aa3ff" title="executable-exit-v2 episodes'+(x.n_ambig?' ('+x.n_ambig+' ambiguous-bar, scored worst-case)':'')+'">v2:'+x.n_v2+'</span>':''}</td>
         <td class="mono ${x.lcb==null?'muted':(x.lcb>0?'pos':'neg')}"><b>${x.lcb==null?'—':(x.lcb>0?'+':'')+x.lcb+'p'}</b></td>
         <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
         <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>

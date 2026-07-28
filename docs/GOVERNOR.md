@@ -16,10 +16,17 @@ backup snapshots the result.
 All evidence is **current-era** (see *Era clocks* below) and **config-side only** — a
 setup's retired or mirrored direction can never affect its own verdict.
 
+Since **D-7 (2026-07-28)** the promotion sample counts only
+**executable-exit-v2** episodes — stamped executable entry (ask long / bid
+short), bid/ask forward path, the setup's *own* exit geometry simulated
+worst-case intrabar, mechanics-hash-matched to the current config. The old
+legacy-mid-v1 mid-drift tape remains on the board as research context but
+never governs capital.
+
 | Switch | Fires when |
 |---|---|
-| **PROMOTE** SHADOW → ACTIVE | n ≥ **20** scored episodes **AND** average ≥ **+2.0 pips/episode** **AND** the 95% lower confidence bound (`avg − 1.645·σ/√n`) > **0** **AND** the last-7-days average is ≥ 0 (when it has ≥ 5 episodes) |
-| **DEMOTE** ACTIVE → SHADOW | era n ≥ 20 with average < +2.0 (**the bar is lost on stamps**), **OR** era **broker fills** n ≥ 5 with a negative average (**fills convict faster than stamps**) |
+| **PROMOTE** SHADOW → ACTIVE | the full predicate (`core/trial_evidence.promotion_predicate`): raw n ≥ **20** v2 episodes **AND** ≥ **10 independent day/session blocks** **AND** average ≥ **+2.0 pips/episode net** **AND** the day-block **bootstrap** lower confidence bound > **0** **AND** the last-7-days average ≥ 0 (when it has ≥ 5 episodes) **AND** Benjamini–Hochberg **q ≤ 0.05** across the run's whole candidate docket |
+| **DEMOTE** ACTIVE → SHADOW | era v2 n ≥ 20 with average < +2.0 (**the bar is lost on stamps**), **OR** era **broker fills** n ≥ 5 with a negative average (**fills convict faster than stamps**) |
 
 Why these numbers: the measured retail execution toll on majors is ~0.4–0.5 pips per round
 trip, and six of seven edge families this program falsified died at exactly that wall — so
@@ -34,34 +41,45 @@ but **broker-verified fills** (via `research/tools/broker_setup_audit.py`) inclu
 slippage, and the live exit — and they convict faster. A setup that is net-negative on ≥ 5
 real fills loses its seat even if its stamp tape still looks acceptable.
 
-## The statistics (D-6, 2026-07-28)
+## The statistics (D-6 → D-7, 2026-07-28)
 
-Three corrections keep the standard honest (shared by the governor and the
-Shadowboard via `core/trial_stats.py`, knobs in `config/governor_config.json`):
+All decision statistics live in **one shared engine**
+(`core/trial_evidence.py`) consumed by the governor *and* the Shadowboard —
+the dashboard trophy and a promotion are the same test, so the board can
+never award what the governor would reject.
 
-- **Net-of-cost utility.** Every stamp is haircut by its stamped entry-time
-  spread (per-pair fallback for older stamps) plus a slippage constant
-  (`slippage_pips`, default 0.5 — calibratable from the live `FILL` slippage
-  log). Promotion and demotion finally judge the same currency: the bar's
-  "+2.0 pips/episode" means +2 **after** the toll, literally.
-- **Overlap-aware effective n.** Episodes are spaced ≥30 min but labeled on
-  240-minute windows — neighbours share most of their label, so they are not
-  independent observations. Each episode contributes min(1, gap/240min) to an
-  effective sample size used in the confidence bound (raw episode count still
-  gates the bar's n ≥ 20).
-- **A stricter per-test bound — honestly labeled.** The promotion bound uses
-  `per_test_z` (default **2.33** ≈ 99% one-sided). Review round 2 corrected
-  our language: this is a per-test bound, **not** a multiple-testing
-  correction and **not** the Deflated Sharpe Ratio. Real cross-docket control
-  (day/session-block bootstrap p-values + Benjamini–Hochberg FDR, a shared
-  evidence engine, and setup-specific shadow-exit simulation) is the D-7
-  program. The reviewer recommended gating promotions off until D-7 ships;
-  the operator ruled promotions **ON** (2026-07-28) under the already-strict
-  bar — `allow_promotions` remains a one-edit kill switch, and demotions
-  run daily regardless. The hypothesis registry
-  (`data/hypothesis_registry.json`, M printed every run) is the future FDR
-  denominator. See Bailey & López de Prado (PBO / Deflated Sharpe), and
-  docs/REVIEW_R2_PLAN.md for the full D-7 spec.
+- **Net-of-cost utility (D-6).** Legacy stamps are haircut by their stamped
+  entry-time spread plus a slippage constant (`slippage_pips`, default 0.5).
+  v2 episodes already *paid* the spread inside their executable geometry, so
+  only slippage is deducted (`core.trial_stats.episode_net`) — no
+  double-charging, no free rides. "+2.0 pips/episode" means +2 **after** the
+  toll, literally, under both metrics.
+- **Day/session block bootstrap (D-7).** Episodes cluster within a session's
+  day, so the promotion denominator is the number of independent
+  `YYYY-MM-DD|session` blocks, not the episode count. The lower confidence
+  bound and p-value come from resampling whole blocks (10,000 reps,
+  deterministic seed from the block ids — identical evidence always yields
+  identical bounds). The old gap-weighted `n_eff` survives as a display
+  diagnostic only.
+- **Benjamini–Hochberg FDR (D-7).** With ~150 hypotheses live, per-test
+  bounds are a false-discovery machine. Each run computes BH q-values across
+  the entire candidate docket; promotion requires **q ≤ 0.05**. The
+  hypothesis registry (`data/hypothesis_registry.json`) documents everything
+  ever examined.
+- **Sequential-peeking guard (D-7).** A setup that fails the bar is not
+  re-tested until it has at least one *new* independent block
+  (`last_eval_blocks` in governor state) — daily re-rolls of unchanged
+  evidence can't fish their way over the line. The counter clears on any
+  flip (fresh era).
+- **Metric-version isolation (D-7).** Promotion evidence never mixes metric
+  versions: v2 episodes only, mechanics-hash-matched. The migration was
+  ledgered as one `METRIC-ERA-RESET` record per live setup on 2026-07-28 —
+  every setup's evidence restarted at zero under the new metric. The
+  reviewer recommended gating promotions off during the transition; the
+  operator ruled promotions **ON** — materially the same outcome, since no
+  setup can pass the predicate until its v2 sample accrues, and
+  `allow_promotions` remains a one-edit kill switch. Demotions (broker
+  fills) run daily regardless.
 
 **Era clocks got stricter too:** any change to a setup's *mechanics*
 (conditions, exit, side, sizing, horizon — prose excluded) resets its
@@ -105,12 +123,18 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | Key | Default | Meaning |
 |---|---|---|
 | `enabled` | `true` | master switch (also on the dashboard) |
-| `bar_n` | `20` | minimum era episodes for either verdict |
-| `bar_avg` | `2.0` | pips/episode bar |
-| `lcb_min` | `0.0` | required lower confidence bound to promote |
+| `allow_promotions` / `allow_demotions` | `true` / `true` | direction-specific switches |
+| `min_raw_episodes` | `20` | minimum era v2 episodes (`bar_n` honored as a deprecated alias) |
+| `min_independent_days` | `10` | minimum independent day/session blocks |
+| `bar_avg` | `2.0` | net pips/episode bar |
+| `lcb_min` | `0.0` | required block-bootstrap lower bound to promote |
+| `bootstrap_reps` / `bootstrap_confidence` | `10000` / `0.95` | block bootstrap settings |
+| `fdr_q` | `0.05` | Benjamini–Hochberg q-value ceiling across the docket |
 | `recent_n` / `recent_min` | `5` / `0.0` | the 7-day guard |
 | `fills_n` / `fills_avg_max` | `5` / `0.0` | broker-fills demotion trigger |
 | `max_promotions` / `max_demotions` | `2` / `4` | per-run rails |
+| `slippage_pips` | `0.5` | slippage haircut per episode |
+| `per_test_z` | `2.33` | legacy-display LCB only — **not** a promotion input since D-7 |
 | `default_era_start` | *(era anchor)* | evidence floor for setups with no recorded clock |
 
 ## Context

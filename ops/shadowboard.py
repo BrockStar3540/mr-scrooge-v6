@@ -259,6 +259,17 @@ def _aggregate(db):
         _gc = {}
     _z = float(_gc.get("z_promote", 2.33))
     _slip = float(_gc.get("slippage_pips", 0.5))
+    # D-7: the trophy IS the governor's promotion predicate — one shared
+    # engine (current era, executable-exit-v2 only, block bootstrap, BH-FDR).
+    # Lifetime columns stay as research context; only `era` governs capital.
+    try:
+        from core.trial_evidence import current_era_evidence
+        from ops.governor import book as _gbook, cfg as _gcfg, \
+            load_state as _gstate, _aliases as _gal
+        _ev = current_era_evidence(db["episodes"], _gbook(), _gstate(),
+                                   _gcfg(), aliases=_gal())
+    except Exception:
+        _ev = {}
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
         pair = cell.split("/")[0]
@@ -278,6 +289,14 @@ def _aggregate(db):
             _status = "EX-SIDE"
         else:
             _status = _st[0] if _st else g["status"]
+        _e = None if _status == "EX-SIDE" else _ev.get(
+            (pair, cell.split("/")[1] if "/" in cell else "?", setup))
+        era = None
+        if _e:
+            era = {"n": _e.raw_n, "days": _e.independent_days,
+                   "avg": _e.net_avg, "lcb": _e.block_lcb, "q": _e.q_value,
+                   "promotable": _e.promotable,
+                   "codes": list(_e.reason_codes)}
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
@@ -300,11 +319,11 @@ def _aggregate(db):
             "last7_n": len(last7),
             "n_eff": n_eff,
             "first": min(r["t"] for r in rows)[:10],
-            # ACTIVATION BAR, net-of-cost basis (D-6): n>=20 episodes AND
-            # avg >= +2.0p AFTER spread+slippage — "+2p clear of the toll"
-            # is now literal, not aspirational. ACTIVE without the bar = on
-            # borrowed status; SHADOW meeting it = promotable.
-            "bar_met": bool(len(rows) >= 20 and avg >= 2.0),
+            # D-7: the trophy equals the governor's promotion predicate
+            # EXACTLY (current-era v2 evidence, block bootstrap, FDR) —
+            # the board can never award what the governor would reject.
+            "era": era,
+            "bar_met": bool(era and era["promotable"]),
         })
     # QUEUED rows (2026-07-27, Brock: "I don't see the new pairs on the board"):
     # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a
@@ -318,7 +337,7 @@ def _aggregate(db):
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
                 "lcb": None, "wr": None, "hit6": None, "med_mfe": None,
                 "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
-                "last7_avg": None,
+                "last7_avg": None, "era": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,
             })
     # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last,
