@@ -70,6 +70,23 @@ def cost_adjusted_nets(nets: Sequence[float],
     return out
 
 
+def episode_net(gross: float, spread: Optional[float], pair: str,
+                slippage_pips: float = DEFAULT_SLIPPAGE_PIPS,
+                executable: bool = False) -> float:
+    """One episode's net-of-cost pips, metric-version aware (D-7).
+
+    executable=True  — the executable-exit-v2 metric already PAID the spread
+                       inside its geometry (entry at ask/bid, exit on the
+                       liquidation side), so deducting the stamped spread
+                       again would double-charge; only slippage remains.
+    executable=False — legacy-mid-v1 mid-drift scores never touched the
+                       spread; deduct stamped spread (or per-pair fallback)
+                       plus slippage, exactly as D-6 defined."""
+    if executable:
+        return gross - slippage_pips
+    return cost_adjusted_nets([gross], [spread], pair, slippage_pips)[0]
+
+
 def lcb(values: Sequence[float], n_eff: float, z: float) -> Optional[float]:
     """One-sided lower confidence bound on the mean, with the OVERLAP-adjusted
     sample size in the denominator (variance still estimated from raw values).

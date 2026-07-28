@@ -1,12 +1,25 @@
 """ops/shadowboard.py — persistent stamp-forward scoreboard (ported from V5, 2026-07-15).
 
-Every CELLSHADOW stamp (SHADOW *and* ACTIVE setups stamp) is episode-deduped
-(30-min gap) and scored on its forward M5 path: net/MFE/MAE at 60m and 240m,
-side-signed. Scores persist in data/shadowboard.json and accumulate for the
-life of the bot — the dashboard shows cumulative stats, not a day's view.
-Shadows and ACTIVE setups are scored on the IDENTICAL metric, so the board
-answers directly: are any shadows beating the live book's entries? This is the
-data layer the shadow->active promotion pipeline reads from.
+Every stamp (SHADOW *and* ACTIVE setups stamp) is episode-deduped (30-min gap)
+and scored on its forward M5 path. Scores persist in data/shadowboard.json and
+accumulate for the life of the bot — the dashboard shows cumulative stats, not
+a day's view. Shadows and ACTIVE setups are scored on the IDENTICAL metric, so
+the board answers directly: are any shadows beating the live book's entries?
+This is the data layer the shadow->active promotion pipeline reads from.
+
+TWO METRIC VERSIONS coexist (D-7, external review round 2):
+  legacy-mid-v1      — pre-D-7 CELLSHADOW-only episodes: frictionless mid
+                       drift, candle-open anchored, fixed 240m close. Costs
+                       deducted afterward (stamped spread + slippage).
+  executable-exit-v2 — episodes opened WITH a TRIALSTAMP: entry is the
+                       STAMPED executable price (ask long / bid short), the
+                       forward path is bid/ask candles (price=BA), and the
+                       exit is the setup's OWN geometry replayed by
+                       core/shadow_execution (worst-case intrabar). Spread is
+                       already paid inside that geometry, so cost adjustment
+                       deducts slippage ONLY (core.trial_stats.episode_net).
+Versions are marked per episode score ("mv": 2) and never silently conflated;
+the evidence engine (D-7 stages D/E) promotes on v2 samples only.
 
 V6 port adaptations (see docs/AUDIT_TODO.md):
   (a) The journald unit name is parameterized via SCROOGE_JOURNAL_UNIT (V5
@@ -44,22 +57,37 @@ def _creds():
             s["OANDA_API_TOKEN"])
 
 def _stamps():
-    """All CELLSHADOW stamps from the journal (cell era)."""
+    """All trial stamps from the journal (cell era) in ONE scan: legacy
+    CELLSHADOW token lines and D-7 TRIALSTAMP JSON lines, so the episode
+    dedup sees both and never double-counts one firing. Row shape:
+    (t, cell, setup, side, status, spread, v2_payload_or_None)."""
     out = subprocess.run(
         ["journalctl", "--user", "-u", _journal_unit(), "--since", _SINCE,
-         "-o", "short-iso", "--no-pager", "--grep", "CELLSHADOW"],
+         "-o", "short-iso", "--no-pager", "--grep", "CELLSHADOW|TRIALSTAMP"],
         capture_output=True, text=True, timeout=60).stdout
+    from core.trial_events import parse_stamp
     rows = []
     for line in out.splitlines():
         try:
-            ts = line.split()[0]
+            t = datetime.fromisoformat(line.split()[0]).astimezone(timezone.utc)
+        except Exception:
+            continue
+        if "TRIALSTAMP " in line:
+            d = parse_stamp(line)
+            if not d:
+                continue
+            rows.append((t, f'{d.get("pair")}/{d.get("session")}',
+                         str(d.get("setup_id")), d.get("side", "?"),
+                         d.get("status", "?"), d.get("spread_pips"), d))
+            continue
+        try:
             i = line.index("CELLSHADOW ")
             parts = line[i:].split()
             cell, setup, side = parts[1], parts[2].split("=")[1], parts[3].split("=")[1]
             status = next((p.split("=")[1] for p in parts if p.startswith("status=")), "?")
             spread = next((p.split("=")[1] for p in parts if p.startswith("spread=")), None)
             spread = float(spread) if spread is not None else None
-            rows.append((datetime.fromisoformat(ts).astimezone(timezone.utc), cell, setup, side, status, spread))
+            rows.append((t, cell, setup, side, status, spread, None))
         except Exception:
             continue
     return rows
@@ -83,6 +111,61 @@ def _score(pair, t0, side):
     return {"mfe60": mfe60, "mae60": mae60, "net60": net60,
             "mfe240": mfe240, "mae240": mae240, "net240": net240}
 
+def _score_v2(ep, t0):
+    """D-7 scorer: bid/ask candles + the setup's OWN exit, replayed from the
+    STAMPED executable entry by core/shadow_execution. Spread is inside the
+    geometry; aggregation must deduct slippage only (episode_net)."""
+    from core.shadow_execution import simulate_shadow_exit
+    pair = ep["cell"].split("/")[0]
+    url, tok = _creds()
+    horizon = int(ep.get("horizon_min") or 240)
+    count = min(500, max(13, horizon // 5 + 2))
+    u = (f"{url}/v3/instruments/{pair}/candles?granularity=M5"
+         f"&from={t0.strftime('%Y-%m-%dT%H:%M:%SZ')}&count={count}&price=BA")
+    cs = json.load(urllib.request.urlopen(urllib.request.Request(
+        u, headers={"Authorization": f"Bearer {tok}"}), timeout=20))["candles"]
+    cs = [c for c in cs if c.get("complete", True)]
+    stamp = {"side": ep["side"], "entry": ep.get("entry"),
+             "horizon_min": horizon, "exit_config": ep.get("exit_config") or {}}
+    o = simulate_shadow_exit(stamp, cs, _pip(pair))
+    if o is None:
+        return None
+    return {"mv": 2, "net240": o.net_pips, "mfe240": o.mfe_pips,
+            "mae240": o.mae_pips, "net60": None, "mfe60": None, "mae60": None,
+            "exit_reason": o.exit_reason, "exit_bar": o.exit_bar,
+            "ambiguous": o.ambiguous_bar}
+
+def _fold_stamps(rows, eps):
+    """Episode-dedup stamps into eps (pure — unit-testable). CELLSHADOW and
+    TRIALSTAMP are emitted in the same cycle; a TRIALSTAMP within 2 min of
+    its episode's OPENING stamp upgrades that episode to the v2 metric
+    (executable entry + the setup's exit geometry) instead of creating a
+    duplicate. Later within-episode stamps never re-anchor the entry."""
+    last_by_key, cur = {}, {}
+    for t, cell, setup, side, status, spread, v2 in sorted(rows, key=lambda r: r[0]):
+        key = f"{cell}|{setup}|{side}"
+        prev = last_by_key.get(key)
+        if prev is None or (t - prev).total_seconds() > _EP_GAP_S:
+            ek = f"{key}|{t.strftime('%Y-%m-%dT%H:%M')}"
+            cur[key] = (ek, t)
+            if ek not in eps:
+                eps[ek] = {"cell": cell, "setup": setup, "side": side,
+                           "status": status, "t": t.isoformat(),
+                           "scores": None, "spread": spread}
+        else:
+            ek = cur.get(key, (None, None))[0]
+        last_by_key[key] = t
+        if v2 and ek and ek in eps and "mv" not in eps[ek]:
+            t0 = cur[key][1]
+            if (t - t0).total_seconds() <= 120:
+                eps[ek].update(
+                    mv=2, entry=v2.get("entry"), bid=v2.get("bid"),
+                    ask=v2.get("ask"), spread=v2.get("spread_pips"),
+                    horizon_min=v2.get("horizon_min", 240),
+                    exit_config=v2.get("exit_config") or {},
+                    mech=v2.get("mechanics_hash"))
+    return eps
+
 def _load():
     try: return json.loads(_STORE.read_text())
     except Exception: return {"episodes": {}}
@@ -93,26 +176,21 @@ def _save(db):
 
 def _refresh(max_new_scores=40):
     db = _load()
-    eps = db["episodes"]
-    last_by_key = {}
-    for t, cell, setup, side, status, spread in sorted(_stamps()):
-        key = f"{cell}|{setup}|{side}"
-        prev = last_by_key.get(key)
-        if prev is None or (t - prev).total_seconds() > _EP_GAP_S:
-            ek = f"{key}|{t.strftime('%Y-%m-%dT%H:%M')}"
-            if ek not in eps:
-                eps[ek] = {"cell": cell, "setup": setup, "side": side, "status": status,
-                           "t": t.isoformat(), "scores": None,
-                           "spread": spread}   # D-6: entry-time cost, None for pre-D-6 stamps
-        last_by_key[key] = t
+    eps = _fold_stamps(_stamps(), db["episodes"])
     now = datetime.now(timezone.utc)
     n_scored = 0
     for ek, ep in eps.items():
         if ep["scores"] is not None or n_scored >= max_new_scores: continue
         t0 = datetime.fromisoformat(ep["t"])
-        if (now - t0).total_seconds() < _MATURE_S: continue
+        # v2 episodes mature at their OWN horizon (+1 bar); legacy at 240m+5.
+        mature_s = ((int(ep.get("horizon_min") or 240) + 5) * 60
+                    if ep.get("mv") == 2 else _MATURE_S)
+        if (now - t0).total_seconds() < mature_s: continue
         try:
-            ep["scores"] = _score(ep["cell"].split("/")[0], t0, ep["side"])
+            if ep.get("mv") == 2:
+                ep["scores"] = _score_v2(ep, t0)
+            else:
+                ep["scores"] = _score(ep["cell"].split("/")[0], t0, ep["side"])
             n_scored += 1; time.sleep(0.05)
         except Exception:
             continue
@@ -171,9 +249,10 @@ def _aggregate(db):
     _cfgst = _config_status()
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     # D-6 (external review): the board judges by the EXACT metric the governor
-    # promotes on — cost-adjusted nets (stamped spread or per-pair fallback +
-    # slippage), overlap-aware effective n, deflated z from governor config.
-    from core.trial_stats import cost_adjusted_nets, effective_n, lcb as _tlcb
+    # promotes on — cost-adjusted nets, overlap-aware effective n, deflated z
+    # from governor config. D-7: cost adjustment is METRIC-VERSION aware —
+    # executable-exit-v2 scores already paid the spread in their geometry.
+    from core.trial_stats import effective_n, episode_net, lcb as _tlcb
     try:
         _gc = json.loads((_ROOT / "config" / "governor_config.json").read_text())
     except Exception:
@@ -183,9 +262,10 @@ def _aggregate(db):
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
         pair = cell.split("/")[0]
-        gross = [x["net240"] for x in s]
-        spreads = [r.get("spread") for r in rows]
-        nets = cost_adjusted_nets(gross, spreads, pair, slippage_pips=_slip)
+        nets = [episode_net(x["net240"], r.get("spread"), pair,
+                            slippage_pips=_slip,
+                            executable=bool(x.get("mv") == 2))
+                for r, x in zip(rows, s)]
         last7 = [net for r, net in zip(rows, nets) if r["t"] >= cutoff7]
         avg = sum(nets) / len(nets)
         n_eff = effective_n([r["t"] for r in rows])
@@ -209,7 +289,13 @@ def _aggregate(db):
             "hit6": round(sum(1 for x in s if x["mfe240"] >= 6)/len(s), 3),
             "med_mfe": round(st.median(x["mfe240"] for x in s), 1),
             "med_mae": round(st.median(x["mae240"] for x in s), 1),
-            "avg_net60": round(sum(x["net60"] for x in s)/len(s), 2),
+            # net60 exists only on legacy-mid-v1 scores (v2 exits when the
+            # SETUP says, not at a fixed 60m checkpoint)
+            "avg_net60": (round(sum(_n60)/len(_n60), 2)
+                          if (_n60 := [x["net60"] for x in s
+                                       if x.get("net60") is not None]) else None),
+            "n_v2": sum(1 for x in s if x.get("mv") == 2),
+            "n_ambig": sum(1 for x in s if x.get("ambiguous")),
             "last7_avg": round(sum(last7)/len(last7), 2) if last7 else None,
             "last7_n": len(last7),
             "n_eff": n_eff,
@@ -231,7 +317,8 @@ def _aggregate(db):
                 "cell": cell, "setup": sid, "side": side, "status": status,
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
                 "lcb": None, "wr": None, "hit6": None, "med_mfe": None,
-                "med_mae": None, "avg_net60": None, "last7_avg": None,
+                "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
+                "last7_avg": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,
             })
     # Sort by LCB (evidence-weighted), not raw avg — None (n<2) sorts last,
