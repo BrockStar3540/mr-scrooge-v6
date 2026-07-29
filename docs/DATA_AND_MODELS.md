@@ -21,9 +21,15 @@ and **its leak status**, so a public reader can re-run or challenge any result i
 > MFE/MAE), `continuous_corpus` + `continuous_corpus_unbiased`, `allbars_corpus`,
 > `factor_lift_v1`, and `forexsb_h1` (the raw H1 source). Each was hash-verified,
 > content-listed, secret-swept (0 hits) and column-audited (0 account-linked fields)
-> before publication; verify downloads against `00_MANIFEST.json`. Remaining holdings
-> (model binaries, code mirrors) stay in the private annex — request by name in a
-> [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions).
+> before publication; verify downloads against `00_MANIFEST.json`.
+>
+> **WAVE 2 (same day): the research tool bundles followed** — `scrooge_research_scripts`,
+> `scrooge_lab_code`, and `MR-SCROOGE-V4-MIRROR-noenv` (repacked without its bundled 580MB
+> venv; rebuild via its `requirements_frozen.txt`) are public too, deep-swept including
+> nested archives with credential-format regexes. Remaining holdings (model binaries,
+> backup sets — one of which permanently private after the deep sweep located an old
+> embedded credential in a backup git config) stay in the private annex — request by name
+> in a [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions).
 
 **How to read leak status** (full rules: [`../research/README.md`](../research/README.md) truth
 hierarchy): the dividing line is **2026-07-03**, when the H1 look-ahead leak (**B-078**) was found and
