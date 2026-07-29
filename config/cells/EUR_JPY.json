@@ -94,6 +94,47 @@
             "drift": "PERSISTENT"
           },
           "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20."
+        },
+        {
+          "id": "box_pdl_counter_long",
+          "side": "long",
+          "class": "box",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdl_dist",
+              "max": 0.0,
+              "note": "price below prior-day low = downside box break (V1 OG box theory, resurrected 2026-07-09)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: box_pdl_short (short) ran 5 eps @ -26.98p/ep with medMFE/MAE 1.6/34.4 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of box_pdl_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
