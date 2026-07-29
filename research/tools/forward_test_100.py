@@ -60,7 +60,7 @@ def main():
                     manual.add((t["time"][:19] + "Z",
                                 round(float(tc.get("realizedPL", 0)), 2)))
 
-    src = REPO / "livelog" / "practice-forward-test-2026-07" / "trades.csv"
+    src = REPO / "forward-test-100" / "trades.csv"
     if not src.exists():   # pre-archive layout (before the live cutover)
         src = REPO / "livelog" / "trades.csv"
     all_rows = list(csv.DictReader(open(src)))
@@ -148,7 +148,7 @@ Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TES
 - **Breakeven win rate the geometry demanded:** {be:.1f}%
 - **By source:** """ + " · ".join(
         f"{s} {len(v)} trades ${sum(v):+,.2f}" for s, v in sorted(by_src.items())) + f"""
-- Full tape: [livelog/practice-forward-test-2026-07/trades.csv](../livelog/practice-forward-test-2026-07/trades.csv) · equity: [livelog/practice-forward-test-2026-07/equity.csv](../livelog/practice-forward-test-2026-07/equity.csv) · final chart: [equity.svg](../livelog/practice-forward-test-2026-07/equity.svg)
+- Full tape: [forward-test-100/trades.csv](../forward-test-100/trades.csv) · equity: [forward-test-100/equity.csv](../forward-test-100/equity.csv) · final chart: [equity.svg](../forward-test-100/equity.svg)
 {star_md}
 
 ## Per-family attribution (parent + its poppers, one unit)

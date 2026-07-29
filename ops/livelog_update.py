@@ -5,7 +5,7 @@ Runs on EC2 (has the OANDA token via ~/.openclaw/secrets.env). Tracks the
 REAL-MONEY account's performance since the live cutover (2026-07-29, $2,500
 stake), executed per the pre-registered protocol after the 100-trade practice
 window closed at +10.54% (docs/FORWARD_TEST_100_REPORT.md). The practice-era
-record is archived at livelog/practice-forward-test-2026-07/ and is immutable.
+record is archived at forward-test-100/ and is immutable.
 
 Headline = realized P/L of trades closed under this config (the honest record),
 plus current open trades. The OANDA token NEVER leaves EC2 and NEVER enters the
@@ -29,7 +29,7 @@ SVG = LIVELOG / "equity.svg"
 # LIVE ERA (2026-07-29): the real-money account, cut over per the pre-registered
 # protocol after the 100-trade practice window closed at +10.54%. Same code,
 # same book, gearing 15%/trade · 6 max for the smaller stake. The practice
-# record is archived at livelog/practice-forward-test-2026-07/.
+# record is archived at forward-test-100/.
 ANCHOR_TS = "2026-07-29T11:00:00Z"
 ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed + Party Package popper grids · 15%/trade · 6 max"
 ANCHOR_HUMAN = "2026-07-29"
@@ -243,7 +243,7 @@ block = (
     f"**broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, "
     f"honest record — some trades sit red for days under the wide stops before exiting green; that is the design, "
     f"not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). "
-    f"The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/livelog/practice-forward-test-2026-07).\n"
+    f"The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).\n"
     f"<!-- LIVE_BALANCE_END -->")
 txt = README.read_text()
 new = re.sub(r"<!-- LIVE_BALANCE_START -->.*?<!-- LIVE_BALANCE_END -->", block, txt, flags=re.S)

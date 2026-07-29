@@ -17,7 +17,7 @@ $2,500 of real money.
   ACTIVE stayed ACTIVE, every SHADOW stayed SHADOW, era clocks intact.
 - **Livelog re-anchored to the live account** (anchor 2026-07-29): same hourly pipeline,
   trades + equity + README chart, numbers only. Practice record archived immutable at
-  livelog/practice-forward-test-2026-07/; full raw broker export (11,564 transactions,
+  forward-test-100/; full raw broker export (11,564 transactions,
   account creation → close) public in the archive under proof-of-tape/.
 - **README finalized**: real-money badges and track-record block, final account tape,
   the patience-game section (red-for-days is the design), concluded-test framing,

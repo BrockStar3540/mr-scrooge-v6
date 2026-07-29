@@ -1,6 +1,6 @@
 # The 100-Trade Forward Test — final report
 
-*Generated 2026-07-29 11:30 UTC from broker records.
+*Generated 2026-07-29 11:34 UTC from broker records.
 Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TEST_PROTOCOL.md).*
 
 ## The number that matters
@@ -20,7 +20,7 @@ Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TES
 - **Realized (window):** $+1,793.50 · avg win $+40.97 · avg loss $-189.40
 - **Breakeven win rate the geometry demanded:** 82.2%
 - **By source:** legacy 3 trades $+158.73 · parent 39 trades $+828.55 · popper 58 trades $+806.22
-- Full tape: [livelog/practice-forward-test-2026-07/trades.csv](../livelog/practice-forward-test-2026-07/trades.csv) · equity: [livelog/practice-forward-test-2026-07/equity.csv](../livelog/practice-forward-test-2026-07/equity.csv) · final chart: [equity.svg](../livelog/practice-forward-test-2026-07/equity.svg)
+- Full tape: [forward-test-100/trades.csv](../forward-test-100/trades.csv) · equity: [forward-test-100/equity.csv](../forward-test-100/equity.csv) · final chart: [equity.svg](../forward-test-100/equity.svg)
 
 ### † Inside the window, closed by the operator
 
