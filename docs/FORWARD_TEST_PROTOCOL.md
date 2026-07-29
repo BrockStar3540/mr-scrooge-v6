@@ -42,7 +42,7 @@ be public either way.
    exits (judge-when-flat applies to the account close-out too: the record ends flat,
    not mid-episode).
 2. **Write-up** — published in this repo: starting balance, ending balance, the full
-   100-trade tape (already public at [livelog/trades.csv](../livelog/trades.csv)),
+   100-trade tape (archived at [livelog/practice-forward-test-2026-07/](../livelog/practice-forward-test-2026-07/)),
    win/loss geometry, per-family attribution, and what the family rule changed mid-test.
    Generator: `research/tools/forward_test_100.py`.
 3. **Close the practice account.** The practice livelog (trades, equity, graph) is
