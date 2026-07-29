@@ -1,8 +1,8 @@
 {
   "schema": "v1",
   "account": {
-    "max_concurrent_trades": 8,
-    "margin_pct_per_trade": 0.1,
+    "max_concurrent_trades": 6,
+    "margin_pct_per_trade": 0.15,
     "max_per_currency_direction": 4
   },
   "defaults": {
@@ -151,7 +151,5 @@
   "_note_2026-07-03_usdjpy_london": "2026-07-03 Brock EXPLICIT lock override (\"ok, do both\"): USD_JPY/london un-inverted + native long re-enabled = natural direction restored. Basis: live inverted -24.4p/5 vs natural backtest +7.06p/65.8pct; lock baseline was cross-regime contaminated (2 of 4 trades pre-inversion); biggest replay mover under corrected profiles (+4.57p/call). mom_cert_min 0.50 kept. Panel-unanimous.",
   "_note_2026-07-03_audusd_ny": "2026-07-03 taint repair: AUD_USD/ny long+short RE-ENABLED. The disable (06-21) rested solely on tainted ML dAUC -0.032 from leaky parquets with zero live trades; clean re-derivation shows dAUC -0.0022 = noise. Evidence-gone -> cell returns to default enabled state, judged forward on broker truth (n>=20 constitution).",
   "_note_2026-07-03_hygiene": "2026-07-03: removed stale USD_CHF/london inversion entry (pair killed 07-01 via enabled=false; entry was dead code, flagged by conformance sweep)",
-  "_note_2026-07-03_calibration": "2026-07-03 per-cell calibration LOG-ONLY wiring: modules/signals/calibration.py loaded from config/cell_calibration.json (48 cells, 8 pairs). Engine emits CAL lines once per pair/session per scan cycle for cells not killed, comparing artifact projected_mfe vs live expected_pips + dead-risk separators. Kill-switch: defaults.calibration_log_enabled (hot-reload, no restart). NO gating, NO change to entries or exits -- observation window only.",
-  "max_concurrent_trades": 6,
-  "margin_pct_per_trade": 0.15
+  "_note_2026-07-03_calibration": "2026-07-03 per-cell calibration LOG-ONLY wiring: modules/signals/calibration.py loaded from config/cell_calibration.json (48 cells, 8 pairs). Engine emits CAL lines once per pair/session per scan cycle for cells not killed, comparing artifact projected_mfe vs live expected_pips + dead-risk separators. Kill-switch: defaults.calibration_log_enabled (hot-reload, no restart). NO gating, NO change to entries or exits -- observation window only."
 }
