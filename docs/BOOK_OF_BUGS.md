@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-106, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-107, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -649,6 +649,15 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** the renderer assumed every ledger entry carries `pair/session/setup`; reset entries carry a single `key` field.
 - **Fix:** renderer falls back to `key` (pipes → slashes). Cosmetic, but the ledger is the governor's public face — it shouldn't stutter.
 - **Lesson:** when a log format grows a second shape, every consumer of the first shape is now a renderer bug waiting for a screenshot.
+
+### B-107 — Live gearing landed as dead top-level keys: first real-money fill sized at 10%, not 15%
+- **Date:** 2026-07-29 (caught on live trade #1, minutes after entry)
+- **Area:** `config/playmaker_config.json` + the cutover script
+- **Symptom:** the first live fill (GBP_USD short, 3,762 units) carried ~10% margin sizing — the practice gearing — despite the cutover \setting\ 15%/6.
+- **Root cause:** `pm_margin_pct()` / `pm_max_concurrent()` read `[ccount\][...]`; the cutover script wrote the new values at the top level of the JSON — legal, present, and completely unread. The B-092/B-096 lesson in a new costume: an edit that lands outside the read path is a no-op wearing a diff.
+- **Fix:** values set inside the `account` block, strays deleted, effective values verified through the actual readers (`pm_margin_pct() == 0.15`). Hot-reload applies from the next fire; trade #1 keeps its smaller size (conservative — no action).
+- **Lesson:** after changing a config, verify through the FUNCTION that reads it, never by re-reading the file. The file agreeing with you proves nothing about what the program sees.
+
 
 
 
