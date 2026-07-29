@@ -268,16 +268,18 @@ TIER_LABELS = {
     2: "ACTIVE — holding (or episode open, verdict deferred)",
     3: "PROMOTE READY — passes the full bar at the next 06:35Z run",
     4: "BUILDING EVIDENCE — shadows accruing the era-v2 sample",
-    5: "QUEUED — wired, no scored era evidence yet",
+    5: "AWAITING V2 / QUEUED — no era-v2 evidence yet (legacy v1 history never counts toward the bar; the era sample restarted 2026-07-28)",
     7: "RETIRED / EX-SIDE — history kept as the autopsy",
 }
 
 
-def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw):
+def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
     """One row's governor view -> (tier, verdict, reason, score).
     Mirrors ops.governor exactly: ACTIVE rows through active_verdict (family
     rule + judge-when-flat, e_obj = the SetupEvidence the governor reads),
-    SHADOW rows through the promotion predicate (era_dict = its display form)."""
+    SHADOW rows through the promotion predicate (era_dict = its display form).
+    lifetime_eps distinguishes AWAITING V2 (has legacy history, era restarted)
+    from QUEUED (never scored anything)."""
     from ops.governor import active_verdict as _av
     if status == "ACTIVE":
         demote, reason = _av(e_obj, f, gc, min_raw)
@@ -297,7 +299,13 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw):
         passed = 6 - len(era_dict.get("codes") or [])
         return 4, "BUILDING", "needs " + ",".join(era_dict.get("codes") or []), \
             passed * 1000 + (era_dict.get("avg") or 0)
-    return 5, "QUEUED", "no scored era evidence yet", 0.0
+    if lifetime_eps:
+        return 5, "AWAITING V2", (
+            "has lifetime legacy-metric history only — the 2026-07-28 metric "
+            "reset restarted every era sample at zero; promotes ONLY on new "
+            "executable-exit-v2 episodes (bar: n>=20, 10 day-blocks, "
+            "avg>=+2p, LCB>0, FDR)"), float(lifetime_eps)
+    return 5, "QUEUED", "no scored episodes yet", 0.0
 
 
 def _aggregate(db):
@@ -384,7 +392,7 @@ def _aggregate(db):
                                       str(_gc_full.get("default_era_start", "")))
                 f = _fview(fam_row, era_start)
             tier, verdict, reason, score = _gov_verdict(
-                _status, era, _e, f, _gc_full, _min_raw)
+                _status, era, _e, f, _gc_full, _min_raw, lifetime_eps=len(rows))
             gov = {"tier": tier, "verdict": verdict, "reason": reason,
                    "score": round(float(score), 2), "family": f}
         out.append({
