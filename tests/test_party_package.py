@@ -64,6 +64,9 @@ def _cfg(tmp_path, **over):
 def pp(tmp_path, monkeypatch):
     monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path))
     monkeypatch.setattr(ppm, "_STATE_PATH", tmp_path / "pp_state.json")
+    # tests must not read the LIVE runtime pause switch (config/runtime.json)
+    # — the 2026-07-29 cutover freeze turned every fire test red until this.
+    monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
     return ppm.PartyPackage(FakeBroker(), dry_run=False)
 
 

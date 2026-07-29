@@ -61,6 +61,8 @@ def pp(tmp_path, monkeypatch):
     p.write_text(json.dumps(cfg))
     monkeypatch.setattr(ppm, "_CONFIG_PATH", p)
     monkeypatch.setattr(ppm, "_STATE_PATH", tmp_path / "pp_state.json")
+    # isolate from the LIVE runtime pause switch (see test_party_package.py)
+    monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
     return ppm.PartyPackage(FakeBroker(), dry_run=False)
 
 
