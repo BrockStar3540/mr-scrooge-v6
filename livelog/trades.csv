@@ -4,3 +4,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-07-29T18:31:37Z,EUR_JPY,short,6645,2.37,popper
 2026-07-29T18:33:04Z,USD_JPY,long,7593,2.76,parent
 2026-07-29T18:44:32Z,GBP_USD,short,3762,-22.57,parent
+2026-07-29T20:29:35Z,EUR_JPY,short,6650,-24.64,parent
+2026-07-29T20:36:40Z,EUR_JPY,short,6657,-24.76,popper
+2026-07-29T20:45:02Z,EUR_JPY,short,6593,-22.24,popper
+2026-07-29T20:45:50Z,EUR_JPY,short,6589,-20.44,popper
