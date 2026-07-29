@@ -29,7 +29,10 @@ def _secrets():
 
 def main():
     S = _secrets()
-    url, tok, acct = S["OANDA_API_URL"], S["OANDA_API_TOKEN"], S["OANDA_ACCOUNT_ID"]
+    # This report is about the PRACTICE account. After the live cutover the
+    # practice creds are parked as OANDA_PRACTICE_*; prefer them when present.
+    pfx = "OANDA_PRACTICE_" if "OANDA_PRACTICE_API_TOKEN" in S else "OANDA_"
+    url, tok, acct = S[pfx + "API_URL"], S[pfx + "API_TOKEN"], S[pfx + "ACCOUNT_ID"]
 
     def api(p):
         full = p if p.startswith("http") else url + p
@@ -57,10 +60,19 @@ def main():
                     manual.add((t["time"][:19] + "Z",
                                 round(float(tc.get("realizedPL", 0)), 2)))
 
-    all_rows = list(csv.DictReader(open(REPO / "livelog" / "trades.csv")))
-    star = [r for r in all_rows
-            if (r["close_utc"], round(float(r["realized_usd"]), 2)) in manual]
-    rows = [r for r in all_rows if r not in star]
+    src = REPO / "livelog" / "practice-forward-test-2026-07" / "trades.csv"
+    if not src.exists():   # pre-archive layout (before the live cutover)
+        src = REPO / "livelog" / "trades.csv"
+    all_rows = list(csv.DictReader(open(src)))
+    # THE WINDOW (protocol as written, operator ruling 2026-07-29): the test
+    # ends at the 100th CLOSED trade — whatever kind of close it was. Stats run
+    # over closes 1..100; anything after falls OUTSIDE the window and is shown
+    # asterisked. A manual close INSIDE the window is disclosed with a dagger.
+    rows = all_rows[:100]
+    star = all_rows[100:]
+    for r in rows:
+        r["_manual"] = (r["close_utc"],
+                        round(float(r["realized_usd"]), 2)) in manual
     n, n_all = len(rows), len(all_rows)
     wins = [float(r["realized_usd"]) for r in rows if float(r["realized_usd"]) > 0]
     losses = [float(r["realized_usd"]) for r in rows if float(r["realized_usd"]) < 0]
@@ -88,20 +100,30 @@ def main():
     be = abs(al) / (aw + abs(al)) * 100 if (aw or al) else 0
     ret = (bal - START_BAL) / START_BAL * 100
 
-    final = (REPO / "livelog" / ".ft100_alerted").exists() and open_n == 0
+    final = open_n == 0 and n_all >= 100
+    dagger = [r for r in rows if r.get("_manual")]
     star_md = ""
+    if dagger:
+        star_md += ("\n### † Inside the window, closed by the operator\n\n"
+                    "Trading was paused at " + FREEZE_TS + " with the tape at 99 closes; "
+                    "the operator then closed the remaining open positions by hand. The "
+                    "**100th close of the window was one of those hand-closes** — the "
+                    "protocol's endpoint is \"the 100th closed trade,\" so it counts, and "
+                    "it is disclosed here rather than buried:\n\n"
+                    "| close (UTC) | instrument | dir | realized | source |\n|---|---|---|---|---|\n"
+                    + "\n".join(
+                        f"| {r['close_utc']} † | {r['instrument']} | {r['direction']} "
+                        f"| ${float(r['realized_usd']):+.2f} | {r['source']} (operator close, in-window) |"
+                        for r in dagger) + "\n")
     if star:
-        star_md = ("\n### * Excluded from the statistics — operator close-outs\n\n"
-                   "The test was ended by hand: trading was paused at "
-                   f"{FREEZE_TS} and the last open positions were closed manually. "
-                   "Those closes are on the tape and in the balance, but they measure "
-                   "the operator's decision to stop, not the system's exits — so they "
-                   "carry an asterisk and sit outside the strategy statistics:\n\n"
-                   "| close (UTC) | instrument | dir | realized | source |\n|---|---|---|---|---|\n"
-                   + "\n".join(
-                       f"| {r['close_utc']} * | {r['instrument']} | {r['direction']} "
-                       f"| ${float(r['realized_usd']):+.2f} | {r['source']} (manual close) |"
-                       for r in star) + "\n")
+        star_md += ("\n### * After the window — not in the statistics\n\n"
+                    "The window ended at close #100. Later closes are on the tape and in "
+                    "the ending balance, but outside the pre-registered window:\n\n"
+                    "| close (UTC) | instrument | dir | realized | source |\n|---|---|---|---|---|\n"
+                    + "\n".join(
+                        f"| {r['close_utc']} * | {r['instrument']} | {r['direction']} "
+                        f"| ${float(r['realized_usd']):+.2f} | {r['source']} (operator close, post-window) |"
+                        for r in star) + "\n")
 
     report = f"""# The 100-Trade Forward Test — final report{'' if final else ' (DRAFT — window not yet complete)'}
 
@@ -115,20 +137,14 @@ Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TES
 | **Starting balance** (2026-07-16, pre-first-fill, broker-verified) | **${START_BAL:,.2f}** |
 | **Ending balance** (account flat) | **${bal:,.2f}** |
 | **Return over the window** | **{ret:+.2f}%** |
-| Natural closes (the strategy statistics) | {n} |
-| Operator close-outs (asterisked, excluded from stats) | {len(star)} |
+| The window (protocol: the first 100 closed trades) | {n} |
+| Post-window closes (asterisked, outside the stats) | {len(star)} |
 | Total tape | {n_all} |
-
-A precision note, because honesty is the product here: the protocol said "the 100th
-closed trade." The operator froze entries and closed the final open positions by hand
-with the natural tape at {n} closes — so the strategy sample is **{n} system-managed
-trades**, the two hand-closes are asterisked below, and the balance numbers include
-everything. Nothing is hidden in either direction.
 
 ## The tape
 
-- **W/L (natural closes):** {len(wins)}/{len(losses)} ({len(wins)/n*100:.1f}% win rate)
-- **Realized (natural closes):** ${realized:+,.2f} · avg win ${aw:+.2f} · avg loss ${al:+.2f}
+- **W/L (the 100-trade window):** {len(wins)}/{len(losses)} ({len(wins)/n*100:.1f}% win rate)
+- **Realized (window):** ${realized:+,.2f} · avg win ${aw:+.2f} · avg loss ${al:+.2f}
 - **Breakeven win rate the geometry demanded:** {be:.1f}%
 - **By source:** """ + " · ".join(
         f"{s} {len(v)} trades ${sum(v):+,.2f}" for s, v in sorted(by_src.items())) + f"""

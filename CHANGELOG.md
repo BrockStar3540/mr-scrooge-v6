@@ -7,8 +7,8 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
 ## [6.10.0] — 2026-07-29 — "Real Money" — THE LIVE CUTOVER + VERSION FREEZE
 
 The pre-registered protocol executed end to end. The practice window closed at
-$16,665.12 → $18,421.85 (+10.54%, 99 system-managed closes, 89.9% WR vs 82.1% breakeven;
-two operator close-outs asterisked). The same code, same book, same governor now trades
+$16,665.12 → $18,421.85 (+10.54%; the 100-trade window went 90W/10L = 90.0% WR vs 82.2%
+breakeven; the single post-window operator close asterisked). The same code, same book, same governor now trades
 $2,500 of real money.
 
 ### Changed

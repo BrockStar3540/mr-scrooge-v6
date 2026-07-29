@@ -54,8 +54,8 @@ This is **not a high-speed sniper bot**, and the dashboard will regularly look "
 anyone expecting one. The stops are wide (40–60 pips by session swing) and there is no
 timeout — which means **a trade can sit red for days** before the move it entered on
 finally develops, engages the ratchet, and exits green. That is the strategy working,
-not failing: the 100-trade test's geometry was an **89.9% win rate against a breakeven
-requirement of 82.1%** — many small harvested greens (avg **+$41**) paid for by rare, large,
+not failing: the 100-trade test's geometry was a **90.0% win rate against a breakeven
+requirement of 82.2%** — many small harvested greens (avg **+$41**) paid for by rare, large,
 patient stops (avg **−$189**). The wide stop is the price of not letting noise kill a slow
 winner; the open-positions panel spending most of its life underwater is what buying that
 patience looks like. If a red position for three days reads as an emergency to you, this
@@ -180,8 +180,8 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 ## The forward tests — one concluded, one live
 
 The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
-ran $16,665.12 → **$18,421.85 (+10.54%)** over 99 system-managed closes (two operator
-close-outs asterisked), and its full record is archived in-repo
+ran $16,665.12 → **$18,421.85 (+10.54%)** over its 100-trade window — **90 wins, 10
+losses, 90.0%** (the single post-window operator close is asterisked) — and its full record is archived in-repo
 ([livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/)) and in the
 public archive (`proof-of-tape/`, the complete raw export). As pre-registered, the same code
 now trades **$2,500 of real money** — the live record at the top of this page updates hourly

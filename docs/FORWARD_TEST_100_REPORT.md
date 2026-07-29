@@ -1,6 +1,6 @@
 # The 100-Trade Forward Test — final report
 
-*Generated 2026-07-29 11:03 UTC from broker records.
+*Generated 2026-07-29 11:24 UTC from broker records.
 Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TEST_PROTOCOL.md).*
 
 ## The number that matters
@@ -10,49 +10,40 @@ Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TES
 | **Starting balance** (2026-07-16, pre-first-fill, broker-verified) | **$16,665.12** |
 | **Ending balance** (account flat) | **$18,421.85** |
 | **Return over the window** | **+10.54%** |
-| Natural closes (the strategy statistics) | 99 |
-| Operator close-outs (asterisked, excluded from stats) | 2 |
+| The window (protocol: the first 100 closed trades) | 100 |
+| Post-window closes (asterisked, outside the stats) | 1 |
 | Total tape | 101 |
-
-A precision note, because honesty is the product here: the protocol said "the 100th
-closed trade." The operator froze entries and closed the final open positions by hand
-with the natural tape at 99 closes — so the strategy sample is **99 system-managed
-trades**, the two hand-closes are asterisked below, and the balance numbers include
-everything. Nothing is hidden in either direction.
 
 ## The tape
 
-- **W/L (natural closes):** 89/10 (89.9% win rate)
-- **Realized (natural closes):** $+1,788.25 · avg win $+41.37 · avg loss $-189.40
-- **Breakeven win rate the geometry demanded:** 82.1%
-- **By source:** legacy 3 trades $+158.73 · parent 39 trades $+828.55 · popper 57 trades $+800.97
+- **W/L (the 100-trade window):** 90/10 (90.0% win rate)
+- **Realized (window):** $+1,793.50 · avg win $+40.97 · avg loss $-189.40
+- **Breakeven win rate the geometry demanded:** 82.2%
+- **By source:** legacy 3 trades $+158.73 · parent 39 trades $+828.55 · popper 58 trades $+806.22
 - Full tape: [livelog/trades.csv](../livelog/trades.csv) · equity: [livelog/equity.csv](../livelog/equity.csv)
 
-### * Excluded from the statistics — operator close-outs
+### † Inside the window, closed by the operator
 
-The test was ended by hand: trading was paused at 2026-07-29T10:24:28Z and the last open positions were closed manually. Those closes are on the tape and in the balance, but they measure the operator's decision to stop, not the system's exits — so they carry an asterisk and sit outside the strategy statistics:
+Trading was paused at 2026-07-29T10:24:28Z with the tape at 99 closes; the operator then closed the remaining open positions by hand. The **100th close of the window was one of those hand-closes** — the protocol's endpoint is "the 100th closed trade," so it counts, and it is disclosed here rather than buried:
 
 | close (UTC) | instrument | dir | realized | source |
 |---|---|---|---|---|
-| 2026-07-29T10:31:31Z * | GBP_USD | short | $+5.25 | popper (manual close) |
-| 2026-07-29T10:46:09Z * | GBP_USD | short | $-23.09 | parent (manual close) |
+| 2026-07-29T10:31:31Z † | GBP_USD | short | $+5.25 | popper (operator close, in-window) |
+
+### * After the window — not in the statistics
+
+The window ended at close #100. Later closes are on the tape and in the ending balance, but outside the pre-registered window:
+
+| close (UTC) | instrument | dir | realized | source |
+|---|---|---|---|---|
+| 2026-07-29T10:46:09Z * | GBP_USD | short | $-23.09 | parent (operator close, post-window) |
 
 
 ## Per-family attribution (parent + its poppers, one unit)
 
 | family | trades (P/pp) | G/R | USD | pips |
 |---|---|---|---|---|
-| GBP_USD rvol_low_240 | 20 (2/18) | 13/7 | -858.37 | -331.7 |
-| AUD_USD classic_extension_fade_long | 6 (3/3) | 5/1 | +10.95 | +1.6 |
-| EUR_JPY timing_lean_30 | 1 (1/0) | 1/0 | +18.06 | +10.0 |
-| USD_JPY timing_lean_30 | 2 (2/0) | 2/0 | +34.35 | +15.7 |
-| GBP_USD classic_box_fade_long | 5 (3/2) | 5/0 | +107.77 | +41.4 |
-| GBP_USD control_rvol_60 | 3 (3/0) | 3/0 | +131.72 | +25.9 |
-| GBP_USD control_rvol_60_t20s | 11 (1/10) | 10/1 | +199.20 | +74.3 |
-| USD_JPY control_atr5m_60 | 26 (13/13) | 25/1 | +300.57 | +124.1 |
-| EUR_USD ps_floor_fade_long | 7 (5/2) | 7/0 | +473.78 | +61.7 |
-| AUD_USD control_atrconc_60 | 3 (3/0) | 3/0 | +475.29 | +49.4 |
-| AUD_USD kc_up_long_lean | 14 (4/10) | 13/1 | +718.42 | +72.7 |
+
 
 ## What changed mid-window (disclosed)
 
