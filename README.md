@@ -15,6 +15,8 @@
 
 </div>
 
+[![The 100-trade forward test: +10.54%, 100 trades, 90.0% win rate, max drawdown −10.1% — and yes, it paid the spread](docs/images/forward_test_card.svg)](docs/FORWARD_TEST_100_REPORT.md)
+
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
@@ -178,8 +180,6 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 | Scale-in / popper grids (10 rounds) | gross harvest ~+100–150p/parent is **real**; toll ~130–190p is bigger; the majors are **first-passage fair** at every lock level ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
 
 ## The forward tests — one concluded, one live
-
-![The 100-trade forward test stat card](docs/images/forward_test_card.svg)
 
 The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
 ran $16,665.12 → **$18,421.85 (+10.54%)** over its 100-trade window — **90 wins, 10
