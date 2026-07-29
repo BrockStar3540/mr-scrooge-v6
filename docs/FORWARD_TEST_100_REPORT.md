@@ -1,7 +1,9 @@
 # The 100-Trade Forward Test — final report
 
-*Generated 2026-07-29 11:34 UTC from broker records.
+*Generated 2026-07-29 11:48 UTC from broker records.
 Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TEST_PROTOCOL.md).*
+
+![stat card](images/forward_test_card.svg)
 
 ## The number that matters
 

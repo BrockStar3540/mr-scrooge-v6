@@ -130,6 +130,8 @@ def main():
 *Generated {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} from broker records.
 Pre-registered endpoint and consequences: [FORWARD_TEST_PROTOCOL.md](FORWARD_TEST_PROTOCOL.md).*
 
+![stat card](images/forward_test_card.svg)
+
 ## The number that matters
 
 | | |

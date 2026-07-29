@@ -179,6 +179,8 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 
 ## The forward tests — one concluded, one live
 
+![The 100-trade forward test stat card](docs/images/forward_test_card.svg)
+
 The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
 ran $16,665.12 → **$18,421.85 (+10.54%)** over its 100-trade window — **90 wins, 10
 losses, 90.0%** (the single post-window operator close is asterisked) — and its full record is archived in-repo
