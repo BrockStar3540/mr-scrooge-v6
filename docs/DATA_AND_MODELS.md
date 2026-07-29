@@ -10,10 +10,12 @@ and **its leak status**, so a public reader can re-run or challenge any result i
 > **Public archive (read-only Dropbox share):**
 > https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
 >
-> Entry points inside the archive: `00_MASTER_INDEX.md`, `00_HISTORY_V1-V6.md`,
-> `00_BOOK_OF_BUGS_V4-V5.md`. Paths below are archive-relative (`/SCROOGE/SCROOGE ARCHIVE/…`). The archive is
-> being consolidated into `models/` and `corpora/` subfolders; the paths below are the canonical
-> post-consolidation locations.
+> Entry points inside the archive: `00_MASTER_INDEX.md` (updated 2026-07-29 — lists every private
+> holding with size + content hash), `00_MANIFEST.json` (machine-readable listing of every file in
+> both trees with Dropbox content hashes — verify downloads against it), `00_HISTORY_V1-V6.md`,
+> `00_BOOK_OF_BUGS_V4-V5.md`. The raw archives below live in the PRIVATE annex at
+> `research-corpora/{mini,alien,ec2}` (grouped by machine of origin) — the public folder holds a
+> pointer README in their place. Request any of them by name in a Discussion.
 
 **How to read leak status** (full rules: [`../research/README.md`](../research/README.md) truth
 hierarchy): the dividing line is **2026-07-03**, when the H1 look-ahead leak (**B-078**) was found and
@@ -29,7 +31,7 @@ bar. Labels used here:
 
 ---
 
-## Models — `/SCROOGE/SCROOGE ARCHIVE/models/`
+## Models — private annex, `research-corpora/` (by machine of origin)
 
 All tree models are LightGBM unless noted; `model.txt` artifacts load with
 `lightgbm.Booster(model_file="model.txt")`, with feature order/categorical levels in the accompanying
@@ -56,7 +58,7 @@ bugs were models silently fed dead or truncated features (B-085; the 60-bar `OBV
 
 ---
 
-## Corpora — `/SCROOGE/SCROOGE ARCHIVE/corpora/`
+## Corpora — private annex, `research-corpora/` (by machine of origin)
 
 | Tarball | Contents / schema | Granularity · window | Leak status | Size |
 |---|---|---|---|---|
