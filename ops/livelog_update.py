@@ -2,15 +2,15 @@
 """ops/livelog_update.py — the public live track record for the CURRENT config.
 
 Runs on EC2 (has the OANDA token via ~/.openclaw/secrets.env). Tracks the
-practice account's performance SINCE THE CURRENT EXIT CONFIG went live — the
-range-sized wide-stop ratchet (SL 40/50/60 · engage +8.5 · trail 2.5 fixed) + V6.1 poppers,
-fully deployed 2026-07-16 01:11 UTC (the B-090 trail_mult=0 fix completed it).
-Earlier trades belong to prior configs and are deliberately NOT counted.
+REAL-MONEY account's performance since the live cutover (2026-07-29, $2,500
+stake), executed per the pre-registered protocol after the 100-trade practice
+window closed at +10.54% (docs/FORWARD_TEST_100_REPORT.md). The practice-era
+record is archived at livelog/practice-forward-test-2026-07/ and is immutable.
 
 Headline = realized P/L of trades closed under this config (the honest record),
 plus current open trades. The OANDA token NEVER leaves EC2 and NEVER enters the
-repo; published output is numbers only (no account id, no token). Practice
-account. Fail-soft: OANDA unreachable → files untouched, exit 0.
+repo; published output is numbers only (no account id, no token). REAL money.
+Fail-soft: OANDA unreachable → files untouched, exit 0.
 
 To re-anchor on a future config change: bump ANCHOR_TS + ANCHOR_LABEL, delete
 livelog/trades.csv + livelog/.seed, and re-run.
@@ -26,9 +26,13 @@ EQUITY = LIVELOG / "equity.csv"
 TRADES = LIVELOG / "trades.csv"
 SVG = LIVELOG / "equity.svg"
 
-ANCHOR_TS = "2026-07-16T01:11:00Z"
-ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed (7.5→8.5 on 2026-07-19) + Party Package popper grids (V6.1)"
-ANCHOR_HUMAN = "2026-07-16"
+# LIVE ERA (2026-07-29): the real-money account, cut over per the pre-registered
+# protocol after the 100-trade practice window closed at +10.54%. Same code,
+# same book, gearing 15%/trade · 6 max for the smaller stake. The practice
+# record is archived at livelog/practice-forward-test-2026-07/.
+ANCHOR_TS = "2026-07-29T11:00:00Z"
+ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed + Party Package popper grids · 15%/trade · 6 max"
+ANCHOR_HUMAN = "2026-07-29"
 
 def secrets():
     d = {}
@@ -144,22 +148,9 @@ try:
 except Exception as e:
     print(f"livelog: trade rebuild failed ({e})", file=sys.stderr); sys.exit(0)
 
-# FORWARD-TEST PROTOCOL (Brock, 2026-07-28): the test ENDS at trade #100 —
-# docs/FORWARD_TEST_PROTOCOL.md. One-time flag + operator alert when the tape
-# reaches n >= 100; the write-up and live cutover follow the protocol.
-_FT_FLAG = LIVELOG / ".ft100_alerted"
-if n_tr >= 100 and not _FT_FLAG.exists():
-    try:
-        _FT_FLAG.write_text(f"{now.isoformat()} n={n_tr}\n")
-        with open("/data/obsidian-vault/wiki/systems/agent-activity-log.md", "a") as _l:
-            _l.write(f"- {now.strftime('%Y-%m-%dT%H:%MZ')} [livelog-cron] 🏁 FORWARD TEST "
-                     f"COMPLETE: trade #{n_tr} closed. Protocol: freeze practice entries, "
-                     f"run research/tools/forward_test_100.py, publish write-up, close "
-                     f"practice, live cutover $2,500 @ 15%/trade x6 max "
-                     f"(docs/FORWARD_TEST_PROTOCOL.md)\n")
-        print(f"livelog: FORWARD TEST COMPLETE - {n_tr} trades (flag raised)")
-    except Exception:
-        pass
+# (The 100-trade forward-test trigger lived here 07-28→07-29; the window
+# closed at 99 natural trades + 2 operator close-outs — see
+# docs/FORWARD_TEST_100_REPORT.md. The live era needs no endpoint flag.)
 
 # starting balance at anchor, reconstructed & self-consistent (no deposits on this acct)
 start_bal = bal - realized - financing
@@ -209,7 +200,7 @@ try:
       '<rect x="1" y="1" width="898" height="298" rx="16" fill="url(#bg)" stroke="#30363d"/>',
       f'<circle cx="40" cy="42" r="6" fill="{GREEN}"/>',
       f'<text x="56" y="47" font-size="14" font-weight="700" fill="{TXT}" letter-spacing="2">LIVE</text>',
-      f'<text x="98" y="47" font-size="14" fill="{DIM}" letter-spacing="1">· MR. SCROOGE — CURRENT CONFIG</text>',
+      f'<text x="98" y="47" font-size="14" fill="{DIM}" letter-spacing="1">· MR. SCROOGE — REAL MONEY</text>',
       f'<text x="862" y="47" font-size="12" fill="{DIM}" text-anchor="end">NAV ${nav:,.2f}</text>',
       f'<text x="38" y="118" font-size="66" font-weight="800" fill="{ACC}">{hero}</text>',
       f'<text x="{pct_x}" y="118" font-size="26" font-weight="700" fill="{ACC}">{"▲" if tot>=0 else "▼"} {pct:+.2f}%</text>',
@@ -221,7 +212,7 @@ try:
       f'<polygon points="{area}" fill="url(#fill)"/>',
       f'<polyline points="{line}" fill="none" stroke="{ACC}" stroke-width="2.5"/>',
       f'<circle cx="{xs[-1]:.1f}" cy="{ys[-1]:.1f}" r="4" fill="{ACC}"/>',
-      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +8.5 → lock +6 → trail 2.5 · V6.1 poppers · OANDA practice · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
+      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +8.5 → lock +6 → trail 2.5 · poppers · 15%/trade · OANDA LIVE — real money · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
       '</svg>\n',
     ]
     SVG.write_text("".join(parts))
@@ -246,11 +237,13 @@ block = (
     f"![status]({b_live}) ![P/L]({b_pl}) ![trades]({b_tr}) ![open]({b_open})\n\n"
     f"[![live track record](livelog/equity.svg)](livelog/trades.csv)\n\n"
     f"</div>\n\n"
-    f"> **Live track record of the *current* configuration** — {ANCHOR_LABEL}, live since {ANCHOR_HUMAN} "
-    f"({n_pop} popper trade{'' if n_pop==1 else 's'} in the record), "
-    f"auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). "
-    f"Small sample, honest record. Prior configs and the −84% research tuition are a different story — "
-    f"[read the history](docs/SCROOGE_HISTORY.md). Practice account, not real money.\n"
+    f"> **🔴 REAL-MONEY track record** — ${2500:,} live stake since {ANCHOR_HUMAN}, cut over after the "
+    f"[100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). "
+    f"{ANCHOR_LABEL} ({n_pop} popper trade{'' if n_pop==1 else 's'} in the record), auto-updated hourly from "
+    f"**broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, "
+    f"honest record — some trades sit red for days under the wide stops before exiting green; that is the design, "
+    f"not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). "
+    f"The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/).\n"
     f"<!-- LIVE_BALANCE_END -->")
 txt = README.read_text()
 new = re.sub(r"<!-- LIVE_BALANCE_START -->.*?<!-- LIVE_BALANCE_END -->", block, txt, flags=re.S)

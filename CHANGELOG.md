@@ -4,6 +4,30 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.10.0] — 2026-07-29 — "Real Money" — THE LIVE CUTOVER + VERSION FREEZE
+
+The pre-registered protocol executed end to end. The practice window closed at
+$16,665.12 → $18,421.85 (+10.54%, 99 system-managed closes, 89.9% WR vs 82.1% breakeven;
+two operator close-outs asterisked). The same code, same book, same governor now trades
+$2,500 of real money.
+
+### Changed
+- **Live account wired** per protocol: gearing 15%/trade · 6 concurrent (was 10%/8),
+  popper total-margin cap 0.9. Book continuity verified: config/cells untouched, every
+  ACTIVE stayed ACTIVE, every SHADOW stayed SHADOW, era clocks intact.
+- **Livelog re-anchored to the live account** (anchor 2026-07-29): same hourly pipeline,
+  trades + equity + README chart, numbers only. Practice record archived immutable at
+  livelog/practice-forward-test-2026-07/; full raw broker export (11,564 transactions,
+  account creation → close) public in the archive under proof-of-tape/.
+- **README finalized**: real-money badges and track-record block, final account tape,
+  the patience-game section (red-for-days is the design), concluded-test framing,
+  Book of Bugs B-099→B-106.
+
+### FEATURE FREEZE
+This repository now changes only to **fix reported bugs**. Significant future
+development ships as **Mr. Scrooge V7**, separately. The live record publishes hourly
+regardless.
+
 ## [6.9.0] — 2026-07-28 — "The Hundred-Trade Protocol"
 
 The forward test gets a pre-registered endpoint and a declared consequence — before the

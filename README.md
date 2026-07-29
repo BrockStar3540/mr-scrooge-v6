@@ -11,7 +11,7 @@
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
 
-![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_practice-cf8e3e) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![release](https://img.shields.io/github/v/release/BrockStar3540/mr-scrooge-v6?color=3fb950&label=release)](https://github.com/BrockStar3540/mr-scrooge-v6/releases) &nbsp; [![governor](https://img.shields.io/badge/bar_governor-autonomous-58a6ff)](docs/GOVERNOR.md) &nbsp; **[`forward test · verdict at trade #100`](docs/FORWARD_TEST_PROTOCOL.md)**
+![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_LIVE_·_real_money-f85149) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![release](https://img.shields.io/github/v/release/BrockStar3540/mr-scrooge-v6?color=3fb950&label=release)](https://github.com/BrockStar3540/mr-scrooge-v6/releases) &nbsp; [![governor](https://img.shields.io/badge/bar_governor-autonomous-58a6ff)](docs/GOVERNOR.md) &nbsp; **[`practice test complete: +10.54% · now live`](docs/FORWARD_TEST_100_REPORT.md)**
 
 </div>
 
@@ -33,7 +33,7 @@
 
 ![The tape: practice-account balance from $100k through the $15,598 low to today](docs/images/account_tape.svg)
 
-Everything here was paid for on one practice account, and we publish its tape rather than curate it. It opened at **$100,000 (Mar 22, 2026)** and bottomed at **$15,598** (July 10 by daily closing balance) — an **−84% drawdown** across the V1→V4 strategy eras. That number is the strongest argument in this repo: five versions of increasingly careful research could not out-predict the market. V5's measurement overhaul (broker-fill truth, cell-era falsification discipline) stopped the bleeding; the V6 trial system is the climb attempt. The chart regenerates from broker transaction balances (`research/tools/account_tape.py`) — it can't go stale and it can't be curated.
+Everything here was paid for on one practice account, and we publish its tape rather than curate it. It opened at **$100,000 (Mar 22, 2026)** and bottomed at **$15,598** (July 10 by daily closing balance) — an **−84% drawdown** across the V1→V4 strategy eras. That number is the strongest argument in this repo: five versions of increasingly careful research could not out-predict the market. V5's measurement overhaul (broker-fill truth, cell-era falsification discipline) stopped the bleeding; the V6 trial system is the climb attempt. The chart is generated from broker transaction balances (`research/tools/account_tape.py`) — it can't be curated. The practice account **concluded 2026-07-29 at $18,421.85** (the [100-trade forward test](docs/FORWARD_TEST_100_REPORT.md) closed it +10.54% from its window start) and is retired. **Proof of the entire tape:** the complete raw broker export — **11,564 transactions from account creation (2026-02-21) to close**, every era including the −84% tuition — is public in [the archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) under `proof-of-tape/`.
 
 ## The game — house, not gambler
 
@@ -46,7 +46,21 @@ Most bots wager that some indicator reveals *which way* price will go. We spent 
 - **Wide stops, after a hard lesson.** The old tighten-to-winners'-MAE dial-in was **survivorship-biased** — MAE was measured only on trades that survived to win, blind to the ones a tight stop would have killed first. An 8-yr head-to-head: tight book blew up, wide book profited.
 - **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+8.5 → lock +6 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
 - **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired at laddered adverse levels, each with its own 60p server-side SL and its own ratchet. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in toll — this deployment is the live test of exactly that claim ([full paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). Global kill switch + per-cell opt-outs on the dashboard.
-- **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers), `max_per_currency_direction = 4`, 10% of balance notional per trade, ~80% total exposure ceiling.
+- **Portfolio caps are risk only, no alpha:** `max_concurrent = 6` (parents + poppers), `max_per_currency_direction = 4`, 15% of balance notional per trade, ~90% total exposure ceiling. (The practice test ran 10%/8; the live gearing compensates for the smaller stake — declared in the [protocol](docs/FORWARD_TEST_PROTOCOL.md) before cutover.)
+
+## The patience game — red for days is the design
+
+This is **not a high-speed sniper bot**, and the dashboard will regularly look "wrong" to
+anyone expecting one. The stops are wide (40–60 pips by session swing) and there is no
+timeout — which means **a trade can sit red for days** before the move it entered on
+finally develops, engages the ratchet, and exits green. That is the strategy working,
+not failing: the 100-trade test's geometry was an **89.9% win rate against a breakeven
+requirement of 82.1%** — many small harvested greens (avg **+$41**) paid for by rare, large,
+patient stops (avg **−$189**). The wide stop is the price of not letting noise kill a slow
+winner; the open-positions panel spending most of its life underwater is what buying that
+patience looks like. If a red position for three days reads as an emergency to you, this
+bot will be very uncomfortable to watch — the drawdown between entry and harvest is part
+of the machine, and when a wide stop does hit, it takes a real bite.
 
 ## The trial system — how a strategy earns (and loses) its seat
 
@@ -163,17 +177,21 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 | Wide-stop book (H6, pre-registered WF) | gross Sharpe 1.26 real, **net 0.03** — the edge equals the execution toll ([paper](docs/papers/PAPER_h6_walkforward_2026-07-16.md)) |
 | Scale-in / popper grids (10 rounds) | gross harvest ~+100–150p/parent is **real**; toll ~130–190p is bigger; the majors are **first-passage fair** at every lock level ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
 
-## The forward tests now running
+## The forward tests — one concluded, one live
 
-Everything live is a **forward experiment on a practice account**, scored against **broker fills**
-(never our own logs), per configuration, at n≥20 before any verdict — no aggregate blending across eras.
+The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
+ran $16,665.12 → **$18,421.85 (+10.54%)** over 99 system-managed closes (two operator
+close-outs asterisked), and its full record is archived in-repo
+([livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/)) and in the
+public archive (`proof-of-tape/`, the complete raw export). As pre-registered, the same code
+now trades **$2,500 of real money** — the live record at the top of this page updates hourly
+from broker fills. Everything below is scored against **broker fills** (never our own logs),
+per configuration, at n≥20 before any verdict — no aggregate blending across eras.
 
-> **📜 The 100-trade protocol (pre-registered 2026-07-28):** the current-config window
-> **ends at its 100th closed trade** — then the full write-up publishes here (starting
-> balance **$16,665.12** broker-verified, ending balance, the whole tape), the practice
-> account closes, and the system goes **live with $2,500 real money** at 15%/trade,
-> 6 trades max — same hourly public livelog, same graph, real fills. The endpoint, the
-> consequences, and the live gearing were all declared *before* the result was known:
+> **📜 The 100-trade protocol — pre-registered 2026-07-28, EXECUTED 2026-07-29:** the
+> endpoint, the consequences, and the live gearing were declared at trade 93, before the
+> result was known; the [final report](docs/FORWARD_TEST_100_REPORT.md) and the live
+> cutover followed the protocol to the letter:
 > [docs/FORWARD_TEST_PROTOCOL.md](docs/FORWARD_TEST_PROTOCOL.md). To be plain: **100
 > trades in two weeks is not proof of sustained edge** — it's enough for *us personally*
 > to try live with a small stake. Use your own discernment; results vary over time, and
@@ -223,10 +241,10 @@ if two qualify in the same window, best takes $10,000 and the runner-up $5,000.
 | 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | **start here** — the falsification method, the activation-bar doctrine, open dockets |
 | 🤖 **[The Bar Governor](docs/GOVERNOR.md)** | the autonomous promote/demote loop — the standard, why the numbers, the rails, the ledger, the ON/OFF switch |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
-| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-098 — every dead end and defect, on purpose |
+| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-106 — every dead end and defect, on purpose |
 | 📄 **[Papers index](docs/papers/)** | incl. the [cost-aware exit-classes paper](docs/PAPER_cost_aware_exit_classes_2026-07-05.md) (the chapter the wide-stop turn revised) |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
-| 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | the readable research record — papers, session notes, backtest results & version history, **with errata where later findings superseded them** (raw corpora / models / code privately archived, available on request) |
+| 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | the readable research record — papers, session notes, backtest results & version history, **with errata where later findings superseded them**, plus `proof-of-tape/` — the practice account's complete raw broker export (raw corpora / models / code privately archived, available on request) |
 | ⚙️ **[Setup](docs/SETUP.md)** | from-zero install: OANDA **practice** account, venv, credentials (dashboard **or** env vars), run |
 | 📊 **[Dashboard](docs/DASHBOARD.md)** | the local control panel at `:8084` — every tab, every switch, `DASHBOARD_HOST` for LAN use |
 | 🏆 **[Contest Terms](CONTEST.md)** | the standing $10,000 strategy challenge — rules, criteria, how to submit |
@@ -234,6 +252,16 @@ if two qualify in the same window, best takes $10,000 and the runner-up $5,000.
 | ⚖️ **[License](LICENSE)** | Apache-2.0 |
 
 *Think we're wrong? Good. [The archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) holds the papers, notes, and backtest results; the raw corpora are available on request so you can re-run the analysis and attack the conclusions — leak-checked corpus → walk-forward → fired-trade sim → shadow → capital. Nothing reaches the live path without passing that gauntlet.*
+
+## The version freeze — V6 is complete
+
+With the live cutover, **this repository is feature-frozen.** It will be modified only to
+**fix reported bugs** (open an issue). The hourly live record keeps publishing regardless —
+the tape doesn't need new features to keep being honest. Significant future development —
+new strategy machinery, new trial systems, anything beyond a bug fix — will ship as
+**Mr. Scrooge V7**, a separate release with its own record, so this repo stays exactly what
+it is: the complete, closed story of how V6 was built, tested, and sent to work with real
+money.
 
 ## ☕ Support this work
 
