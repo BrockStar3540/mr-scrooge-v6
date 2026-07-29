@@ -35,11 +35,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-PIP = {
-    "AUD_JPY": 0.01,  "EUR_JPY": 0.01, "USD_JPY": 0.01,
-    "AUD_USD": 0.0001, "EUR_USD": 0.0001, "GBP_USD": 0.0001,
-    "USD_CAD": 0.0001, "USD_CHF": 0.0001,
-}
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(__file__), "..", ".."))
+from config.pairs import PIP  # canonical 18-pair map (B-108: no more private copies)
 FWD_BARS   = 12       # 12 × M5 = 60 minutes forward
 SETTLE_S   = 3900     # need 60 min + 5 min buffer before scoring
 DEAD_THRESH = 5.0     # pips; trade is "dead" if forward MFE < DEAD_THRESH
