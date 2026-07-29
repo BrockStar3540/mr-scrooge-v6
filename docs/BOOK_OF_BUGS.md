@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-098, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-106, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -586,6 +586,71 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** three, all latent since the 07-22 staleness overhaul. (1) The status-join edit pasted `def _config_status():` into the MIDDLE of `main()` at column 0 — syntactically valid Python that ended `main()` after the "Found N lines" print and swallowed the rest of the body as unreachable code inside the new function. The scorer exited 0 with empty stdout. (2) `server.py`'s `_journal_unit()` still defaulted to the retired `mr-scrooge-v6-dryrun` unit — the 07-22 fix updated shadowboard.py and the scorer but missed the third copy of the same default. (3) `_cellscore_refresh()` reset its `refreshing` flag AFTER the `return` (unreachable), so the first failed refresh wedged the error in the cache until the next process restart.
 - **Fix:** `_config_status` moved above `main()` and the body re-stitched; `_journal_unit()` default → `mr-scrooge-v6`; flag reset moved into `finally`; scorer subprocess timeout 120s → 600s (verified real run 66s, 31 setups).
 - **Lesson:** an insert-a-helper edit can silently bisect the enclosing function — Python won't object if the orphaned remainder still indents under the new def. Smoke-test the artifact the edit serves (run the scorer, curl the endpoint), not just the importability. And a default that exists in three files isn't a default, it's three bugs waiting to drift.
+
+### B-099 — Config-order trial bias: first-ACTIVE early return starved every later setup of stamps
+- **Date:** 2026-07-27 (external review, claim verified true)
+- **Area:** `modules/cells/cell.py` evaluation loop
+- **Symptom:** setups listed after an ACTIVE setup in a cell's config stamped far less than their conditions warranted — their shadow evidence accrued at a fraction of the fair rate.
+- **Root cause:** the evaluation loop returned on the first ACTIVE setup that fired, skipping stamp evaluation for everything after it in config order. Trial fairness depended on JSON array position.
+- **Fix:** every setup evaluates and stamps every cycle; the first ACTIVE result is selected after the loop. 3 regression tests.
+- **Lesson:** in a trial system, the *evidence pipeline* must be unconditional — any early exit in scoring is a thumb on the scale, even when the trading decision itself is correct.
+
+### B-100 — Config validator frozen at the July-04 schema: rejected all 18 live configs (and nobody noticed)
+- **Date:** 2026-07-27 (external review)
+- **Area:** config validator + `config/cells/*.json`
+- **Symptom:** the validator declared every live cell config invalid (18/18) while the bot traded them happily — so the tool guarding the configs had been decorative for weeks.
+- **Root cause:** schema written at the July-04 cell-era cutover, never updated as fields evolved; the pair list was also a third hardcoded copy.
+- **Fix:** schema synced to live reality, pair list reads `config.pairs`, and `tests/test_cell_config_schema.py` validates every shipped config parametrically (with anti-vacuity corruption tests so a always-passing validator fails loud).
+- **Lesson:** a validator that isn't in CI drifts into fiction; enforce it against the real artifacts on every run, and make the test suite prove the validator can still say no.
+
+### B-101 — Dashboard writers callable cross-origin (CORS `*`) + DNS-rebinding exposure
+- **Date:** 2026-07-27/28 (external review rounds 1–2)
+- **Area:** `ops/server.py` HTTP layer
+- **Symptom:** any web page in the operator's browser could POST to the localhost dashboard's write endpoints (status flips, pause, config writes); a DNS-rebinding page could reach it without CORS at all.
+- **Root cause:** `Access-Control-Allow-Origin: *` on all endpoints; no Host validation; no auth on writers.
+- **Fix (staged):** wildcard removed + same-origin write guard (Origin must match Host) → Host allowlist (421 on unknown hosts, beats rebinding — live-verified) + `X-Scrooge-Token` auth on writers + outbound OANDA host allowlist (token can't be exfiltrated by a poisoned URL). Footnote: the allowlist initially locked out the operator's own Tailscale-serve hostname (421) — allowlisted via systemd drop-in.
+- **Lesson:** "it only binds to localhost" is not a security boundary while a browser sits on the same host.
+
+### B-102 — Fail-open runtime controls: a corrupt file could re-enable trading
+- **Date:** 2026-07-27/28 (external review; R2 added last-known-good)
+- **Area:** trading pause, `pp_config.json`, governor config readers
+- **Symptom:** unreadable/corrupt control files silently fell back to permissive defaults — a truncated pause file meant trading ON; a corrupt pp_config re-armed grids and erased per-cell opt-outs.
+- **Root cause:** `except: return default` on safety switches, with the default being the permissive state.
+- **Fix:** fail-closed across the board (corrupt pause can never re-enable; corrupt pp_config can never re-arm; corrupt governor config disables the run) with per-path last-known-good retention; the legacy fail-open test was doctrine-reversed. The reviewer predicted the LKG cache would flake under randomized test order (4/5 seeds) — reproduced, then fixed with path-keyed state.
+- **Lesson:** for a control whose job is to say STOP, every failure mode must also mean stop.
+
+### B-103 — Execution truth (D-5): quote-anchored stops, mid-price management, unreconciled order intents
+- **Date:** 2026-07-28 (external review finding 3, shipped staged)
+- **Area:** order placement, ratchet/management pricing, broker glue
+- **Symptom cluster:** (a) SL priced off the pre-order quote, not the actual fill — slippage silently widened or tightened real risk; (b) the ratchet keyed off mid, flattering every popper by half the spread; (c) an HTTPError during order submission was treated as "no order" — but OANDA may have accepted it (PENDING/404-now ≠ never-existed), risking duplicates and orphans; empty parent fill responses were adopted as entries.
+- **Fix:** fill-anchored SL distances + fills adopted as true entries with slippage logging; management on the executable side (bid for long exits / ask for shorts); `sv6-*` client order intent ids with timeout reconciliation and an order-finality quarantine (entries + popper fires halt until every intent is proven filled or rejected; empty fills rejected).
+- **Lesson:** the trade you *intended* is not the trade you *have* — every price the system acts on must come from the broker's side of the fill, and every submission must be reconciled to a terminal state.
+
+### B-104 — The promotion math measured a different game than the account played (D-6/D-7)
+- **Date:** 2026-07-28 (external review finding 6 + round 2)
+- **Area:** shadow scoring, governor promotion statistics
+- **Symptom:** stamps scored frictionless mid drift at a fixed 240m horizon; overlapping episodes were counted as independent; ~150 hypotheses were tested daily at per-test 95% confidence. Poster child: the t20s twins showed +1.38p "gross tease" that was −1.1p net of cost.
+- **Root cause:** the metric predated the cost doctrine and the exit geometry; the statistics predated the docket's size.
+- **Fix:** executable-exit-v2 metric (stamped executable entry, bid/ask path, the setup's own exit simulated worst-case intrabar), net-of-cost everywhere, overlap-aware effective n, day/session block bootstrap, BH-FDR across the docket, sequential-peeking guard — and a one-time METRIC-ERA-RESET so no setup carries old-metric proof into the new era.
+- **Lesson:** measure candidates in the units the account pays, or the promotion pipeline becomes a machine for discovering measurement error.
+
+### B-105 — Demotion was blind to poppers: a −$858 family could not lose its seat
+- **Date:** 2026-07-28/29 (found via the forward-test tape; fixed as the FAMILY RULE, v6.7.x)
+- **Area:** `ops/governor.py` fills evidence
+- **Symptom:** the forward test's single loss driver — GBP/USD-long `rvol_low_240`, −$858 across 20 fills — was invisible to demotion: the fills rule filtered `tag == cell_v1`, so 18 popper losses didn't exist as evidence, and the 2-trade parent leg was under the n≥5 floor.
+- **Root cause:** demotion evidence predated the Party Package; poppers (51 of the window's 101 trades) were never added to it.
+- **Fix:** poppers self-attribute their parent setup (`psu` in client extensions; grid-anchor join for older fills); the governor convicts and defends on **family** net pips (±60p at n≥5), switches the cell's poppers off with a lost seat, and — after the parent-stops-first boundary case — issues **no verdict while any family trade is open** (judge-when-flat).
+- **Lesson:** if a subsystem can lose money, it must be attributable to a seat the governor can take away; unattributed P/L is unaccountable P/L.
+
+### B-106 — Governor ledger card rendered `undefined/undefined/undefined` for era-reset entries
+- **Date:** 2026-07-28 (caught in a screenshot during the v6.8.0 dashboard work)
+- **Area:** `ops/panel.html` ledger renderer
+- **Symptom:** METRIC-ERA-RESET / ERA-RESET ledger lines displayed `undefined/undefined/undefined` where the setup should be.
+- **Root cause:** the renderer assumed every ledger entry carries `pair/session/setup`; reset entries carry a single `key` field.
+- **Fix:** renderer falls back to `key` (pipes → slashes). Cosmetic, but the ledger is the governor's public face — it shouldn't stutter.
+- **Lesson:** when a log format grows a second shape, every consumer of the first shape is now a renderer bug waiting for a screenshot.
+
+
 
 ---
 
