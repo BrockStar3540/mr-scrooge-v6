@@ -112,7 +112,15 @@ try:
             pass
         _trade_meta_cache[tid] = (d, src)
         return d, src
+    # DEPOSIT-AWARE (2026-07-29): external transfers must never read as trading
+    # P/L. Each TRANSFER_FUNDS since the anchor is collected with its timestamp;
+    # the start balance backs them out, and the headline % uses a simple-Dietz
+    # denominator (each deposit weighted by the fraction of the window it was
+    # actually at work) so a deposit neither inflates nor dilutes the bot's %.
+    transfers = []            # (iso_time, amount) — deposits +, withdrawals −
     for t in txns:
+        if t.get("type") == "TRANSFER_FUNDS":
+            transfers.append((t.get("time", ""), float(t.get("amount", 0))))
         if t.get("type") == "DAILY_FINANCING":
             financing += float(t.get("financing", t.get("amount", 0)))
         if t.get("type") == "ORDER_FILL" and float(t.get("pl", 0)) != 0 and t.get("time", "") >= ANCHOR_TS:
@@ -152,17 +160,31 @@ except Exception as e:
 # closed at 99 natural trades + 2 operator close-outs — see
 # docs/FORWARD_TEST_100_REPORT.md. The live era needs no endpoint flag.)
 
-# starting balance at anchor, reconstructed & self-consistent (no deposits on this acct)
-start_bal = bal - realized - financing
-tot = realized + upl  # config-to-date: booked greens + open marks
-pct = (tot / start_bal * 100) if start_bal else 0.0
+# starting balance at anchor, reconstructed & self-consistent — deposits and
+# withdrawals since the anchor are backed OUT, so external money never reads
+# as trading P/L.
+net_transfers = sum(a for _, a in transfers)
+start_bal = bal - realized - financing - net_transfers
+tot = realized + upl  # config-to-date: booked greens + open marks — transfers never touch this
+# Simple-Dietz capital base: start balance plus each transfer weighted by the
+# fraction of the window it was actually invested. With zero transfers this is
+# exactly start_bal (identical to the old formula).
+_t0 = datetime.fromisoformat(ANCHOR_TS.replace("Z", "+00:00"))
+_span = max((now - _t0).total_seconds(), 1.0)
+_dietz = start_bal + sum(
+    a * max(0.0, min(1.0, 1.0 - (datetime.fromisoformat(ts[:26].rstrip("Z") + "+00:00")
+                                 - _t0).total_seconds() / _span))
+    for ts, a in transfers if ts)
+pct = (tot / _dietz * 100) if _dietz else 0.0
 
 # ── equity snapshot (NAV over time, from first run forward) ───────────────────
 new_eq = not EQUITY.exists()
 with open(EQUITY, "a", newline="") as f:
     w = csv.writer(f)
-    if new_eq: w.writerow(["utc", "nav", "balance", "unrealized_pl", "open_trades", "realized_since_config"])
-    w.writerow([now.strftime("%Y-%m-%dT%H:%M:%SZ"), f"{nav:.2f}", f"{bal:.2f}", f"{upl:.2f}", opn, f"{realized:.2f}"])
+    if new_eq: w.writerow(["utc", "nav", "balance", "unrealized_pl", "open_trades",
+                           "realized_since_config", "net_deposits"])
+    w.writerow([now.strftime("%Y-%m-%dT%H:%M:%SZ"), f"{nav:.2f}", f"{bal:.2f}", f"{upl:.2f}", opn,
+                f"{realized:.2f}", f"{net_transfers:.2f}"])
 
 rsign = "+" if realized >= 0 else "−"
 usign = "+" if upl >= 0 else "−"
@@ -237,7 +259,10 @@ block = (
     f"![status]({b_live}) ![P/L]({b_pl}) ![trades]({b_tr}) ![open]({b_open})\n\n"
     f"[![live track record](livelog/equity.svg)](livelog/trades.csv)\n\n"
     f"</div>\n\n"
-    f"> **🔴 REAL-MONEY track record** — ${2500:,} live stake since {ANCHOR_HUMAN}, cut over after the "
+    + (f"> **Capital added since cutover: {'+' if net_transfers >= 0 else '−'}${abs(net_transfers):,.2f}** — "
+       f"backed out of the record: deposits/withdrawals never count as trading P/L, and the headline % is "
+       f"time-weighted against the capital actually at work.\n>\n" if abs(net_transfers) >= 0.01 else "")
+    + f"> **🔴 REAL-MONEY track record** — ${2500:,} live stake since {ANCHOR_HUMAN}, cut over after the "
     f"[100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). "
     f"{ANCHOR_LABEL} ({n_pop} popper trade{'' if n_pop==1 else 's'} in the record), auto-updated hourly from "
     f"**broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, "
