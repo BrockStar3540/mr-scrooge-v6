@@ -110,8 +110,10 @@ def _simulate_ratchet(
     horizon_min: int,
 ) -> float:
     """Adverse-first ratchet simulation.  Returns net pips (signed, net of spread)."""
-    pip = PIP[pair]
-    spread = SPREAD_PIPS.get(pair, 1.0)
+    # universal FX rule for pairs beyond the hardcoded 8 (the v6.3 replay
+    # crosses arrived after this map — the B-098 lesson, again):
+    pip = PIP.get(pair, 0.01 if "JPY" in pair else 0.0001)
+    spread = SPREAD_PIPS.get(pair, 3.0 if "USD" not in pair else 1.5)
 
     to_dt   = entry_time + timedelta(minutes=horizon_min + 10)
     candles = _fetch_candles(pair, entry_time, to_dt)

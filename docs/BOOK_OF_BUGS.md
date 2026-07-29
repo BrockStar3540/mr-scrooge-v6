@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-107, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-108, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -657,6 +657,15 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** `pm_margin_pct()` / `pm_max_concurrent()` read `[ccount\][...]`; the cutover script wrote the new values at the top level of the JSON — legal, present, and completely unread. The B-092/B-096 lesson in a new costume: an edit that lands outside the read path is a no-op wearing a diff.
 - **Fix:** values set inside the `account` block, strays deleted, effective values verified through the actual readers (`pm_margin_pct() == 0.15`). Hot-reload applies from the next fire; trade #1 keeps its smaller size (conservative — no action).
 - **Lesson:** after changing a config, verify through the FUNCTION that reads it, never by re-reading the file. The file agreeing with you proves nothing about what the program sees.
+
+### B-108 — Setup Scoreboard died on the replay crosses: a fourth hardcoded pair map
+- **Date:** 2026-07-29 (Brock: "scorer error" on the SHADOW tab)
+- **Area:** `research/tools/cell_setup_score.py`
+- **Symptom:** the Setup Scoreboard card showed `scorer error: ... exit status 1`; the scorer crashed with `KeyError: AUD_CAD` the moment a replay-book cross stamp entered its window.
+- **Root cause:** the scorer carried its own hardcoded 8-pair `PIP`/`SPREAD_PIPS` maps, written before the v6.3 replay shadow book added ten cross pairs. B-098's closing lesson ("a default that exists in three files isn't a default, it's three bugs waiting to drift") — this was file four.
+- **Fix:** `.get()` with the universal FX rule (`0.01` for JPY quotes, `0.0001` otherwise; conservative cross spreads). The dashboard card self-heals on its next refresh (the B-098 fix put the flag reset in `finally`).
+- **Lesson:** every hardcoded pair list is a time bomb armed by the next pair added. Grep for the others before they go off.
+
 
 
 
