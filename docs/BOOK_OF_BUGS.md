@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-108, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-111, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -665,6 +665,30 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** the scorer carried its own hardcoded 8-pair `PIP`/`SPREAD_PIPS` maps, written before the v6.3 replay shadow book added ten cross pairs. B-098's closing lesson ("a default that exists in three files isn't a default, it's three bugs waiting to drift") — this was file four.
 - **Fix:** `.get()` with the universal FX rule (`0.01` for JPY quotes, `0.0001` otherwise; conservative cross spreads). The dashboard card self-heals on its next refresh (the B-098 fix put the flag reset in `finally`).
 - **Lesson:** every hardcoded pair list is a time bomb armed by the next pair added. Grep for the others before they go off.
+
+### B-109 — The dashboard said PRACTICE while trading real money
+- **Date:** 2026-07-29 (caught during the SHADOW-tab accuracy audit, hours after the cutover)
+- **Area:** `config/credentials.local.json` mode flag + the header banner; also the SHADOW tab's phase banner
+- **Symptom:** the top banner read "● PRACTICE — PAPER TRADING" with a green tint while the $2,500 real-money account traded beneath it. Separately, the SHADOW tab's phase banner still showed the July-5 "shadow week — day 24 of 7" countdown, green and stale, three weeks after its window closed.
+- **Root cause:** the cutover swapped the *credentials* (secrets.env outranks everything, so trading was genuinely live) but never flipped the cosmetic-but-critical `mode` flag the header renders from — and the resume-trading confirmation gate keys off the same flag, so the "TRADE REAL MONEY" typed-confirm requirement was silently inactive. The phase banner was simply never retired when its era ended.
+- **Fix:** mode → live (red **LIVE — REAL MONEY** header), `SCROOGE_ALLOW_LIVE=1` armed via systemd drop-in, phase banner replaced with the live-era status line.
+- **Lesson:** a cutover isn't done when the money moves — it's done when every label, gate, and banner agrees about which world it's in. The scariest state isn't wrong; it's *plausible*.
+
+### B-110 — The public P/L would have counted deposits as profit (fixed before it could)
+- **Date:** 2026-07-29 (fixed pre-emptively, before any deposit existed)
+- **Area:** `ops/livelog_update.py` start-balance reconstruction
+- **Symptom (latent):** the livelog reconstructs the starting balance as `balance − realized − financing`, assuming zero external transfers. The first real deposit would have silently inflated the published "trading profit" by its full amount — the exact dishonesty this repo exists to never commit, on its most public number.
+- **Fix:** `TRANSFER_FUNDS` transactions are backed out of the reconstruction; the headline % uses a simple-Dietz time-weighted capital base; `equity.csv` gained a `net_deposits` column (young file normalized in place — the mixed-schema render lesson applied proactively); the README discloses added capital automatically.
+- **Lesson:** audit every derived public number for the assumption that will someday stop holding. The best bug report is the one filed before the bug can happen.
+
+### B-111 — The cutover pause turned 10 tests red: fixtures were reading production runtime state
+- **Date:** 2026-07-29 (caught post-push — the failure itself was masked in the moment)
+- **Area:** `tests/test_party_package.py`, `tests/test_family_ledger.py` + the release pipeline
+- **Symptom:** every popper fire test failed the moment live trading was paused — and the red suite still got pushed once, because `pytest … | tail -1` reports *tail's* exit code, not pytest's.
+- **Root cause:** two. (1) The fire-gate calls `trading_enabled()`, which reads the real `config/runtime.json` — the fixtures never isolated it, so the test suite's result depended on whether the live bot happened to be paused. (2) The pipe swallowed the failing exit status, so the guard-rail didn't guard.
+- **Fix:** fixtures monkeypatch `trading_enabled`; suite green under any live-box state.
+- **Lesson:** a test that reads production state isn't a test, it's a mood ring — and any check whose exit code passes through a pipe isn't a check.
+
 
 
 
