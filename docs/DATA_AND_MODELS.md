@@ -13,9 +13,17 @@ and **its leak status**, so a public reader can re-run or challenge any result i
 > Entry points inside the archive: `00_MASTER_INDEX.md` (updated 2026-07-29 — lists every private
 > holding with size + content hash), `00_MANIFEST.json` (machine-readable listing of every file in
 > both trees with Dropbox content hashes — verify downloads against it), `00_HISTORY_V1-V6.md`,
-> `00_BOOK_OF_BUGS_V4-V5.md`. The raw archives below live in the PRIVATE annex at
-> `research-corpora/{mini,alien,ec2}` (grouped by machine of origin) — the public folder holds a
-> pointer README in their place. Request any of them by name in a Discussion.
+> `00_BOOK_OF_BUGS_V4-V5.md`.
+>
+> **WAVE-1 DATA RELEASE (2026-07-29): the seven core data corpora are now PUBLIC** in the
+> archive's `research-corpora/` (~5.4 GB): `qtl-discovery-8yr` (clean 8yr OHLCV+feature
+> parquets, per pair), `v5-truth-matrix` (8 pairs × 8yr simulated entries w/ forward
+> MFE/MAE), `continuous_corpus` + `continuous_corpus_unbiased`, `allbars_corpus`,
+> `factor_lift_v1`, and `forexsb_h1` (the raw H1 source). Each was hash-verified,
+> content-listed, secret-swept (0 hits) and column-audited (0 account-linked fields)
+> before publication; verify downloads against `00_MANIFEST.json`. Remaining holdings
+> (model binaries, code mirrors) stay in the private annex — request by name in a
+> [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions).
 
 **How to read leak status** (full rules: [`../research/README.md`](../research/README.md) truth
 hierarchy): the dividing line is **2026-07-03**, when the H1 look-ahead leak (**B-078**) was found and
