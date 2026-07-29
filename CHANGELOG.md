@@ -4,6 +4,44 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.11.0] — 2026-07-29 — "Day One, Live" — the first-day patch series
+
+Everything the first hours of real money exposed, fixed the same day. The freeze holds:
+every change below is a defect fix or a truth-of-reporting fix — no new trading behavior.
+
+### Fixed
+- **B-107 — the first live fill sized at 10%, not 15%**: the cutover wrote the live gearing
+  as dead top-level JSON keys while the sizing readers pull from the `account` block.
+  Caught on trade #1 within minutes, fixed through the actual readers, hot-reloaded.
+- **B-108 — Setup Scoreboard crashed on the replay crosses** (`KeyError: AUD_CAD`, a fourth
+  private 8-pair map) — plus the follow-through: **all research tools now import the
+  canonical 18-pair map** (four more private copies retired).
+- **The dashboard said PRACTICE while trading real money** — credentials mode flipped to
+  live (red "LIVE — REAL MONEY" header), `SCROOGE_ALLOW_LIVE` armed, stale July-5
+  shadow-week banner replaced with the live-era status line, governor-ledger
+  `undefined/undefined` render fixed.
+- **Deposit-aware livelog**: `TRANSFER_FUNDS` backed out of the reconstructed start
+  balance; headline % is simple-Dietz time-weighted; `net_deposits` column; the README
+  discloses added capital automatically. External money can never read as trading P/L.
+- **Popper fire tests isolated from the live runtime pause** (the cutover freeze turned
+  10 tests red — fixtures were reading production `config/runtime.json`).
+
+### Changed (reporting truth, operator-ruled)
+- **The 100-trade record finalized per the protocol as written**: the window is the first
+  100 closed trades — **90W/10L, 90.0%**, realized +$1,793.50 — trade #100 (an operator
+  close) daggered in-window, #101 asterisked post-window; broker-diff verified the tape
+  complete. The record moved to its own top-level **`forward-test-100/`** (out of
+  `livelog/`, which now holds only the real-money log), with a folder README, a
+  normalized one-schema equity CSV, and the **forward-test stat card** leading the README
+  (`research/tools/forward_test_card.py` — computed from the tape, never typed).
+- **Shadowboard truth pass**: 🔻 DEMOTE DUE now tops the board (most actionable, worst
+  first); **AWAITING V2** verdict distinguishes legacy-history rows from never-scored
+  QUEUED rows (v1 history never counts toward the bar — the era reset, stated in-place);
+  both long explainers collapse to one-line summaries.
+- **Research release pointers**: waves 1+2 of the archive data/tools release
+  (7 corpora + 3 tool bundles public, deep-swept; one backup bundle private permanently
+  after the sweep located an embedded credential) — see `docs/DATA_AND_MODELS.md`.
+
 ## [6.10.0] — 2026-07-29 — "Real Money" — THE LIVE CUTOVER + VERSION FREEZE
 
 The pre-registered protocol executed end to end. The practice window closed at
