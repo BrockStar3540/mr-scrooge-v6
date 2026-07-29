@@ -24,7 +24,7 @@
 
 </div>
 
-> **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed + Party Package popper grids · 15%/trade · 6 max (0 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/).
+> **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed + Party Package popper grids · 15%/trade · 6 max (0 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/livelog/practice-forward-test-2026-07).
 <!-- LIVE_BALANCE_END -->
 
 ---
@@ -182,7 +182,7 @@ Five edge families died at the same wall — on retail OANDA majors, no price-*p
 The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
 ran $16,665.12 → **$18,421.85 (+10.54%)** over its 100-trade window — **90 wins, 10
 losses, 90.0%** (the single post-window operator close is asterisked) — and its full record is archived in-repo
-([livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/)) and in the
+([livelog/practice-forward-test-2026-07/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/livelog/practice-forward-test-2026-07)) and in the
 public archive (`proof-of-tape/`, the complete raw export). As pre-registered, the same code
 now trades **$2,500 of real money** — the live record at the top of this page updates hourly
 from broker fills. Everything below is scored against **broker fills** (never our own logs),

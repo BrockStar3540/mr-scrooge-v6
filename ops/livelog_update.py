@@ -243,7 +243,7 @@ block = (
     f"**broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, "
     f"honest record — some trades sit red for days under the wide stops before exiting green; that is the design, "
     f"not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). "
-    f"The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](livelog/practice-forward-test-2026-07/).\n"
+    f"The concluded practice record is archived at [livelog/practice-forward-test-2026-07/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/livelog/practice-forward-test-2026-07).\n"
     f"<!-- LIVE_BALANCE_END -->")
 txt = README.read_text()
 new = re.sub(r"<!-- LIVE_BALANCE_START -->.*?<!-- LIVE_BALANCE_END -->", block, txt, flags=re.S)
