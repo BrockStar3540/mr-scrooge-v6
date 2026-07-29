@@ -46,7 +46,7 @@ be public either way.
    [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100)),
    win/loss geometry, per-family attribution, and what the family rule changed mid-test.
    Generator: `research/tools/forward_test_100.py`.
-3. **Close the practice account.** The practice livelog (trades, equity, graph) is
+3. **Close the practice account.** The practice log (trades, equity, graph) is
    archived in-repo as the concluded test — the record stays public and immutable.
 4. **Go live with $2,500 real money.** Deliberately small: the point of the forward test
    was never the practice balance, it was whether the system clears its costs on real
