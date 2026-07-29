@@ -259,14 +259,16 @@ def _families():
     return _FAM_CACHE["data"]
 
 
-# Governor-ordered tiers — the board sorts EXACTLY the way capital moves.
+# Governor-ordered tiers — the board sorts EXACTLY the way capital moves,
+# with the most ACTIONABLE tier first (Brock, 2026-07-29): demote-due leads,
+# then the best seats, then the promotion pipeline.
 TIER_LABELS = {
+    0: "DEMOTE DUE — loses the seat at the next 06:35Z run",
     1: "DEFENDED — broker family green, seat safe",
     2: "ACTIVE — holding (or episode open, verdict deferred)",
     3: "PROMOTE READY — passes the full bar at the next 06:35Z run",
     4: "BUILDING EVIDENCE — shadows accruing the era-v2 sample",
     5: "QUEUED — wired, no scored era evidence yet",
-    6: "DEMOTE DUE — loses the seat at the next 06:35Z run",
     7: "RETIRED / EX-SIDE — history kept as the autopsy",
 }
 
@@ -281,7 +283,7 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw):
         demote, reason = _av(e_obj, f, gc, min_raw)
         famnet = f["net_pips"] if f else 0.0
         if demote:
-            return 6, "DEMOTE DUE", reason, famnet
+            return 0, "DEMOTE DUE", reason, famnet
         if reason == "family_green":
             return 1, "DEFENDED", reason, famnet
         if reason == "episode_open":
@@ -448,7 +450,9 @@ def _aggregate(db):
         g = r.get("gov")
         tier = g["tier"] if g else 7
         score = g["score"] if g else (r["lcb"] if r["lcb"] is not None else -1e9)
-        return (tier, -score,
+        # tier 0 (demote due): WORST first — urgency order; every other tier:
+        # best first.
+        return (tier, score if tier == 0 else -score,
                 -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
     out.sort(key=_key)
     return out

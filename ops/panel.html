@@ -771,8 +771,11 @@ body.has-ticker{padding-bottom:32px}
          style="margin-left:12px;font-size:11px;font-weight:normal;text-transform:none;letter-spacing:0">
          How it works &amp; what it&#39;s tuned to →</a>
     </div>
-    <div class="muted" style="padding:0 12px 6px;font-size:11px">
-      The bot flips its own switches, daily at 06:35 UTC.<br>
+    <details style="padding:0 12px 6px">
+      <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
+        The bot flips its own switches, daily at 06:35 UTC — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. <b>Full standard ▾</b>
+      </summary>
+    <div class="muted" style="padding:6px 0 0;font-size:11px">
       <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
       only): n≥20 eps · ≥10 independent day-blocks · avg ≥ +2.0p/ep net ·
       block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket.<br>
@@ -790,6 +793,7 @@ body.has-ticker{padding-bottom:32px}
       every flip restarts that setup&#39;s evidence clock · decisions logged to
       <code>data/governor_ledger.jsonl</code>.
     </div>
+    </details>
     <div id="gov-ledger" class="mono muted" style="padding:0 12px 10px;font-size:10.5px"></div>
   </div>
 
@@ -797,11 +801,14 @@ body.has-ticker{padding-bottom:32px}
     <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
     </div>
-    <div class="muted" style="padding:0 12px 8px;font-size:11px">
-      <b>Sorted exactly as the governor acts</b> — best seats at the top, demote-due at the
-      bottom: 🛡 defended actives → holding/deferred actives → 🏆 promote-ready shadows →
+    <details style="padding:0 12px 8px">
+      <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
+        <b>Sorted exactly as the governor acts</b> — 🔻 demote-due leads (most actionable), then the best seats, then the pipeline. <b>How to read this board ▾</b>
+      </summary>
+    <div class="muted" style="padding:6px 0 0;font-size:11px">
+      🔻 demote-due (worst first — these lose their seats at 06:35Z) → 🛡 defended actives → holding/deferred actives → 🏆 promote-ready shadows →
       shadows building evidence (ranked by how many bar conditions they already pass) →
-      queued → 🔻 demote-due. Each row&#39;s <b>verdict</b> is computed by the governor&#39;s own
+      queued → 🪦 retired. Each row&#39;s <b>verdict</b> is computed by the governor&#39;s own
       code — the board can never disagree with the 06:35Z run.<br>
       <b>family (broker)</b> = the setup + its poppers, one unit, era net pips on real
       fills; ⏳ = family has open trades, verdict deferred until flat (judge-when-flat).
@@ -817,6 +824,7 @@ body.has-ticker{padding-bottom:32px}
       are the same test. ⚠️ = ACTIVE without era v2 bar evidence yet (sample restarted
       2026-07-28; expected until it accrues).
     </div>
+    </details>
     <table id="sb-tbl" style="width:100%">
       <thead><tr>
         <th>setup</th><th>cell</th><th>side</th><th>status</th>
@@ -1123,7 +1131,7 @@ async function pollShadowboard(){
     const d=await r.json();
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
-    const TIER_ICON={1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',6:'🔻',7:'🪦'};
+    const TIER_ICON={0:'🔻',1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',7:'🪦'};
     let lastTier=null;
     document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
       const tier=x.gov?x.gov.tier:7;
@@ -2826,16 +2834,14 @@ function renderLiveCellChip(){
 function renderShadowTab(){
   const ph=document.getElementById('shadow-phase');
   if(ph){
-    const now=Date.now();
-    if(now<SHADOW_START_UTC){
-      const hrs=(SHADOW_START_UTC-now)/3.6e6;
-      ph.className='banner banner-gray';
-      ph.innerHTML=`<span class="pill pill-info">PHASE C</span> Shadow week starts at first market open — Sunday 2026-07-05 21:00 UTC (in ${hrs>=48?Math.round(hrs/24)+'d':hrs.toFixed(1)+'h'}) · Phase D readiness: needs ≥1 clean week of stamps`;
-    }else{
-      const days=(now-SHADOW_START_UTC)/8.64e7;
-      ph.className=days>=7?'banner banner-green':'banner banner-amber';
-      ph.innerHTML=`<span class="pill ${days>=7?'pill-pass':'pill-warn'}">SHADOW WEEK</span> day ${days.toFixed(1)} of 7 since first stamped open (2026-07-05 21:00 UTC) · Phase D readiness: needs ≥1 clean week${days>=7?' — window complete, review the scoreboard':''}`;
-    }
+    // Live real-money era status (replaced the concluded 2026-07-05 Phase C/D
+    // shadow-week countdown, which sat green-and-stale after its week ended).
+    const CUTOVER_UTC=Date.UTC(2026,6,29,11,0,0);
+    const days=(Date.now()-CUTOVER_UTC)/8.64e7;
+    ph.className='banner banner-green';
+    ph.innerHTML=`<span class="pill pill-fail">🔴 REAL MONEY</span> day ${days.toFixed(1)} since the live cutover (2026-07-29) · `+
+      `${CSHADOW?.n_total??'—'} stamps / 48h · governor rules daily at 06:35 UTC · `+
+      `every ACTIVE seat is earned evidence, every SHADOW is on trial`;
   }
   const body=document.getElementById('stampfeed-body');
   const emptyEl=document.getElementById('stampfeed-empty');
