@@ -4,6 +4,18 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.2] — 2026-07-30 — "Trust the Switch"
+
+### Fixed
+- **B-113 — manual status flips were invisible for up to 15 minutes**: the SHADOW
+  board's payload is cached (rebuilt at most every 15 min) and each row's status was
+  baked in at build time, so flipping a cell ACTIVE from the dashboard changed what the
+  engine trades immediately but the board kept showing the pre-flip snapshot. Now
+  (1) `get_board()` re-joins `config/cells` at serve time — live status always wins,
+  rows re-tier and re-sort in place; (2) `POST /api/cell/status` invalidates the board
+  cache so the next load kicks a full rebuild. Aggregates may be cached; **state never
+  is**. Five regression tests; suite 296.
+
 ## [6.12.1] — 2026-07-30 — "Guardrails on the Dice"
 
 Same-day hardening of the cheater rule, plus a status-semantics guarantee.

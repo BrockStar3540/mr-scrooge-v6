@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-112, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-113, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -696,6 +696,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** the **live** account returns mangled `clientExtensions` on the *trades* endpoint — `tag` becomes `"0"` and `comment` truncates to ~32 chars — while the **transaction stream carries them pristine**. (Practice never did this.) Everything keyed on the trades-endpoint copy: popper recovery filtered `tag == "pp_v1"` (missed → poppers fell to the parent path and were dropped), parent gear `json.loads` failed on truncation, and the audit's open-trade attribution read the same mangled copy (→ `n_open` undercounted → flat-when-not).
 - **Fix (three layers):** (1) recovery classifies popper-vs-parent by **comment shape** with the tag as a hint only, and both decoders regex-extract whatever fields survive truncation; (2) both comment encoders reordered **most-critical-fields-first** (`su` leads parent comments, `anc`/`lvl` lead popper comments) so even a 32-char surviving prefix carries what recovery and family attribution need; (3) the audit's open-trade attribution now prefers the trade's **opening transaction** record (pristine) over the trades-endpoint copy. Recovery verified live: both poppers adopted, ratchet locked +24p and +16p within seconds, one already banked green.
 - **Lesson:** the same field from two API endpoints is two different fields. Trust the stream you verified — and design every wire format so the *front* of it is the part you can't live without.
+
+### B-113 — Manual status flips invisible for up to 15 minutes: the SHADOW board served baked-in status from its cache
+- **Date:** 2026-07-30 (Brock: "i tried to switch those 3 cells active manually… it shows them still as shadows")
+- **Area:** `ops/shadowboard.py` (board cache), `ops/server.py` (`/api/cell/status`)
+- **Symptom:** Brock flipped three shadows ACTIVE from the dashboard; the config write succeeded and the engine would trade them on its next scan — but every dashboard refresh kept showing them as SHADOW, "waiting to promote." The operator couldn't tell whether his own switch had worked.
+- **Root cause:** the board payload is rebuilt at most every 15 minutes (`_REFRESH_S = 900`) and served stale-while-revalidate; each row's `status` was joined from `config/cells` **at build time only**, so a flip made inside the cache window was baked over by the pre-flip snapshot until the next rebuild happened to run.
+- **Fix (two layers):** (1) `get_board()` now re-joins `config/cells` **at serve time** — where the live status differs from the cached row it patches status + tier in place (flagged `flip_pending`, EX-SIDE rows untouched) and re-sorts, so status is always the live truth even from a stale payload; (2) `POST /api/cell/status` invalidates the board cache, so the next page load kicks an immediate full rebuild. Five regression tests; suite 296.
+- **Lesson:** cache aggregates, never state. A number that changes when the operator throws a switch must be read fresh on every serve — the human's control loop breaks the moment the display stops trusting the switch.
 
 
 

@@ -462,16 +462,20 @@ def _aggregate(db):
     # last-but-for-retired), score desc inside a tier — the board reads
     # top-to-bottom exactly as the governor ranks the book. Rows without a
     # gov view (EX-SIDE, engine-degraded) fall back to the old LCB order.
-    def _key(r):
-        g = r.get("gov")
-        tier = g["tier"] if g else 7
-        score = g["score"] if g else (r["lcb"] if r["lcb"] is not None else -1e9)
-        # tier 0 (demote due): WORST first — urgency order; every other tier:
-        # best first.
-        return (tier, score if tier == 0 else -score,
-                -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
-    out.sort(key=_key)
+    out.sort(key=_row_key)
     return out
+
+
+def _row_key(r):
+    """Governor board order — module-level so the B-113 serve-time status
+    overlay can re-sort the cached rows after a flip."""
+    g = r.get("gov")
+    tier = g["tier"] if g else 7
+    score = g["score"] if g else (r["lcb"] if r["lcb"] is not None else -1e9)
+    # tier 0 (demote due): WORST first — urgency order; every other tier:
+    # best first.
+    return (tier, score if tier == 0 else -score,
+            -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
 
 _REFRESHING = {"on": False}
 
@@ -494,6 +498,57 @@ def _refresh_worker():
     finally:
         _REFRESHING["on"] = False
 
+def invalidate():
+    """A status flip just landed (POST /api/cell/status) — mark the cached
+    board stale so the next GET kicks an immediate background rebuild. The
+    B-113 overlay keeps the served rows truthful in the meantime."""
+    with _LOCK:
+        _CACHE["ts"] = 0.0
+
+
+def _overlay_live_status(data):
+    """B-113: the board payload is cached up to 15 min, but STATUS must never
+    be stale — a manual (or governor) flip has already changed what the
+    engine trades. Re-join config/cells at serve time; where the live status
+    differs from the baked row, patch status + tier in place, flag the row
+    (flip_pending) so the UI knows the full governor view is still
+    rebuilding, and re-sort. EX-SIDE rows keep their autopsy badge (the
+    side-aware join from build time owns them)."""
+    rows = data.get("rows") or []
+    if not rows:
+        return
+    cfg = _config_status()
+    changed = False
+    for r in rows:
+        if r.get("status") == "EX-SIDE":
+            continue
+        pair, _, sess = (r.get("cell") or "").partition("/")
+        st = cfg.get((pair, sess or "?", r.get("setup")))
+        if not st or st[0] == r.get("status"):
+            continue
+        if st[1] not in (r.get("side"), "?", None):
+            continue          # side retired since build — EX-SIDE logic owns it
+        live = st[0]
+        r["status"] = live
+        r["flip_pending"] = True
+        g = r.get("gov")
+        if g is not None:
+            if live == "ACTIVE":
+                g.update(tier=2, verdict="HOLDING",
+                         reason="seated since the last board build — full "
+                                "family/bar view on the next refresh")
+            elif live == "SHADOW":
+                g.update(tier=4 if r.get("era") else 5,
+                         verdict="BUILDING" if r.get("era") else "QUEUED",
+                         reason="benched since the last board build — full "
+                                "view on the next refresh")
+            else:             # DISABLED — off the governor's docket entirely
+                r["gov"] = None
+        changed = True
+    if changed:
+        rows.sort(key=_row_key)
+
+
 def get_board():
     """INSTANT: returns the cached board (or a building placeholder) and kicks
     a background refresh when stale. Never blocks the single-threaded server."""
@@ -506,4 +561,8 @@ def get_board():
     if data is None:
         return {"rows": [], "active_median": None, "pending": None,
                 "generated": None, "building": True}
+    try:
+        _overlay_live_status(data)   # B-113: status is always live truth
+    except Exception:
+        pass
     return data

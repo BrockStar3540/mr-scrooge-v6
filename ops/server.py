@@ -1673,6 +1673,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     log.info("cell status %s/%s/%s: %s -> %s (dashboard)",
                              res["pair"], res["session"], res["setup_id"],
                              res["old_status"], res["status"])
+                    try:                     # B-113: board must show it NOW
+                        from ops import shadowboard as _sb
+                        _sb.invalidate()
+                    except Exception:
+                        pass
                 except Exception as exc:
                     body = _j.dumps({"ok": False, "error": str(exc)}).encode()
                     ctype, code = "application/json", 400
