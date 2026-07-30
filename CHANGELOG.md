@@ -4,6 +4,29 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.1] — 2026-07-30 — "Guardrails on the Dice"
+
+Same-day hardening of the cheater rule, plus a status-semantics guarantee.
+
+### Changed
+- **Cheater floor: `cheater_min_n` = 3** — one lucky episode can't buy a seat. The +100p
+  cumulative must span at least 3 era episodes.
+- **Cheater check now precedes the sequential-peeking guard** — the guard exists to stop
+  re-rolling unchanged evidence against the *statistical* bar; a fixed threshold has no
+  p to hack, so it evaluates every run. (Found live: the first cheater candidate was
+  silently skipped until this reorder.)
+- **First CHEATER-PROMOTE executed**: `CAD_JPY/asia ps_ceil_fade_short` — the March-replay
+  resurrection cross — promoted on era cum +116.8p (5/5 green episodes). Same run: second
+  autonomous family-red demotion (`USD_JPY/london timing_lean_30`, −175.4p family).
+
+### Added
+- **DISABLED IS SACRED**: a manually disabled setup is untouchable by every automation —
+  the bar, the cheater rule, the counterpart audit, all of it. Beyond the existing loop
+  filters, `flip()` now re-reads the LIVE status at flip time (promote requires
+  currently-SHADOW, demote requires currently-ACTIVE), so disabling a cell by hand
+  mid-run can never be overridden by a stale snapshot. Regression-tested; documented in
+  GOVERNOR.md. Suite 291.
+
 ## [6.12.0] — 2026-07-30 — "The Operator's Amendments"
 
 Three operator-ruled changes. Two are amendments to the published freeze, disclosed as
