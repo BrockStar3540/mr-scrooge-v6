@@ -4,6 +4,32 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.11.1] — 2026-07-30 — "The Two Endpoints" — CRITICAL fix for LIVE accounts
+
+**If you trade this bot on a real-money account, update now.** B-112: OANDA **live**
+accounts return mangled `clientExtensions` on the *trades* endpoint — `tag` comes back
+`"0"` and `comment` truncates to ~32 characters — while the *transaction* stream carries
+them pristine. Practice accounts don't do this, so nothing in the practice era could have
+caught it. Consequences on our live box (day two): after a process restart, **two open
+poppers were not re-adopted** — unmanaged for ~16 hours (server-side stops held; no
+ratchet locking profits) and invisible to the dashboard — and the same blindness made
+their family read "flat," so it was **demoted mid-episode** (a judge-when-flat bypass;
+the verdict happened to survive full-data review).
+
+### Fixed
+- **Recovery is tag-agnostic**: poppers vs parents classified by comment *shape* (tag is
+  a hint only); both decoders regex-extract whatever fields survive truncation. Verified
+  live: both orphans adopted on restart, the ratchet locked +24p and +16p within seconds,
+  one banked green minutes later.
+- **Comment encoding is truncation-resilient**: critical fields lead the string — `su`
+  first in parent gear comments, `anc`/`lvl` first in popper comments — so even a 32-char
+  surviving prefix carries what recovery and family attribution need.
+- **Family/open-trade attribution reads the pristine source**: open trades attribute from
+  their opening *transaction* record, falling back to the trades-endpoint copy only when
+  necessary — judge-when-flat can no longer be blinded by the endpoint mangling.
+
+Full write-up: Book of Bugs **B-112**. Suite 287 green.
+
 ## [6.11.0] — 2026-07-29 — "Day One, Live" — the first-day patch series
 
 Everything the first hours of real money exposed, fixed the same day. The freeze holds:
