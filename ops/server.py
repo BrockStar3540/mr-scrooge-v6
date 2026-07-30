@@ -1267,19 +1267,31 @@ def _governor_get() -> dict:
             "generated_at": datetime.now(timezone.utc).isoformat()}
 
 def _governor_post(payload: dict) -> tuple[int, dict]:
-    """POST /api/governor {enabled: bool} — merge-preserving atomic write."""
-    if not isinstance(payload, dict) or not isinstance(payload.get("enabled"), bool):
-        return 400, {"ok": False, "error": "payload must be {\"enabled\": true|false}"}
+    """POST /api/governor {enabled: bool} and/or {cheater: bool} —
+    merge-preserving atomic write. `cheater` toggles the opt-in CHEATER
+    PROMOTION rule (era cum >= +100p promotes immediately, default OFF)."""
+    if not isinstance(payload, dict) or (
+            not isinstance(payload.get("enabled"), bool)
+            and not isinstance(payload.get("cheater"), bool)):
+        return 400, {"ok": False,
+                     "error": "payload must set \"enabled\" and/or \"cheater\" (bool)"}
     try:
         cfg = _j.loads(_GOVERNOR_CFG.read_text())
     except Exception:
         cfg = {}
-    cfg["enabled"] = payload["enabled"]
+    if isinstance(payload.get("cheater"), bool):
+        cfg["cheater_promotion_enabled"] = payload["cheater"]
+        log.info("governor CHEATER PROMOTION %s via dashboard",
+                 "ON" if payload["cheater"] else "OFF")
+    if isinstance(payload.get("enabled"), bool):
+        cfg["enabled"] = payload["enabled"]
     tmp = _GOVERNOR_CFG.with_suffix(".tmp")
     tmp.write_text(_j.dumps(cfg, indent=2) + "\n")
     tmp.replace(_GOVERNOR_CFG)
-    log.info("governor %s via dashboard", "ENABLED" if cfg["enabled"] else "DISABLED")
-    return 200, {"ok": True, "enabled": cfg["enabled"]}
+    log.info("governor state via dashboard: enabled=%s cheater=%s",
+             cfg.get("enabled"), cfg.get("cheater_promotion_enabled", False))
+    return 200, {"ok": True, "enabled": cfg.get("enabled", True),
+                 "cheater": cfg.get("cheater_promotion_enabled", False)}
 
 
 # ── Cell scoreboard (cell_setup_score.py --json, cached 300s) ────────────────

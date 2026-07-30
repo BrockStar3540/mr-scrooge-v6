@@ -236,12 +236,13 @@ class OandaBroker:
             "type":       "MARKET",
             "instrument": pair,
             "units":      str(signed),
-            # D-5 (2026-07-28, external review): SL as a DISTANCE — OANDA
-            # anchors it to the ACTUAL fill. The old absolute price was
-            # computed from the pre-order quote, so entry slippage silently
-            # widened or narrowed the real stop distance.
-            "stopLossOnFill": {"distance": f"{sl_pips * pip:.{prec}f}"},
         }
+        # D-5 (2026-07-28, external review): SL as a DISTANCE — OANDA anchors
+        # it to the ACTUAL fill. sl_pips=0 omits the attached stop entirely
+        # (B-097/v6.12 two-step FIFO dodge: fire naked, attach post-fill —
+        # the caller MUST attach or close immediately).
+        if sl_pips and sl_pips > 0:
+            order["stopLossOnFill"] = {"distance": f"{sl_pips * pip:.{prec}f}"}
         # Exit-gear persistence: survives restarts so recovery re-adopts the
         # trade's ENTRY gear instead of exit_config defaults (AUDIT_TODO item).
         if client_ext:

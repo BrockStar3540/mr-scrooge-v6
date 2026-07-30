@@ -478,13 +478,55 @@ class PartyPackage:
             return
         trade_id = str(trade.get("id") or "")
         if not trade_id:
-            # Order placed but NOT filled (e.g. OANDA FIFO_VIOLATION_SAFEGUARD
-            # cancels the FOK market order, B-097). Treating this as a fill
-            # created a phantom popper and an 82-attempt retry storm.
-            log.warning("PP FIRE rejected (no fill) %s marker=-%sp — broker cancelled "
-                        "the order (FIFO safeguard?) | engine=pp_v1", pair, key)
-            self._fire_rejected(g, key, now, "no-fill")
-            return
+            # Order placed but NOT filled — on US LIVE accounts this is almost
+            # always the FIFO safeguard rejecting the ATTACHED stop while older
+            # same-instrument trades are open (B-097; far stricter live than
+            # practice, and it was thinning the grids to ~half density).
+            # TWO-STEP DODGE (Brock, 2026-07-30): retry ONCE as a naked market
+            # order, then attach the stop immediately after the fill. If the
+            # stop cannot be attached, the position is closed on the spot —
+            # a popper is NEVER left naked.
+            log.warning("PP FIRE no-fill %s marker=-%sp (FIFO safeguard?) — "
+                        "retrying two-step | engine=pp_v1", pair, key)
+            try:
+                trade = self.broker.place_market(
+                    pair, g.side, units=units, entry_price=entry_price,
+                    sl_pips=0.0,
+                    client_ext=_popper_client_ext(cfg, offset_pips, g.anchor,
+                                                  g.parent_setup),
+                )
+            except Exception as exc:
+                log.warning("PP FIRE two-step failed %s marker=-%sp: %s",
+                            pair, key, exc)
+                self._fire_rejected(g, key, now, str(exc))
+                return
+            trade_id = str(trade.get("id") or "")
+            if not trade_id:
+                log.warning("PP FIRE rejected (no fill, both attempts) %s "
+                            "marker=-%sp | engine=pp_v1", pair, key)
+                self._fire_rejected(g, key, now, "no-fill")
+                return
+            pip = PIP[pair]
+            fill_px = float(trade.get("price") or entry_price)
+            sl_px = (fill_px - cfg["sl_pips"] * pip if g.side == "long"
+                     else fill_px + cfg["sl_pips"] * pip)
+            try:
+                self.broker.move_stop(trade_id, sl_px, pair)
+                log.info("PP FIRE two-step OK %s marker=-%sp trade_id=%s — "
+                         "SL attached post-fill @ %.5f | engine=pp_v1",
+                         pair, key, trade_id, sl_px)
+            except Exception as exc:
+                log.error("PP FIRE two-step SL ATTACH FAILED %s trade_id=%s "
+                          "(%s) — closing immediately, never naked | engine=pp_v1",
+                          pair, trade_id, exc)
+                try:
+                    self.broker.close_position(trade_id)
+                except Exception as exc2:
+                    log.critical("PP two-step emergency close FAILED %s "
+                                 "trade_id=%s: %s — MANUAL ACTION NEEDED",
+                                 pair, trade_id, exc2)
+                self._fire_rejected(g, key, now, "sl-attach-failed")
+                return
         pip = PIP[pair]
         # D-5 (external review): adopt the broker fill as the popper's true
         # entry — SL reference and ratchet baseline follow it (the server-side

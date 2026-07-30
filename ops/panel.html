@@ -773,12 +773,12 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <details style="padding:0 12px 6px">
       <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
-        The bot flips its own switches, daily at 06:35 UTC — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. <b>Full standard ▾</b>
+        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar (or the opt-in 🎲 +100p cheater rule), demote/defend on family broker net pips, judge-when-flat. <b>Full standard ▾</b>
       </summary>
     <div class="muted" style="padding:6px 0 0;font-size:11px">
       <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
       only): n≥20 eps · ≥10 independent day-blocks · avg ≥ +2.0p/ep net ·
-      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket.<br>
+      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket — <b>OR the 🎲 CHEATER RULE (opt-in, default OFF — the toggle above)</b>: era-v2 cumulative net ≥ <b>+100p</b> promotes immediately, bar bypassed. A hot hand gets its seat without waiting out the sample; the family rule demotes it if it cools. Every use is ledgered as CHEATER-PROMOTE.<br>
       <b>⬇ Demote — THE FAMILY RULE</b> (v6.7, net loss is the key): a parent setup and
       the poppers its grid fired are <b>one economic unit in broker net pips</b> (every
       popper fill carries its parent&#39;s id). Family n≥5 at <b>≤ −60p</b> (one popper SL)
@@ -806,7 +806,7 @@ body.has-ticker{padding-bottom:32px}
         <b>Sorted exactly as the governor acts</b> — 🔻 demote-due leads (most actionable), then the best seats, then the pipeline. <b>How to read this board ▾</b>
       </summary>
     <div class="muted" style="padding:6px 0 0;font-size:11px">
-      🔻 demote-due (worst first — these lose their seats at 06:35Z) → 🛡 defended actives → holding/deferred actives → 🏆 promote-ready shadows →
+      🔻 demote-due (worst first — these lose their seats at the next 6-hour run) → 🛡 defended actives → holding/deferred actives → 🏆 promote-ready shadows →
       shadows building evidence (ranked by how many bar conditions they already pass) →
       queued → 🪦 retired. Each row&#39;s <b>verdict</b> is computed by the governor&#39;s own
       code — the board can never disagree with the 06:35Z run.<br>
@@ -1214,10 +1214,15 @@ async function pollGovernor(){
     const r=await fetch('/api/governor'); if(!r.ok)return;
     const d=await r.json();
     const on=!!d.enabled;
+    const ch=!!(d.config&&d.config.cheater_promotion_enabled);
     document.getElementById('gov-toggle').innerHTML=
       `<button class="pill ${on?'pill-pass':'pill-fail'}" style="cursor:pointer;border:none;font-weight:700"
         onclick="setGovernor(${!on})" title="Toggle autonomous promote/demote (writes config/governor_config.json)">
-        AUTO-PROMOTE/DEMOTE: ${on?'ON':'OFF'}</button>`;
+        AUTO-PROMOTE/DEMOTE: ${on?'ON':'OFF'}</button>
+       <button class="pill ${ch?'pill-warn':'pill-block'}" style="cursor:pointer;border:none;font-weight:700;margin-left:6px"
+        onclick="setCheater(${!ch})" title="OPT-IN: instantly promote any shadow whose current-era cumulative net reaches +100 pips — no waiting for the 20-trade bar. A hot hand gets a seat fast; the family rule still demotes it if it cools. Default OFF.">
+        🎲 CHEATER PROMOTION: ${ch?'ON':'OFF'}</button>
+       ${ch?'<span class="muted" style="font-size:10px;margin-left:6px">era cum ≥ +100p ⇒ instant seat (ledgered CHEATER-PROMOTE)</span>':''}`;
     const led=(d.ledger_tail||[]).slice(0,3).map(e=>{
       // flip entries carry pair/session/setup; ERA-RESET entries carry "key"
       const who=e.pair?`${e.pair}/${e.session}/${e.setup}`:(e.key||'').replace(/\|/g,'/');
@@ -1228,11 +1233,19 @@ async function pollGovernor(){
   }catch(e){}
 }
 async function setGovernor(enabled){
-  if(enabled && !confirm('Enable the Bar Governor?\n\nThe bot will AUTONOMOUSLY promote shadows to ACTIVE (live trading) and demote actives to SHADOW, daily at 06:35 UTC, by the published standard. Continue?'))return;
+  if(enabled && !confirm('Enable the Bar Governor?\n\nThe bot will AUTONOMOUSLY promote shadows to ACTIVE (live trading) and demote actives to SHADOW, every 6 hours, by the published standard. Continue?'))return;
   if(!enabled && !confirm('Disable the Bar Governor?\n\nNo automatic promotions or demotions will run until re-enabled; the book only changes by hand.'))return;
   try{
     await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({enabled})});
+  }catch(e){}
+  pollGovernor();
+}
+async function setCheater(cheater){
+  if(cheater && !confirm('Enable CHEATER PROMOTION?\n\nAny SHADOW whose current-era cumulative net reaches +100 pips is promoted to ACTIVE (live trading) IMMEDIATELY — no 20-trade bar, no day-block minimum, no statistical confidence check. A hot hand gets a seat fast, and the family rule demotes it if it cools.\n\nThis trades sooner on less evidence. Opt-in only. Continue?'))return;
+  try{
+    await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({cheater})});
   }catch(e){}
   pollGovernor();
 }

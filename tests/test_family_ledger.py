@@ -61,7 +61,7 @@ def pp(tmp_path, monkeypatch):
     p.write_text(json.dumps(cfg))
     monkeypatch.setattr(ppm, "_CONFIG_PATH", p)
     monkeypatch.setattr(ppm, "_STATE_PATH", tmp_path / "pp_state.json")
-    # isolate from the LIVE runtime pause switch (see test_party_package.py)
+    # isolate from the LIVE runtime pause switch (B-111)
     monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
     return ppm.PartyPackage(FakeBroker(), dry_run=False)
 
@@ -243,3 +243,87 @@ def test_family_era_view_passes_n_open_unclocked():
            "n_open": 2}
     v = gov.family_era_view(fam, "2026-07-24T00:00:00+00:00")
     assert v["n"] == 0 and v["n_open"] == 2   # closes era-filtered, opens never
+
+
+# ── v6.12: two-step FIFO dodge + cheater promotion gating ────────────────────
+
+class FifoBroker(FakeBroker):
+    """Rejects attached-SL orders (no fill), fills naked ones — the US live
+    FIFO safeguard in miniature."""
+    def __init__(self):
+        super().__init__()
+        self.stops_moved = []
+
+    def place_market(self, pair, direction, units, entry_price=None,
+                     sl_pips=None, client_ext=None, tp_pips=0.0):
+        self.orders.append({"sl_pips": sl_pips, "client_ext": client_ext})
+        if sl_pips and sl_pips > 0:
+            return {}                      # FIFO cancel: no trade id
+        self.next_id += 1
+        return {"id": str(self.next_id), "price": entry_price}
+
+    def move_stop(self, trade_id, new_sl_price, pair):
+        self.stops_moved.append((trade_id, new_sl_price))
+        return {}
+
+
+def test_two_step_fire_dodges_fifo(tmp_path, monkeypatch):
+    cfg = {"enabled": True, "marker_pips": LADDER, "sl_pips": 60.0,
+           "trigger_pips": 8.5, "trail_pips": 2.5, "max_levels": 8,
+           "max_total_trades": 8, "max_margin_pct_total": 0.8,
+           "grid_max_age_days": 7.0}
+    p = tmp_path / "pp_config.json"
+    p.write_text(json.dumps(cfg))
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", p)
+    monkeypatch.setattr(ppm, "_STATE_PATH", tmp_path / "pp_state.json")
+    monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
+    pp = ppm.PartyPackage(FifoBroker(), dry_run=False)
+    pp.on_parent_open(_parent(), setup_id="rvol_low_240")
+    g = pp.grids["GBP_USD"]
+    price = g.level_price(15.0)
+    pp.tick(NOW, set(), {"GBP_USD"},
+            lambda pair: (price - 0.00001, price + 0.00001))
+    # price at -15 crosses BOTH -10 and -15 (multi-marker bars fire each):
+    # per marker = attached-SL attempt (rejected) + naked retry (filled)
+    assert len(pp.broker.orders) == 4
+    assert pp.broker.orders[0]["sl_pips"] > 0 and pp.broker.orders[1]["sl_pips"] == 0.0
+    assert pp.broker.orders[2]["sl_pips"] > 0 and pp.broker.orders[3]["sl_pips"] == 0.0
+    assert len(pp.broker.stops_moved) == 2, "SL must be attached post-fill per popper"
+    assert len(pp.poppers) == 2, "both two-step poppers must be tracked"
+
+
+class NakedTrapBroker(FifoBroker):
+    """Fills naked but refuses the SL attach — the popper must be closed."""
+    def move_stop(self, trade_id, new_sl_price, pair):
+        raise RuntimeError("no SL for you")
+
+    def close_position(self, trade_id, units="ALL"):
+        self.closed = getattr(self, "closed", [])
+        self.closed.append(trade_id)
+        return {}
+
+
+def test_two_step_never_leaves_naked(tmp_path, monkeypatch):
+    cfg = {"enabled": True, "marker_pips": LADDER, "sl_pips": 60.0,
+           "trigger_pips": 8.5, "trail_pips": 2.5, "max_levels": 8,
+           "max_total_trades": 8, "max_margin_pct_total": 0.8,
+           "grid_max_age_days": 7.0}
+    p = tmp_path / "pp_config.json"
+    p.write_text(json.dumps(cfg))
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", p)
+    monkeypatch.setattr(ppm, "_STATE_PATH", tmp_path / "pp_state.json")
+    monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
+    pp = ppm.PartyPackage(NakedTrapBroker(), dry_run=False)
+    pp.on_parent_open(_parent(), setup_id="x")
+    g = pp.grids["GBP_USD"]
+    price = g.level_price(15.0)
+    pp.tick(NOW, set(), {"GBP_USD"},
+            lambda pair: (price - 0.00001, price + 0.00001))
+    assert len(getattr(pp.broker, "closed", [])) == 2, "naked poppers must be closed immediately"
+    assert len(pp.poppers) == 0, "failed two-step must not register a popper"
+
+
+def test_cheater_promotion_config_gated():
+    from ops.governor import DEFAULT_CFG
+    assert DEFAULT_CFG["cheater_promotion_enabled"] is False, "must be opt-in"
+    assert DEFAULT_CFG["cheater_cum_pips"] == 100.0

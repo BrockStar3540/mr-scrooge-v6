@@ -36,7 +36,9 @@ decision appended to data/governor_ledger.jsonl · the era clock per setup is
 owned by data/governor_state.json — any flip (or first sight) restarts the
 evidence window, so a config-era change can never trade on stale proof.
 
-Cron (EC2): 35 6 * * *  — after the nightly scorers. Manual: --dry-run first.
+Cron (EC2): 35 */6 * * *  — every SIX HOURS (Brock, 2026-07-30; was daily).
+CHEATER PROMOTION: era-v2 cum net >= +100p promotes immediately, bar bypassed.
+Manual: --dry-run first.
 """
 from __future__ import annotations
 import argparse, json, subprocess, sys, urllib.request
@@ -76,6 +78,12 @@ DEFAULT_CFG = {
     "fdr_q": 0.05,
     # FAMILY RULE (2026-07-28): parent + its poppers, broker net pips.
     # -60p = one full popper SL; +60p of realized family green = seat safe.
+    # CHEATER PROMOTION (Brock, 2026-07-30): a shadow whose CURRENT-ERA v2
+    # cumulative net reaches +100p promotes immediately, bar bypassed — a hot
+    # hand gets a seat without waiting out the sample. Ledgered as
+    # CHEATER-PROMOTE; era discipline still applies (legacy history can't cheat).
+    "cheater_promotion_enabled": False,   # OPT-IN via the dashboard toggle
+    "cheater_cum_pips": 100.0,
     "family_min_trades": 5,
     "family_demote_pips": -60.0,
     "family_defend_pips": 60.0,
@@ -337,8 +345,13 @@ def main():
             # last failed test => same evidence, no re-roll.
             if prev_blocks is not None and e.independent_days <= prev_blocks:
                 continue
+            _cum = (e.net_avg or 0.0) * e.raw_n
             if e.promotable:
                 promotions.append((key, e, None))
+            elif (c.get("cheater_promotion_enabled", False)
+                  and _cum >= float(c.get("cheater_cum_pips", 100.0))
+                  and e.raw_n > 0):
+                promotions.append((key, e, {"cheater": round(_cum, 1)}))
             else:
                 last_eval[k] = e.independent_days
         elif meta["status"] == "ACTIVE":
@@ -385,7 +398,11 @@ def main():
                     why.append(f"v2 n={e.raw_n} days={e.independent_days} "
                                f"net_avg={e.net_avg:+.2f}p blcb={_l} q={_q} "
                                f"7d={e.recent_avg}({e.recent_n}) [{METRIC_V2}]")
-                if f:
+                if isinstance(f, dict) and "cheater" in f:
+                    why.append(f"CHEATER-PROMOTE: era cum {f['cheater']:+.1f}p >= "
+                               f"+{c.get('cheater_cum_pips', 100.0):.0f}p — bar "
+                               f"bypassed by operator rule (2026-07-30)")
+                elif f:
                     why.append(f"family n={f['n']} net={f['net_pips']:+.1f}p "
                                f"(${f['net_usd']:+.2f}) [broker]")
                 res = flip(pair, sess, sid, new_status, args.dry_run)

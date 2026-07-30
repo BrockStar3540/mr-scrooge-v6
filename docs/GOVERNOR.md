@@ -4,7 +4,7 @@
 as a **shadow** first — stamped on live markets, scored on the forward price path, ranked on
 the Shadowboard. The Bar Governor (`ops/governor.py`) is the daemon that acts on that
 evidence: it **promotes** shadows that prove themselves to ACTIVE (live orders), and
-**demotes** actives that lose their grip back to SHADOW. No human in the loop. The humans
+**demotes** actives that lose their grip back to SHADOW. No human in the loop. Runs every SIX HOURS (00:35/06:35/12:35/18:35 UTC; daily-only before 2026-07-30). The humans
 set the standard; the bot flips the switches.
 
 It runs **daily at 06:35 UTC**, immediately after the nightly scorers and the
@@ -25,6 +25,7 @@ never governs capital.
 
 | Switch | Fires when |
 |---|---|
+| **PROMOTE (cheater rule — OPT-IN, default OFF)** SHADOW → ACTIVE | 🎲 era-v2 **cumulative net ≥ +100p** promotes immediately — no n-bar, no day-block minimum, no bootstrap/FDR. A hot hand gets a seat without waiting out the sample; the family rule demotes it if it cools. Enabled only via the dashboard toggle; every use ledgered as CHEATER-PROMOTE (operator amendment, 2026-07-30) |
 | **PROMOTE** SHADOW → ACTIVE | the full predicate (`core/trial_evidence.promotion_predicate`): raw n ≥ **20** v2 episodes **AND** ≥ **10 independent day/session blocks** **AND** average ≥ **+2.0 pips/episode net** **AND** the day-block **bootstrap** lower confidence bound > **0** **AND** the last-7-days average ≥ 0 (when it has ≥ 5 episodes) **AND** Benjamini–Hochberg **q ≤ 0.05** across the run's whole candidate docket |
 | **DEMOTE** ACTIVE → SHADOW | **THE FAMILY RULE** (2026-07-28): the parent setup + the poppers its grid fired are ONE unit in **broker net pips** — family n ≥ 5 at **≤ −60p** (one popper SL) → demoted **and the cell's poppers switched off**; a family at **≥ +60p defends the seat** (broker green outranks the stamp simulator). **Judge-when-flat**: while any family trade is open, no verdict at all — the episode is scored when it completes. Without family evidence: era v2 n ≥ 20 with average < +2.0 (**the bar is lost on stamps**) |
 

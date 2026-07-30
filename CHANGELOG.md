@@ -4,6 +4,34 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.0] — 2026-07-30 — "The Operator's Amendments"
+
+Three operator-ruled changes. Two are amendments to the published freeze, disclosed as
+such: the governor's cadence and the opt-in cheater rule change *trading governance*, by
+Brock's explicit decision, after two days of live observation. The FIFO fix is an
+environmental defect repair.
+
+### Fixed
+- **Two-step FIFO dodge (B-097 escalation)**: US live accounts were rejecting attached-SL
+  popper orders whenever older same-instrument trades were open — thinning grids to about
+  half the tested density. On a FIFO no-fill, the fire now retries ONCE as a naked market
+  order and attaches the stop immediately after the fill; if the stop cannot be attached,
+  the position is closed on the spot — **a popper is never left naked**. Two regression
+  tests cover both paths.
+
+### Changed (operator amendments to the freeze)
+- **The governor runs every SIX HOURS** (00:35/06:35/12:35/18:35 UTC; was daily 06:35Z).
+  Seats are won and lost four times a day; the sequential-peeking guard already prevents
+  re-rolling unchanged evidence between runs.
+- **🎲 CHEATER PROMOTION — opt-in, default OFF**: a dashboard toggle (Bar Governor card)
+  that, when enabled, promotes any shadow whose current-era v2 **cumulative net reaches
+  +100 pips** immediately — no 20-trade bar, no day-block minimum, no bootstrap/FDR. A
+  hot hand gets its seat without waiting out the sample; the family rule demotes it if it
+  cools. Era discipline still applies (legacy v1 history can never trigger it). Every use
+  is ledgered as CHEATER-PROMOTE; the toggle carries its own instruction and confirm.
+
+Suite 290 green.
+
 ## [6.11.1] — 2026-07-30 — "The Two Endpoints" — CRITICAL fix for LIVE accounts
 
 **If you trade this bot on a real-money account, update now.** B-112: OANDA **live**
