@@ -17,6 +17,7 @@
     60.0
   ],
   "per_cell": {
-    "EUR_JPY|ny|timing_lean_30": false
+    "EUR_JPY|ny|timing_lean_30": false,
+    "USD_JPY|london|timing_lean_30": false
   }
 }

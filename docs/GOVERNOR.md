@@ -94,6 +94,10 @@ evidence clock automatically via config-hash comparison, ledgered as
 
 ## The rails
 
+- **DISABLED is sacred**: a manually disabled setup is untouchable by every automation —
+  the bar, the cheater rule, the counterpart audit, all of it. The governor skips
+  non-ACTIVE/SHADOW statuses AND re-checks the live status at flip time, so disabling a
+  cell mid-run can never be overridden by a stale snapshot. Only a human re-enables.
 - **Max 2 promotions and 4 demotions per run** — evidence-strongest first; the rest wait.
 - **Sides are never flipped.** A losing direction gets a *counterpart* setup (own name, own
   record) via the daily MAE-flip counterpart audit — never an in-place inversion.

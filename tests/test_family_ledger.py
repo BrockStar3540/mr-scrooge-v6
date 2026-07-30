@@ -327,3 +327,29 @@ def test_cheater_promotion_config_gated():
     from ops.governor import DEFAULT_CFG
     assert DEFAULT_CFG["cheater_promotion_enabled"] is False, "must be opt-in"
     assert DEFAULT_CFG["cheater_cum_pips"] == 100.0
+
+
+# ── DISABLED is sacred: no automation promotes a disabled cell ───────────────
+
+def test_disabled_setup_untouchable_by_governor(tmp_path, monkeypatch):
+    """A DISABLED setup with cheater-qualifying evidence must never be flipped:
+    the main loop skips non-ACTIVE/SHADOW statuses, and flip() re-checks the
+    live status so even a stale snapshot can't override a manual disable."""
+    cells = tmp_path / "cells"
+    cells.mkdir()
+    (cells / "GBP_USD.json").write_text(json.dumps({
+        "pair": "GBP_USD",
+        "sessions": {"london": {"setups": [
+            {"id": "hot_but_disabled", "side": "long", "status": "DISABLED"}]}}}))
+    monkeypatch.setattr(gov, "CELLS", cells)
+    # book() must expose it, and the loop's status filter must exclude it
+    bmap = gov.book()
+    meta = bmap[("GBP_USD", "london", "hot_but_disabled")]
+    assert meta["status"] == "DISABLED"
+    assert meta["status"] not in ("ACTIVE", "SHADOW")   # the loop's skip condition
+    # and flip() itself refuses to promote anything not currently SHADOW
+    res = gov.flip("GBP_USD", "london", "hot_but_disabled", "ACTIVE", dry=False)
+    assert res.get("ok") is False and "not SHADOW" in res.get("skipped", "")
+    # ...and refuses to demote anything not currently ACTIVE
+    res = gov.flip("GBP_USD", "london", "hot_but_disabled", "SHADOW", dry=False)
+    assert res.get("ok") is False and "not ACTIVE" in res.get("skipped", "")

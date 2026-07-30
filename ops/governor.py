@@ -236,7 +236,28 @@ def _post(url, payload, dry):
     return json.loads(urllib.request.urlopen(req, timeout=15).read())
 
 
+def _status_now(pair, sess, setup_id):
+    """Re-read a setup's CURRENT status from config (not the run's snapshot)."""
+    try:
+        d = json.loads((CELLS / f"{pair}.json").read_text())
+        for su in d.get("sessions", {}).get(sess, {}).get("setups", []):
+            if su.get("id") == setup_id:
+                return su.get("status", "?")
+    except Exception:
+        pass
+    return "?"
+
+
 def flip(pair, sess, setup_id, status, dry):
+    # DISABLED IS SACRED (Brock, 2026-07-30): a manually disabled setup is
+    # untouchable by every automation — promotion (bar OR cheater) and
+    # demotion alike. Re-check the live status at flip time so a hand-flip
+    # mid-run can never be overridden by this run's stale snapshot.
+    cur = _status_now(pair, sess, setup_id)
+    if status == "ACTIVE" and cur != "SHADOW":
+        return {"ok": False, "skipped": f"not SHADOW at flip time (now {cur})"}
+    if status == "SHADOW" and cur != "ACTIVE":
+        return {"ok": False, "skipped": f"not ACTIVE at flip time (now {cur})"}
     return _post(API, {"pair": pair, "session": sess,
                        "setup_id": setup_id, "status": status}, dry)
 
