@@ -295,7 +295,8 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
     # SHADOW
     if era_dict and era_dict.get("promotable"):
         return 3, "PROMOTE READY", "passes full bar", (era_dict.get("lcb") or 0)
-    if era_dict and gc.get("cheater_promotion_enabled", False) and era_dict.get("n") and (
+    if era_dict and gc.get("cheater_promotion_enabled", False) and (
+            (era_dict.get("n") or 0) >= int(gc.get("cheater_min_n", 3))) and (
             (era_dict.get("avg") or 0) * era_dict["n"]
             >= float(gc.get("cheater_cum_pips", 100.0))):
         cum = (era_dict.get("avg") or 0) * era_dict["n"]

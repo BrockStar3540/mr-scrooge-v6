@@ -63,7 +63,7 @@
           "id": "ps_ceil_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {

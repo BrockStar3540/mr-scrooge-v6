@@ -84,6 +84,7 @@ DEFAULT_CFG = {
     # CHEATER-PROMOTE; era discipline still applies (legacy history can't cheat).
     "cheater_promotion_enabled": False,   # OPT-IN via the dashboard toggle
     "cheater_cum_pips": 100.0,
+    "cheater_min_n": 3,      # one lucky episode can't buy a seat (Brock, 2026-07-30)
     "family_min_trades": 5,
     "family_demote_pips": -60.0,
     "family_defend_pips": 60.0,
@@ -340,18 +341,22 @@ def main():
                              c["default_era_start"])) if fam_row else None)
         if meta["status"] == "SHADOW" and e:
             k = "|".join(key)
+            # CHEATER RULE first — it is deterministic (cum >= threshold, no
+            # statistics), so the peeking guard does not apply to it: there is
+            # no p to hack by re-checking unchanged evidence.
+            _cum = (e.net_avg or 0.0) * e.raw_n
+            if (c.get("cheater_promotion_enabled", False)
+                    and _cum >= float(c.get("cheater_cum_pips", 100.0))
+                    and e.raw_n >= int(c.get("cheater_min_n", 3))):
+                promotions.append((key, e, {"cheater": round(_cum, 1)}))
+                continue
             prev_blocks = last_eval.get(k)
             # SEQUENTIAL-PEEKING GUARD: no new independent block since the
-            # last failed test => same evidence, no re-roll.
+            # last failed test => same evidence, no re-roll (statistical bar only).
             if prev_blocks is not None and e.independent_days <= prev_blocks:
                 continue
-            _cum = (e.net_avg or 0.0) * e.raw_n
             if e.promotable:
                 promotions.append((key, e, None))
-            elif (c.get("cheater_promotion_enabled", False)
-                  and _cum >= float(c.get("cheater_cum_pips", 100.0))
-                  and e.raw_n > 0):
-                promotions.append((key, e, {"cheater": round(_cum, 1)}))
             else:
                 last_eval[k] = e.independent_days
         elif meta["status"] == "ACTIVE":
