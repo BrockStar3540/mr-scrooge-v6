@@ -160,21 +160,40 @@ def main():
     open_rows = []
     try:
         for tr in api(f"/v3/accounts/{acct}/trades?state=OPEN&count=500").get("trades", []):
-            ext = tr.get("clientExtensions") or {}
-            meta = {}
-            c = ext.get("comment", "")
-            if c.startswith("{"):
-                try:
-                    meta = json.loads(c)
-                except json.JSONDecodeError:
-                    pass
+            tid = str(tr.get("id"))
             units = float(tr.get("currentUnits", 0))
-            op = {"instrument": tr["instrument"], "dir": 1 if units > 0 else -1,
-                  "su": meta.get("su") or "?", "tag": ext.get("tag", ""),
-                  "psu": meta.get("psu"), "anc": meta.get("anc")}
+            # B-112: the LIVE trades endpoint mangles clientExtensions (tag ->
+            # "0", comment truncated ~32 chars) — which made open poppers
+            # invisible here and let a family be judged "flat" mid-episode.
+            # The TRANSACTION stream is pristine, and `opens` was built from
+            # it — prefer that record; the endpoint copy is the fallback.
+            op = opens.get(tid)
+            if op is None:
+                ext = tr.get("clientExtensions") or {}
+                meta = {}
+                c = ext.get("comment", "")
+                if c.startswith("{"):
+                    try:
+                        meta = json.loads(c)
+                    except json.JSONDecodeError:
+                        import re as _re
+                        for k in ("anc",):
+                            m = _re.search(r'"%s":([0-9.]+)' % k, c)
+                            if m:
+                                meta[k] = float(m.group(1))
+                        for k in ("su", "psu"):
+                            m = _re.search(r'"%s":"([^"]*)"?' % k, c)
+                            if m:
+                                meta[k] = m.group(1)
+                tag = ext.get("tag", "")
+                if tag not in ("cell_v1", "pp_v1") and c.startswith("{"):
+                    tag = "cell_v1" if c.startswith(('{"m":', '{"su":')) else "pp_v1"
+                op = {"instrument": tr["instrument"], "dir": 1 if units > 0 else -1,
+                      "su": meta.get("su") or "?", "tag": tag,
+                      "psu": meta.get("psu"), "anc": meta.get("anc")}
             fam = (family_setup(op, parent_opens)
                    if op["tag"] in ("cell_v1", "pp_v1") else "?")
-            open_rows.append({"id": tr["id"], "instrument": tr["instrument"],
+            open_rows.append({"id": tid, "instrument": tr["instrument"],
                               "su": op["su"], "tag": op["tag"], "family": fam,
                               "upl": float(tr.get("unrealizedPL", 0))})
     except Exception as e:

@@ -144,11 +144,14 @@ def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
     self-attributes to the family that spawned it — the governor's family
     net-pips demote/defend rule reads it straight off the broker. OANDA caps
     the comment at 128 chars, so psu is truncated defensively."""
-    fields = {"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
-              "tp": cfg["trail_pips"], "lvl": float(offset_pips),
-              "anc": round(anchor, 5), "su": "pp_v1"}
+    # B-112: live truncates comments to ~32 chars — field ORDER is survival
+    # order. anc first (the family anchor-join), then lvl, then psu, then the
+    # gear (recoverable from pp_config defaults anyway).
+    fields = {"anc": round(anchor, 5), "lvl": float(offset_pips)}
     if parent_setup and parent_setup not in ("?", "recovered"):
         fields["psu"] = parent_setup[:40]
+    fields.update({"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
+                   "tp": cfg["trail_pips"], "su": "pp_v1"})
     return {"tag": "pp_v1",
             "comment": json.dumps(fields, separators=(",", ":"))}
 
@@ -250,10 +253,21 @@ class PartyPackage:
         pair = trade["instrument"]
         if pair not in PIP:
             return
+        _cm = (trade.get("clientExtensions") or {}).get("comment", "{}") or "{}"
         try:
-            d = json.loads((trade.get("clientExtensions") or {}).get("comment", "{}"))
+            d = json.loads(_cm)
         except (ValueError, json.JSONDecodeError):
+            # B-112 lenient fallback: live truncates comments — regex-extract
+            # whatever survived (anc/lvl lead the field order for exactly this).
+            import re as _re
             d = {}
+            for k in ("anc", "lvl", "sl", "tr", "tp"):
+                m = _re.search(r'"%s":([0-9.]+)' % k, _cm)
+                if m:
+                    d[k] = float(m.group(1))
+            m = _re.search(r'"psu":"([^"]*)"?', _cm)
+            if m:
+                d["psu"] = m.group(1)
         units_signed = int(trade["currentUnits"])
         direction = "long" if units_signed > 0 else "short"
         entry_price = float(trade["price"])

@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-111, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-112, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -688,6 +688,15 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** two. (1) The fire-gate calls `trading_enabled()`, which reads the real `config/runtime.json` — the fixtures never isolated it, so the test suite's result depended on whether the live bot happened to be paused. (2) The pipe swallowed the failing exit status, so the guard-rail didn't guard.
 - **Fix:** fixtures monkeypatch `trading_enabled`; suite green under any live-box state.
 - **Lesson:** a test that reads production state isn't a test, it's a mood ring — and any check whose exit code passes through a pipe isn't a check.
+
+### B-112 — The live account mangles client extensions: two real-money poppers orphaned, judge-when-flat bypassed
+- **Date:** 2026-07-30 (Brock: "2/3 open trades not showing on the dashboard")
+- **Area:** OANDA live `trades` endpoint vs the transaction stream; `core/engine.py` recovery dispatch; `party_package.recover`; `broker_setup_audit` open-trade attribution
+- **Symptom:** broker held 3 open trades; the engine tracked 1. Two EUR/JPY poppers (green, past ratchet-engage) sat **unmanaged for ~16 hours** — server-side −60p stops intact, but no ratchet locking profits. Compounding: the same two were invisible to family accounting, so their family read "flat" and was **demoted mid-episode — a judge-when-flat violation** (on full data the conviction still stood: −172p ≤ −60p).
+- **Root cause:** the **live** account returns mangled `clientExtensions` on the *trades* endpoint — `tag` becomes `"0"` and `comment` truncates to ~32 chars — while the **transaction stream carries them pristine**. (Practice never did this.) Everything keyed on the trades-endpoint copy: popper recovery filtered `tag == "pp_v1"` (missed → poppers fell to the parent path and were dropped), parent gear `json.loads` failed on truncation, and the audit's open-trade attribution read the same mangled copy (→ `n_open` undercounted → flat-when-not).
+- **Fix (three layers):** (1) recovery classifies popper-vs-parent by **comment shape** with the tag as a hint only, and both decoders regex-extract whatever fields survive truncation; (2) both comment encoders reordered **most-critical-fields-first** (`su` leads parent comments, `anc`/`lvl` lead popper comments) so even a 32-char surviving prefix carries what recovery and family attribution need; (3) the audit's open-trade attribution now prefers the trade's **opening transaction** record (pristine) over the trades-endpoint copy. Recovery verified live: both poppers adopted, ratchet locked +24p and +16p within seconds, one already banked green.
+- **Lesson:** the same field from two API endpoints is two different fields. Trust the stream you verified — and design every wire format so the *front* of it is the part you can't live without.
+
 
 
 

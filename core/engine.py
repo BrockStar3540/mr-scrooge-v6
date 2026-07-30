@@ -48,12 +48,15 @@ _SESSIONS = ["asia", "london", "ny"]
 def _encode_exit_ext(ep, setup_id: str) -> dict:
     """Compact exit-gear payload for OANDA tradeClientExtensions (comment
     field is limited to 128 chars — zero-valued keys are omitted)."""
-    d = {"m": ep.mode, "sl": ep.sl_pips, "tr": ep.trigger_pips, "tp": ep.trail_pips}
+    # B-112: the LIVE account truncates the comment to ~32 chars on the trades
+    # endpoint — field ORDER is survival order. su first (family attribution
+    # depends on it), then the gear.
+    d = {"su": setup_id, "m": ep.mode, "sl": ep.sl_pips,
+         "tr": ep.trigger_pips, "tp": ep.trail_pips}
     for k, v in (("tpp", ep.tp_pips), ("to", ep.timeout_min), ("tm", ep.trail_mult),
                  ("tmin", ep.trail_min), ("tmax", ep.trail_max)):
         if v:
             d[k] = v
-    d["su"] = setup_id
     comment = json.dumps(d, separators=(",", ":"))
     if len(comment) > 128:  # last resort: drop the setup id, keep the gear
         del d["su"]
@@ -79,7 +82,27 @@ def _decode_exit_ext(trade: dict):
         )
         return ep, str(d.get("su", "persisted"))
     except (KeyError, ValueError, TypeError, json.JSONDecodeError):
-        return None
+        # B-112 lenient fallback: the live trades endpoint truncates comments,
+        # breaking json.loads. Regex-extract whatever gear fields survived;
+        # anything missing falls back to ExitParams defaults downstream (the
+        # adopter logs gear provenance either way).
+        import re as _re
+        def _f(key):
+            m = _re.search(r'"%s":([0-9.]+)' % key, comment)
+            return float(m.group(1)) if m else None
+        m_su = _re.search(r'"su":"([^"]*)"?', comment)
+        mode_m = _re.search(r'"m":"([a-z]+)"?', comment)
+        if _f("sl") is None and not m_su:
+            return None
+        try:
+            from modules.cells.cell import ExitParams
+            ep = ExitParams(
+                sl_pips=_f("sl") or 40.0, trigger_pips=_f("tr") or 8.5,
+                trail_pips=_f("tp") or 2.5,
+                mode=(mode_m.group(1) if mode_m else "ratchet"))
+            return ep, (m_su.group(1) if m_su else "persisted-truncated")
+        except Exception:
+            return None
 
 class Engine:
     def __init__(self, feed, broker, dry_run: bool = True):
@@ -155,9 +178,22 @@ class Engine:
         now = datetime.now(timezone.utc)
         for t in trades:
             pair = t["instrument"]
-            # Poppers (tag=pp_v1) belong to the Party Package — they must never
-            # be adopted as parent managers (multiple per pair, own gear).
-            if (t.get("clientExtensions") or {}).get("tag") == "pp_v1":
+            # Poppers belong to the Party Package — they must never be adopted
+            # as parent managers (multiple per pair, own gear).
+            # B-112: the LIVE account mangles clientExtensions on the trades
+            # endpoint (tag -> "0", comment truncated ~32 chars), so the tag
+            # check alone orphaned live poppers. Classify by COMMENT SHAPE as
+            # the fallback: parent gear comments start {"m": / {"su": (see
+            # _encode_exit_ext); popper comments carry sl/tr/tp gear without
+            # those keys. pp.recover() is already truncation-tolerant.
+            _ce = t.get("clientExtensions") or {}
+            _cm = _ce.get("comment", "") or ""
+            _is_popper = (_ce.get("tag") == "pp_v1" or
+                          (_cm.startswith("{") and
+                           not _cm.startswith('{"m":') and
+                           not _cm.startswith('{"su":') and
+                           '"sl"' in _cm and '"tr"' in _cm))
+            if _is_popper:
                 try:
                     self.pp.recover(t)
                 except Exception as exc:

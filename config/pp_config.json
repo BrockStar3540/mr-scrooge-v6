@@ -17,6 +17,7 @@
     60.0
   ],
   "per_cell": {
-    "GBP_USD|london": false
+    "GBP_USD|london": false,
+    "EUR_JPY|ny|timing_lean_30": false
   }
 }
