@@ -79,7 +79,7 @@ def _looks_like_popper(client_ext: dict) -> bool:
     by construction (_encode_exit_ext) and never match.
     """
     cm = (client_ext.get("comment") or "")
-    return (client_ext.get("tag") == "pp_v1" or
+    return (str(client_ext.get("tag") or "").startswith("pp_v1") or
             (cm.startswith("{") and
              not cm.startswith('{"m":') and
              not cm.startswith('{"su":') and

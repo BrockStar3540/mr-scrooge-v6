@@ -82,7 +82,8 @@ try:
         iu = float(tr.get("initialUnits", 0) or 0)
         d = "long" if iu > 0 else "short" if iu < 0 else "?"
         tag = (tr.get("clientExtensions") or {}).get("tag", "")
-        src = "popper" if tag == "pp_v1" else "parent" if tag == "cell_v1" else "-"
+        _base = str(tag or "").split(";", 1)[0]
+        src = "popper" if _base == "pp_v1" else "parent" if _base == "cell_v1" else "-"
         _trade_meta_cache[tid] = (d, src)
     # PRIMARY meta source: the OPENING fills in the same transaction window.
     # tradeOpened carries tradeID + units sign + clientExtensions.tag — no extra

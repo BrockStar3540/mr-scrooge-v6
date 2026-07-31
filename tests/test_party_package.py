@@ -99,7 +99,8 @@ def test_single_marker_fire(pp):
     assert pp.open_popper_count() == 1
     order = pp.broker.orders[0]
     assert order["direction"] == "long" and order["sl_pips"] == 60.0
-    assert order["client_ext"]["tag"] == "pp_v1"
+    # grid_id era: the tag names the creating parent's trade id
+    assert order["client_ext"]["tag"] == "pp_v1;g=1"
     assert json.loads(order["client_ext"]["comment"])["lvl"] == 10.0
     lv = pp.grids["EUR_USD"].levels["10"]
     assert lv["trade_id"] is not None and not lv["armed"]

@@ -28,6 +28,17 @@ DEFAULT_SINCE = "2026-07-19T00:00:00Z"   # engage 8.5 / lock 6 gear era
 PP_ANC_JOIN_PIPS = 30.0   # max |grid anchor − parent open| for the backfill join
 
 
+def _tag_parts(tag: str):
+    """grid_id era (2026-07-31): popper tags read "pp_v1;g=<parent trade id>".
+    Returns (base_tag, gid). The tag rides the TRANSACTION stream pristine
+    even on live accounts, so the join is exact — no anchor heuristics."""
+    t = str(tag or "")
+    if ";g=" in t:
+        base, _, gid = t.partition(";g=")
+        return base, gid
+    return t, ""
+
+
 def _sess_of(iso_time: str) -> str:
     """B-117: canonical session from an ISO open time (config/sessions.py is
     the single source of truth; fall back to its published windows if the
@@ -81,7 +92,7 @@ def cycles_of(trades: list, open_ts: list) -> list:
     return out
 
 
-def family_setup(op: dict, parent_opens: list) -> str:
+def family_setup(op: dict, parent_opens: list, opens: dict = None) -> str:
     """The FAMILY a fill belongs to. Parents (tag=cell_v1) are their own setup;
     poppers (tag=pp_v1) belong to the parent setup that armed their grid —
     via the stamped "psu", or for pre-stamp fills the grid anchor joined to
@@ -89,6 +100,9 @@ def family_setup(op: dict, parent_opens: list) -> str:
     parent's entry price). Returns "?" when a popper can't be attributed."""
     if op["tag"] != "pp_v1":
         return op["su"]
+    # grid_id join (exact, 2026-07-31): the tag names the creating parent
+    if op.get("gid") and opens and op["gid"] in opens:
+        return opens[op["gid"]].get("su") or "?"
     if op.get("psu"):
         return op["psu"]
     anc = op.get("anc")
@@ -104,18 +118,21 @@ def family_setup(op: dict, parent_opens: list) -> str:
     return best or "?"
 
 
-def family_key(op: dict, parent_opens: list):
+def family_key(op: dict, parent_opens: list, opens: dict = None):
     """B-117: (family_setup, session). A family belongs to its PARENT's
     session — 47 setup ids repeat across sessions (GBP_USD timing_lean_30
     exists in asia AND london) and the old (instrument, setup) join merged
     their evidence. Poppers inherit the session of the parent that armed
     their grid (psu match first, anchor-join second); a popper with no
     locatable parent falls back to its own open-time session."""
-    fam = family_setup(op, parent_opens)
+    fam = family_setup(op, parent_opens, opens)
     if op.get("tag") != "pp_v1":
         return fam, (op.get("sess") or _sess_of(op.get("time", "")))
     if fam == "?":
         return fam, "?"
+    if op.get("gid") and opens and op["gid"] in opens:
+        par = opens[op["gid"]]
+        return fam, (par.get("sess") or _sess_of(par.get("time", "")))
     cands = [p for p in parent_opens
              if p["instrument"] == op["instrument"] and p["dir"] == op["dir"]
              and p["su"] == fam and (p.get("time") or "") <= (op.get("time") or "~")]
@@ -178,11 +195,12 @@ def main():
             except json.JSONDecodeError:
                 pass
         units = float(to.get("units", 0))
+        tag, gid = _tag_parts(tag)
         opens[str(to.get("tradeID"))] = {
             "instrument": t.get("instrument"),
             "dir": 1 if units > 0 else -1,
             "price": float(to.get("price", t.get("price", 0))),
-            "su": meta.get("su") or "?", "tag": tag,
+            "su": meta.get("su") or "?", "tag": tag, "gid": gid,
             "psu": meta.get("psu"), "anc": meta.get("anc"),
             "time": t.get("time", "")[:16],
             "sess": _sess_of(t.get("time", "")),
@@ -222,7 +240,7 @@ def main():
             g["trades"].append(trade)
             # family view: parents + their poppers as one economic unit
             if op["tag"] in ("cell_v1", "pp_v1"):
-                fam, fsess = family_key(op, parent_opens)
+                fam, fsess = family_key(op, parent_opens, opens)
                 if fam != "?":
                     fg = fams[(op["instrument"], fsess, fam)]
                     fg["n"] += 1
@@ -265,14 +283,15 @@ def main():
                             m = _re.search(r'"%s":"([^"]*)"?' % k, c)
                             if m:
                                 meta[k] = m.group(1)
-                tag = ext.get("tag", "")
+                tag, gid = _tag_parts(ext.get("tag", ""))
                 if tag not in ("cell_v1", "pp_v1") and c.startswith("{"):
                     tag = "cell_v1" if c.startswith(('{"m":', '{"su":')) else "pp_v1"
                 op = {"instrument": tr["instrument"], "dir": 1 if units > 0 else -1,
-                      "su": meta.get("su") or "?", "tag": tag,
-                      "psu": meta.get("psu"), "anc": meta.get("anc")}
+                      "su": meta.get("su") or "?", "tag": tag, "gid": gid,
+                      "psu": meta.get("psu"), "anc": meta.get("anc"),
+                      "time": tr.get("openTime", "")[:16]}
             if op["tag"] in ("cell_v1", "pp_v1"):
-                fam, fsess = family_key(op, parent_opens)
+                fam, fsess = family_key(op, parent_opens, opens)
             else:
                 fam, fsess = "?", "?"
             open_rows.append({"id": tid, "instrument": tr["instrument"],

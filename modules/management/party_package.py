@@ -136,7 +136,7 @@ def _okey(offset_pips) -> str:
 
 
 def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
-                       parent_setup: str = "") -> dict:
+                       parent_setup: str = "", gid: str = "") -> dict:
     """OANDA tradeClientExtensions for a popper. tag=pp_v1 routes recovery away
     from the parent adopter; comment carries the gear + grid coordinates.
     lvl = the marker OFFSET in pips (ladder era, 2026-07-22).
@@ -152,7 +152,8 @@ def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
         fields["psu"] = parent_setup[:40]
     fields.update({"sl": cfg["sl_pips"], "tr": cfg["trigger_pips"],
                    "tp": cfg["trail_pips"], "su": "pp_v1"})
-    return {"tag": "pp_v1",
+    tag = f"pp_v1;g={gid}" if gid else "pp_v1"
+    return {"tag": tag,
             "comment": json.dumps(fields, separators=(",", ":"))}
 
 
@@ -160,13 +161,20 @@ class Grid:
     """One re-arming grid per pair, anchored at the parent entry price."""
 
     def __init__(self, pair: str, side: str, anchor: float, created: datetime,
-                 parent_setup: str = "?", cell_key: str = ""):
+                 parent_setup: str = "?", cell_key: str = "", gid: str = ""):
         self.pair = pair
         self.side = side                    # popper direction == parent direction
         self.anchor = anchor
         self.created = created
         self.parent_setup = parent_setup
         self.cell_key = cell_key            # "PAIR|session|setup" for the per-cell switch
+        # grid_id (2026-07-31, family-cycle program): the CREATING parent's
+        # OANDA trade id. Every popper carries it in the TAG ("pp_v1;g=<id>"),
+        # which the transaction stream preserves pristine even on live
+        # accounts — attribution becomes an exact join to the originating
+        # family, no anchor heuristics. Empty for pre-gid grids (state
+        # migration) — those poppers fall back to psu/anchor join.
+        self.gid = str(gid or "")
         # marker key (_okey(offset_pips)) -> {"armed": bool, "trade_id": Optional[str]}
         self.levels: dict[str, dict] = {}
         # lifetime ledger (persisted)
@@ -185,7 +193,7 @@ class Grid:
         return {"pair": self.pair, "side": self.side, "anchor": self.anchor,
                 "created": self.created.isoformat(),
                 "parent_setup": self.parent_setup,
-                "cell_key": self.cell_key,
+                "cell_key": self.cell_key, "gid": self.gid,
                 "fmt": "offsets",   # ladder era (2026-07-22): keys are pip offsets
                 "levels": dict(self.levels),
                 "greens": self.greens, "knives": self.knives,
@@ -197,7 +205,7 @@ class Grid:
     def from_dict(cls, d: dict) -> "Grid":
         g = cls(d["pair"], d["side"], float(d["anchor"]),
                 datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"),
-                d.get("cell_key", ""))
+                d.get("cell_key", ""), d.get("gid", ""))
         raw = d.get("levels") or {}
         if d.get("fmt") == "offsets":
             g.levels = {str(k): dict(v) for k, v in raw.items()}
@@ -239,7 +247,8 @@ class PartyPackage:
         g = Grid(pair, pos.ticket.direction, pos.entry_price,
                  pos.entry_time if pos.entry_time.tzinfo else
                  pos.entry_time.replace(tzinfo=timezone.utc), setup_id,
-                 cell_key=f"{pair}|{session}|{setup_id}")
+                 cell_key=f"{pair}|{session}|{setup_id}",
+                 gid=str(getattr(pos, "oanda_trade_id", "") or ""))
         for off in cfg["marker_pips"]:
             g.levels[_okey(off)] = {"armed": True, "trade_id": None}
         self.grids[pair] = g
@@ -249,8 +258,10 @@ class PartyPackage:
         self._save_state()
 
     def recover(self, trade: dict) -> None:
-        """Adopt an open OANDA popper trade (tag=pp_v1) at startup."""
+        """Adopt an open OANDA popper trade (tag pp_v1[;g=<id>]) at startup."""
         pair = trade["instrument"]
+        _tag = (trade.get("clientExtensions") or {}).get("tag", "") or ""
+        _gid = _tag.split(";g=", 1)[1] if ";g=" in _tag else ""
         if pair not in PIP:
             return
         _cm = (trade.get("clientExtensions") or {}).get("comment", "{}") or "{}"
@@ -285,9 +296,11 @@ class PartyPackage:
                      d.get("psu") or "recovered")
             for off in cfg["marker_pips"]:
                 g.levels[_okey(off)] = {"armed": False, "trade_id": None}
+            if _gid:
+                g.gid = _gid
             self.grids[pair] = g
-            log.info("PP GRID rebuilt from popper recovery %s anchor=%.5f | engine=pp_v1",
-                     pair, anchor)
+            log.info("PP GRID rebuilt from popper recovery %s anchor=%.5f gid=%s | engine=pp_v1",
+                     pair, anchor, g.gid or "-")
         if lvl_off:
             # ensure a state slot exists even if the offset left the config ladder
             self.grids[pair].levels[_okey(lvl_off)] = {"armed": False, "trade_id": trade_id}
@@ -470,7 +483,7 @@ class PartyPackage:
                 pair, g.side, units=units, entry_price=entry_price,
                 sl_pips=float(cfg["sl_pips"]),
                 client_ext=_popper_client_ext(cfg, offset_pips, g.anchor,
-                                              g.parent_setup),
+                                              g.parent_setup, gid=g.gid),
             )
         except Exception as exc:
             log.warning("PP FIRE failed %s marker=-%sp: %s", pair, key, exc)
@@ -493,7 +506,7 @@ class PartyPackage:
                     pair, g.side, units=units, entry_price=entry_price,
                     sl_pips=0.0,
                     client_ext=_popper_client_ext(cfg, offset_pips, g.anchor,
-                                                  g.parent_setup),
+                                                  g.parent_setup, gid=g.gid),
                 )
             except Exception as exc:
                 log.warning("PP FIRE two-step failed %s marker=-%sp: %s",

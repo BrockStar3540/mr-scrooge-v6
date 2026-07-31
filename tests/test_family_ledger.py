@@ -430,3 +430,48 @@ def test_disabled_setup_untouchable_by_governor(tmp_path, monkeypatch):
     # ...and refuses to demote anything not currently ACTIVE
     res = gov.flip("GBP_USD", "london", "hot_but_disabled", "SHADOW", dry=False)
     assert res.get("ok") is False and "not ACTIVE" in res.get("skipped", "")
+
+
+# ── grid_id era (2026-07-31): exact family join via the popper tag ───────────
+
+def test_tag_parts_split():
+    assert audit._tag_parts("pp_v1;g=6408") == ("pp_v1", "6408")
+    assert audit._tag_parts("pp_v1") == ("pp_v1", "")
+    assert audit._tag_parts("cell_v1") == ("cell_v1", "")
+    assert audit._tag_parts("0") == ("0", "")          # live-mangled copy
+
+
+def test_family_key_gid_join_beats_heuristics():
+    opens = {"6408": {"instrument": "GBP_USD", "dir": -1, "price": 1.34303,
+                      "su": "control_rvol_60_t20s", "tag": "cell_v1",
+                      "time": "2026-07-30T14:54", "sess": "ny"}}
+    # popper with a WRONG psu and far anchor — the gid join must win anyway
+    pop = {"instrument": "GBP_USD", "dir": -1, "tag": "pp_v1", "su": "pp_v1",
+           "gid": "6408", "psu": "some_other_setup", "anc": 1.99,
+           "time": "2026-07-31T02:00"}
+    fam, sess = audit.family_key(pop, [], opens)
+    assert fam == "control_rvol_60_t20s" and sess == "ny"
+
+
+def test_family_key_no_gid_falls_back_to_psu():
+    pop = {"instrument": "GBP_USD", "dir": 1, "tag": "pp_v1", "su": "pp_v1",
+           "gid": "", "psu": "rvol_low_240", "anc": None,
+           "time": "2026-07-30T15:00"}
+    parent = {"instrument": "GBP_USD", "dir": 1, "price": 1.35, "su": "rvol_low_240",
+              "tag": "cell_v1", "time": "2026-07-30T09:00", "sess": "london"}
+    fam, sess = audit.family_key(pop, [parent], {})
+    assert fam == "rvol_low_240" and sess == "london"
+
+
+def test_popper_client_ext_carries_gid_in_tag():
+    from modules.management.party_package import _popper_client_ext
+    cfg = {"sl_pips": 60.0, "trigger_pips": 8.5, "trail_pips": 2.5}
+    ce = _popper_client_ext(cfg, 15.0, 1.34303, "control_rvol_60_t20s", gid="6408")
+    assert ce["tag"] == "pp_v1;g=6408"
+    ce = _popper_client_ext(cfg, 15.0, 1.34303, "control_rvol_60_t20s")
+    assert ce["tag"] == "pp_v1"          # pre-gid grids stay wire-compatible
+
+
+def test_classifier_accepts_suffixed_tag():
+    from core.engine import _looks_like_popper
+    assert _looks_like_popper({"tag": "pp_v1;g=6408", "comment": "garbage"})
