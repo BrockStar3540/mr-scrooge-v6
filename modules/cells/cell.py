@@ -256,7 +256,7 @@ class CellModule:
         setups = self._cfg.get("setups", [])
         if not setups:
             return None   # NO-SIDE cell — silent
-        intent: Optional[CellIntent] = None   # first qualifying ACTIVE, returned after the loop
+        _candidates: list = []   # every qualifying ACTIVE/PROBE; best-by-heat wins
 
         for setup in setups:
             status = setup.get("status", "SHADOW")
@@ -371,10 +371,13 @@ class CellModule:
                     log.warning("TRIALSTAMP emit failed for %s/%s: %s",
                                 self.pair, setup_id, _tse)
 
-            # Capture the FIRST qualifying ACTIVE as the intent — but keep
-            # looping so every remaining setup still evaluates and stamps.
-            if would_trade and intent is None:
-                intent = CellIntent(
+            # SELECTOR (charter, 2026-07-31): collect EVERY qualifying
+            # ACTIVE/PROBE candidate — the best by relative heat wins after
+            # the loop. First-in-config-order is retired: it granted seats
+            # by JSON position, and shadow evidence accrued for setups that
+            # could never win the seat (charter defect #6).
+            if would_trade:
+                _candidates.append(CellIntent(
                     pair           = self.pair,
                     session        = self.session,
                     probe          = (status == "PROBE"),
@@ -389,5 +392,24 @@ class CellModule:
                         "wr":      evidence.get("wr"),
                         "lineage": evidence.get("source", ""),
                     },
-                )
-        return intent
+                ))
+        if not _candidates:
+            return None
+        if len(_candidates) == 1:
+            return _candidates[0]
+        try:
+            from core.execution_score import load_heat_scores, relative_heat
+            _scores = load_heat_scores()
+            def _rank(it):
+                k = f"{it.pair}|{it.session}|{it.setup_id}"
+                trusted = bool((_scores.get(k) or {}).get("trusted")
+                               and not (_scores.get(k) or {}).get("decaying"))
+                return relative_heat(k, it.side, _scores) + (0.25 if trusted else 0.0)
+            _candidates.sort(key=_rank, reverse=True)
+            for _loser in _candidates[1:]:
+                log.info("SELECTOR %s/%s picked=%s over=%s score=%.3f vs %.3f",
+                         self.pair, self.session, _candidates[0].setup_id,
+                         _loser.setup_id, _rank(_candidates[0]), _rank(_loser))
+        except Exception as _se:
+            log.warning("SELECTOR ranking failed (%s) — config order kept", _se)
+        return _candidates[0]
