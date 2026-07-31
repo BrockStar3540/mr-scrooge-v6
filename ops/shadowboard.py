@@ -50,6 +50,12 @@ def _journal_unit() -> str:
 
 def _pip(pair): return 0.01 if "JPY" in pair else 0.0001
 
+def _engage_thr(setup: str) -> float:
+    """MFE threshold that counts as 'ratchet engaged': the setup's trigger
+    (8.5p book gear, 20p _t20s gear) + 0.5p buffer, since mfe240 is measured
+    on mid and the executable price must clear the trigger."""
+    return 20.5 if setup.endswith("_t20s") else 9.0
+
 def _creds():
     from core.broker.oanda import _secrets
     s = _secrets()
@@ -411,7 +417,15 @@ def _aggregate(db):
             "avg_net240": round(avg, 2),            # net-of-cost (D-6)
             "lcb": lcb,
             "wr": round(sum(1 for n in nets if n > 0)/len(nets), 3),
-            "hit6": round(sum(1 for x in s if x["mfe240"] >= 6)/len(s), 3),
+            # hit_eng (2026-07-30, Brock): share of episodes whose MFE reached
+            # this setup's RATCHET TRIGGER + 0.5p mid-price buffer (book gear
+            # 8.5 -> 9p, _t20s gear 20 -> 20.5p). The old hit>=6p measured the
+            # LOCK level, which flattered cells that pop 6p and never engage
+            # (rvol_low_240_t20s: 61% touched +6, only 17% reached its 20p
+            # trigger). Engagement is the causal event: an engaged trade locks
+            # +6 and cannot lose.
+            "hit_eng": round(sum(1 for x in s
+                                 if x["mfe240"] >= _engage_thr(setup))/len(s), 3),
             "med_mfe": round(st.median(x["mfe240"] for x in s), 1),
             "med_mae": round(st.median(x["mae240"] for x in s), 1),
             # net60 exists only on legacy-mid-v1 scores (v2 exits when the
@@ -452,7 +466,7 @@ def _aggregate(db):
             out.append({
                 "cell": cell, "setup": sid, "side": side, "status": status,
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
-                "lcb": None, "wr": None, "hit6": None, "med_mfe": None,
+                "lcb": None, "wr": None, "hit_eng": None, "med_mfe": None,
                 "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
                 "last7_avg": None, "era": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,

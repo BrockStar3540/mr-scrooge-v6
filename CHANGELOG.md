@@ -4,6 +4,20 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.3] — 2026-07-30 — "The Engage Rate"
+
+### Changed
+- **`hit≥6p` → `hit≥trig` (operator rule, Brock)**: the SHADOW board's hit column now
+  measures the share of episodes whose MFE reached the setup's **ratchet trigger + 0.5p
+  mid-price buffer** (book gear 8.5 → 9p, `_t20s` gear 20 → 20.5p) instead of the 6p
+  lock level. Engagement is the causal event — an engaged trade locks +6 and cannot
+  lose — while the old stat flattered "almost-winners": measured on 100-trade-era
+  episodes, `rvol_low_240_t20s` (the forward test's −$858 family) touched +6p in 61%
+  of episodes but reached its actual 20p trigger only 17% of the time. Rank
+  correlation with per-cell net improves (+0.35 → +0.42, 34 cells n≥8); WR/family
+  net remain the scoreboard — the new column's job is diagnosis, and a wide
+  hit6-vs-engage gap was the almost-winner signature all along.
+
 ## [6.12.2] — 2026-07-30 — "Trust the Switch"
 
 ### Fixed

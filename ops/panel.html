@@ -832,7 +832,7 @@ body.has-ticker{padding-bottom:32px}
         <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
         <th>eps</th>
         <th title="THE BAR — the exact numbers the governor reads, era executable-exit-v2 evidence: n≥20 episodes · ≥10 independent day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB > 0 · BH-FDR q ≤ 0.05 (the 7-day guard is the 7d avg column). Green = condition met; all green = PROMOTE READY. ACTIVE rows are judged by the family column first — this bar applies only when the family can't speak (n<5).">era v2 bar</th>
-        <th>avg net/ep</th><th>cum net</th><th>WR</th><th>hit≥6p</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
+        <th>avg net/ep</th><th>cum net</th><th>WR</th><th title="ratchet-ENGAGE rate: share of episodes whose MFE reached this setup&#39;s trigger + 0.5p mid buffer (book gear 9p, t20s gear 20.5p). An engaged trade locks +6 and cannot lose. Replaced hit≥6p (the lock level), which flattered almost-winners that pop 6p and never engage.">hit≥trig</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
       <tbody id="sb-body"></tbody>
@@ -1197,7 +1197,7 @@ async function pollShadowboard(){
         <td style="white-space:nowrap">${ecell}</td>
         <td class="mono ${x.avg_net240==null?'muted':ncls}">${pn(x.avg_net240)}</td>
         <td class="mono ${x.cum_net240==null?'muted':(x.cum_net240>0?'pos':'neg')}">${pn(x.cum_net240)}</td>
-        <td>${x.wr==null?'—':Math.round(x.wr*100)+'%'}</td><td>${x.hit6==null?'—':Math.round(x.hit6*100)+'%'}</td>
+        <td>${x.wr==null?'—':Math.round(x.wr*100)+'%'}</td><td>${x.hit_eng==null?'—':Math.round(x.hit_eng*100)+'%'}</td>
         <td class="mono muted" style="font-size:11px">${x.med_mfe==null?'—':x.med_mfe+'/'+x.med_mae}</td>
         <td class="mono" style="font-size:11px">${x.last7_avg==null?'—':(x.last7_avg>0?'+':'')+x.last7_avg+'p ('+x.last7_n+')'}</td>
         <td class="muted" style="font-size:10px">${x.first==null?'—':x.first}</td>
