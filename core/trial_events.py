@@ -57,6 +57,28 @@ class TrialStamp:
         return json.dumps(asdict(self), separators=(",", ":"), default=str)
 
 
+def _stamped_exit(setup: dict, pair: str) -> dict:
+    """Setup exit geometry + the LIVE ratchet step knobs (exit_config.json
+    defaults, per-pair aware). The knobs were never stamped, so the shadow
+    simulator ran a 5p/20min ratchet against a 2p/0.5min live one (charter
+    defect #2, 2026-07-31). The stamp now records the gear the trade would
+    actually get; the sim honors it."""
+    ex = dict(setup.get("exit") or {})
+    try:
+        import json as _j
+        from pathlib import Path as _P
+        cfg = _j.loads((_P(__file__).resolve().parents[1] / "config"
+                        / "exit_config.json").read_text())
+        d = dict(cfg.get("defaults") or {})
+        d.update((cfg.get("per_pair") or {}).get(pair) or {})
+        ex.setdefault("step_size_pips", float(d.get("step_size_pips", 2.0)))
+        ex.setdefault("step_cadence_min", float(d.get("step_cadence_min", 0.5)))
+    except Exception:
+        ex.setdefault("step_size_pips", 2.0)
+        ex.setdefault("step_cadence_min", 0.5)
+    return ex
+
+
 def make_stamp(*, now: datetime, pair: str, session: str, setup: dict,
                status: str, view) -> Optional[TrialStamp]:
     """Build a TrialStamp from a qualifying setup + live view. Returns None if
@@ -83,7 +105,7 @@ def make_stamp(*, now: datetime, pair: str, session: str, setup: dict,
         entry=ask if side == "long" else bid,
         spread_pips=float(getattr(view, "spread_pips", 0.0) or 0.0),
         horizon_min=int(setup.get("horizon_min", 240)),
-        exit_config=dict(setup.get("exit") or {}),
+        exit_config=_stamped_exit(setup, pair),
         mechanics_hash=mechanics_hash(setup),
     )
 

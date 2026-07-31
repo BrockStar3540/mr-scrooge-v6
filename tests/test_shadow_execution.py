@@ -108,9 +108,11 @@ def test_trail_out_exits_at_lock():
               1.0999 + i * 3 * PIP, 1.1004 + i * 3 * PIP) for i in range(4)]
     down = [_ba(1.1010, 1.1010, 1.0950, 1.0951)]
     out = simulate_shadow_exit(_stamp(), up + down, PIP)
-    # peak after 4 bars ≈ (1.1013-1.1002)/pip = 11 → lock = floor((11-8.5)/5)*5+8.5-2.5 = 6.0
+    # LIVE gear (2026-07-31): step 2p, cadence 0.5min = every bar.
+    # peak ≈ 11 → lock = floor((11-8.5)/2)*2 + 8.5 - 2.5 = 8.0
+    # (the old expected 6.0 was the 5p/20min SIM-ONLY gear — charter defect #2)
     assert out.exit_reason == "stop"
-    assert out.net_pips == pytest.approx(6.0)
+    assert out.net_pips == pytest.approx(8.0)
 
 
 def test_immediate_dump_hits_initial_stop():
@@ -165,3 +167,36 @@ def test_metric_version_marked():
     bars = [_ba(1.1000, 1.1002, 1.0999, 1.1001)] * 4
     out = simulate_shadow_exit(_stamp(), bars, PIP)
     assert out.metric_version == METRIC_V2
+
+
+# ── charter defect #2 fixes (2026-07-31): live knobs + censoring ─────────────
+
+def test_stamped_cadence_and_step_are_honored():
+    # a stamp carrying the OLD coarse gear must still sim under that gear
+    st = _stamp()
+    st["exit_config"]["step_size_pips"] = 5.0
+    st["exit_config"]["step_cadence_min"] = 20.0
+    up = [_ba(1.1000 + i * 3 * PIP, 1.1004 + i * 3 * PIP,
+              1.0999 + i * 3 * PIP, 1.1004 + i * 3 * PIP) for i in range(4)]
+    down = [_ba(1.1010, 1.1010, 1.0950, 1.0951)]
+    out = simulate_shadow_exit(st, up + down, PIP)
+    assert out.net_pips == pytest.approx(6.0)      # the old-gear lock
+
+
+def test_default_gear_matches_live_exit_config():
+    import json
+    from pathlib import Path
+    from core import shadow_execution as se
+    d = json.loads((Path(se.__file__).resolve().parents[1] / "config" /
+                    "exit_config.json").read_text())["defaults"]
+    assert se.DEFAULT_STEP_SIZE_PIPS == d["step_size_pips"]
+    assert se.DEFAULT_CADENCE_MIN == d["step_cadence_min"]
+
+
+def test_stamp_carries_live_step_knobs():
+    from core.trial_events import _stamped_exit
+    ex = _stamped_exit({"exit": {"mode": "ratchet", "sl_pips": 40.0,
+                                 "trigger_pips": 8.5}}, "GBP_USD")
+    assert ex["step_size_pips"] == 2.0
+    assert ex["step_cadence_min"] == 0.5
+    assert ex["sl_pips"] == 40.0                   # setup fields untouched

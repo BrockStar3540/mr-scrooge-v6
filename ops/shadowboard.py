@@ -161,6 +161,15 @@ def _score_v2(ep, t0):
     o = simulate_shadow_exit(stamp, cs, _pip(pair))
     if o is None:
         return None
+    # CENSORED (charter, 2026-07-31): the live ratchet has no timeout, so a
+    # sim that reaches the horizon without a stop/ratchet exit is an episode
+    # STILL OPEN, not a closed outcome. Its MFE/MAE are real observations;
+    # its "net" is not — net240=None drops it from every net/WR aggregate.
+    if o.exit_reason == "horizon":
+        return {"mv": 2, "net240": None, "mfe240": o.mfe_pips,
+                "mae240": o.mae_pips, "net60": None, "mfe60": None,
+                "mae60": None, "exit_reason": "horizon", "censored": True,
+                "exit_bar": o.exit_bar, "ambiguous": o.ambiguous_bar}
     return {"mv": 2, "net240": o.net_pips, "mfe240": o.mfe_pips,
             "mae240": o.mae_pips, "net60": None, "mfe60": None, "mae60": None,
             "exit_reason": o.exit_reason, "exit_bar": o.exit_bar,
@@ -462,6 +471,7 @@ def _aggregate(db):
                           if (_n60 := [x["net60"] for x in s
                                        if x.get("net60") is not None]) else None),
             "n_v2": sum(1 for x in s if x.get("mv") == 2),
+            "n_censored": sum(1 for x in s if x.get("censored")),
             "n_ambig": sum(1 for x in s if x.get("ambiguous")),
             "last7_avg": round(sum(last7)/len(last7), 2) if last7 else None,
             "last7_n": len(last7),

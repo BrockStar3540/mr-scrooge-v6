@@ -22,9 +22,23 @@ from typing import Optional, Sequence
 
 from core.trial_events import METRIC_V2
 
-# Ratchet step knobs not carried per-setup (mirroring exit_config defaults).
-DEFAULT_STEP_SIZE_PIPS = 5.0
-DEFAULT_CADENCE_MIN = 20.0
+# Ratchet step knobs: read the LIVE defaults from config/exit_config.json.
+# The old hardcoded 5p/20min simulated a ratchet 10x coarser than the live
+# 2p/0.5min gear — "mechanics-matched" in name only (charter defect #2,
+# 2026-07-31). Stamps now carry step_size_pips/step_cadence_min per stamp;
+# these defaults cover legacy stamps.
+def _live_step_defaults():
+    import json as _j
+    from pathlib import Path as _P
+    try:
+        d = _j.loads((_P(__file__).resolve().parents[1] / "config"
+                      / "exit_config.json").read_text()).get("defaults", {})
+        return (float(d.get("step_size_pips", 2.0)),
+                float(d.get("step_cadence_min", 0.5)))
+    except Exception:
+        return 2.0, 0.5
+
+DEFAULT_STEP_SIZE_PIPS, DEFAULT_CADENCE_MIN = _live_step_defaults()
 
 
 @dataclass(frozen=True)
@@ -101,7 +115,11 @@ def _simulate_ratchet(bars, entry, side, cfg, pip) -> ShadowOutcome:
     trigger = float(cfg.get("trigger_pips", 8.5) or 8.5)
     trail = float(cfg.get("trail_pips", 2.5) or 2.5)
     step = float(cfg.get("step_size_pips", DEFAULT_STEP_SIZE_PIPS) or DEFAULT_STEP_SIZE_PIPS)
-    cadence_bars = max(1, int(DEFAULT_CADENCE_MIN / 5.0))
+    cadence_min = float(cfg.get("step_cadence_min", DEFAULT_CADENCE_MIN)
+                        or DEFAULT_CADENCE_MIN)
+    # M5 bars are the floor of what the sim can resolve — the live 0.5-min
+    # cadence maps to "every bar", the old 20-min default mapped to every 4th
+    cadence_bars = max(1, int(cadence_min / 5.0))
 
     lock: Optional[float] = None      # profit-direction pips; None = initial SL
     peak = 0.0
@@ -131,7 +149,7 @@ def _simulate_ratchet(bars, entry, side, cfg, pip) -> ShadowOutcome:
                                  round(mfe, 2), round(mae, 2), ambiguous)
 
         peak = max(peak, fav)
-        # cadence-gated lock evaluation (live ratchet checks every 20 min)
+        # cadence-gated lock evaluation (per the stamped/live cadence)
         if (i + 1) % cadence_bars == 0:
             new_lock = _ratchet_lock(peak, trigger, step, trail)
             if new_lock is not None and (lock is None or new_lock > lock):
