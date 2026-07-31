@@ -255,6 +255,21 @@ def _config_status():
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
+def collapse_episodes(ts_list, gap_s: int = 1800):
+    """Collapse a chronological stamp list into EPISODES (B-115): the engine
+    re-stamps a setup every scan cycle while its conditions hold, so one
+    four-hour runaway move produces dozens of stamps that all ride the same
+    trade. Stamps <= gap_s apart belong to one episode; only the FIRST stamp
+    of each episode is a real, independent entry decision. Same 30-min rule
+    as ops/shadowboard.py (_EP_GAP_S). Returns the list of first-stamps."""
+    firsts, last = [], None
+    for ts in ts_list:
+        if last is None or (ts - last).total_seconds() > gap_s:
+            firsts.append(ts)
+        last = ts
+    return firsts
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--since", default="2026-07-04", help="YYYY-MM-DD")
@@ -333,10 +348,15 @@ def main():
 
         evs = []
         wins = 0
-        # Cap at 50 sims to avoid rate-limiting — the MOST RECENT 50 (journal is
-        # oldest-first; taking the head simmed early-July stamps whose candle
-        # windows can fail, blanking SimEV on exactly the highest-n setups).
-        for ts, _ in stamp_list[-50:]:
+        # B-115: sim per EPISODE, not per stamp. Stamp-level scoring both
+        # inflated N (78 "trades" = 15 decisions) and poisoned the sample —
+        # the recent-50 cap meant one clustered runaway day WAS the sim
+        # (ps_floor_break_short: "78 trades, 100% WR" from a single +71p
+        # EUR_JPY afternoon; true episode record 8W/7L). One entry per
+        # episode, most recent 50 episodes (rate-limit cap unchanged).
+        ep_firsts = collapse_episodes([ts for ts, _ in stamp_list])
+        n_eps = len(ep_firsts)
+        for ts in ep_firsts[-50:]:
             ev = _simulate_ratchet(pair, ts, side, sl_pips, trig_pips, trail_pips, horizon)
             if not math.isnan(ev):
                 evs.append(ev)
@@ -361,6 +381,7 @@ def main():
                 "cell":     f"{pair}/{sess}",
                 "side":     side,
                 "n_stamps": n,
+                "n_eps":    n_eps,
                 "sim_ev":   _num(sim_ev),
                 "win_rate": _num(wr_pct),
                 "exp_ev":   exp_ev,
@@ -368,7 +389,7 @@ def main():
                 "status":   status,
             })
         else:
-            print(f"{label:<40} {n:>5} {sim_ev:>8.3f} {wr_pct:>6.1f} {exp_ev:>8.3f} {delta:>8.3f} {status}")
+            print(f"{label:<40} {n_eps:>4}({n:>4}) {sim_ev:>8.3f} {wr_pct:>6.1f} {exp_ev:>8.3f} {delta:>8.3f} {status}")
 
     if args.json:
         print(json.dumps({"setups": json_rows, "since": args.since,

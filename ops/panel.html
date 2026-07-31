@@ -846,7 +846,7 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <table id="cellscore-tbl">
       <thead><tr>
-        <th>Setup</th><th>Cell</th><th>Side</th><th>N Stamps</th>
+        <th>Setup</th><th>Cell</th><th>Side</th><th title="EPISODES (stamps): the engine re-stamps every scan cycle while conditions hold, so stamps cluster — stamps ≤30min apart are ONE episode = one real entry decision. Sim EV/WR are per-episode (most recent 50). The old per-stamp counting let a single runaway afternoon read as 78 trades at 100% WR.">N eps (stamps)</th>
         <th>Sim EV</th><th>Exp EV</th><th>Δ</th><th>WR %</th><th>Status</th>
         <th title="Promote to ACTIVE or DISABLE — writes config/cells">set status</th>
       </tr></thead>
@@ -2905,7 +2905,7 @@ function renderCellScore(){
       <td class="mono">${escape(r.setup_id||'?')}</td>
       <td>${escape(cellStr.replace('_','/'))}</td>
       <td>${dirPill(r.side)}</td>
-      <td class="mono">${r.n_stamps??'—'}</td>
+      <td class="mono">${r.n_eps!=null?`${r.n_eps} <span class="muted">(${r.n_stamps})</span>`:(r.n_stamps??'—')}</td>
       <td class="mono">${r.sim_ev!=null?(r.sim_ev>=0?'+':'')+Number(r.sim_ev).toFixed(3)+'p':'—'}</td>
       <td class="mono">${r.exp_ev!=null?(r.exp_ev>=0?'+':'')+Number(r.exp_ev).toFixed(3)+'p':'—'}</td>
       <td class="mono ${dCls}">${d!=null?(d>=0?'+':'')+Number(d).toFixed(3):'—'}</td>

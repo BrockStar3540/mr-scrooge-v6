@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.6] — 2026-07-31 — "One Move, One Vote"
+
+### Fixed
+- **B-115 — the Setup Scoreboard counted stamps as trades**: the engine re-stamps a
+  setup every scan cycle while conditions hold, so one runaway afternoon read as
+  "78 trades, 100% WR, +67.9p" (true record: 15 episodes, 8W/7L) — and the
+  recent-50-stamps sim cap meant that single clustered day WAS the sample. The scorer
+  now collapses stamps into episodes (≤30 min apart = one entry decision, same rule as
+  the shadowboard) and sims one entry per episode; the table shows `N eps (stamps)`.
+  Poster child: `kc_up_short_lean` "503 trades / 100% WR / +7.2p" → **10 episodes /
+  62.5% / −5.2p**. No restart needed (scorer is a subprocess; panel served from disk).
+  Suite 305.
+
 ## [6.12.5] — 2026-07-31 — "Three Different Programs" — CRITICAL for LIVE accounts
 
 ### Fixed

@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-114, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-115, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -712,6 +712,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** a regression **caused by the B-112 fix itself.** 6.11.1 reordered popper comments critical-fields-first (`anc`/`lvl`/`psu` lead) so truncated live copies keep what attribution needs — but the recovery *classifier* still required `"sl"` and `"tr"` in the comment, and the reorder pushed exactly those past the live account's ~32-char truncation. Every truncated popper failed the popper test → fell to the parent path → the one-parent-per-pair rule **silently** `continue`d all but the first same-pair trade. Triggered by the v6.12.3/v6.12.4 deploy restarts (03:28/03:44Z); B-112's own verification hadn't caught it because the then-open poppers carried OLD-format comments with `sl`/`tr` up front.
 - **Fix:** (1) classifier matches both encodings — new-format prefix fields (`anc`/`lvl`/`psu`) OR legacy `sl`+`tr` — and is extracted to module level with regression tests pinning the exact truncated live copies; (2) the one-parent-per-pair skip now logs a WARNING naming the unadopted trade — silence is what let four trades vanish; (3) remediation before the fix: stops manually moved to +6p lock, then post-fix recovery adopted 6/6 and the ratchet re-locked above the manual floor within one manage cycle.
 - **Lesson:** when you change a wire format, grep for every consumer of the OLD shape — the encoder, the decoder, and the *classifier* are three different programs. And any recovery path that declines a live trade must say so out loud; the orphan you don't log is the one the operator finds by eye.
+
+### B-115 — The Setup Scoreboard counted stamps as trades: one runaway afternoon read as "78 trades, 100% WR"
+- **Date:** 2026-07-31 (Brock: "78 trades, 100% WR?")
+- **Area:** `research/tools/cell_setup_score.py` (the /api/cellscore scoreboard), SHADOW-tab Setup Scoreboard table
+- **Symptom:** `ps_floor_break_short` EUR/JPY/london showed **78 trades at 100% WR, +67.9p sim EV** — its true episode record was 15 decisions going 8W/7L, with +71 of the +72 cumulative pips coming from ONE afternoon (the 07-30 EUR/JPY London collapse). `kc_up_short_lean` showed "503 trades, 100% WR, +7.2p"; per-episode it is a **10-decision, 62.5% WR, −5.2p loser.**
+- **Root cause:** double distortion. (1) The engine re-stamps a setup every scan cycle while its conditions hold, and the scorer counted every stamp as an independent trade — a four-hour runaway = dozens of "wins" riding one move. (2) The rate-limit cap simmed only the most recent 50 *stamps*, so a single clustered day didn't just inflate N — it **became the entire sim sample**.
+- **Fix:** stamps are collapsed into EPISODES before scoring (stamps ≤30 min apart = one entry decision — the same `_EP_GAP_S` rule the shadowboard uses); the sim runs one entry per episode, most recent 50 episodes; the table shows `N eps (stamps)` with the tooltip explaining why. Unit tests pin the collapse semantics.
+- **Lesson:** N is the most dangerous column on any scoreboard — before trusting it, ask what one row-unit *is*. A monitor that re-observes the same event must never present observations as decisions; independence is a property you build, not one you get.
 
 
 
