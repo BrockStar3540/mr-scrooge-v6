@@ -151,6 +151,10 @@ def replay_family_cycle(bars: list, side: str, pip: float,
         adverse_mid = m_l if sgn > 0 else m_h
         favor_mid = m_h if sgn > 0 else m_l
 
+        # liability high-water at bar START — a leg that dies on this very
+        # bar was still RISKING its full stop coming into it; measuring
+        # after the stop check erased first-bar deaths from the denominator
+        peak_liab = max(peak_liab, liability())
         # 1) stops first — worst case within the bar
         for u in legs:
             if u.done:
