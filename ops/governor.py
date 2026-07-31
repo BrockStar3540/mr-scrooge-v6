@@ -83,8 +83,27 @@ DEFAULT_CFG = {
     # hand gets a seat without waiting out the sample. Ledgered as
     # CHEATER-PROMOTE; era discipline still applies (legacy history can't cheat).
     "cheater_promotion_enabled": False,   # OPT-IN via the dashboard toggle
+    # ── CHEATER v3 (family-cycle ticket, charter 2026-07-31) ─────────────────
+    # The lane stays; the ticket changed: +100p of parent-horizon pips is
+    # replaced by RISK-COVERED GAIN over resolved virtual family cycles under
+    # the full live mechanics. A cheater seat is a PROBE (0.33x sizing).
+    "cheater_metric_version": "family-cycle-v3",
+    "cheater_min_cycles": 3,
+    "cheater_min_days": 2,
+    "cheater_min_positive_cycles": 2,
+    "cheater_min_risk_covered_gain": 1.25,   # R units actually covered
+    "cheater_min_harvest_coverage": 1.20,    # smoothed (+0.5/+0.5 prior)
+    "cheater_max_single_cycle_share": 0.60,  # one freak episode can't buy it
+    "cheater_require_flat": True,
+    "cheater_max_seats": 2,
+    "cheater_max_evals": 6,                  # replay budget per run
+    "cheater_replay_days": 2.5,
+    "cheater_replay_limit": 8,
+    "cheater_live_demote_pips": -45.0,       # ~ -0.75R at the 60p family stop
+    "cheater_graduate_cycles": 6,            # broker cycles to earn full ACTIVE
+    # legacy v1 keys (retired 2026-07-31, kept for old config files)
     "cheater_cum_pips": 100.0,
-    "cheater_min_n": 3,      # one lucky episode can't buy a seat (Brock, 2026-07-30)
+    "cheater_min_n": 3,
     "family_min_trades": 5,          # legacy (B-117: superseded by cycles)
     "family_min_cycles": 2,          # completed grid cycles to convict on net
     "family_defend_cycles": 3,       # completed cycles to DEFEND a seat
@@ -188,6 +207,48 @@ def family_fills(default_era):
             for r in rows}
 
 
+def cheater_v3_predicate(r: dict, c: dict) -> tuple:
+    """The family-cycle cheater ticket -> (passes, why). r = a
+    family_cycle_replay.score_cell row (virtual cycles, live mechanics).
+    Every gate exists to stop one freak episode buying a seat."""
+    n = int(r.get("cycles", 0))
+    need = int(c.get("cheater_min_cycles", 3))
+    if n < need:
+        return False, f"cycles {n}<{need}"
+    if int(r.get("days", 0)) < int(c.get("cheater_min_days", 2)):
+        return False, f"days {r.get('days', 0)}<{c.get('cheater_min_days', 2)}"
+    u = r.get("u_list") or []
+    pos = [x for x in u if x > 0]
+    if len(pos) < int(c.get("cheater_min_positive_cycles", 2)):
+        return False, f"positive cycles {len(pos)}"
+    cs = sum(u)
+    if cs < float(c.get("cheater_min_risk_covered_gain", 1.25)):
+        return False, f"CS {cs:+.2f}R < +{c.get('cheater_min_risk_covered_gain', 1.25)}R"
+    if pos and max(pos) / sum(pos) > float(c.get("cheater_max_single_cycle_share", 0.60)):
+        return False, "single cycle > 60% of gain"
+    neg = sum(-x for x in u if x < 0)
+    cov = (sum(pos) + 0.5) / (neg + 0.5)
+    if cov < float(c.get("cheater_min_harvest_coverage", 1.20)):
+        return False, f"coverage {cov:.2f}"
+    if c.get("cheater_require_flat", True) and r.get("last_censored"):
+        return False, "latest cycle still open"
+    return True, (f"CS={cs:+.2f}R over {n} resolved virtual cycles / "
+                  f"{r.get('days')}d, coverage {cov:.2f}")
+
+
+def cheater_v3_policy(r: dict) -> str:
+    """GridLift management-policy selector: FAMILY_PP | PARENT_ONLY | NONE.
+    Strong parent + harmful grid -> seat WITHOUT poppers; weak parent +
+    profitable family -> seat WITH poppers; both negative -> no seat."""
+    upp = r.get("U_pp")
+    upar = r.get("U_par")
+    upp = float("-inf") if upp is None else upp
+    upar = float("-inf") if upar is None else upar
+    if upp <= 0 and upar <= 0:
+        return "NONE"
+    return "FAMILY_PP" if upp >= upar else "PARENT_ONLY"
+
+
 def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
     """FAMILY RULE for one ACTIVE setup -> (demote: bool, reason: str).
     f = era-clocked family view {n, net_pips, net_usd, n_open} or None; e =
@@ -283,6 +344,8 @@ def flip(pair, sess, setup_id, status, dry):
     # PROBE; demote from ACTIVE or PROBE. DISABLED stays sacred.
     if status == "ACTIVE" and cur not in ("SHADOW", "PROBE"):
         return {"ok": False, "skipped": f"not SHADOW/PROBE at flip time (now {cur})"}
+    if status == "PROBE" and cur != "SHADOW":
+        return {"ok": False, "skipped": f"not SHADOW at flip time (now {cur})"}
     if status == "SHADOW" and cur not in ("ACTIVE", "PROBE"):
         return {"ok": False, "skipped": f"not ACTIVE/PROBE at flip time (now {cur})"}
     return _post(API, {"pair": pair, "session": sess,
@@ -412,7 +475,8 @@ def main():
     now = datetime.now(timezone.utc).isoformat()
 
     min_raw = int(c.get("min_raw_episodes", c.get("bar_n", 20)))
-    promotions, demotions = [], []
+    promotions, demotions, graduations, cheater_cands = [], [], [], []
+    cheater_seats = st.setdefault("cheater_seats", {})
     for key, meta in sorted(bmap.items()):
         pair, sess, sid = key
         if meta["manual_only"] or meta["status"] not in ("ACTIVE", "PROBE", "SHADOW"):
@@ -423,29 +487,89 @@ def main():
                              c["default_era_start"])) if fam_row else None)
         if meta["status"] == "SHADOW" and e:  # PROBE takes the ACTIVE branch
             k = "|".join(key)
-            # CHEATER RULE first — it is deterministic (cum >= threshold, no
-            # statistics), so the peeking guard does not apply to it: there is
-            # no p to hack by re-checking unchanged evidence.
-            _cum = (e.net_avg or 0.0) * e.raw_n
+            # CHEATER v3: collect CANDIDATES here (positive era evidence,
+            # enough episodes); the heavy family-cycle replay runs after the
+            # loop, budget-capped and ranked. Deterministic ticket — the
+            # peeking guard still doesn't apply.
             if (c.get("cheater_promotion_enabled", False)
-                    and _cum >= float(c.get("cheater_cum_pips", 100.0))
-                    and e.raw_n >= int(c.get("cheater_min_n", 3))):
-                promotions.append((key, e, {"cheater": round(_cum, 1)}))
-                continue
+                    and e.raw_n >= int(c.get("cheater_min_cycles", 3))
+                    and (e.net_avg or 0.0) > 0):
+                cheater_cands.append((key, e, meta))
             prev_blocks = last_eval.get(k)
             # SEQUENTIAL-PEEKING GUARD: no new independent block since the
             # last failed test => same evidence, no re-roll (statistical bar only).
             if prev_blocks is not None and e.independent_days <= prev_blocks:
                 continue
             if e.promotable:
-                promotions.append((key, e, None))
+                promotions.append((key, e, None))    # -> PROBE (charter: full
+                # capital requires completed broker family evidence)
             else:
                 last_eval[k] = e.independent_days
-        elif meta["status"] == "ACTIVE":
-            # FAMILY RULE — broker net pips of parent + its poppers, era-clocked.
+        elif meta["status"] in ("ACTIVE", "PROBE"):
+            # FAMILY RULE — broker cycles of parent + poppers, era-clocked.
             demote, _reason = active_verdict(e, f, c, min_raw)
+            if meta["status"] == "PROBE" and f and not f.get("n_open"):
+                k = "|".join(key)
+                cyc = f.get("cycle_nets") or []
+                if k in cheater_seats and cyc:
+                    # CHEATER LEASH (charter): one bad live cycle benches;
+                    # cum < 0 after 2; two consecutive negatives
+                    if (min(cyc) <= float(c.get("cheater_live_demote_pips", -45.0))
+                            or (len(cyc) >= 2 and sum(cyc) < 0)
+                            or (len(cyc) >= 2 and cyc[-1] < 0 and cyc[-2] < 0)):
+                        demote = True
+                # GRADUATION: enough completed broker cycles + positive
+                # conservative edge earns the full-size seat
+                if (not demote
+                        and len(cyc) >= int(c.get("cheater_graduate_cycles", 6))
+                        and (f.get("edge_lcb") or 0) > 0):
+                    graduations.append((key, e, f))
+                    continue
             if demote:
                 demotions.append((key, e, f))
+
+    # CHEATER v3 evaluation: replay the top candidates through the full
+    # family-cycle machine (both policies), gate on the risk-covered ticket,
+    # rank by cumulative covered gain, cap by free seats.
+    cheater_promos = []
+    seats_used = sum(1 for k2 in list(cheater_seats)
+                     if bmap.get(tuple(k2.split("|")), {}).get("status") == "PROBE")
+    seats_free = max(0, int(c.get("cheater_max_seats", 2)) - seats_used)
+    if cheater_cands and seats_free > 0:
+        try:
+            from research.tools.family_cycle_replay import score_cell
+            from research.tools.cell_setup_score import collapse_episodes
+            db = json.load(open(REPO / "data" / "shadowboard.json"))
+            cheater_cands.sort(key=lambda x: -((x[1].net_avg or 0) * x[1].raw_n))
+            for key, e, meta in cheater_cands[:int(c.get("cheater_max_evals", 6))]:
+                pair, sess, sid = key
+                k = "|".join(key)
+                era0 = str(eras.get(k, c["default_era_start"]))[:19]
+                ts = sorted(
+                    datetime.fromisoformat(ep["t"])
+                    for ep in db.get("episodes", {}).values()
+                    if ep["cell"] == f"{pair}/{sess}" and ep["setup"] == sid
+                    and ep["t"][:19] >= era0)
+                firsts = collapse_episodes(ts)
+                if len(firsts) < int(c.get("cheater_min_cycles", 3)):
+                    continue
+                r = score_cell(pair, sess, sid, meta.get("side", "?"), firsts,
+                               float(c.get("cheater_replay_days", 2.5)),
+                               int(c.get("cheater_replay_limit", 8)))
+                ok, why = cheater_v3_predicate(r, c)
+                pol = cheater_v3_policy(r)
+                if ok and pol != "NONE":
+                    cheater_promos.append((key, e, {
+                        "cheater_v3": why, "policy": pol,
+                        "cs": round(sum(r.get("u_list") or []), 2),
+                        "grid_lift": r.get("grid_lift")}))
+                else:
+                    print(f"governor: cheater-v3 declined {k}: "
+                          f"{why if not ok else 'policy=NONE'}")
+        except Exception as exc:
+            print(f"governor: cheater-v3 evaluation failed ({exc})", file=sys.stderr)
+        cheater_promos.sort(key=lambda x: -x[2]["cs"])
+        cheater_promos = cheater_promos[:seats_free]
 
     # strongest evidence first; rails cap the day's changes
     promotions.sort(key=lambda x: -(x[1].block_lcb or 0))
@@ -467,7 +591,7 @@ def main():
     if not c.get("allow_demotions", True):
         demotions = []
 
-    if not promotions and not demotions:
+    if not promotions and not demotions and not cheater_promos and not graduations:
         print(f"governor: no setups due ({len(ev_all)} era-scored v2, "
               f"{len(bmap)} in book)")
         if not args.dry_run:
@@ -475,7 +599,11 @@ def main():
         return
 
     with open(LEDGER, "a") as led:
-        for kind, batch, new_status in (("PROMOTE", promotions, "ACTIVE"),
+        # Charter: ALL promotions land on PROBE (0.33x audition); full-size
+        # ACTIVE is earned by GRADUATION on completed broker family cycles.
+        for kind, batch, new_status in (("PROMOTE", promotions, "PROBE"),
+                                        ("CHEATER-PROBE", cheater_promos, "PROBE"),
+                                        ("GRADUATE", graduations, "ACTIVE"),
                                         ("DEMOTE", demotions, "SHADOW")):
             for (pair, sess, sid), e, f in batch:
                 why = []
@@ -485,10 +613,12 @@ def main():
                     why.append(f"v2 n={e.raw_n} days={e.independent_days} "
                                f"net_avg={e.net_avg:+.2f}p blcb={_l} q={_q} "
                                f"7d={e.recent_avg}({e.recent_n}) [{METRIC_V2}]")
-                if isinstance(f, dict) and "cheater" in f:
-                    why.append(f"CHEATER-PROMOTE: era cum {f['cheater']:+.1f}p >= "
-                               f"+{c.get('cheater_cum_pips', 100.0):.0f}p — bar "
-                               f"bypassed by operator rule (2026-07-30)")
+                if isinstance(f, dict) and "cheater_v3" in f:
+                    why.append(f"CHEATER-v3: {f['cheater_v3']} — policy "
+                               f"{f['policy']} (grid lift {f.get('grid_lift')}) — "
+                               f"risk-covered ticket, bar bypassed (charter 2026-07-31)")
+                elif isinstance(f, dict) and "cheater" in f:
+                    why.append(f"CHEATER-PROMOTE(v1, retired): era cum {f['cheater']:+.1f}p")
                 elif f:
                     why.append(f"family n={f['n']} net={f['net_pips']:+.1f}p "
                                f"(${f['net_usd']:+.2f}) [broker]")
@@ -499,6 +629,17 @@ def main():
                 if kind == "DEMOTE" and res.get("ok"):
                     # seat lost -> the family's grid loses its fire permit too
                     line["pp_off"] = pp_off(pair, sess, sid, args.dry_run)
+                k2 = "|".join((pair, sess, sid))
+                if res.get("ok") and not args.dry_run:
+                    if kind == "CHEATER-PROBE":
+                        cheater_seats[k2] = {"t": now, "policy": f.get("policy"),
+                                             "cs": f.get("cs")}
+                        if f.get("policy") == "PARENT_ONLY":
+                            # strong parent, harmful grid: seat WITHOUT poppers
+                            line["pp_off_policy"] = pp_off(pair, sess, sid,
+                                                           args.dry_run)
+                    elif kind in ("GRADUATE", "DEMOTE"):
+                        cheater_seats.pop(k2, None)
                 led.write(json.dumps(line) + "\n")
                 print(f"GOVERNOR {kind} {pair}/{sess}/{sid}  [{'; '.join(why)}]"
                       f"{'  (dry-run)' if args.dry_run else ''}")

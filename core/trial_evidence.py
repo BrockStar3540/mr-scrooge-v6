@@ -171,6 +171,8 @@ def current_era_evidence(episodes: dict, book_map: dict, governor_state: dict,
             continue
         if ep["t"] < eras.get("|".join(key), default_era):
             continue
+        if sc.get("net240") is None:
+            continue         # censored (still open) — evidence when it resolves
         net = episode_net(sc["net240"], ep.get("spread"), pair,
                           slippage_pips=slip, executable=True)
         obs_by_key[key].append(TrialObservation(

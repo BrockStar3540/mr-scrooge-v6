@@ -19,6 +19,7 @@
   "family_min_trades": 5,
   "family_demote_pips": -60.0,
   "family_defend_pips": 60.0,
-  "cheater_promotion_enabled": false,
-  "_cheater_note": "2026-07-31: OFF pending family-cycle-v3 ticket \u2014 the +100p cumulative parent-horizon metric was shown structurally divergent from broker family results (2/7 sign agreement). Existing cheater seats stay under the family leash. See docs/FAMILY_GEOMETRY_V3.md"
+  "cheater_promotion_enabled": true,
+  "cheater_metric_version": "family-cycle-v3",
+  "_cheater_note": "2026-07-31: lane RE-ENABLED with the family-cycle-v3 ticket \u2014 risk-covered gain >= +1.25R over >=3 resolved virtual family cycles under full live mechanics, consistency gates, GridLift policy selection; seats are PROBE (0.33x) and graduate to ACTIVE on completed broker cycles. The +100p parent-horizon ticket is retired."
 }

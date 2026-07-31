@@ -403,11 +403,15 @@ def _aggregate(db):
     for (cell, setup, side), g in groups.items():
         rows = g["rows"]; s = [r["scores"] for r in rows]
         pair = cell.split("/")[0]
-        nets = [episode_net(x["net240"], r.get("spread"), pair,
-                            slippage_pips=_slip,
-                            executable=bool(x.get("mv") == 2))
-                for r, x in zip(rows, s)]
-        last7 = [net for r, net in zip(rows, nets) if r["t"] >= cutoff7]
+        nets_all = [episode_net(x["net240"], r.get("spread"), pair,
+                                slippage_pips=_slip,
+                                executable=bool(x.get("mv") == 2))
+                    for r, x in zip(rows, s)]
+        last7 = [net for r, net in zip(rows, nets_all)
+                 if net is not None and r["t"] >= cutoff7]
+        nets = [n for n in nets_all if n is not None]   # censored excluded
+        if not nets:
+            continue          # every episode still open — nothing to grade
         avg = sum(nets) / len(nets)
         n_eff = effective_n([r["t"] for r in rows])
         lcb = _tlcb(nets, n_eff, _z)

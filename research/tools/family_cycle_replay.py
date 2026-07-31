@@ -98,27 +98,32 @@ def score_cell(pair, sess, sid, side, ep_times, max_days, limit):
         par = replay_family_cycle(bars, side, PIP(pair), gear, pp, "PARENT_ONLY")
         if fam is None or par is None:
             continue
-        rows.append((fam, par))
-    comp = [(f, p) for f, p in rows if not f.censored]
+        rows.append((t, fam, par))
+    comp = [(t, f, p) for t, f, p in rows if not f.censored]
     cens = len(rows) - len(comp)
+    last_censored = bool(rows) and rows[-1][1].censored
     if not comp:
-        return {"cycles": 0, "censored": cens}
+        return {"cycles": 0, "censored": cens, "u_list": [], "days": 0,
+                "last_censored": last_censored}
     def U(c):
         liab = max(c.peak_liability_pips, 1.0)
         return c.net_pips / liab
-    u_pp = [U(f) for f, _ in comp]
-    u_par = [U(p) for _, p in comp if not p.censored]
+    u_pp = [U(f) for _, f, _ in comp]
+    u_par = [U(p) for _, _, p in comp if not p.censored]
     pos = sum(u for u in u_pp if u > 0)
     neg = sum(-u for u in u_pp if u < 0)
+    days = len({t.strftime("%Y-%m-%d") for t, _, _ in comp})
     return {"cycles": len(comp), "censored": cens,
+            "u_list": [round(u, 3) for u in u_pp],
+            "days": days, "last_censored": last_censored,
             "U_pp": round(sum(u_pp) / len(u_pp), 3),
             "U_par": round(sum(u_par) / len(u_par), 3) if u_par else None,
             "grid_lift": (round(sum(u_pp) / len(u_pp) - sum(u_par) / len(u_par), 3)
                           if u_par else None),
             "coverage": round((pos + 0.5) / (neg + 0.5), 2),
             "worst": round(min(u_pp), 3),
-            "net_pips_mean": round(sum(f.net_pips for f, _ in comp) / len(comp), 1),
-            "harvest_mean": round(sum(f.harvest for f, _ in comp) / len(comp), 1)}
+            "net_pips_mean": round(sum(f.net_pips for _, f, _ in comp) / len(comp), 1),
+            "harvest_mean": round(sum(f.harvest for _, f, _ in comp) / len(comp), 1)}
 
 
 def main():

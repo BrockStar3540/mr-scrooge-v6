@@ -773,12 +773,12 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <details style="padding:0 12px 6px">
       <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
-        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. ⚠️ The stamp/era columns are PARENT-ONLY, HORIZON-CAPPED diagnostics — they cannot see the popper grid and have diverged from broker family results; family-cycle-v3 scoring is in progress. 🎲 Cheater promotions are OFF pending the v3 ticket. <b>Full standard ▾</b>
+        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. ⚠️ The stamp/era columns are PARENT-ONLY, HORIZON-CAPPED diagnostics — they cannot see the popper grid and have diverged from broker family results; family-cycle-v3 scoring is in progress. 🎲 Cheater v3 is LIVE: the ticket is risk-covered gain (≥+1.25R over ≥3 resolved virtual family cycles, consistency-gated, GridLift picks the popper policy) and every promotion lands on a 0.33× PROBE seat — full ACTIVE is earned by graduation on completed broker cycles. <b>Full standard ▾</b>
       </summary>
     <div class="muted" style="padding:6px 0 0;font-size:11px">
       <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
       only): n≥20 eps · ≥10 independent day-blocks · avg ≥ +2.0p/ep net ·
-      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket — <b>OR the 🎲 CHEATER RULE (opt-in, default OFF — the toggle above)</b>: era-v2 cumulative net ≥ <b>+100p</b> promotes immediately, bar bypassed. A hot hand gets its seat without waiting out the sample; the family rule demotes it if it cools. Every use is ledgered as CHEATER-PROMOTE.<br>
+      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket — <b>OR the 🎲 CHEATER v3 RULE (opt-in — the toggle above)</b>: a shadow whose <b>virtual family cycles</b> (full live mechanics: grid, re-arms, bid/ask, no horizon) have covered <b>≥ +1.25R of their own peak risk</b> across ≥3 resolved cycles / ≥2 days, ≥2 positive, no cycle &gt;60% of the gain, smoothed coverage ≥1.20 — earns a <b>PROBE seat (0.33× size)</b> immediately, with GridLift choosing poppers ON or OFF. Graduates to full ACTIVE after 6 completed broker cycles with positive edge LCB; the leash benches it on one −45p cycle, cum&lt;0 after 2, or two straight reds. Ledgered as CHEATER-PROBE.<br>
       <b>⬇ Demote — THE FAMILY RULE</b> (v6.7, net loss is the key): a parent setup and
       the poppers its grid fired are <b>one economic unit in broker net pips</b> (every
       popper fill carries its parent&#39;s id). Family n≥5 at <b>≤ −60p</b> (one popper SL)
@@ -1251,7 +1251,7 @@ async function setGovernor(enabled){
   pollGovernor();
 }
 async function setCheater(cheater){
-  if(cheater && !confirm('Enable CHEATER PROMOTION?\n\nAny SHADOW whose current-era cumulative net reaches +100 pips is promoted to ACTIVE (live trading) IMMEDIATELY — no 20-trade bar, no day-block minimum, no statistical confidence check. A hot hand gets a seat fast, and the family rule demotes it if it cools.\n\nThis trades sooner on less evidence. Opt-in only. Continue?'))return;
+  if(cheater && !confirm('Enable CHEATER v3?\n\nShadows whose VIRTUAL FAMILY CYCLES (replayed under full live mechanics) have covered >= +1.25R of their own peak risk across >=3 resolved cycles earn a PROBE seat (0.33x size) immediately, bar bypassed. GridLift picks poppers ON or OFF. Graduation to full ACTIVE requires 6 completed broker cycles with positive edge; the leash benches one -45p cycle or two straight reds.\n\nStill trades sooner on less evidence - that is the point. Opt-in only. Continue?'))return;
   try{
     await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({cheater})});

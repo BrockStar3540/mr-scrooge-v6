@@ -82,6 +82,8 @@ def episode_net(gross: float, spread: Optional[float], pair: str,
     executable=False — legacy-mid-v1 mid-drift scores never touched the
                        spread; deduct stamped spread (or per-pair fallback)
                        plus slippage, exactly as D-6 defined."""
+    if gross is None:
+        return None          # CENSORED episode (still open) — not an outcome
     if executable:
         return gross - slippage_pips
     return cost_adjusted_nets([gross], [spread], pair, slippage_pips)[0]
