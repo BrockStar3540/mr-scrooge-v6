@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-117, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-118, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -735,6 +735,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Symptom:** two structural attribution errors in the evidence the governor convicts and defends on. (1) Families were keyed `(instrument, setup)` — session omitted, while 47 setup ids repeat across sessions (GBP_USD `timing_lean_30` exists in asia AND london): their broker evidence silently merged. (2) `family n` counted closed LEGS: one grid excursion producing six closed trades read as "n=6, 6-for-6" when it was ONE correlated market episode.
 - **Fix:** families keyed `(instrument, session, setup)` — poppers inherit the session of the parent that armed their grid; legs are chained into **GRID CYCLES** by open-interval overlap (family flat = cycle boundary; a cycle an open leg extends is censored). Verdicts now run on completed cycles: convict at `family_min_cycles≥2` on net, **or ONE catastrophic cycle ≤ −90p** (asymmetric, per charter); defend needs `family_defend_cycles≥3`. First live run re-graded the book: the "6-for-6" GBP grid = 1 completed cycle (honest: promising, unproven); the re-seated EUR_JPY lean = 1 catastrophic −144p cycle (convicts on sight when flat).
 - **Lesson:** the unit of evidence is the decision, not the fill. Correlated legs are one observation wearing six hats — and any join key missing a dimension the config repeats across is silently pooling different strategies.
+
+### B-118 — A red suite got pushed through a pipe, again — by the author of the B-111 writeup
+- **Date:** 2026-07-31 (caught one commit later, same session)
+- **Area:** release discipline; `config/cell_schema.py`; `ops/shadowboard.py`
+- **Symptom:** v6.14.4 (wired-date backfill) shipped with **19 failing schema tests** — the new `wired` field wasn't whitelisted, PROBE wasn't a schema-legal status, and the queued-row loop unpacked a 2-tuple from a now-3-tuple (which would have silently killed board rebuilds inside the refresh thread's catch-all).
+- **Root cause:** the commit chain ran `pytest -q | tail -1` and proceeded on tail's exit code — the **exact** pipe sin B-111 documented on 2026-07-29, recommitted verbatim by the same author two days later. The check that isn't allowed to fail the pipeline isn't a check.
+- **Fix:** schema whitelists `wired`, VALID_STATUSES gains PROBE, queued unpack tolerates the extended tuple; fix-commit ran under `set -e` with the exit code unpiped. Suite 348 green before push.
+- **Lesson:** B-111's lesson didn't fail — its *enforcement* did. A lesson that lives in a document and not in the tooling will be re-learned at the worst available moment. (CI caught it too — the red run on GitHub was the backstop that a local pipe can't swallow.)
 
 
 
