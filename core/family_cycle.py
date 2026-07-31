@@ -39,6 +39,40 @@ from typing import Optional
 BAR_MIN = 5.0
 
 
+HEAT_HALF_LIFE_D = 2.0      # detects the current regime
+TRUST_HALF_LIFE_D = 21.0    # measures durable performance
+
+
+def two_speed_score(events: list, now, half_life_d: float) -> dict:
+    """Charter (2026-07-31): exponentially time-weighted mean of
+    risk-normalized cycle returns with effective-n shrinkage.
+
+      w_i = 2^(-age_days_i / half_life)
+      mu  = sum(w*R)/sum(w)
+      n_h = (sum w)^2 / sum(w^2)          (Kish effective sample size)
+      score = mu * (1 - e^(-n_h/2))       (one observation can't get full
+                                           weight; 3 consistent ones ~78%)
+
+    events: [(datetime_end, R)] — R in risk units (U_j, or pips/60 proxy).
+    Returns {"score", "mu", "n_eff", "n"} — all None-safe for empty input.
+    """
+    ev = [(t, r) for t, r in events if r is not None]
+    if not ev:
+        return {"score": None, "mu": None, "n_eff": 0.0, "n": 0}
+    ws, wrs, w2s = 0.0, 0.0, 0.0
+    for t, r in ev:
+        age_d = max(0.0, (now - t).total_seconds() / 86400.0)
+        w = 2.0 ** (-age_d / half_life_d)
+        ws += w
+        wrs += w * r
+        w2s += w * w
+    mu = wrs / ws
+    n_eff = (ws * ws) / w2s if w2s else 0.0
+    score = mu * (1.0 - math.exp(-n_eff / 2.0))
+    return {"score": round(score, 4), "mu": round(mu, 4),
+            "n_eff": round(n_eff, 2), "n": len(ev)}
+
+
 # one-sided 90% t critical values by df (n-1); normal beyond
 _T90 = {1: 3.078, 2: 1.886, 3: 1.638, 4: 1.533, 5: 1.476, 6: 1.440,
         7: 1.415, 8: 1.397, 9: 1.383, 10: 1.372}

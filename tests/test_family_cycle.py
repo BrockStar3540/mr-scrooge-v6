@@ -152,3 +152,37 @@ def test_edge_lcb_grows_with_n():
     a = edge_lcb([15.0, 25.0])
     b = edge_lcb([15.0, 25.0, 15.0, 25.0, 15.0, 25.0])
     assert b > a                                       # same mean, more cycles
+
+
+# ── Heat/Trust two-speed scoring (charter) ───────────────────────────────────
+
+def test_two_speed_shrinkage_caps_single_observation():
+    from datetime import datetime, timezone, timedelta
+    from core.family_cycle import two_speed_score
+    now = datetime(2026, 7, 31, tzinfo=timezone.utc)
+    one = two_speed_score([(now, 1.0)], now, 2.0)
+    assert one["score"] == pytest.approx(1.0 * (1 - 2.718281828 ** -0.5), abs=1e-3)
+    assert one["score"] < 0.40                       # one obs ≈ 39% weight
+    three = two_speed_score([(now, 1.0), (now - timedelta(hours=4), 1.0),
+                             (now - timedelta(hours=8), 1.0)], now, 2.0)
+    assert 0.70 < three["score"] < 0.85              # ~78% at three consistent
+
+
+def test_heat_forgets_faster_than_trust():
+    from datetime import datetime, timezone, timedelta
+    from core.family_cycle import two_speed_score
+    now = datetime(2026, 7, 31, tzinfo=timezone.utc)
+    events = [(now - timedelta(days=10), 1.0), (now, -0.5)]
+    heat = two_speed_score(events, now, 2.0)
+    trust = two_speed_score(events, now, 21.0)
+    # ten-day-old glory is nearly invisible to Heat, still visible to Trust
+    assert heat["mu"] < trust["mu"]
+    assert heat["mu"] < 0
+
+
+def test_two_speed_empty_and_none_safe():
+    from datetime import datetime, timezone
+    from core.family_cycle import two_speed_score
+    now = datetime(2026, 7, 31, tzinfo=timezone.utc)
+    assert two_speed_score([], now, 2.0)["score"] is None
+    assert two_speed_score([(now, None)], now, 2.0)["n"] == 0

@@ -101,6 +101,10 @@ DEFAULT_CFG = {
     "cheater_replay_limit": 8,
     "cheater_live_demote_pips": -45.0,       # ~ -0.75R at the 60p family stop
     "cheater_graduate_cycles": 6,            # broker cycles to earn full ACTIVE
+    # ── Heat/Trust adaptive layer (charter 2026-07-31) ───────────────────────
+    "trusted_min_cycles": 8,                 # broker cycles to earn TRUSTED
+    "trusted_demote_heat": -0.25,            # decay confirmation threshold
+    "cluster_best_only": True,               # one seat per (pair, side) cluster
     # legacy v1 keys (retired 2026-07-31, kept for old config files)
     "cheater_cum_pips": 100.0,
     "cheater_min_n": 3,
@@ -249,7 +253,37 @@ def cheater_v3_policy(r: dict) -> str:
     return "FAMILY_PP" if upp >= upar else "PARENT_ONLY"
 
 
-def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
+R_PIPS = 60.0     # 1R = the 60p family stop (risk-unit proxy for broker cycles)
+
+
+def heat_trust_for(f, now) -> dict:
+    """Heat (2d) + Trust (21d) from a family view's completed cycles.
+    R proxy = cycle pips / 60 (the family stop)."""
+    from core.family_cycle import (two_speed_score, HEAT_HALF_LIFE_D,
+                                   TRUST_HALF_LIFE_D)
+    events = []
+    for end, pips in (f.get("cycle_events") or []) if f else []:
+        try:
+            t = datetime.fromisoformat(end.replace("Z", "+00:00"))
+            if t.tzinfo is None:
+                t = t.replace(tzinfo=timezone.utc)
+            events.append((t, pips / R_PIPS))
+        except (ValueError, TypeError):
+            continue
+    heat = two_speed_score(events, now, HEAT_HALF_LIFE_D)
+    trust = two_speed_score(events, now, TRUST_HALF_LIFE_D)
+    return {"heat": heat["score"], "trust": trust["score"],
+            "heat_n_eff": heat["n_eff"], "n_cycles": len(events)}
+
+
+def is_trusted(ht: dict, c: dict) -> bool:
+    """TRUSTED (charter): repeated broker success earns evidence-based
+    inertia — kept while economically positive, not while hottest."""
+    return bool(ht and ht.get("n_cycles", 0) >= int(c.get("trusted_min_cycles", 8))
+                and (ht.get("trust") or 0) > 0)
+
+
+def active_verdict(e, f, c: dict, min_raw: int, ht: dict = None) -> tuple:
     """FAMILY RULE for one ACTIVE setup -> (demote: bool, reason: str).
     f = era-clocked family view {n, net_pips, net_usd, n_open} or None; e =
     stamp evidence (SetupEvidence) or None. Broker family net pips outranks
@@ -279,6 +313,13 @@ def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
     bar_lost = bool((not family_green) and e and e.raw_n >= min_raw and (
         e.net_avg is None or e.net_avg < float(c["bar_avg"])))
     if family_red:
+        # TRUSTED inertia (charter): a trusted seat is not churned on the
+        # first red patch — demotion requires the decay CONFIRMED by Heat
+        # (< -0.25R). The catastrophic single-cycle bench stands regardless
+        # (risk suspension outranks inertia).
+        _cata_hit = bool(cyc_nets and min(cyc_nets) <= cata)
+        if (not _cata_hit) and ht and is_trusted(ht, c)                 and (ht.get("heat") or 0) >= float(c.get("trusted_demote_heat", -0.25)):
+            return False, "trusted_inertia"
         return True, "family_red"
     if bar_lost:
         return True, "bar_lost"
@@ -302,6 +343,7 @@ def family_era_view(fam: dict, era_start: str) -> dict:
             "n_open": int(fam.get("n_open", 0)),
             "n_cycles": len(cycles),
             "cycle_nets": [c["pips"] for c in cycles],
+            "cycle_events": [(c["end"], c["pips"]) for c in cycles],
             "worst_cycle": min((c["pips"] for c in cycles), default=None),
             # Geometry v3 vector (broker side)
             "edge_lcb": edge_lcb([c["pips"] for c in cycles]),
@@ -477,6 +519,8 @@ def main():
     min_raw = int(c.get("min_raw_episodes", c.get("bar_n", 20)))
     promotions, demotions, graduations, cheater_cands = [], [], [], []
     cheater_seats = st.setdefault("cheater_seats", {})
+    heat_scores = {}
+    _now_dt = datetime.now(timezone.utc)
     for key, meta in sorted(bmap.items()):
         pair, sess, sid = key
         if meta["manual_only"] or meta["status"] not in ("ACTIVE", "PROBE", "SHADOW"):
@@ -485,6 +529,15 @@ def main():
         fam_row = fams.get((pair, sess, sid))
         f = (family_era_view(fam_row, eras.get("|".join(key),
                              c["default_era_start"])) if fam_row else None)
+        ht = heat_trust_for(f, _now_dt) if f else None
+        heat_scores["|".join(key)] = {
+            "heat": (ht or {}).get("heat"), "trust": (ht or {}).get("trust"),
+            "n_cycles": (ht or {}).get("n_cycles", 0),
+            "status": meta["status"], "side": meta.get("side", "?"),
+            "trusted": bool(ht and is_trusted(ht, c)),
+            "decaying": bool(ht and is_trusted(ht, c)
+                             and (ht.get("heat") or 0)
+                             < float(c.get("trusted_demote_heat", -0.25)))}
         if meta["status"] == "SHADOW" and e:  # PROBE takes the ACTIVE branch
             k = "|".join(key)
             # CHEATER v3: collect CANDIDATES here (positive era evidence,
@@ -507,7 +560,7 @@ def main():
                 last_eval[k] = e.independent_days
         elif meta["status"] in ("ACTIVE", "PROBE"):
             # FAMILY RULE — broker cycles of parent + poppers, era-clocked.
-            demote, _reason = active_verdict(e, f, c, min_raw)
+            demote, _reason = active_verdict(e, f, c, min_raw, ht=ht)
             if meta["status"] == "PROBE" and f and not f.get("n_open"):
                 k = "|".join(key)
                 cyc = f.get("cycle_nets") or []
@@ -570,6 +623,35 @@ def main():
             print(f"governor: cheater-v3 evaluation failed ({exc})", file=sys.stderr)
         cheater_promos.sort(key=lambda x: -x[2]["cs"])
         cheater_promos = cheater_promos[:seats_free]
+
+    # RELATIVE HEAT / correlated peers (charter): one market move must not
+    # seat twelve near-identical setups — only the BEST candidate per
+    # (pair, side) cluster wins a seat this run.
+    if c.get("cluster_best_only", True):
+        def _cluster_filter(batch, rank):
+            best, out = {}, []
+            for item in batch:
+                key = item[0]
+                cl = (key[0], bmap.get(key, {}).get("side", "?"))
+                if cl not in best or rank(item) > rank(best[cl]):
+                    best[cl] = item
+            kept = set(id(v) for v in best.values())
+            dropped = [i for i in batch if id(i) not in kept]
+            for d in dropped:
+                print(f"governor: cluster-best dropped {'|'.join(d[0])} "
+                      f"(better peer in {d[0][0]}/{bmap.get(d[0], {}).get('side')})")
+            return list(best.values())
+        promotions = _cluster_filter(promotions,
+                                     lambda i: (i[1].block_lcb or 0))
+        cheater_promos = _cluster_filter(cheater_promos,
+                                         lambda i: i[2]["cs"])
+
+    # persist the heat file for the execution selector (engine hot-reads it)
+    try:
+        with open(REPO / "data" / "heat_scores.json", "w") as hf:
+            json.dump({"t": now_iso, "scores": heat_scores}, hf)
+    except OSError as _he:
+        print(f"governor: heat file write failed ({_he})", file=sys.stderr)
 
     # strongest evidence first; rails cap the day's changes
     promotions.sort(key=lambda x: -(x[1].block_lcb or 0))

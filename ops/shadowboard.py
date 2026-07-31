@@ -370,6 +370,11 @@ def _aggregate(db):
     out = []
     _cfgst = _config_status()
     _geo = _exit_geo()
+    try:
+        with open(_ROOT / "data" / "heat_scores.json") as _hf:
+            _heat = json.load(_hf).get("scores", {})
+    except (OSError, ValueError):
+        _heat = {}
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     # D-6 (external review): the board judges by the EXACT metric the governor
     # promotes on — cost-adjusted nets, overlap-aware effective n, deflated z
@@ -487,6 +492,9 @@ def _aggregate(db):
             "era": era,
             "bar_met": bool(era and era["promotable"]),
             "gov": gov,
+            "ht": _heat.get("|".join((pair,
+                                      cell.split("/")[1] if "/" in cell else "?",
+                                      setup))),
         })
     # QUEUED rows (2026-07-27, Brock: "I don't see the new pairs on the board"):
     # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a
