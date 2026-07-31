@@ -7,15 +7,31 @@ A staged state machine (data/commissioner_state.json) that walks the external
 review's re-commissioning bar without a human in the loop, fail-closed at
 every step:
 
-  VALIDATING      run the health battery each invocation. TWO consecutive
-                  clean passes >= 6h apart (spanning at least one real
-                  governor run) => enable cheater_promotion_enabled with
-                  cheater_max_seats FORCED to 1. Ledgered COMMISSION.
-  COMMISSIONED_1  guards every invocation. Any guard failure => cheater OFF
-                  immediately (ledgered DECOMMISSION) and back to VALIDATING
-                  from zero. Expansion: a cheater seat GRADUATING to ACTIVE
-                  (real broker cycles confirmed the accounting) => max_seats
-                  2. Ledgered EXPANSION.
+  DOCTRINE (review round 5): health permits EVALUATION; evidence permits
+  ONE PROBE; broker validation permits EXPANSION. Two axes, never conflated:
+    - operational health: suite, dry-run, reconcile, journal — proves the
+      machinery runs;
+    - admission evidence: an ACTUAL candidate passing the full cheater-v4
+      ticket in the current dry-run (complete replay, independent policy
+      qualification, PP paired-lift proof) — proves someone deserves capital.
+
+  VALIDATING      health battery each invocation. Clean passes accrue
+                  (>= 6h apart, spanning real governor runs). COMMISSION
+                  requires BOTH: >= 2 spaced health passes AND a current
+                  qualifying candidate (a CHEATER-PROBE line in this
+                  invocation's dry-run). Healthy-with-zero-qualifiers stays
+                  healthy-but-uncommissioned indefinitely. On commission:
+                  cheater ON, max_seats FORCED to 1. Ledgered.
+  COMMISSIONED_1  guards every invocation (fail => immediate DECOMMISSION,
+                  revalidation from zero). EXPANSION to 2 seats requires ALL:
+                  a cheater seat GRADUATED post-commission (>= 6 broker
+                  cycles + positive broker edge LCB are the graduation gate;
+                  the leash guarantees no catastrophic cycle survived the
+                  audition), zero RECONCILER orphan-adoptions since
+                  commissioning (attribution clean), and a SECOND currently
+                  qualifying candidate in this invocation's dry-run (the
+                  graduated seat freed the probe slot, so the dry-run
+                  evaluates candidates again). Ledgered EXPANSION.
   COMMISSIONED_2  guards only; no further expansion without a human.
 
 The health battery (all must pass):
@@ -91,11 +107,17 @@ def check_suite():
 
 
 def check_dryrun():
+    """Health AND evidence in one pass: (ok, detail, qualifier_now).
+    qualifier_now = the dry-run printed a real CHEATER-PROBE admission —
+    a candidate passed the complete v4 ticket on current evidence."""
     r = subprocess.run([sys.executable, "ops/governor.py", "--dry-run"],
                        cwd=REPO, capture_output=True, text=True, timeout=900)
     bad = ("Traceback" in r.stderr or "evaluation failed" in r.stdout
            or "evaluation failed" in r.stderr)
-    return (r.returncode == 0 and not bad), f"dry-run rc={r.returncode} bad={bad}"
+    qualifier = "CHEATER-PROBE" in r.stdout
+    return ((r.returncode == 0 and not bad),
+            f"dry-run rc={r.returncode} bad={bad} qualifier={qualifier}",
+            qualifier)
 
 
 def check_reconcile():
@@ -126,17 +148,38 @@ def check_journal():
 
 
 def run_battery():
+    """(health_ok, evidence_now, results) — the two axes, never conflated."""
     results = {}
     ok = True
+    evidence = False
     for name, fn in (("suite", check_suite), ("dryrun", check_dryrun),
                      ("reconcile", check_reconcile), ("journal", check_journal)):
         try:
-            passed, detail = fn()
+            out = fn()
+            if len(out) == 3:
+                passed, detail, evidence = out
+            else:
+                passed, detail = out
         except Exception as exc:
             passed, detail = False, f"check crashed: {exc}"
         results[name] = {"ok": passed, "detail": detail}
         ok = ok and passed
-    return ok, results
+    return ok, evidence, results
+
+
+def reconciler_orphans_since(t_iso):
+    """Attribution cleanliness for the audition window: any RECONCILER
+    orphan-adoption in the journal since commissioning is a defect."""
+    if not t_iso:
+        return 0
+    try:
+        r = subprocess.run(
+            ["journalctl", "--user", "-u", "mr-scrooge-v6",
+             "--since", t_iso[:19], "--no-pager"],
+            capture_output=True, text=True, timeout=60)
+        return sum(1 for l in r.stdout.splitlines() if "RECONCILER:" in l)
+    except Exception:
+        return 999    # unknown = assume dirty; expansion fails closed
 
 
 def graduated_cheater_seat_since(t_iso):
@@ -155,11 +198,12 @@ def graduated_cheater_seat_since(t_iso):
 
 def main():
     st = _state()
-    ok, results = run_battery()
+    ok, evidence_now, results = run_battery()
     detail = "; ".join(f"{k}:{'OK' if v['ok'] else 'FAIL(' + v['detail'] + ')'}"
                        for k, v in results.items())
     stage = st["stage"]
-    print(f"commissioner: stage={stage} battery={'PASS' if ok else 'FAIL'} [{detail}]")
+    print(f"commissioner: stage={stage} health={'PASS' if ok else 'FAIL'} "
+          f"evidence={'YES' if evidence_now else 'no'} [{detail}]")
 
     if stage == "VALIDATING":
         if not ok:
@@ -168,22 +212,27 @@ def main():
             return
         now = _now().isoformat()
         passes = st.get("passes", [])
-        if passes and (_now() - datetime.fromisoformat(passes[-1])
-                       ).total_seconds() < MIN_PASS_GAP_H * 3600:
-            _save(st)      # too soon to count again; keep waiting
-            print("commissioner: clean, but within the 6h spacing — holding")
-            return
-        passes.append(now)
-        st["passes"] = passes[-PASSES_NEEDED:]
-        if len(st["passes"]) >= PASSES_NEEDED:
+        if not passes or (_now() - datetime.fromisoformat(passes[-1])
+                          ).total_seconds() >= MIN_PASS_GAP_H * 3600:
+            passes.append(now)
+            st["passes"] = passes[-PASSES_NEEDED:]
+        # DOCTRINE (r5): health alone NEVER commissions. Two spaced healthy
+        # batteries prove the machinery; a current qualifying candidate —
+        # a CHEATER-PROBE admission in THIS dry-run — proves the evidence.
+        if len(st["passes"]) >= PASSES_NEEDED and evidence_now:
             _cfg_write(cheater_promotion_enabled=True, cheater_max_seats=1)
             st.update(stage="COMMISSIONED_1", commissioned_t=now, passes=[])
-            _ledger("COMMISSION", f"validation battery passed {PASSES_NEEDED}x "
-                    f">={MIN_PASS_GAP_H}h apart — cheater v4 enabled, ONE 0.33x "
-                    f"whole-family PROBE seat max; allow_promotions stays false")
-            _vault("COMMISSION: cheater v4 enabled autonomously (1 seat, 0.33x family) "
-                   "after 2 clean validation batteries. allow_promotions untouched (off).")
-            print("commissioner: COMMISSIONED — cheater v4 live at 1 seat")
+            _ledger("COMMISSION", f"health battery {PASSES_NEEDED}x "
+                    f">={MIN_PASS_GAP_H}h apart AND a current v4 qualifier — "
+                    f"cheater enabled, ONE 0.33x whole-family PROBE seat; "
+                    f"allow_promotions stays false")
+            _vault("COMMISSION: cheater v4 enabled autonomously — health x2 + a "
+                   "current qualifying candidate. 1 seat, 0.33x family. "
+                   "allow_promotions untouched (off).")
+            print("commissioner: COMMISSIONED — health + evidence both proven")
+        elif len(st["passes"]) >= PASSES_NEEDED:
+            print("commissioner: healthy-but-uncommissioned — no current "
+                  "qualifying candidate (correct state, holding)")
         _save(st)
         return
 
@@ -199,13 +248,25 @@ def main():
         print("commissioner: DECOMMISSIONED on guard failure")
         return
 
-    if stage == "COMMISSIONED_1" and graduated_cheater_seat_since(st.get("commissioned_t")):
-        _cfg_write(cheater_max_seats=2)
-        st["stage"] = "COMMISSIONED_2"
-        _ledger("EXPANSION", "a commissioned seat GRADUATED on real broker "
-                "cycles — accounting confirmed; max_seats 1 -> 2")
-        _vault("EXPANSION: cheater seat graduated on broker cycles — max_seats -> 2.")
-        print("commissioner: EXPANDED to 2 seats")
+    if stage == "COMMISSIONED_1":
+        grad = graduated_cheater_seat_since(st.get("commissioned_t"))
+        orphans = reconciler_orphans_since(st.get("commissioned_t"))
+        # EXPANSION doctrine (r5): broker validation permits expansion —
+        # graduation (>= 6 broker cycles, positive edge LCB, leash survived =
+        # no catastrophic cycle) + clean attribution (zero reconciler orphan
+        # adoptions during the audition) + a SECOND candidate qualifying NOW.
+        if grad and orphans == 0 and evidence_now:
+            _cfg_write(cheater_max_seats=2)
+            st["stage"] = "COMMISSIONED_2"
+            _ledger("EXPANSION", "graduated seat (broker cycles + LCB>0, leash "
+                    "survived) + zero reconciler orphans during audition + a "
+                    "second current qualifier; max_seats 1 -> 2")
+            _vault("EXPANSION: broker-validated graduation + clean attribution + "
+                   "second qualifier — max_seats -> 2.")
+            print("commissioner: EXPANDED to 2 seats")
+        elif grad:
+            print(f"commissioner: graduation seen but expansion blocked "
+                  f"(orphans={orphans}, second_qualifier={evidence_now})")
     _save(st)
 
 
