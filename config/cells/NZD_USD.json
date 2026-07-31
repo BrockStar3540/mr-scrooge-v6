@@ -317,6 +317,51 @@
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
           "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k."
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "unbroken ceiling only"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ps_ceil_fade_short (short) ran 5 eps @ -19.34p/ep with medMFE/MAE 0.9/25.1 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "april16-replay shadow cell"

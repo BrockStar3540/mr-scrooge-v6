@@ -486,7 +486,7 @@
           "id": "classic_willr_fade_short",
           "side": "short",
           "class": "classic",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {

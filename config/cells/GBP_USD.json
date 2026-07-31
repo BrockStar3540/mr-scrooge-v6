@@ -861,6 +861,49 @@
               "action": "suspend"
             }
           }
+        },
+        {
+          "id": "timing_lean_30_counter_long",
+          "side": "long",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 5.766878,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (5.766878) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m GBP_USD/london/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: timing_lean_30 (short) ran 7 eps @ -7.1p/ep with medMFE/MAE 13.7/29.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -1445,6 +1488,108 @@
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
           "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: mr2_bb_reversion_short (short) ran 5 eps @ -0.36p/ep with medMFE/MAE 8.9/33.0 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of mr2_bb_reversion_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: rg1_range_scalp_short (short) ran 5 eps @ -0.36p/ep with medMFE/MAE 8.9/33.0 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of rg1_range_scalp_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
