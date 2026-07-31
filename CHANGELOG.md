@@ -4,6 +4,23 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.4] — 2026-07-30 — "The Death Rate"
+
+### Added
+- **`hitSL` column (operator rule, Brock)**: share of episodes whose MAE reached the
+  setup's **config SL − 0.5p** (mid understates adverse excursion — the executable side
+  hits the stop first). The mirror of `hit≥trig`: engage locks +6 and cannot lose, death
+  eats the full stop, and at lock 6 / SL 60 **one death costs ten engages** — the two
+  columns together are the breakeven math. Strongest single-stat predictor tested so far
+  (ρ −0.47 with per-cell net, 33 cells n≥8); the trap-cell autopsy completes: GBP/ny
+  `ps_ceil_fade_short` engages 75% but dies 25% — 3 engages per death against the 10
+  required. Every top live family reads 0%.
+
+### Changed
+- **Both hit columns now read per-setup geometry from `config/cells`** (trigger_pips /
+  sl_pips, incl. range-sized stops 40/50/60) instead of constants — a re-tuned gear
+  re-scores the columns on the next board build.
+
 ## [6.12.3] — 2026-07-30 — "The Engage Rate"
 
 ### Changed

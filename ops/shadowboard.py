@@ -50,11 +50,36 @@ def _journal_unit() -> str:
 
 def _pip(pair): return 0.01 if "JPY" in pair else 0.0001
 
-def _engage_thr(setup: str) -> float:
-    """MFE threshold that counts as 'ratchet engaged': the setup's trigger
-    (8.5p book gear, 20p _t20s gear) + 0.5p buffer, since mfe240 is measured
-    on mid and the executable price must clear the trigger."""
-    return 20.5 if setup.endswith("_t20s") else 9.0
+def _exit_geo():
+    """(pair, session, setup_id) -> (trigger_pips, sl_pips) from config/cells,
+    read fresh — hit>=trig and hit-SL% must follow the LIVE gear, so a re-tuned
+    trigger or a range-sized stop (40/50/60) re-scores the columns on the next
+    build instead of silently using a stale constant."""
+    import glob
+    out = {}
+    for f in glob.glob(str(_ROOT / "config" / "cells" / "*.json")):
+        pair = os.path.basename(f)[:-5]
+        try:
+            d = json.load(open(f))
+        except (OSError, ValueError):
+            continue
+        for sess, sd in (d.get("sessions") or {}).items():
+            for su in sd.get("setups", []):
+                ex = su.get("exit") or {}
+                out[(pair, sess, su.get("id"))] = (ex.get("trigger_pips"),
+                                                   ex.get("sl_pips"))
+    return out
+
+
+def _hit_thresholds(geo, pair, sess, setup):
+    """(engage_thr, death_thr) for one setup. Engage = trigger + 0.5p (mfe240
+    is mid; executable must clear the trigger — Brock's 9p rule, 20.5 t20s).
+    Death = SL - 0.5p (mid UNDERstates adverse excursion: the executable side
+    hits the stop before mid does). Fallbacks: trigger 20/t20s else 8.5, SL 60."""
+    trig, sl = geo.get((pair, sess, setup), (None, None))
+    if trig is None:
+        trig = 20.0 if setup.endswith("_t20s") else 8.5
+    return trig + 0.5, (sl or 60.0) - 0.5
 
 def _creds():
     from core.broker.oanda import _secrets
@@ -335,6 +360,7 @@ def _aggregate(db):
         groups[key]["status"] = ep["status"]  # provisional; overridden by config below
     out = []
     _cfgst = _config_status()
+    _geo = _exit_geo()
     cutoff7 = (datetime.now(timezone.utc) - timedelta(days=7)).isoformat()
     # D-6 (external review): the board judges by the EXACT metric the governor
     # promotes on — cost-adjusted nets, overlap-aware effective n, deflated z
@@ -396,6 +422,8 @@ def _aggregate(db):
         # governor would reach today — family rule, judge-when-flat, promotion
         # predicate — plus the tier that orders the board exactly as capital
         # moves. Best seats at the top, demote-due at the bottom.
+        _te, _td = _hit_thresholds(_geo, pair,
+                                   cell.split("/")[1] if "/" in cell else "?", setup)
         gov = None
         if _gov_ok and _status in ("ACTIVE", "SHADOW"):
             sess = cell.split("/")[1] if "/" in cell else "?"
@@ -417,15 +445,15 @@ def _aggregate(db):
             "avg_net240": round(avg, 2),            # net-of-cost (D-6)
             "lcb": lcb,
             "wr": round(sum(1 for n in nets if n > 0)/len(nets), 3),
-            # hit_eng (2026-07-30, Brock): share of episodes whose MFE reached
-            # this setup's RATCHET TRIGGER + 0.5p mid-price buffer (book gear
-            # 8.5 -> 9p, _t20s gear 20 -> 20.5p). The old hit>=6p measured the
-            # LOCK level, which flattered cells that pop 6p and never engage
-            # (rvol_low_240_t20s: 61% touched +6, only 17% reached its 20p
-            # trigger). Engagement is the causal event: an engaged trade locks
-            # +6 and cannot lose.
-            "hit_eng": round(sum(1 for x in s
-                                 if x["mfe240"] >= _engage_thr(setup))/len(s), 3),
+            # hit_eng / hit_sl (2026-07-30, Brock): the two events that decide
+            # a trade's fate, on the setup's OWN config geometry. Engage locks
+            # +6 and cannot lose; death eats the full stop. At lock 6 / SL 60
+            # one death costs ten engages — the pair of columns IS the
+            # breakeven math. (hit>=6p retired: it measured the lock level and
+            # flattered almost-winners — rvol_low_240_t20s touched +6p in 61%
+            # of episodes, reached its 20p trigger in 17%.)
+            "hit_eng": round(sum(1 for x in s if x["mfe240"] >= _te)/len(s), 3),
+            "hit_sl": round(sum(1 for x in s if x["mae240"] >= _td)/len(s), 3),
             "med_mfe": round(st.median(x["mfe240"] for x in s), 1),
             "med_mae": round(st.median(x["mae240"] for x in s), 1),
             # net60 exists only on legacy-mid-v1 scores (v2 exits when the
@@ -466,7 +494,8 @@ def _aggregate(db):
             out.append({
                 "cell": cell, "setup": sid, "side": side, "status": status,
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
-                "lcb": None, "wr": None, "hit_eng": None, "med_mfe": None,
+                "lcb": None, "wr": None, "hit_eng": None, "hit_sl": None,
+                "med_mfe": None,
                 "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
                 "last7_avg": None, "era": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,
