@@ -85,17 +85,48 @@ def _pp():
             "grid_max_age_days": d.get("grid_max_age_days", 7.0)}
 
 
-def score_cell(pair, sess, sid, side, ep_times, max_days, limit):
-    gear, pp = _setup_exit(pair, sess, sid), _pp()
+def episode_records(db: dict, pair: str, sess: str, sid: str,
+                    since_iso: str = "") -> list:
+    """Episode records for one cell from the shadowboard db (already
+    episode-deduped): [{"t": datetime, "entry": float|None,
+    "exit_config": dict|None}], time-sorted. The stamped entry and stamped
+    gear ride along (external review 2026-07-31: replay must use the
+    executable entry the shadow recorded and each episode's OWN gear —
+    historical scores must not change when config gear changes)."""
+    out = []
+    for e in db.get("episodes", {}).values():
+        if e.get("cell") != f"{pair}/{sess}" or e.get("setup") != sid:
+            continue
+        if since_iso and e.get("t", "")[:19] < since_iso[:19]:
+            continue
+        out.append({"t": datetime.fromisoformat(e["t"]),
+                    "entry": e.get("entry"),
+                    "exit_config": e.get("exit_config")})
+    out.sort(key=lambda r: r["t"])
+    return out
+
+
+def score_cell(pair, sess, sid, side, episodes, max_days, limit):
+    """episodes: list of episode records (see episode_records) — or bare
+    datetimes for back-compat (no stamped entry/gear then)."""
+    cfg_gear, pp = _setup_exit(pair, sess, sid), _pp()
     rows = []
     now = datetime.now(timezone.utc)
-    for t in ep_times[-limit:]:
+    for ep in episodes[-limit:]:
+        if not isinstance(ep, dict):
+            ep = {"t": ep, "entry": None, "exit_config": None}
+        t = ep["t"]
+        gear = dict(ep.get("exit_config") or cfg_gear)
+        gear.setdefault("step_size_pips", 2.0)
+        gear.setdefault("step_cadence_min", 0.5)
         t1 = min(t + timedelta(days=max_days), now)
         bars = _ba_candles(pair, t, t1)
         if len(bars) < 3:
             continue
-        fam = replay_family_cycle(bars, side, PIP(pair), gear, pp, "FAMILY_PP")
-        par = replay_family_cycle(bars, side, PIP(pair), gear, pp, "PARENT_ONLY")
+        fam = replay_family_cycle(bars, side, PIP(pair), gear, pp, "FAMILY_PP",
+                                  entry_px=ep.get("entry"))
+        par = replay_family_cycle(bars, side, PIP(pair), gear, pp, "PARENT_ONLY",
+                                  entry_px=ep.get("entry"))
         if fam is None or par is None:
             continue
         rows.append((t, fam, par))
@@ -115,6 +146,7 @@ def score_cell(pair, sess, sid, side, ep_times, max_days, limit):
     days = len({t.strftime("%Y-%m-%d") for t, _, _ in comp})
     return {"cycles": len(comp), "censored": cens,
             "u_list": [round(u, 3) for u in u_pp],
+            "u_par_list": [round(u, 3) for u in u_par],
             "days": days, "last_censored": last_censored,
             "U_pp": round(sum(u_pp) / len(u_pp), 3),
             "U_par": round(sum(u_par) / len(u_par), 3) if u_par else None,
@@ -155,9 +187,8 @@ def main():
     print(f"{'cell':15s} {'setup':26s} {'cyc':>3s} {'cen':>3s} {'U_pp':>6s} "
           f"{'U_par':>6s} {'lift':>6s} {'cov':>5s} {'worst':>6s} {'net':>7s} {'harv':>6s}")
     for (pair, sess, sid, side), ts in sorted(eps.items()):
-        ts.sort()
-        firsts = collapse_episodes(ts)
-        r = score_cell(pair, sess, sid, side, firsts, args.max_days, args.limit)
+        recs = episode_records(db, pair, sess, sid, args.since)
+        r = score_cell(pair, sess, sid, side, recs, args.max_days, args.limit)
         r.update(cell=f"{pair}/{sess}", setup=sid, side=side)
         out.append(r)
         if r["cycles"]:

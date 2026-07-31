@@ -28,12 +28,18 @@ def test_trust_floor_only_when_not_decaying():
     assert decayer < 0                    # decaying: no floor, negative heat
 
 
-def test_correlation_and_exposure_penalties():
+def test_correlation_is_directional():
     base = execution_score("GBP_USD|ny|hot_one", "short", "GBP_USD", S)
-    loaded = execution_score("GBP_USD|ny|hot_one", "short", "GBP_USD", S,
-                             open_currencies={"USD": 3, "GBP": 1}, n_open=4, cap=6)
-    assert loaded < base                  # 4 USD/GBP legs + fuller book cost
-    assert base - loaded > 0.35
+    # candidate short GBP_USD adds (GBP,short)+(USD,long): 3 open USD-longs
+    # and 1 GBP-short COMPOUND -> penalized
+    comp = execution_score("GBP_USD|ny|hot_one", "short", "GBP_USD", S,
+                           open_legs={("USD", "long"): 3, ("GBP", "short"): 1})
+    import pytest
+    assert base - comp == pytest.approx(0.40)   # 4 same-direction legs x 0.10
+    # the same open book OFFSET by the candidate: no penalty at all
+    offset = execution_score("GBP_USD|ny|hot_one", "short", "GBP_USD", S,
+                             open_legs={("USD", "short"): 3, ("GBP", "long"): 1})
+    assert offset == base                 # offsetting exposure is free
 
 
 def test_missing_heat_file_degrades_to_zero():

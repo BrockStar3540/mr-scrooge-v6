@@ -51,18 +51,24 @@ def build_dataset(since, min_eps, limit, max_days):
     now = datetime.now(timezone.utc)
     todo = [(k, sorted(v)) for k, v in eps.items() if len(v) >= min_eps]
     print(f"dataset: {len(todo)} cells with >= {min_eps} stamps", file=sys.stderr)
+    db_full = json.load(open(REPO / "data" / "shadowboard.json"))
     for n_done, ((pair, sess, sid, side), ts) in enumerate(sorted(todo)):
-        firsts = collapse_episodes(ts)[-limit:]
-        if len(firsts) < min_eps:
+        recs = fcr.episode_records(db_full, pair, sess, sid)[-limit:]
+        if len(recs) < min_eps:
             continue
-        gear, pp = fcr._setup_exit(pair, sess, sid), fcr._pp()
+        gear0, pp = fcr._setup_exit(pair, sess, sid), fcr._pp()
         rows = []
-        for t in firsts:
+        for rec in recs:
+            t = rec["t"]
+            gear = dict(rec.get("exit_config") or gear0)
+            gear.setdefault("step_size_pips", 2.0)
+            gear.setdefault("step_cadence_min", 0.5)
             t1 = min(t + timedelta(days=max_days), now)
             bars = fcr._ba_candles(pair, t, t1)
             if len(bars) < 3:
                 continue
-            r = replay_family_cycle(bars, side, fcr.PIP(pair), gear, pp, "FAMILY_PP")
+            r = replay_family_cycle(bars, side, fcr.PIP(pair), gear, pp, "FAMILY_PP",
+                                    entry_px=rec.get("entry"))
             if r is None or r.censored:
                 continue
             liab = max(r.peak_liability_pips, 1.0)

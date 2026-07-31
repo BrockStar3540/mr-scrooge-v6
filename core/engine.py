@@ -650,7 +650,8 @@ class Engine:
                  _it.setup_id if _it else "recovery", _mode, _tp_pips)
         # Party Package (V6.1): hang the popper grid off this parent.
         try:
-            self.pp.on_parent_open(pos, _it.setup_id if _it else "?")
+            self.pp.on_parent_open(pos, _it.setup_id if _it else "?",
+                                   probe=bool(_it and getattr(_it, "probe", False)))
         except Exception as exc:
             log.exception("PP on_parent_open failed: %s", exc)
         self.recent_events.append(

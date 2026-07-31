@@ -136,12 +136,17 @@ def _f(x) -> float:
 def replay_family_cycle(bars: list, side: str, pip: float,
                         parent_gear: dict, pp_cfg: dict,
                         variant: str = "FAMILY_PP",
-                        max_total_trades: int = 8) -> Optional[CycleResult]:
+                        max_total_trades: int = 8,
+                        entry_px: Optional[float] = None) -> Optional[CycleResult]:
+    """entry_px: the STAMPED executable entry (external review 2026-07-31) —
+    the price the shadow actually recorded, not the next bar's open. None
+    falls back to the first bar's entry-side open."""
     if side not in ("long", "short") or len(bars) < 2:
         return None
     sgn = 1 if side == "long" else -1
     try:
-        entry = _f(bars[0]["ask" if side == "long" else "bid"]["o"])
+        entry = (float(entry_px) if entry_px
+                 else _f(bars[0]["ask" if side == "long" else "bid"]["o"]))
     except (KeyError, TypeError, ValueError):
         return None
 
@@ -233,7 +238,15 @@ def replay_family_cycle(bars: list, side: str, pip: float,
                 continue
             if sum(1 for u in legs if not u.done) >= max_total_trades:
                 continue
-            pop = _Leg("popper", m, px + sgn * half_spread,
+            # gap-aware fill (external review 2026-07-31): live fires at
+            # MARKET on the first tick past the marker — if this bar OPENED
+            # already beyond the marker, the fill is the bar's entry-side
+            # open, not the marker price
+            m_o = (_f(bar["bid"]["o"]) + _f(bar["ask"]["o"])) / 2.0
+            gapped = (m_o <= px) if sgn > 0 else (m_o >= px)
+            fill = (_f(bar["ask" if sgn > 0 else "bid"]["o"]) if gapped
+                    else px + sgn * half_spread)
+            pop = _Leg("popper", m, fill,
                        pp_sl, pp_trig, pp_trail, pp_step, born_bar=i)
             legs.append(pop)
             if m in fired:

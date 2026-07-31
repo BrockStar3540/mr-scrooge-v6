@@ -118,16 +118,18 @@ def test_grid_lift_positive_on_wave_path():
 def test_trade_cap_limits_concurrency_not_total():
     # cap=2 counts OPEN trades (party_package): the dead parent frees a slot
     # on the knife bar (2 poppers fire), and the -10 popper dying on bar 2
-    # frees another (the armed -20 marker fires) — 3 total, never >2 open
+    # frees another (the armed -20 marker fires) — 3 total, never >2 open.
+    # Gap-fill era: the -20 popper fills at bar 2's gapped OPEN (~-69p from
+    # anchor, as live would fill at market), so its own -60 stop sits far
+    # deeper — the third bar's plunge closes it.
     knife = [bar(1.1000, 1.1000, 1.0930, 1.0931),
-             bar(1.0931, 1.0931, 1.0905, 1.0910)]
-    r = replay_family_cycle(knife + flat_bars(1.0910, 3), "long", PIP, GEAR, PP,
+             bar(1.0931, 1.0931, 1.0905, 1.0910),
+             bar(1.0910, 1.0910, 1.0865, 1.0868)]
+    r = replay_family_cycle(knife + flat_bars(1.0868, 3), "long", PIP, GEAR, PP,
                             max_total_trades=2)
     assert not r.censored
     assert r.n_poppers == 3
-    # with no cap the same path fires all three markers IMMEDIATELY on bar 1;
-    # the cap's effect is concurrency, visible as strictly later entries
-    r8 = replay_family_cycle(knife + flat_bars(1.0910, 3), "long", PIP, GEAR, PP,
+    r8 = replay_family_cycle(knife + flat_bars(1.0868, 3), "long", PIP, GEAR, PP,
                              max_total_trades=8)
     assert r8.n_poppers == 3
 
@@ -186,3 +188,30 @@ def test_two_speed_empty_and_none_safe():
     now = datetime(2026, 7, 31, tzinfo=timezone.utc)
     assert two_speed_score([], now, 2.0)["score"] is None
     assert two_speed_score([(now, None)], now, 2.0)["n"] == 0
+
+
+# ── external review fixes (2026-07-31) ───────────────────────────────────────
+
+def test_stamped_entry_shifts_the_anchor():
+    from core.family_cycle import replay_family_cycle as rfc
+    # market flat at 1.1000. Default entry ≈ 1.1000: the -10 marker sits at
+    # 1.0990 — never touched. A STAMPED entry of 1.1020 puts the -10 marker
+    # at 1.1010, above the market: it fires on the very first bar. The
+    # stamped executable entry, not the bar open, must anchor the grid.
+    bars = flat_bars(1.1000, 4)
+    a = rfc(bars, "long", PIP, GEAR, PP)
+    b = rfc(bars, "long", PIP, GEAR, PP, entry_px=1.1020)
+    assert a.n_poppers == 0
+    assert b.n_poppers >= 1
+
+
+def test_gap_fill_uses_bar_open_not_marker():
+    from core.family_cycle import replay_family_cycle as rfc
+    # bar 2 OPENS 25p below anchor — through the -10/-15/-20 markers.
+    # Live fires at market: fills must be ~the open, not the marker prices.
+    seq = [bar(1.1000, 1.1001, 1.0999, 1.1000),
+           bar(1.0975, 1.0976, 1.0970, 1.0972)] + flat_bars(1.0972, 2)
+    r = rfc(seq, "long", PIP, GEAR, PP)
+    assert r.n_poppers == 3
+    # every popper leg entered at the gapped open (1.0975 ask side), so all
+    # three carry ~identical entries — none got the "better" marker price

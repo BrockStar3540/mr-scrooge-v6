@@ -399,17 +399,24 @@ class CellModule:
             return _candidates[0]
         try:
             from core.execution_score import load_heat_scores, relative_heat
+            from modules.playmaker.playmaker import pm_adaptive_selector
             _scores = load_heat_scores()
             def _rank(it):
                 k = f"{it.pair}|{it.session}|{it.setup_id}"
                 trusted = bool((_scores.get(k) or {}).get("trusted")
                                and not (_scores.get(k) or {}).get("decaying"))
                 return relative_heat(k, it.side, _scores) + (0.25 if trusted else 0.0)
-            _candidates.sort(key=_rank, reverse=True)
-            for _loser in _candidates[1:]:
-                log.info("SELECTOR %s/%s picked=%s over=%s score=%.3f vs %.3f",
-                         self.pair, self.session, _candidates[0].setup_id,
-                         _loser.setup_id, _rank(_candidates[0]), _rank(_loser))
+            _ranked = sorted(_candidates, key=_rank, reverse=True)
+            _live = pm_adaptive_selector()
+            _pick = _ranked[0] if _live else _candidates[0]
+            for _loser in _candidates:
+                if _loser is _pick:
+                    continue
+                log.info("SELECTOR%s %s/%s picked=%s over=%s score=%.3f vs %.3f",
+                         "" if _live else "-DIAG", self.pair, self.session,
+                         _pick.setup_id, _loser.setup_id,
+                         _rank(_pick), _rank(_loser))
+            return _pick
         except Exception as _se:
             log.warning("SELECTOR ranking failed (%s) — config order kept", _se)
         return _candidates[0]

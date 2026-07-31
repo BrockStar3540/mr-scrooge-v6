@@ -211,11 +211,16 @@ def family_fills(default_era):
             for r in rows}
 
 
-def cheater_v3_predicate(r: dict, c: dict) -> tuple:
+def cheater_v3_predicate(r: dict, c: dict, policy: str = "FAMILY_PP") -> tuple:
     """The family-cycle cheater ticket -> (passes, why). r = a
     family_cycle_replay.score_cell row (virtual cycles, live mechanics).
+    POLICY FIRST (external review 2026-07-31): the predicate grades the
+    CHOSEN policy's returns — a strong parent harmed by its grid is tested
+    on PARENT_ONLY cycles, not condemned by PP_ON ones.
     Every gate exists to stop one freak episode buying a seat."""
-    n = int(r.get("cycles", 0))
+    if policy == "PARENT_ONLY":
+        r = dict(r, u_list=r.get("u_par_list") or [])
+    n = len(r.get("u_list") or [])
     need = int(c.get("cheater_min_cycles", 3))
     if n < need:
         return False, f"cycles {n}<{need}"
@@ -362,6 +367,14 @@ def _post(url, payload, dry):
     req = urllib.request.Request(url, method="POST",
         data=json.dumps(payload).encode(), headers=headers)
     return json.loads(urllib.request.urlopen(req, timeout=15).read())
+
+
+def pp_on(pair, sess, sid, dry):
+    """Clear a setup-scoped popper override (external review 2026-07-31): a
+    demotion writes per_cell=false with the seat; a promotion that WANTS the
+    grid must explicitly clear it, or a rehabilitated family winner trades
+    popperless — the exact stale-blanket shape that bit live on 2026-07-30."""
+    return _post(PP_API, {"cell": f"{pair}|{sess}|{sid}", "enabled": None}, dry)
 
 
 def _status_now(pair, sess, setup_id):
@@ -540,13 +553,14 @@ def main():
                              < float(c.get("trusted_demote_heat", -0.25)))}
         if meta["status"] == "SHADOW" and e:  # PROBE takes the ACTIVE branch
             k = "|".join(key)
-            # CHEATER v3: collect CANDIDATES here (positive era evidence,
-            # enough episodes); the heavy family-cycle replay runs after the
-            # loop, budget-capped and ranked. Deterministic ticket — the
-            # peeking guard still doesn't apply.
+            # CHEATER v3 candidacy (external review 2026-07-31): enough
+            # episodes to replay — and NOTHING else. The old positive-parent-
+            # EV gate let the discredited metric decide who reaches family
+            # scoring; a family winner with a losing parent (the control_rvol
+            # pattern) could never cheat in. Budget fairness comes from
+            # least-recently-evaluated rotation, not parent-EV ranking.
             if (c.get("cheater_promotion_enabled", False)
-                    and e.raw_n >= int(c.get("cheater_min_cycles", 3))
-                    and (e.net_avg or 0.0) > 0):
+                    and e.raw_n >= int(c.get("cheater_min_cycles", 3))):
                 cheater_cands.append((key, e, meta))
             prev_blocks = last_eval.get(k)
             # SEQUENTIAL-PEEKING GUARD: no new independent block since the
@@ -590,27 +604,24 @@ def main():
     seats_free = max(0, int(c.get("cheater_max_seats", 2)) - seats_used)
     if cheater_cands and seats_free > 0:
         try:
-            from research.tools.family_cycle_replay import score_cell
-            from research.tools.cell_setup_score import collapse_episodes
+            from research.tools.family_cycle_replay import (score_cell,
+                                                            episode_records)
             db = json.load(open(REPO / "data" / "shadowboard.json"))
-            cheater_cands.sort(key=lambda x: -((x[1].net_avg or 0) * x[1].raw_n))
+            eval_t = st.setdefault("cheater_eval_t", {})
+            cheater_cands.sort(key=lambda x: eval_t.get("|".join(x[0]), ""))
             for key, e, meta in cheater_cands[:int(c.get("cheater_max_evals", 6))]:
                 pair, sess, sid = key
                 k = "|".join(key)
                 era0 = str(eras.get(k, c["default_era_start"]))[:19]
-                ts = sorted(
-                    datetime.fromisoformat(ep["t"])
-                    for ep in db.get("episodes", {}).values()
-                    if ep["cell"] == f"{pair}/{sess}" and ep["setup"] == sid
-                    and ep["t"][:19] >= era0)
-                firsts = collapse_episodes(ts)
-                if len(firsts) < int(c.get("cheater_min_cycles", 3)):
+                recs = episode_records(db, pair, sess, sid, era0)
+                if len(recs) < int(c.get("cheater_min_cycles", 3)):
                     continue
-                r = score_cell(pair, sess, sid, meta.get("side", "?"), firsts,
+                r = score_cell(pair, sess, sid, meta.get("side", "?"), recs,
                                float(c.get("cheater_replay_days", 2.5)),
                                int(c.get("cheater_replay_limit", 8)))
-                ok, why = cheater_v3_predicate(r, c)
-                pol = cheater_v3_policy(r)
+                eval_t[k] = now_iso
+                pol = cheater_v3_policy(r)          # policy FIRST...
+                ok, why = cheater_v3_predicate(r, c, policy=pol)  # ...then the test
                 if ok and pol != "NONE":
                     cheater_promos.append((key, e, {
                         "cheater_v3": why, "policy": pol,
@@ -720,6 +731,14 @@ def main():
                             # strong parent, harmful grid: seat WITHOUT poppers
                             line["pp_off_policy"] = pp_off(pair, sess, sid,
                                                            args.dry_run)
+                        else:
+                            # FAMILY_PP seat: clear any stale demotion-era
+                            # popper switch-off (review finding #6)
+                            line["pp_on_policy"] = pp_on(pair, sess, sid,
+                                                         args.dry_run)
+                    elif kind in ("PROMOTE", "GRADUATE"):
+                        line["pp_on_policy"] = pp_on(pair, sess, sid,
+                                                     args.dry_run)
                     elif kind in ("GRADUATE", "DEMOTE"):
                         cheater_seats.pop(k2, None)
                 led.write(json.dumps(line) + "\n")

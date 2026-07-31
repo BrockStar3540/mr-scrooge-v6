@@ -106,27 +106,36 @@ def select_intent(intents: list,
     # fall back to the old deterministic order. Every loser is logged with
     # why it lost the seat.
     try:
-        from core.execution_score import execution_score, load_heat_scores
+        from core.execution_score import (execution_score, load_heat_scores,
+                                          candidate_legs)
+        from modules.playmaker.playmaker import pm_adaptive_selector
         scores = load_heat_scores()
-        open_ccy: dict = {}
-        for _p2, _ in open_positions:   # currency legs already open
-            b, q = _p2.split("_")
-            open_ccy[b] = open_ccy.get(b, 0) + 1
-            open_ccy[q] = open_ccy.get(q, 0) + 1
-        n_open = len(open_pairs)
-        _cap = pm_max_concurrent()
+        open_legs: dict = {}
+        for _p2, _dir in open_positions:   # SIGNED currency legs already open
+            for leg in candidate_legs(_p2, _dir):
+                open_legs[leg] = open_legs.get(leg, 0) + 1
         def _xs(i):
             return execution_score(f"{i.pair}|{i.session}|{i.setup_id}",
-                                   i.side, i.pair, scores, open_ccy,
-                                   n_open, _cap)
-        candidates.sort(key=lambda i: (-_xs(i),
-                                       -(i.expected.get("ev_seq") or 0.0),
-                                       i.pair))
-        for lose in candidates[1:]:
-            log.info("SELECTOR-X %s/%s setup=%s lost seat to %s/%s setup=%s "
-                     "(xs %.3f vs %.3f)", lose.pair, lose.session,
-                     lose.setup_id, candidates[0].pair, candidates[0].session,
-                     candidates[0].setup_id, _xs(lose), _xs(candidates[0]))
+                                   i.side, i.pair, scores, open_legs)
+        ranked = sorted(candidates, key=lambda i: (-_xs(i),
+                                                   -(i.expected.get("ev_seq") or 0.0),
+                                                   i.pair))
+        # DIAGNOSTIC-ONLY by default (external review 2026-07-31): scores are
+        # always computed and logged; the RANKING governs the pick only when
+        # account.adaptive_selector_enabled is true.
+        candidates.sort(key=lambda i: (-(i.expected.get("ev_seq") or 0.0), i.pair))
+        live = pm_adaptive_selector()
+        pick = ranked[0] if live else candidates[0]
+        for lose in (ranked[1:] if live else [c for c in candidates[1:]]):
+            log.info("SELECTOR-X%s %s/%s setup=%s %s %s/%s setup=%s (xs %.3f vs %.3f)",
+                     "" if live else "-DIAG", lose.pair, lose.session,
+                     lose.setup_id,
+                     "lost seat to" if live else "would lose seat to",
+                     pick.pair if live else ranked[0].pair,
+                     pick.session if live else ranked[0].session,
+                     (pick if live else ranked[0]).setup_id,
+                     _xs(lose), _xs(ranked[0]))
+        return pick
     except Exception as _se:
         log.warning("SELECTOR-X ranking failed (%s) — ev_seq order kept", _se)
         candidates.sort(key=lambda i: (-(i.expected.get("ev_seq") or 0.0), i.pair))

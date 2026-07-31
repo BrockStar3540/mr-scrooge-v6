@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Callable, Optional
 
 from config.pairs import PIP
-from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct,
+from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct, pm_probe_mult,
                                           pm_max_concurrent,
                                           _MAX_SPREAD, _DEFAULT_MAX_SPREAD)
 from config.runtime import trading_enabled
@@ -161,7 +161,8 @@ class Grid:
     """One re-arming grid per pair, anchored at the parent entry price."""
 
     def __init__(self, pair: str, side: str, anchor: float, created: datetime,
-                 parent_setup: str = "?", cell_key: str = "", gid: str = ""):
+                 parent_setup: str = "?", cell_key: str = "", gid: str = "",
+                 probe: bool = False):
         self.pair = pair
         self.side = side                    # popper direction == parent direction
         self.anchor = anchor
@@ -175,6 +176,10 @@ class Grid:
         # family, no anchor heuristics. Empty for pre-gid grids (state
         # migration) — those poppers fall back to psu/anchor join.
         self.gid = str(gid or "")
+        # PROBE grids (external review 2026-07-31): a 0.33x audition must be
+        # a 0.33x FAMILY — every popper this grid fires inherits the reduced
+        # sizing, or "5% probe" quietly becomes 5% parent + 15% poppers.
+        self.probe = bool(probe)
         # marker key (_okey(offset_pips)) -> {"armed": bool, "trade_id": Optional[str]}
         self.levels: dict[str, dict] = {}
         # lifetime ledger (persisted)
@@ -194,6 +199,7 @@ class Grid:
                 "created": self.created.isoformat(),
                 "parent_setup": self.parent_setup,
                 "cell_key": self.cell_key, "gid": self.gid,
+                "probe": self.probe,
                 "fmt": "offsets",   # ladder era (2026-07-22): keys are pip offsets
                 "levels": dict(self.levels),
                 "greens": self.greens, "knives": self.knives,
@@ -205,7 +211,8 @@ class Grid:
     def from_dict(cls, d: dict) -> "Grid":
         g = cls(d["pair"], d["side"], float(d["anchor"]),
                 datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"),
-                d.get("cell_key", ""), d.get("gid", ""))
+                d.get("cell_key", ""), d.get("gid", ""),
+                bool(d.get("probe", False)))
         raw = d.get("levels") or {}
         if d.get("fmt") == "offsets":
             g.levels = {str(k): dict(v) for k, v in raw.items()}
@@ -231,7 +238,8 @@ class PartyPackage:
 
     # ── lifecycle hooks ──────────────────────────────────────────────────────
 
-    def on_parent_open(self, pos: Position, setup_id: str = "?") -> None:
+    def on_parent_open(self, pos: Position, setup_id: str = "?",
+                       probe: bool = False) -> None:
         cfg = pp_config()
         if not cfg["enabled"] or self.dry_run:
             return
@@ -248,7 +256,8 @@ class PartyPackage:
                  pos.entry_time if pos.entry_time.tzinfo else
                  pos.entry_time.replace(tzinfo=timezone.utc), setup_id,
                  cell_key=f"{pair}|{session}|{setup_id}",
-                 gid=str(getattr(pos, "oanda_trade_id", "") or ""))
+                 gid=str(getattr(pos, "oanda_trade_id", "") or ""),
+                 probe=probe)
         for off in cfg["marker_pips"]:
             g.levels[_okey(off)] = {"armed": True, "trade_id": None}
         self.grids[pair] = g
@@ -478,7 +487,10 @@ class PartyPackage:
             return
         entry_price = ask if g.side == "long" else bid
         try:
-            units = self.broker.size_units(pair, g.side, margin_pct=pm_margin_pct())
+            _mp = pm_margin_pct()
+            if g.probe:
+                _mp *= pm_probe_mult()   # PROBE family: poppers audition too
+            units = self.broker.size_units(pair, g.side, margin_pct=_mp)
             trade = self.broker.place_market(
                 pair, g.side, units=units, entry_price=entry_price,
                 sl_pips=float(cfg["sl_pips"]),

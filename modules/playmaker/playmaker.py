@@ -194,6 +194,16 @@ def pm_margin_pct() -> float:
     """Fraction of BALANCE used as margin per trade (V1 model)."""
     return float(_pm_load()["account"]["margin_pct_per_trade"])
 
+def pm_adaptive_selector() -> bool:
+    """ExecutionScore RANKING on/off (account.adaptive_selector_enabled,
+    default False — external review 2026-07-31: diagnostic-only until a true
+    candidate-set walk-forward validates it; scores are always LOGGED)."""
+    try:
+        return bool(_pm_load()["account"].get("adaptive_selector_enabled", False))
+    except Exception:
+        return False
+
+
 def pm_probe_mult() -> float:
     """PROBE-seat sizing multiplier (fraction of the normal margin_pct).
     Config: account.probe_sizing_mult, default 0.33 (charter, 2026-07-31)."""

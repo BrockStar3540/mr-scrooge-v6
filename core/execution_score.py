@@ -21,8 +21,11 @@ _HEAT_FILE = _REPO / "data" / "heat_scores.json"
 _CACHE = {"mtime": None, "scores": {}}
 
 TRUST_FLOOR = 0.25          # a trusted, non-decaying seat's floor bonus
-CORR_PENALTY = 0.10         # per open trade sharing a currency
-EXPO_COST = 0.10            # * n_open/cap — a fuller book raises the bar
+CORR_PENALTY = 0.10         # per open SAME-DIRECTION currency leg (compounding
+                            # exposure penalized; offsetting exposure is not —
+                            # external review 2026-07-31)
+# (the old flat exposure-cost term was identical for every candidate in a
+# selection round and therefore could never affect a ranking — removed)
 
 
 def load_heat_scores() -> dict:
@@ -57,16 +60,28 @@ def relative_heat(key: str, side: str, scores: dict) -> float:
     return round(heat - med, 4)
 
 
+def candidate_legs(pair: str, side: str):
+    """The signed currency legs this candidate would ADD: long BASE/QUOTE =
+    (BASE, long) + (QUOTE, short); short = the mirror."""
+    base, quote = pair.split("_")
+    if side == "long":
+        return ((base, "long"), (quote, "short"))
+    return ((base, "short"), (quote, "long"))
+
+
 def execution_score(key: str, side: str, pair: str, scores: dict,
-                    open_currencies: dict = None,
+                    open_legs: dict = None,
                     n_open: int = 0, cap: int = 6) -> float:
+    """open_legs: {(currency, 'long'|'short'): count} of legs already open.
+    Only SAME-direction overlap is penalized — a candidate that OFFSETS
+    existing exposure adds no compounding risk (n_open/cap accepted for
+    back-compat; a flat per-round constant cannot affect ranking)."""
     me = scores.get(key) or {}
     rel = relative_heat(key, side, scores)
     trust_floor = TRUST_FLOOR if (me.get("trusted")
                                   and not me.get("decaying")) else 0.0
     corr = 0.0
-    if open_currencies:
-        for ccy in pair.split("_"):
-            corr += CORR_PENALTY * int(open_currencies.get(ccy, 0))
-    expo = EXPO_COST * (n_open / cap if cap else 0.0)
-    return round(rel + trust_floor - corr - expo, 4)
+    if open_legs:
+        for leg in candidate_legs(pair, side):
+            corr += CORR_PENALTY * int(open_legs.get(leg, 0))
+    return round(rel + trust_floor - corr, 4)
