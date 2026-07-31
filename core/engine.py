@@ -182,6 +182,8 @@ class Engine:
         if not dry_run:
             self._recover_open_positions()
 
+    _last_reconcile = None
+
     def _recover_open_positions(self) -> None:
         """Adopt any existing OANDA open trades at startup.
 
@@ -304,14 +306,43 @@ class Engine:
         is what lets the trailing stop follow the peak between 5-min scan cycles."""
         if self.dry_run:
             return
-        if not self.managers and not self.pp.poppers and not self.pp.grids:
+        # RECONCILER (Brock, 2026-07-31: "all automated"): every 5 minutes,
+        # regardless of what the engine THINKS it tracks, compare the broker's
+        # open trades against the tracked set and adopt any orphan on the spot
+        # via the recovery path (idempotent). This closes the B-112/B-114
+        # class permanently — a restart, a wire-format bug, or a lost state
+        # file self-heals within one reconcile tick instead of waiting for a
+        # human to eyeball the dashboard against the broker app.
+        _recon_due = (self._last_reconcile is None or
+                      (now - self._last_reconcile).total_seconds() >= 300)
+        if not self.managers and not self.pp.poppers and not self.pp.grids                 and not _recon_due:
             return
 
         try:
-            oanda_open = {t["id"] for t in self.broker.open_positions()}
+            _open_trades = self.broker.open_positions()
+            oanda_open = {t["id"] for t in _open_trades}
         except Exception as exc:
             log.warning("open_positions failed: %s -- skip exit detection", exc)
-            oanda_open = None
+            _open_trades, oanda_open = None, None
+
+        if _recon_due and _open_trades is not None:
+            self._last_reconcile = now
+            _tracked = {str(m.position.oanda_trade_id)
+                        for m in self.managers.values()}
+            _tracked |= set(self.pp.poppers.keys())
+            _orphans = [t for t in _open_trades if str(t["id"]) not in _tracked]
+            if _orphans:
+                log.warning("RECONCILER: %d broker trade(s) untracked %s — "
+                            "re-running recovery adoption now",
+                            len(_orphans),
+                            [(t["id"], t["instrument"]) for t in _orphans])
+                try:
+                    self._recover_open_positions()
+                    self.recent_events.append(
+                        f"{now.strftime('%H:%M:%S')} RECONCILER adopted "
+                        f"{len(_orphans)} orphan trade(s)")
+                except Exception as exc:
+                    log.exception("RECONCILER recovery failed: %s", exc)
 
         for pair in list(self.managers.keys()):
             mgr = self.managers[pair]

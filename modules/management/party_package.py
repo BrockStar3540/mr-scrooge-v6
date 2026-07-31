@@ -370,7 +370,11 @@ class PartyPackage:
                 "old_probe": g.probe}
 
     def recover(self, trade: dict) -> None:
-        """Adopt an open OANDA popper trade (tag pp_v1[;g=<id>]) at startup."""
+        """Adopt an open OANDA popper trade (tag pp_v1[;g=<id>]) at startup.
+        IDEMPOTENT (reconciler era, 2026-07-31): an already-tracked popper is
+        a no-op, so the self-healing loop can re-run recovery wholesale."""
+        if str(trade.get("id") or "") in self.poppers:
+            return
         pair = trade["instrument"]
         _tag = (trade.get("clientExtensions") or {}).get("tag", "") or ""
         _gid = _tag.split(";g=", 1)[1] if ";g=" in _tag else ""
