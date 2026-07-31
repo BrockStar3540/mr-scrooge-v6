@@ -4,6 +4,22 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.5] — 2026-07-31 — "Three Different Programs" — CRITICAL for LIVE accounts
+
+### Fixed
+- **B-114 — recovery orphaned live poppers after restart (regression introduced BY the
+  B-112 fix)**: 6.11.1's critical-fields-first comment reorder pushed `sl`/`tr` past the
+  live account's ~32-char clientExtensions truncation, so the recovery classifier's
+  `sl`+`tr` test misclassified every truncated popper as a parent — and the
+  one-parent-per-pair rule silently swallowed the rest of that pair's trades. Found live:
+  a 4-trade GBP grid unmanaged for ~9 hours, stops still at −60p while +30p in profit.
+  The classifier now recognizes both comment formats by whatever survives truncation, is
+  extracted to `_looks_like_popper()` with regression tests pinning the exact mangled
+  live copies, and the parent-collision skip logs a WARNING naming the unadopted trade.
+  **If you run a LIVE (not practice) account on 6.11.1–6.12.4: any bot restart with open
+  poppers orphaned them — pull this release and restart once while flat, or verify your
+  open trades on the dashboard after restarting.** Suite 301.
+
 ## [6.12.4] — 2026-07-30 — "The Death Rate"
 
 ### Added

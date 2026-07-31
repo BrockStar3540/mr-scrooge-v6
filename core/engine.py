@@ -64,6 +64,29 @@ def _encode_exit_ext(ep, setup_id: str) -> dict:
     return {"tag": "cell_v1", "comment": comment}
 
 
+def _looks_like_popper(client_ext: dict) -> bool:
+    """Popper-vs-parent classification for recovery (B-112 / B-114).
+
+    LIVE accounts mangle clientExtensions on the trades endpoint: tag -> "0",
+    comment truncated to ~32 chars — so neither field can be trusted whole.
+    B-114: the 6.11.1 critical-fields-first reorder puts anc/lvl/psu at the
+    FRONT of popper comments, which pushes sl/tr past the truncation point;
+    the old sl+tr test then misclassified every truncated popper as a parent,
+    and the one-parent-per-pair rule silently swallowed the rest of that
+    pair's trades (four live GBP trades orphaned 2026-07-31). Classify on
+    whatever survives the cut: the tag when intact, the new-format prefix
+    fields, or the legacy sl+tr pair. Parent comments start {"m": or {"su":
+    by construction (_encode_exit_ext) and never match.
+    """
+    cm = (client_ext.get("comment") or "")
+    return (client_ext.get("tag") == "pp_v1" or
+            (cm.startswith("{") and
+             not cm.startswith('{"m":') and
+             not cm.startswith('{"su":') and
+             ('"anc"' in cm or '"lvl"' in cm or '"psu"' in cm or
+              ('"sl"' in cm and '"tr"' in cm))))
+
+
 def _decode_exit_ext(trade: dict):
     """Parse persisted exit gear off an OANDA trade dict. Returns
     (ExitParams, setup_id) or None (absent / foreign / unparseable)."""
@@ -188,11 +211,7 @@ class Engine:
             # those keys. pp.recover() is already truncation-tolerant.
             _ce = t.get("clientExtensions") or {}
             _cm = _ce.get("comment", "") or ""
-            _is_popper = (_ce.get("tag") == "pp_v1" or
-                          (_cm.startswith("{") and
-                           not _cm.startswith('{"m":') and
-                           not _cm.startswith('{"su":') and
-                           '"sl"' in _cm and '"tr"' in _cm))
+            _is_popper = _looks_like_popper(_ce)
             if _is_popper:
                 try:
                     self.pp.recover(t)
@@ -201,6 +220,11 @@ class Engine:
                                   t.get("id"), exc)
                 continue
             if pair in self.managers:
+                # B-114 alarm: silence here is how four live trades vanished.
+                log.warning("recovery: %s trade %s NOT adopted — pair already "
+                            "has a parent manager; if this is a popper whose "
+                            "comment lost its markers to truncation, it is now "
+                            "UNMANAGED (server-side SL only)", pair, t.get("id"))
                 continue
             if pair not in PIP:
                 log.warning("recovery: unknown pair %s — skipping", pair)

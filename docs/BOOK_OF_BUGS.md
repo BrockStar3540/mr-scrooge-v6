@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-113, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-114, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -704,6 +704,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** the board payload is rebuilt at most every 15 minutes (`_REFRESH_S = 900`) and served stale-while-revalidate; each row's `status` was joined from `config/cells` **at build time only**, so a flip made inside the cache window was baked over by the pre-flip snapshot until the next rebuild happened to run.
 - **Fix (two layers):** (1) `get_board()` now re-joins `config/cells` **at serve time** — where the live status differs from the cached row it patches status + tier in place (flagged `flip_pending`, EX-SIDE rows untouched) and re-sorts, so status is always the live truth even from a stale payload; (2) `POST /api/cell/status` invalidates the board cache, so the next page load kicks an immediate full rebuild. Five regression tests; suite 296.
 - **Lesson:** cache aggregates, never state. A number that changes when the operator throws a switch must be read fresh on every serve — the human's control loop breaks the moment the display stops trusting the switch.
+
+### B-114 — The B-112 fix broke the classifier it fed: four live trades orphaned by my own deploy restarts
+- **Date:** 2026-07-31 (Brock: "the dashboard is not showing all of the open trades… and the ratchet isnt managing them!")
+- **Area:** `core/engine.py` recovery classification (`_looks_like_popper`, formerly inline)
+- **Symptom:** 6 open real-money trades at the broker; engine tracked 2. The 4-trade GBP/USD grid (parent + 3 poppers, ~+30p in flight) sat unmanaged all morning with stops still at entry −60p — no ratchet, no lock, ~$51 of open profit one reversal away from a −$90 swing. A 5th trade (a popper) was mis-adopted as a "parent" with default gear.
+- **Root cause:** a regression **caused by the B-112 fix itself.** 6.11.1 reordered popper comments critical-fields-first (`anc`/`lvl`/`psu` lead) so truncated live copies keep what attribution needs — but the recovery *classifier* still required `"sl"` and `"tr"` in the comment, and the reorder pushed exactly those past the live account's ~32-char truncation. Every truncated popper failed the popper test → fell to the parent path → the one-parent-per-pair rule **silently** `continue`d all but the first same-pair trade. Triggered by the v6.12.3/v6.12.4 deploy restarts (03:28/03:44Z); B-112's own verification hadn't caught it because the then-open poppers carried OLD-format comments with `sl`/`tr` up front.
+- **Fix:** (1) classifier matches both encodings — new-format prefix fields (`anc`/`lvl`/`psu`) OR legacy `sl`+`tr` — and is extracted to module level with regression tests pinning the exact truncated live copies; (2) the one-parent-per-pair skip now logs a WARNING naming the unadopted trade — silence is what let four trades vanish; (3) remediation before the fix: stops manually moved to +6p lock, then post-fix recovery adopted 6/6 and the ratchet re-locked above the manual floor within one manage cycle.
+- **Lesson:** when you change a wire format, grep for every consumer of the OLD shape — the encoder, the decoder, and the *classifier* are three different programs. And any recovery path that declines a live trade must say so out loud; the orphan you don't log is the one the operator finds by eye.
 
 
 
