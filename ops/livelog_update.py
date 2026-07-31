@@ -194,17 +194,42 @@ ACC = GREEN if tot >= 0 else RED
 
 # ── dashboard stat-card SVG (the eye-popper) ──────────────────────────────────
 try:
-    # realized equity curve: start balance stepped by each trade's P/L
-    eq = [start_bal]; run = start_bal
-    for r in rows:
-        run += float(r[4]); eq.append(run)
-    if len(eq) < 2: eq = [start_bal, bal]
-    lo, hi = min(eq), max(eq); rng = (hi - lo) or 1
+    # B-116: chart on a TIME axis with BOTH curves — the old per-trade x-axis
+    # froze the graph between closes while NAV moved all day, so a green
+    # morning with 6 open trades looked like a stale chart. Bold line =
+    # realized (steps at closes); thin blue = hourly NAV (includes open).
+    _p = lambda s: datetime.fromisoformat(s.replace("Z", "+00:00"))
+    t0 = _p(ANCHOR_TS); t1 = now if now > t0 else t0
+    span = (t1 - t0).total_seconds() or 1.0
     cx0, cx1, cy0, cy1 = 40, 860, 208, 268
-    xs = [cx0 + i*(cx1-cx0)/(len(eq)-1) for i in range(len(eq))]
-    ys = [cy1 - (v-lo)/rng*(cy1-cy0) for v in eq]
-    line = " ".join(f"{x:.1f},{y:.1f}" for x, y in zip(xs, ys))
+    def _x(t):
+        frac = ((t if not isinstance(t, str) else _p(t)) - t0).total_seconds()/span
+        return cx0 + max(0.0, min(1.0, frac))*(cx1-cx0)
+    r_pts = [(t0, start_bal)]; run = start_bal
+    for r in rows:
+        run += float(r[4]); r_pts.append((_p(r[0]), run))
+    r_pts.append((t1, run))
+    n_pts = []
+    try:
+        with open(EQUITY) as _f:
+            for _row in csv.DictReader(_f):
+                try:
+                    n_pts.append((_p(_row["utc"]), float(_row["nav"])))
+                except (KeyError, ValueError):
+                    continue
+    except OSError:
+        n_pts = []
+    vals = [v for _, v in r_pts] + [v for _, v in n_pts]
+    lo, hi = min(vals), max(vals); rng = (hi - lo) or 1
+    def _y(v): return cy1 - (v-lo)/rng*(cy1-cy0)
+    seg = [f"{_x(r_pts[0][0]):.1f},{_y(r_pts[0][1]):.1f}"]
+    for _i in range(1, len(r_pts)):          # step shape: flat until the close
+        _px = _x(r_pts[_i][0])
+        seg.append(f"{_px:.1f},{_y(r_pts[_i-1][1]):.1f}")
+        seg.append(f"{_px:.1f},{_y(r_pts[_i][1]):.1f}")
+    line = " ".join(seg)
     area = f"{cx0},{cy1} " + line + f" {cx1},{cy1}"
+    nav_line = " ".join(f"{_x(t):.1f},{_y(v):.1f}" for t, v in n_pts)
     def stat(x, label, value, vcol=TXT):
         return (f'<text x="{x}" y="172" font-family="system-ui,-apple-system,sans-serif" '
                 f'font-size="12" fill="{DIM}" letter-spacing="1">{label}</text>'
@@ -232,8 +257,14 @@ try:
       stat(470, "OPEN", f"{opn} ({usign}${abs(upl):,.2f})"),
       stat(690, "WIN RATE", f"{(n_green/n_tr*100 if n_tr else 0):.0f}%"),
       f'<polygon points="{area}" fill="url(#fill)"/>',
+      (f'<polyline points="{nav_line}" fill="none" stroke="#58a6ff" '
+       f'stroke-width="1.4" opacity="0.9"/>' if n_pts else ''),
       f'<polyline points="{line}" fill="none" stroke="{ACC}" stroke-width="2.5"/>',
-      f'<circle cx="{xs[-1]:.1f}" cy="{ys[-1]:.1f}" r="4" fill="{ACC}"/>',
+      f'<circle cx="{_x(t1):.1f}" cy="{_y(run):.1f}" r="4" fill="{ACC}"/>',
+      (f'<circle cx="{_x(n_pts[-1][0]):.1f}" cy="{_y(n_pts[-1][1]):.1f}" r="3" '
+       f'fill="#58a6ff"/>' if n_pts else ''),
+      f'<text x="860" y="203" font-size="10" text-anchor="end" fill="{DIM}">'
+      f'<tspan fill="{ACC}">━ realized</tspan>  <tspan fill="#58a6ff">─ NAV incl. open (hourly)</tspan></text>',
       f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +8.5 → lock +6 → trail 2.5 · poppers · 15%/trade · OANDA LIVE — real money · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
       '</svg>\n',
     ]

@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-115, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-116, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -720,6 +720,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** double distortion. (1) The engine re-stamps a setup every scan cycle while its conditions hold, and the scorer counted every stamp as an independent trade — a four-hour runaway = dozens of "wins" riding one move. (2) The rate-limit cap simmed only the most recent 50 *stamps*, so a single clustered day didn't just inflate N — it **became the entire sim sample**.
 - **Fix:** stamps are collapsed into EPISODES before scoring (stamps ≤30 min apart = one entry decision — the same `_EP_GAP_S` rule the shadowboard uses); the sim runs one entry per episode, most recent 50 episodes; the table shows `N eps (stamps)` with the tooltip explaining why. Unit tests pin the collapse semantics.
 - **Lesson:** N is the most dangerous column on any scoreboard — before trusting it, ask what one row-unit *is*. A monitor that re-observes the same event must never present observations as decisions; independence is a property you build, not one you get.
+
+### B-116 — The public live graph froze between closes: per-trade x-axis, NAV nowhere on the chart
+- **Date:** 2026-07-31 (Brock: "is the real money tracker graph on the git rep having issues? doesnt seem to be up-to-date")
+- **Area:** `ops/livelog_update.py` stat-card SVG
+- **Symptom:** the README's real-money equity card looked stale all morning — the curve hadn't moved since the 08:14Z close while NAV swung $2,267 → $2,430 with six open trades. Data was fine (hourly cron green, equity.csv current); the *chart* only drew the realized curve on a per-trade index axis, so hours of open-trade reality were invisible.
+- **Root cause:** chart design, not pipeline failure. X = trade number (not time), Y = realized only. A quiet-closes morning therefore rendered as a frozen line — indistinguishable from a dead updater, which is exactly how the operator read it.
+- **Fix:** the card now plots on a TIME axis with both truths: bold realized steps at each close, plus a thin hourly NAV line (incl. open trades) from equity.csv, with a legend and both end-dots. The chart moves every hour because the account does.
+- **Lesson:** a public tracker that can look frozen while healthy will be read as broken — and the reader is right, because "is it alive?" is the first thing a graph must answer. Plot time on the time axis.
 
 
 

@@ -4,6 +4,16 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.12.7] — 2026-07-31 — "Plot Time on the Time Axis"
+
+### Fixed
+- **B-116 — the README live-equity card froze between closes**: it plotted only the
+  realized curve on a per-trade index axis, so a morning with six open trades and a
+  $160 NAV swing rendered as a stale flat line (operator read it as a dead updater —
+  correctly, since the two are indistinguishable). The card now draws on a TIME axis:
+  bold realized steps at each close + a thin hourly NAV line (incl. open trades) from
+  equity.csv, with legend and end-dots. Suite 305.
+
 ## [6.12.6] — 2026-07-31 — "One Move, One Vote"
 
 ### Fixed
