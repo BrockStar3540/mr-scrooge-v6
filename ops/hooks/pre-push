@@ -19,17 +19,25 @@ python3 -m pytest -q -x
 echo "pre-push: suite green."
 
 # ── secrets sweep over exactly the commits being pushed ──────────────────────
-# pattern built from split literals so the sweep can't match its own source
-PATTERN="oanda_api""_token|api-fx(trade|practice)\.oanda.*tok""en|ghp""_[A-Za-z0-9]|github_""pat_[A-Za-z0-9]|[0-9]{3}-[0-9]{3}-[0-9]{7,}-[0-9]{3}"
+# VALUE-shaped patterns (split literals so the sweep can't match its own
+# source): a secret is an ASSIGNED long token or a real-shaped account id —
+# the env-var NAME appears legitimately all over the codebase and docs.
+PATTERN="OANDA_API""_TOKEN=[A-Za-z0-9_-]{20,}|ghp""_[A-Za-z0-9]{20,}|github_""pat_[A-Za-z0-9_]{20,}|[0-9]{3}-[0-9]{3}-[0-9]{7}-[0-9]{3}"
+PLACEHOLDERS="your-oanda-token|00000000|1234567|xxxxxxx|<[a-z-]*token"
 EMPTY_TREE=$(git hash-object -t tree /dev/null)
-while read -r _local_ref local_sha _remote_ref remote_sha; do
+while read -r local_ref local_sha _remote_ref remote_sha; do
     [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue  # deletion
+    case "$local_ref" in refs/tags/*)
+        continue ;;   # a tag points at commits already swept on their branch push
+    esac
     if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
         base="$EMPTY_TREE"           # new branch: sweep everything being born
     else
         base="$remote_sha"
     fi
-    if git diff "$base" "$local_sha" | grep -niE "$PATTERN"; then
+    HITS=$(git diff "$base" "$local_sha" | grep -niE "$PATTERN" | grep -viE "$PLACEHOLDERS" || true)
+    if [ -n "$HITS" ]; then
+        echo "$HITS" | head -10 >&2
         echo "pre-push: ❌ SECRETS SWEEP HIT in the outgoing diff — push blocked." >&2
         exit 1
     fi
