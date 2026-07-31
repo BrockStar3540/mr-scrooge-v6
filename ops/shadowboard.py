@@ -501,7 +501,7 @@ def _aggregate(db):
     # every wired ACTIVE/SHADOW setup with zero scored episodes still gets a
     # row, so the docket is visible — waiting is a state, not an absence.
     have = {(r["cell"], r["setup"]) for r in out}
-    for (pair, sess, sid), (status, side) in _cfgst.items():
+    for (pair, sess, sid), (status, side, *_x) in _cfgst.items():
         cell = f"{pair}/{sess}"
         if status in ("ACTIVE", "PROBE", "SHADOW") and (cell, sid) not in have:
             gov = None

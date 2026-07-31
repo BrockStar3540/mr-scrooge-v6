@@ -26,7 +26,7 @@ VALID_CLASSES = {
     "book_replay",                            # D-4 strategy-book trials
     "classic", "box", "control",              # classic/control probe families
 }
-VALID_STATUSES = {"ACTIVE", "SHADOW", "SUSPENDED", "DISABLED"}
+VALID_STATUSES = {"ACTIVE", "PROBE", "SHADOW", "SUSPENDED", "DISABLED"}
 # Pair universe: single source of truth is config/pairs.py — a list that exists
 # in two files is two bugs (B-098 family; the dashboard server had the same
 # defect until 2026-07-27).
@@ -306,6 +306,7 @@ def _validate_setup(setup: Any, sess: str, errs: ValidationErrors) -> None:
     allowed_setup = {
         "id", "side", "class", "status", "horizon_min",
         "conditions", "exit", "sizing", "tripwires", "evidence", "notes",
+        "wired",   # date the setup entered the book (QUEUED-row age, 2026-07-31)
         "_note",         # operator margin notes (e.g. side-flip history)
         "manual_only",   # governor opt-out: this setup is hand-ruled only
     }
