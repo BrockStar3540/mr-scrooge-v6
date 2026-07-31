@@ -159,12 +159,20 @@ def test_family_setup_anchor_join_respects_direction_and_distance():
 # ── governor: era re-clock + verdict ─────────────────────────────────────────
 
 _CFG = {"family_min_trades": 5, "family_demote_pips": -60.0,
-        "family_defend_pips": 60.0, "bar_avg": 2.0}
+        "family_defend_pips": 60.0, "bar_avg": 2.0,
+        "family_min_cycles": 2, "family_defend_cycles": 3,
+        "family_catastrophic_pips": -90.0}
 
 
-def _fam(n, net_pips, n_open=0):
+def _fam(n, net_pips, n_open=0, n_cycles=3, cycle_nets=None):
+    """B-117 family view: evidence is COMPLETED GRID CYCLES. Default: the net
+    spread evenly over 3 completed cycles (enough to convict AND defend)."""
+    if cycle_nets is None:
+        cycle_nets = ([round(net_pips / n_cycles, 1)] * n_cycles
+                      if n_cycles else [])
     return {"n": n, "net_pips": net_pips, "net_usd": net_pips * 2.6,
-            "n_open": n_open}
+            "n_open": n_open, "n_cycles": n_cycles, "cycle_nets": cycle_nets,
+            "worst_cycle": min(cycle_nets, default=None)}
 
 
 def _ev(raw_n, net_avg):
@@ -175,10 +183,78 @@ def _ev(raw_n, net_avg):
 
 
 def test_family_era_view_filters_pre_era_trades():
-    fam = {"trades": [{"t": "2026-07-19T10:00", "pips": -60.0, "usd": -156.0},
-                      {"t": "2026-07-25T10:00", "pips": 6.0, "usd": 15.6}]}
+    fam = {"trades": [{"t": "2026-07-19T10:00", "ct": "2026-07-19T14:00",
+                       "pips": -60.0, "usd": -156.0},
+                      {"t": "2026-07-25T10:00", "ct": "2026-07-25T12:00",
+                       "pips": 6.0, "usd": 15.6}]}
     v = gov.family_era_view(fam, "2026-07-24T00:00:00+00:00")
     assert v["n"] == 1 and v["net_pips"] == 6.0
+    assert v["n_cycles"] == 1 and v["cycle_nets"] == [6.0]
+
+
+# ── B-117: grid cycles — the independent unit of family evidence ─────────────
+
+def test_cycles_chain_overlapping_legs_into_one():
+    # parent + 2 poppers opened while the family was live = ONE cycle
+    legs = [{"t": "2026-07-30T14:54", "ct": "2026-07-31T12:39", "pips": 4.3, "usd": 4.3},
+            {"t": "2026-07-30T15:20", "ct": "2026-07-31T12:46", "pips": 8.5, "usd": 8.5},
+            {"t": "2026-07-30T15:33", "ct": "2026-07-31T12:39", "pips": 11.7, "usd": 11.7}]
+    cyc = audit.cycles_of(legs, [])
+    assert len(cyc) == 1
+    assert cyc[0]["n"] == 3 and abs(cyc[0]["pips"] - 24.5) < 0.01
+
+
+def test_cycles_split_when_family_goes_flat():
+    legs = [{"t": "2026-07-29T10:00", "ct": "2026-07-29T14:00", "pips": -60.0, "usd": -24.0},
+            {"t": "2026-07-30T10:00", "ct": "2026-07-30T11:00", "pips": 6.0, "usd": 3.0}]
+    cyc = audit.cycles_of(legs, [])
+    assert len(cyc) == 2
+    assert cyc[0]["pips"] == -60.0 and cyc[1]["pips"] == 6.0
+
+
+def test_cycles_censor_the_cycle_an_open_leg_extends():
+    legs = [{"t": "2026-07-29T10:00", "ct": "2026-07-29T14:00", "pips": -60.0, "usd": -24.0},
+            {"t": "2026-07-30T10:00", "ct": "2026-07-30T18:00", "pips": 6.0, "usd": 3.0}]
+    # an open popper fired 30-07 12:00, inside cycle 2's span -> cycle 2 censored
+    cyc = audit.cycles_of(legs, ["2026-07-30T12:00"])
+    assert len(cyc) == 1 and cyc[0]["pips"] == -60.0
+
+
+def test_family_key_splits_sessions():
+    # same setup id in asia and london must NOT merge (B-117)
+    asia_p = {"instrument": "GBP_USD", "dir": 1, "price": 1.35, "su": "timing_lean_30",
+              "tag": "cell_v1", "time": "2026-07-30T02:00", "sess": "asia"}
+    lond_p = {"instrument": "GBP_USD", "dir": 1, "price": 1.36, "su": "timing_lean_30",
+              "tag": "cell_v1", "time": "2026-07-30T09:00", "sess": "london"}
+    assert audit.family_key(asia_p, [asia_p, lond_p]) == ("timing_lean_30", "asia")
+    assert audit.family_key(lond_p, [asia_p, lond_p]) == ("timing_lean_30", "london")
+
+
+def test_family_key_popper_inherits_parent_session():
+    parent = {"instrument": "GBP_USD", "dir": 1, "price": 1.35, "su": "rvol_low_240",
+              "tag": "cell_v1", "time": "2026-07-30T09:00", "sess": "london"}
+    # popper fires hours later, in the NY session — family stays london
+    pop = {"instrument": "GBP_USD", "dir": 1, "tag": "pp_v1", "su": "pp_v1",
+           "psu": "rvol_low_240", "anc": None, "time": "2026-07-30T15:00"}
+    assert audit.family_key(pop, [parent]) == ("rvol_low_240", "london")
+
+
+def test_one_catastrophic_cycle_benches():
+    # asymmetric demotion (charter): a single completed −120p cycle convicts
+    f = _fam(8, -120.0, n_cycles=1, cycle_nets=[-120.0])
+    demote, why = gov.active_verdict(_ev(25, 5.0), f, _CFG, 20)
+    assert demote and why == "family_red"
+
+
+def test_defend_needs_more_cycles_than_convict():
+    # +103p over only 2 completed cycles: NOT enough to defend (needs 3)...
+    f2 = _fam(10, 103.0, n_cycles=2)
+    demote, why = gov.active_verdict(_ev(25, -3.0), f2, _CFG, 20)
+    assert demote and why == "bar_lost"      # family can't defend; bar convicts
+    # ...but 2 cycles ARE enough to convict at −103p
+    fr = _fam(10, -103.0, n_cycles=2)
+    demote, why = gov.active_verdict(_ev(25, 5.0), fr, _CFG, 20)
+    assert demote and why == "family_red"
 
 
 def test_family_red_demotes_regardless_of_stamps():
@@ -201,10 +277,11 @@ def test_bar_lost_still_applies_without_family_evidence():
 
 
 def test_small_family_neither_convicts_nor_defends():
-    # n below family_min_trades: family says nothing; stamps decide
-    demote, why = gov.active_verdict(_ev(25, 1.0), _fam(2, -80.0), _CFG, 20)
+    # below family_min_cycles (and above catastrophic): family says nothing
+    f = _fam(2, -80.0, n_cycles=1, cycle_nets=[-80.0])
+    demote, why = gov.active_verdict(_ev(25, 1.0), f, _CFG, 20)
     assert demote and why == "bar_lost"
-    demote, _ = gov.active_verdict(_ev(25, 5.0), _fam(2, -80.0), _CFG, 20)
+    demote, _ = gov.active_verdict(_ev(25, 5.0), f, _CFG, 20)
     assert not demote
 
 

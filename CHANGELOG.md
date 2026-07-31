@@ -4,6 +4,32 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.13.0] — 2026-07-31 — "The Unit of Evidence" (B-117 + interim safety)
+
+Start of the Family-Cycle program: an external design review (docs: see repo discussions
+and the Book of Bugs) demonstrated the shadow scorer grades a materially different system
+than the live one, and its recommendations are being implemented in V6, item by item.
+
+### Fixed
+- **B-117 — family attribution**: families now keyed (instrument, SESSION, setup) — the
+  old join merged same-named setups across sessions; poppers inherit their parent's
+  session. Family evidence now counts **completed GRID CYCLES** (legs chained by
+  open-interval overlap; flat = boundary; open-extended cycles censored), not closed legs.
+- **Governor verdicts on cycles, asymmetric** (charter): convict at ≥2 completed cycles on
+  net ≤ −60p **or ONE catastrophic cycle ≤ −90p**; defend requires ≥3 completed cycles at
+  net ≥ +60p. Judge-when-flat unchanged.
+
+### Changed (interim safety, pending family-cycle-v3)
+- **🎲 Cheater promotions OFF** — the +100p cumulative parent-horizon ticket was shown
+  structurally divergent from broker family results (sign agreement 2/7). Existing cheater
+  seats remain, governed by the family leash. The lane returns with a risk-covered v3 ticket.
+- **Era/stamp columns relabeled as PARENT/HORIZON DIAGNOSTICS** on the dashboard — they
+  simulate the parent only, force-closed at horizon, with coarser ratchet steps than live;
+  they are not projected live performance.
+
+Suite 312 (7 new: cycle chaining, censoring, session split, catastrophic-cycle bench,
+defend-needs-more-cycles).
+
 ## [6.12.7] — 2026-07-31 — "Plot Time on the Time Axis"
 
 ### Fixed

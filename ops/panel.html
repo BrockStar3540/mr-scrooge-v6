@@ -773,7 +773,7 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <details style="padding:0 12px 6px">
       <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
-        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar (or the opt-in 🎲 +100p cheater rule), demote/defend on family broker net pips, judge-when-flat. <b>Full standard ▾</b>
+        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. ⚠️ The stamp/era columns are PARENT-ONLY, HORIZON-CAPPED diagnostics — they cannot see the popper grid and have diverged from broker family results; family-cycle-v3 scoring is in progress. 🎲 Cheater promotions are OFF pending the v3 ticket. <b>Full standard ▾</b>
       </summary>
     <div class="muted" style="padding:6px 0 0;font-size:11px">
       <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
@@ -831,7 +831,7 @@ body.has-ticker{padding-bottom:32px}
         <th title="The governor's own call for this row, today: DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING (with the bar conditions still failing) / QUEUED / DEMOTE DUE">verdict</th>
         <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
         <th>eps</th>
-        <th title="THE BAR — the exact numbers the governor reads, era executable-exit-v2 evidence: n≥20 episodes · ≥10 independent day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB > 0 · BH-FDR q ≤ 0.05 (the 7-day guard is the 7d avg column). Green = condition met; all green = PROMOTE READY. ACTIVE rows are judged by the family column first — this bar applies only when the family can't speak (n<5).">era v2 bar</th>
+        <th title="⚠️ PARENT/HORIZON DIAGNOSTIC — this simulates the PARENT trade only, force-closed at horizon_min, with coarser ratchet steps than live; it cannot see the Party Package and has diverged from broker family results (sign agreement 2/7 on the first live week). Treat as a parent-entry diagnostic, NOT projected live performance, until family-cycle-v3 scoring lands. THE BAR the governor currently reads, era executable-exit-v2 evidence: n≥20 episodes · ≥10 independent day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB > 0 · BH-FDR q ≤ 0.05 (the 7-day guard is the 7d avg column). Green = condition met; all green = PROMOTE READY. ACTIVE rows are judged by the family column first — this bar applies only when the family can't speak (n<5).">era v2 bar</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th title="ratchet-ENGAGE rate: share of episodes whose MFE reached this setup&#39;s trigger + 0.5p mid buffer (book gear 9p, t20s gear 20.5p). An engaged trade locks +6 and cannot lose. Replaced hit≥6p (the lock level), which flattered almost-winners that pop 6p and never engage.">hit≥trig</th><th title="DEATH rate: share of episodes whose MAE reached this setup&#39;s config SL − 0.5p (mid understates adverse excursion — the executable side hits the stop first; stops are range-sized 40/50/60). At lock 6 / SL 60, ONE death costs TEN engages — read this column against hit≥trig: the ratio must stay near 10:1 just to break even on the extremes.">hitSL</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>

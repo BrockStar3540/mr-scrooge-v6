@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-116, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-117, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -728,6 +728,13 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** chart design, not pipeline failure. X = trade number (not time), Y = realized only. A quiet-closes morning therefore rendered as a frozen line — indistinguishable from a dead updater, which is exactly how the operator read it.
 - **Fix:** the card now plots on a TIME axis with both truths: bold realized steps at each close, plus a thin hourly NAV line (incl. open trades) from equity.csv, with a legend and both end-dots. The chart moves every hour because the account does.
 - **Lesson:** a public tracker that can look frozen while healthy will be read as broken — and the reader is right, because "is it alive?" is the first thing a graph must answer. Plot time on the time axis.
+
+### B-117 — Family evidence merged across sessions and counted legs as observations
+- **Date:** 2026-07-31 (design review, verified in code)
+- **Area:** `broker_setup_audit.py` family join; `ops/governor.py` family verdicts; `ops/shadowboard.py` family lookups
+- **Symptom:** two structural attribution errors in the evidence the governor convicts and defends on. (1) Families were keyed `(instrument, setup)` — session omitted, while 47 setup ids repeat across sessions (GBP_USD `timing_lean_30` exists in asia AND london): their broker evidence silently merged. (2) `family n` counted closed LEGS: one grid excursion producing six closed trades read as "n=6, 6-for-6" when it was ONE correlated market episode.
+- **Fix:** families keyed `(instrument, session, setup)` — poppers inherit the session of the parent that armed their grid; legs are chained into **GRID CYCLES** by open-interval overlap (family flat = cycle boundary; a cycle an open leg extends is censored). Verdicts now run on completed cycles: convict at `family_min_cycles≥2` on net, **or ONE catastrophic cycle ≤ −90p** (asymmetric, per charter); defend needs `family_defend_cycles≥3`. First live run re-graded the book: the "6-for-6" GBP grid = 1 completed cycle (honest: promising, unproven); the re-seated EUR_JPY lean = 1 catastrophic −144p cycle (convicts on sight when flat).
+- **Lesson:** the unit of evidence is the decision, not the fill. Correlated legs are one observation wearing six hats — and any join key missing a dimension the config repeats across is silently pooling different strategies.
 
 
 

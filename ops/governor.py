@@ -85,7 +85,10 @@ DEFAULT_CFG = {
     "cheater_promotion_enabled": False,   # OPT-IN via the dashboard toggle
     "cheater_cum_pips": 100.0,
     "cheater_min_n": 3,      # one lucky episode can't buy a seat (Brock, 2026-07-30)
-    "family_min_trades": 5,
+    "family_min_trades": 5,          # legacy (B-117: superseded by cycles)
+    "family_min_cycles": 2,          # completed grid cycles to convict on net
+    "family_defend_cycles": 3,       # completed cycles to DEFEND a seat
+    "family_catastrophic_pips": -90.0,  # ONE completed cycle this bad benches
     "family_demote_pips": -60.0,
     "family_defend_pips": 60.0,
     "max_promotions": 2, "max_demotions": 4,
@@ -170,7 +173,8 @@ def family_fills(default_era):
     """(pair, family_setup) -> family row from broker fills since default era:
     parents + their poppers as ONE unit (broker_setup_audit "families" block).
     Rows carry per-trade open times so callers can re-clock to a setup's era.
-    (Fills carry setup id but not session; the rule convicts per pair+setup.)"""
+    B-117: keyed (instrument, SESSION, setup) — 47 setup ids repeat across
+    sessions and the old pair+setup join merged their evidence."""
     try:
         out = subprocess.run(
             [sys.executable, str(REPO / "research" / "tools" / "broker_setup_audit.py"),
@@ -180,7 +184,8 @@ def family_fills(default_era):
     except Exception as exc:
         print(f"governor: fills audit unavailable ({exc}) — stamps-only run", file=sys.stderr)
         return {}
-    return {(r["instrument"], r["setup"]): r for r in rows}
+    return {(r["instrument"], r.get("session", "?"), r["setup"]): r
+            for r in rows}
 
 
 def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
@@ -196,10 +201,19 @@ def active_verdict(e, f, c: dict, min_raw: int) -> tuple:
     off right before the harvest. The episode is scored when it completes."""
     if f and f.get("n_open"):
         return False, "episode_open"
-    fam_min = int(c.get("family_min_trades", 5))
-    family_red = bool(f and f["n"] >= fam_min
-                      and f["net_pips"] <= float(c["family_demote_pips"]))
-    family_green = bool(f and f["n"] >= fam_min
+    # B-117: convict/defend on completed GRID CYCLES, not closed legs — one
+    # grid excursion producing six closed trades is ONE observation.
+    # Asymmetric (charter): a single catastrophic completed cycle benches;
+    # defending a seat needs MORE independent cycles than convicting.
+    n_cyc = int(f.get("n_cycles", 0)) if f else 0
+    cyc_nets = (f.get("cycle_nets") or []) if f else []
+    min_cyc = int(c.get("family_min_cycles", 2))
+    def_cyc = int(c.get("family_defend_cycles", 3))
+    cata = float(c.get("family_catastrophic_pips", -90.0))
+    family_red = bool(f and (
+        (n_cyc >= min_cyc and f["net_pips"] <= float(c["family_demote_pips"]))
+        or (n_cyc >= 1 and cyc_nets and min(cyc_nets) <= cata)))
+    family_green = bool(f and n_cyc >= def_cyc
                         and f["net_pips"] >= float(c["family_defend_pips"]))
     bar_lost = bool((not family_green) and e and e.raw_n >= min_raw and (
         e.net_avg is None or e.net_avg < float(c["bar_avg"])))
@@ -218,9 +232,15 @@ def family_era_view(fam: dict, era_start: str) -> dict:
     regardless of when it was opened (it is current exposure either way)."""
     cut = (era_start or "")[:16]
     trades = [t for t in fam.get("trades", []) if (t.get("t") or "") >= cut]
+    # B-117: the independent unit is the completed GRID CYCLE, not the leg
+    from research.tools.broker_setup_audit import cycles_of
+    cycles = cycles_of(trades, fam.get("open_ts", []))
     return {"n": len(trades), "net_pips": round(sum(t["pips"] for t in trades), 1),
             "net_usd": round(sum(t["usd"] for t in trades), 2),
-            "n_open": int(fam.get("n_open", 0))}
+            "n_open": int(fam.get("n_open", 0)),
+            "n_cycles": len(cycles),
+            "cycle_nets": [c["pips"] for c in cycles],
+            "worst_cycle": min((c["pips"] for c in cycles), default=None)}
 
 
 def _post(url, payload, dry):
@@ -357,7 +377,7 @@ def main():
         if meta["manual_only"] or meta["status"] not in ("ACTIVE", "SHADOW"):
             continue
         e = ev_all.get(key)
-        fam_row = fams.get((pair, sid))
+        fam_row = fams.get((pair, sess, sid))
         f = (family_era_view(fam_row, eras.get("|".join(key),
                              c["default_era_start"])) if fam_row else None)
         if meta["status"] == "SHADOW" and e:

@@ -282,7 +282,7 @@ def _families():
         out = subprocess.run(
             [_sys.executable, str(_ROOT / "research" / "tools" / "broker_setup_audit.py"),
              "--json"], capture_output=True, text=True, timeout=180)
-        fams = {(r["instrument"], r["setup"]): r
+        fams = {(r["instrument"], r.get("session", "?"), r["setup"]): r
                 for r in json.loads(out.stdout).get("families", [])}
         _FAM_CACHE.update(ts=now, data=fams)
     except Exception:
@@ -427,7 +427,7 @@ def _aggregate(db):
         gov = None
         if _gov_ok and _status in ("ACTIVE", "SHADOW"):
             sess = cell.split("/")[1] if "/" in cell else "?"
-            fam_row = _fams.get((pair, setup))
+            fam_row = _fams.get((pair, sess, setup))
             f = None
             if fam_row is not None:
                 era_start = _eras.get("|".join((pair, sess, setup)),
@@ -483,7 +483,7 @@ def _aggregate(db):
         if status in ("ACTIVE", "SHADOW") and (cell, sid) not in have:
             gov = None
             if _gov_ok:
-                fam_row = _fams.get((pair, sid))
+                fam_row = _fams.get((pair, sess, sid))
                 f = _fview(fam_row, _eras.get(
                     "|".join((pair, sess, sid)),
                     str(_gc_full.get("default_era_start", "")))) if fam_row else None

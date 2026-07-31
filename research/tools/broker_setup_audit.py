@@ -28,6 +28,59 @@ DEFAULT_SINCE = "2026-07-19T00:00:00Z"   # engage 8.5 / lock 6 gear era
 PP_ANC_JOIN_PIPS = 30.0   # max |grid anchor − parent open| for the backfill join
 
 
+def _sess_of(iso_time: str) -> str:
+    """B-117: canonical session from an ISO open time (config/sessions.py is
+    the single source of truth; fall back to its published windows if the
+    import is unavailable off-repo)."""
+    try:
+        h = int(iso_time[11:13])
+    except (ValueError, IndexError):
+        return "?"
+    try:
+        import sys as _s
+        from pathlib import Path as _P
+        _s.path.insert(0, str(_P(__file__).resolve().parents[2]))
+        from config.sessions import coarse_session
+        return coarse_session(h)
+    except Exception:
+        return "london" if 7 <= h < 13 else "ny" if 13 <= h < 22 else "asia"
+
+
+def cycles_of(trades: list, open_ts: list) -> list:
+    """B-117: group family legs into GRID CYCLES — the independent unit of
+    family evidence. One cycle = a chain of legs whose open intervals overlap
+    (a leg opened while an earlier leg of the family was still open extends
+    the cycle); the family going flat ends the cycle. Legs need "t" (open)
+    and "ct" (close), ISO minute precision. `open_ts` = open times of the
+    family's CURRENTLY OPEN legs: any cycle an open leg extends is
+    incomplete (censored) and excluded. Returns completed cycles only:
+    [{"n", "pips", "usd", "start", "end"}]. One grid excursion that produced
+    six closed legs is ONE observation, not six.
+    """
+    legs = sorted((t for t in trades if t.get("t") and t.get("ct")),
+                  key=lambda t: t["t"])
+    cycles, cur, cur_end = [], [], ""
+    for t in legs:
+        if cur and t["t"] > cur_end:
+            cycles.append(cur); cur, cur_end = [], ""
+        cur.append(t)
+        cur_end = max(cur_end, t["ct"])
+    if cur:
+        cycles.append(cur)
+    out = []
+    for cyc in cycles:
+        end = max(t["ct"] for t in cyc)
+        start = min(t["t"] for t in cyc)
+        # censored: an open leg opened inside this cycle's span extends it
+        if any(start <= o <= end for o in open_ts if o):
+            continue
+        out.append({"n": len(cyc),
+                    "pips": round(sum(t["pips"] for t in cyc), 1),
+                    "usd": round(sum(t["usd"] for t in cyc), 2),
+                    "start": start, "end": end})
+    return out
+
+
 def family_setup(op: dict, parent_opens: list) -> str:
     """The FAMILY a fill belongs to. Parents (tag=cell_v1) are their own setup;
     poppers (tag=pp_v1) belong to the parent setup that armed their grid —
@@ -49,6 +102,31 @@ def family_setup(op: dict, parent_opens: list) -> str:
         if d <= bestd:
             best, bestd = p["su"], d
     return best or "?"
+
+
+def family_key(op: dict, parent_opens: list):
+    """B-117: (family_setup, session). A family belongs to its PARENT's
+    session — 47 setup ids repeat across sessions (GBP_USD timing_lean_30
+    exists in asia AND london) and the old (instrument, setup) join merged
+    their evidence. Poppers inherit the session of the parent that armed
+    their grid (psu match first, anchor-join second); a popper with no
+    locatable parent falls back to its own open-time session."""
+    fam = family_setup(op, parent_opens)
+    if op.get("tag") != "pp_v1":
+        return fam, (op.get("sess") or _sess_of(op.get("time", "")))
+    if fam == "?":
+        return fam, "?"
+    cands = [p for p in parent_opens
+             if p["instrument"] == op["instrument"] and p["dir"] == op["dir"]
+             and p["su"] == fam and (p.get("time") or "") <= (op.get("time") or "~")]
+    if not cands:
+        cands = [p for p in parent_opens
+                 if p["instrument"] == op["instrument"] and p["dir"] == op["dir"]
+                 and p["su"] == fam]
+    if cands:
+        parent = max(cands, key=lambda p: p.get("time") or "")
+        return fam, (parent.get("sess") or _sess_of(parent.get("time", "")))
+    return fam, _sess_of(op.get("time", ""))
 
 
 def _secrets():
@@ -107,6 +185,7 @@ def main():
             "su": meta.get("su") or "?", "tag": tag,
             "psu": meta.get("psu"), "anc": meta.get("anc"),
             "time": t.get("time", "")[:16],
+            "sess": _sess_of(t.get("time", "")),
         }
 
     # closes: join tradesClosed / tradeReduced back to opens
@@ -138,13 +217,14 @@ def main():
             g["usd"] += pl
             g["pips"] += pips
             trade = {"id": tid, "usd": round(pl, 2),
-                     "pips": round(pips, 1), "t": op["time"]}
+                     "pips": round(pips, 1), "t": op["time"],
+                     "ct": t.get("time", "")[:16]}
             g["trades"].append(trade)
             # family view: parents + their poppers as one economic unit
             if op["tag"] in ("cell_v1", "pp_v1"):
-                fam = family_setup(op, parent_opens)
+                fam, fsess = family_key(op, parent_opens)
                 if fam != "?":
-                    fg = fams[(op["instrument"], fam)]
+                    fg = fams[(op["instrument"], fsess, fam)]
                     fg["n"] += 1
                     fg["greens"] += 1 if pl > 0 else 0
                     fg["usd"] += pl
@@ -191,20 +271,26 @@ def main():
                 op = {"instrument": tr["instrument"], "dir": 1 if units > 0 else -1,
                       "su": meta.get("su") or "?", "tag": tag,
                       "psu": meta.get("psu"), "anc": meta.get("anc")}
-            fam = (family_setup(op, parent_opens)
-                   if op["tag"] in ("cell_v1", "pp_v1") else "?")
+            if op["tag"] in ("cell_v1", "pp_v1"):
+                fam, fsess = family_key(op, parent_opens)
+            else:
+                fam, fsess = "?", "?"
             open_rows.append({"id": tid, "instrument": tr["instrument"],
                               "su": op["su"], "tag": op["tag"], "family": fam,
+                              "session": fsess,
+                              "open_t": (op.get("time")
+                                         or tr.get("openTime", "")[:16]),
                               "upl": float(tr.get("unrealizedPL", 0))})
     except Exception as e:
         print(f"open-trades fetch failed: {e}", file=sys.stderr)
 
-    open_by_fam = defaultdict(lambda: {"n": 0, "upl": 0.0})
+    open_by_fam = defaultdict(lambda: {"n": 0, "upl": 0.0, "open_ts": []})
     for o in open_rows:
         if o["family"] != "?":
-            ob = open_by_fam[(o["instrument"], o["family"])]
+            ob = open_by_fam[(o["instrument"], o["session"], o["family"])]
             ob["n"] += 1
             ob["upl"] += o["upl"]
+            ob["open_ts"].append(o.get("open_t") or "")
     for k in open_by_fam:        # open-only families must still reach callers
         fams[k]                  # defaultdict: materializes an empty closed row
 
@@ -218,9 +304,13 @@ def main():
     rows.sort(key=lambda r: r["usd"])
 
     fam_rows = []
-    for (instr, fam), g in fams.items():
-        ob = open_by_fam.get((instr, fam), {"n": 0, "upl": 0.0})
-        fam_rows.append({"instrument": instr, "setup": fam, "n": g["n"],
+    for (instr, fsess, fam), g in fams.items():
+        ob = open_by_fam.get((instr, fsess, fam),
+                             {"n": 0, "upl": 0.0, "open_ts": []})
+        cycles = cycles_of(g["trades"], ob["open_ts"])
+        fam_rows.append({"instrument": instr, "session": fsess, "setup": fam,
+                         "n_cycles": len(cycles), "cycles": cycles,
+                         "open_ts": ob["open_ts"], "n": g["n"],
                          "greens": g["greens"], "usd": round(g["usd"], 2),
                          "pips": round(g["pips"], 1),
                          "avg_pips": (round(g["pips"] / g["n"], 2)
@@ -248,16 +338,17 @@ def main():
         gr = f"{r['greens']}/{r['n'] - r['greens']}"
         print(f"{r['instrument']:<10} {r['setup']:<34} {r['tag']:<8} {r['n']:>3}"
               f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {r['avg_pips']:>7.2f}")
-    print("\nFAMILIES (parent setup + its poppers, one economic unit; "
-          "open>0 = verdict deferred until flat):")
-    print(f"{'instrument':<10} {'family setup':<34} {'n':>3} {'P/pp':>7} {'G/R':>6}"
-          f" {'USD':>10} {'pips':>8} {'avg p':>7} {'open':>5}")
+    print("\nFAMILIES (parent setup + poppers, one unit; CYCLES = completed "
+          "grid excursions, the independent evidence unit; open>0 defers):")
+    print(f"{'instrument':<10} {'sess':<7} {'family setup':<30} {'cyc':>3} {'n':>3}"
+          f" {'P/pp':>7} {'G/R':>6} {'USD':>10} {'pips':>8} {'avg p':>7} {'open':>5}")
     print("-" * 99)
     for r in fam_rows:
         gr = f"{r['greens']}/{r['n'] - r['greens']}"
         pp = f"{r['n_parents']}/{r['n_poppers']}"
         avg = f"{r['avg_pips']:7.2f}" if r["avg_pips"] is not None else "      —"
-        print(f"{r['instrument']:<10} {r['setup']:<34} {r['n']:>3} {pp:>7}"
+        print(f"{r['instrument']:<10} {r['session']:<7} {r['setup']:<30}"
+              f" {r['n_cycles']:>3} {r['n']:>3} {pp:>7}"
               f" {gr:>6} {r['usd']:>10.2f} {r['pips']:>8.1f} {avg} {r['n_open']:>5}")
     if open_rows:
         print("\nOPEN exposure (unrealized, not scored):")
