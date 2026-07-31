@@ -334,7 +334,7 @@ def _write_exit_config(cfg: dict) -> None:
 # These write the LIVE trading unit: config/cells/<PAIR>.json.  The engine
 # hot-reloads that file on mtime change (modules/cells/cell.py _load_pair_config),
 # so a status/exit write takes effect on the NEXT scan cycle — no restart.
-_CELL_STATUSES = {"ACTIVE", "SHADOW", "DISABLED"}
+_CELL_STATUSES = {"ACTIVE", "PROBE", "SHADOW", "DISABLED"}
 # Per-cell exit ranges (dashboard TUNE tab).  Merge-not-replace: only these four
 # geometry knobs are editable; mode/trail_min/trail_max/_class/tp_pips/timeout
 # are preserved verbatim from disk.

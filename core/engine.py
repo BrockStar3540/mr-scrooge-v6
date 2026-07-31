@@ -25,7 +25,7 @@ from typing import Optional
 from config.pairs import PAIRS, PIP
 from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS, OrderUncertain
 from modules.signals import formula_shadow as _formula_shadow
-from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct,
+from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct, pm_probe_mult,
                                           pm_max_concurrent,
                                           pm_formula_shadow_enabled,
                                           pm_cell_shadow_enabled)
@@ -578,8 +578,11 @@ class Engine:
         initial_sl = float(_ep.sl_pips) if _ep is not None else initial_sl_pips_for(ticket.pair)
         # Sizing: margin model unchanged at cutover (pm_margin_pct) — per-setup
         # risk_pct normalization is a flagged follow-up, NOT silently invented.
+        _mp = pm_margin_pct()
+        if _it is not None and getattr(_it, "probe", False):
+            _mp *= pm_probe_mult()     # PROBE seat: reduced-size audition
         units = self.broker.size_units(ticket.pair, ticket.direction,
-                                       margin_pct=pm_margin_pct())
+                                       margin_pct=_mp)
         _mode    = str(getattr(_ep, "mode", "ratchet") or "ratchet") if _ep else "ratchet"
         _tp_pips = float(getattr(_ep, "tp_pips", 0.0) or 0.0) if _mode == "bracket" else 0.0
         try:

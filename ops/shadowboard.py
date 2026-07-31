@@ -321,7 +321,7 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
     lifetime_eps distinguishes AWAITING V2 (has legacy history, era restarted)
     from QUEUED (never scored anything)."""
     from ops.governor import active_verdict as _av
-    if status == "ACTIVE":
+    if status in ("ACTIVE", "PROBE"):
         demote, reason = _av(e_obj, f, gc, min_raw)
         famnet = f["net_pips"] if f else 0.0
         if demote:
@@ -434,7 +434,7 @@ def _aggregate(db):
         _te, _td = _hit_thresholds(_geo, pair,
                                    cell.split("/")[1] if "/" in cell else "?", setup)
         gov = None
-        if _gov_ok and _status in ("ACTIVE", "SHADOW"):
+        if _gov_ok and _status in ("ACTIVE", "PROBE", "SHADOW"):
             sess = cell.split("/")[1] if "/" in cell else "?"
             fam_row = _fams.get((pair, sess, setup))
             f = None
@@ -490,7 +490,7 @@ def _aggregate(db):
     have = {(r["cell"], r["setup"]) for r in out}
     for (pair, sess, sid), (status, side) in _cfgst.items():
         cell = f"{pair}/{sess}"
-        if status in ("ACTIVE", "SHADOW") and (cell, sid) not in have:
+        if status in ("ACTIVE", "PROBE", "SHADOW") and (cell, sid) not in have:
             gov = None
             if _gov_ok:
                 fam_row = _fams.get((pair, sess, sid))

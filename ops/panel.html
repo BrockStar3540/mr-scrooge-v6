@@ -2702,8 +2702,8 @@ function statusControl(pair,session,setupId,current,ctx='book'){
   const cur=(current||'SHADOW').toUpperCase();
   const mk=st=>`<button class="${cur===st?'on '+st:''}" ${cur===st?'disabled':''} `+
     `onclick="event.stopPropagation();setCellStatus('${pair}','${session}','${escape(setupId)}','${st}',this,'${ctx}')">${st}</button>`;
-  return `<div class="stctl" title="Flip this setup's live status. ACTIVE = trades live; SHADOW = logs only; DISABLED = off.">`+
-    mk('ACTIVE')+mk('SHADOW')+mk('DISABLED')+`</div>`+
+  return `<div class="stctl" title="Flip this setup's live status. ACTIVE = trades live; PROBE = trades at reduced size (audition — probe_sizing_mult, default 0.33x); SHADOW = logs only; DISABLED = off (sacred: no automation touches it).">`+
+    mk('ACTIVE')+mk('PROBE')+mk('SHADOW')+mk('DISABLED')+`</div>`+
     `<span class="mono-sm" id="stmsg-${ctx}-${pair}-${session}-${cssId(setupId)}" style="margin-left:8px"></span>`;
 }
 async function setCellStatus(pair,session,setupId,status,btn,ctx='book'){

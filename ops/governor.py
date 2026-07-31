@@ -279,10 +279,12 @@ def flip(pair, sess, setup_id, status, dry):
     # demotion alike. Re-check the live status at flip time so a hand-flip
     # mid-run can never be overridden by this run's stale snapshot.
     cur = _status_now(pair, sess, setup_id)
-    if status == "ACTIVE" and cur != "SHADOW":
-        return {"ok": False, "skipped": f"not SHADOW at flip time (now {cur})"}
-    if status == "SHADOW" and cur != "ACTIVE":
-        return {"ok": False, "skipped": f"not ACTIVE at flip time (now {cur})"}
+    # PROBE (charter): a legal intermediate seat — promote from SHADOW or
+    # PROBE; demote from ACTIVE or PROBE. DISABLED stays sacred.
+    if status == "ACTIVE" and cur not in ("SHADOW", "PROBE"):
+        return {"ok": False, "skipped": f"not SHADOW/PROBE at flip time (now {cur})"}
+    if status == "SHADOW" and cur not in ("ACTIVE", "PROBE"):
+        return {"ok": False, "skipped": f"not ACTIVE/PROBE at flip time (now {cur})"}
     return _post(API, {"pair": pair, "session": sess,
                        "setup_id": setup_id, "status": status}, dry)
 
@@ -328,6 +330,40 @@ def main():
                                       "key": k, "why": "setup mechanics changed",
                                       "dry_run": args.dry_run}) + "\n")
         print(f"governor: era clocks reset for {len(resets)} changed setup(s)")
+
+    # Charter (2026-07-31): a FAMILY's evidence is void when its popper
+    # machinery changes — global ladder/gear or that cell's per_cell switch.
+    # First sighting initializes without resetting (no era wipe on deploy).
+    pp_hashes = st.setdefault("pp_hash", {})
+    try:
+        import hashlib as _hl
+        _ppc = json.load(open(REPO / "config" / "pp_config.json"))
+        _gear = {k: _ppc.get(k) for k in ("enabled", "marker_pips", "sl_pips",
+                                          "trigger_pips", "trail_pips",
+                                          "max_levels", "max_total_trades")}
+        _per = _ppc.get("per_cell") or {}
+        pp_resets = []
+        for key in bmap:
+            k = "|".join(key)
+            _cellsw = {ck: v for ck, v in _per.items()
+                       if k.startswith(ck) or ck in ("|".join(key[:2]), key[0])
+                       or ck == k}
+            h = _hl.sha256(json.dumps({"g": _gear, "c": _cellsw},
+                                      sort_keys=True).encode()).hexdigest()[:12]
+            old_h = pp_hashes.get(k)
+            if old_h is not None and old_h != h:
+                eras[k] = now_iso
+                pp_resets.append(k)
+            pp_hashes[k] = h
+        if pp_resets:
+            with open(LEDGER, "a") as led:
+                for k in pp_resets:
+                    led.write(json.dumps({"t": now_iso, "action": "ERA-RESET",
+                                          "key": k, "why": "popper config changed",
+                                          "dry_run": args.dry_run}) + "\n")
+            print(f"governor: era clocks reset for {len(pp_resets)} setup(s) — popper config changed")
+    except Exception as _ppe:
+        print(f"governor: pp-hash check skipped ({_ppe})", file=sys.stderr)
     if not args.dry_run:
         save_state(st)
 
@@ -379,13 +415,13 @@ def main():
     promotions, demotions = [], []
     for key, meta in sorted(bmap.items()):
         pair, sess, sid = key
-        if meta["manual_only"] or meta["status"] not in ("ACTIVE", "SHADOW"):
+        if meta["manual_only"] or meta["status"] not in ("ACTIVE", "PROBE", "SHADOW"):
             continue
         e = ev_all.get(key)
         fam_row = fams.get((pair, sess, sid))
         f = (family_era_view(fam_row, eras.get("|".join(key),
                              c["default_era_start"])) if fam_row else None)
-        if meta["status"] == "SHADOW" and e:
+        if meta["status"] == "SHADOW" and e:  # PROBE takes the ACTIVE branch
             k = "|".join(key)
             # CHEATER RULE first — it is deterministic (cum >= threshold, no
             # statistics), so the peeking guard does not apply to it: there is

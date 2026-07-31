@@ -194,6 +194,14 @@ def pm_margin_pct() -> float:
     """Fraction of BALANCE used as margin per trade (V1 model)."""
     return float(_pm_load()["account"]["margin_pct_per_trade"])
 
+def pm_probe_mult() -> float:
+    """PROBE-seat sizing multiplier (fraction of the normal margin_pct).
+    Config: account.probe_sizing_mult, default 0.33 (charter, 2026-07-31)."""
+    try:
+        return float(_pm_load()["account"].get("probe_sizing_mult", 0.33))
+    except Exception:
+        return 0.33
+
 # Back-compat alias
 pm_risk_pct = pm_margin_pct
 

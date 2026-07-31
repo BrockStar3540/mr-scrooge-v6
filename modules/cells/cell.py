@@ -79,6 +79,7 @@ class CellIntent:
     units_hint:     float         # risk-normalised size (size_modulators applied)
     conds_snapshot: dict          # feature values at qualification time
     expected:       dict          # {ev_seq, wr, lineage} from config
+    probe:          bool = False  # PROBE seat: fires at pm_probe_mult sizing
 
 
 # ── Warning-rate limiters ─────────────────────────────────────────────────────
@@ -335,7 +336,10 @@ class CellModule:
             _exec    = _exec_enabled()
 
             # Phase-C: even ACTIVE setups stamp as shadow-mode
-            would_trade = (status == "ACTIVE" and _exec)
+            # PROBE (charter, 2026-07-31): a reduced-size audition seat
+            # between SHADOW and ACTIVE — fires like ACTIVE, sized down at
+            # the engine (pm_probe_mult), generates real broker cycles cheap.
+            would_trade = (status in ("ACTIVE", "PROBE") and _exec)
             stamp_status = status
             # If CELL_EXECUTION_ENABLED=False and setup is ACTIVE, stamp shows status=ACTIVE
             # so the scorer can distinguish would-trade stamps.
@@ -373,6 +377,7 @@ class CellModule:
                 intent = CellIntent(
                     pair           = self.pair,
                     session        = self.session,
+                    probe          = (status == "PROBE"),
                     side           = side,
                     setup_id       = setup_id,
                     horizon_min    = int(setup.get("horizon_min", 60)),
