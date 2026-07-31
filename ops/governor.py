@@ -219,7 +219,10 @@ def cheater_v3_predicate(r: dict, c: dict, policy: str = "FAMILY_PP") -> tuple:
     on PARENT_ONLY cycles, not condemned by PP_ON ones.
     Every gate exists to stop one freak episode buying a seat."""
     if policy == "PARENT_ONLY":
-        r = dict(r, u_list=r.get("u_par_list") or [])
+        r = dict(r, u_list=r.get("u_par_list") or [],
+                 days=r.get("days_par", r.get("days", 0)),
+                 last_censored=r.get("last_censored_par",
+                                     r.get("last_censored", False)))
     n = len(r.get("u_list") or [])
     need = int(c.get("cheater_min_cycles", 3))
     if n < need:
@@ -553,15 +556,10 @@ def main():
                              < float(c.get("trusted_demote_heat", -0.25)))}
         if meta["status"] == "SHADOW" and e:  # PROBE takes the ACTIVE branch
             k = "|".join(key)
-            # CHEATER v3 candidacy (external review 2026-07-31): enough
-            # episodes to replay — and NOTHING else. The old positive-parent-
-            # EV gate let the discredited metric decide who reaches family
-            # scoring; a family winner with a losing parent (the control_rvol
-            # pattern) could never cheat in. Budget fairness comes from
-            # least-recently-evaluated rotation, not parent-EV ranking.
-            if (c.get("cheater_promotion_enabled", False)
-                    and e.raw_n >= int(c.get("cheater_min_cycles", 3))):
-                cheater_cands.append((key, e, meta))
+            # (cheater candidacy moved OUT of this branch — review r3
+            # defect 1: this branch requires `e`, which exists only when the
+            # parent scorer produced completed net240s. Candidacy now comes
+            # from episode_records() directly, after the loop.)
             prev_blocks = last_eval.get(k)
             # SEQUENTIAL-PEEKING GUARD: no new independent block since the
             # last failed test => same evidence, no re-roll (statistical bar only).
@@ -602,6 +600,25 @@ def main():
     seats_used = sum(1 for k2 in list(cheater_seats)
                      if bmap.get(tuple(k2.split("|")), {}).get("status") == "PROBE")
     seats_free = max(0, int(c.get("cheater_max_seats", 2)) - seats_used)
+    # CANDIDACY (review r3 defect 1): straight from the episode DB — a shadow
+    # whose parent episodes are all CENSORED (still open under the parent
+    # horizon) can still resolve under the multi-day family replay; the
+    # parent evidence object must have no say in who reaches the ticket.
+    if c.get("cheater_promotion_enabled", False):
+        try:
+            from research.tools.family_cycle_replay import episode_records as _eprs
+            _db0 = json.load(open(REPO / "data" / "shadowboard.json"))
+            _minc = int(c.get("cheater_min_cycles", 3))
+            for key, meta in sorted(bmap.items()):
+                if meta["manual_only"] or meta["status"] != "SHADOW":
+                    continue
+                k = "|".join(key)
+                era0 = str(eras.get(k, c["default_era_start"]))[:19]
+                if len(_eprs(_db0, key[0], key[1], key[2], era0)) >= _minc:
+                    cheater_cands.append((key, ev_all.get(key), meta))
+        except Exception as _cde:
+            print(f"governor: cheater candidacy scan failed ({_cde})",
+                  file=sys.stderr)
     if cheater_cands and seats_free > 0:
         try:
             from research.tools.family_cycle_replay import (score_cell,
@@ -623,9 +640,13 @@ def main():
                 pol = cheater_v3_policy(r)          # policy FIRST...
                 ok, why = cheater_v3_predicate(r, c, policy=pol)  # ...then the test
                 if ok and pol != "NONE":
+                    # review r3 defect 2: CS must be the CHOSEN policy's sum —
+                    # a PARENT_ONLY pass was being stored/ranked on PP_ON cycles
+                    chosen = (r.get("u_par_list") if pol == "PARENT_ONLY"
+                              else r.get("u_list")) or []
                     cheater_promos.append((key, e, {
                         "cheater_v3": why, "policy": pol,
-                        "cs": round(sum(r.get("u_list") or []), 2),
+                        "cs": round(sum(chosen), 2),
                         "grid_lift": r.get("grid_lift")}))
                 else:
                     print(f"governor: cheater-v3 declined {k}: "
@@ -736,10 +757,12 @@ def main():
                             # popper switch-off (review finding #6)
                             line["pp_on_policy"] = pp_on(pair, sess, sid,
                                                          args.dry_run)
-                    elif kind in ("PROMOTE", "GRADUATE"):
+                    if kind in ("PROMOTE", "GRADUATE"):
                         line["pp_on_policy"] = pp_on(pair, sess, sid,
                                                      args.dry_run)
-                    elif kind in ("GRADUATE", "DEMOTE"):
+                    if kind in ("GRADUATE", "DEMOTE"):
+                        # review r3 defect 4: this was an elif behind the
+                        # pp_on branch — GRADUATE never cleared its seat
                         cheater_seats.pop(k2, None)
                 led.write(json.dumps(line) + "\n")
                 print(f"GOVERNOR {kind} {pair}/{sess}/{sid}  [{'; '.join(why)}]"

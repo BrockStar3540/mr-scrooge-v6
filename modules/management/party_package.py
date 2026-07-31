@@ -157,6 +157,21 @@ def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
             "comment": json.dumps(fields, separators=(",", ":"))}
 
 
+def _cell_status_is_probe(cell_key: str) -> bool:
+    """True if the cell behind "PAIR|session|setup" currently holds a PROBE
+    seat (config/cells read fresh; any failure = False, never blocks load)."""
+    try:
+        pair, sess, sid = (cell_key.split("|") + ["", ""])[:3]
+        cfg_path = _STATE_PATH.parent.parent / "config" / "cells" / f"{pair}.json"
+        d = json.loads(cfg_path.read_text())
+        for su in d.get("sessions", {}).get(sess, {}).get("setups", []):
+            if su.get("id") == sid:
+                return su.get("status") == "PROBE"
+    except Exception:
+        pass
+    return False
+
+
 class Grid:
     """One re-arming grid per pair, anchored at the parent entry price."""
 
@@ -682,6 +697,14 @@ class PartyPackage:
                 # anything not re-adopted is cleared so levels can re-arm.
                 for lv in g.levels.values():
                     lv["trade_id"] = None
+                # legacy migration (review r3): a grid serialized before the
+                # probe field existed defaults to full-size — if its cell is
+                # CURRENTLY a PROBE seat, the audition sizing must win.
+                if "probe" not in gd and _cell_status_is_probe(g.cell_key):
+                    g.probe = True
+                    log.info("PP GRID migrated to PROBE sizing %s (%s) — "
+                             "legacy state lacked the probe field | engine=pp_v1",
+                             g.pair, g.cell_key)
                 self.grids[g.pair] = g
             if self.grids:
                 log.info("PP state loaded: %d grid(s) [%s]", len(self.grids),

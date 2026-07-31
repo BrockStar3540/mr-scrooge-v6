@@ -9,7 +9,7 @@
   "max_demotions": 4,
   "default_era_start": "2026-07-19T00:00:00+00:00",
   "per_test_z": 2.33,
-  "allow_promotions": true,
+  "allow_promotions": false,
   "allow_demotions": true,
   "min_raw_episodes": 20,
   "min_independent_days": 10,
@@ -21,5 +21,6 @@
   "family_defend_pips": 60.0,
   "cheater_promotion_enabled": false,
   "cheater_metric_version": "family-cycle-v3",
-  "_cheater_note": "2026-07-31 external review (v2): OFF again before the first real v3 run \u2014 the parent-EV admission gate, PP_ON-graded predicate, and PROBE popper sizing must land first. See v6.14.7."
+  "_cheater_note": "2026-07-31 external review (v2): OFF again before the first real v3 run \u2014 the parent-EV admission gate, PP_ON-graded predicate, and PROBE popper sizing must land first. See v6.14.7.",
+  "_promotions_note": "2026-07-31 review r3: BOTH promotion lanes off \u2014 the ordinary bar still promotes on the parent metric (e.promotable) and now awards PROBE seats through the front door. Demotions (cycle-based, sound) stay on. Re-enable per the review's test bar."
 }

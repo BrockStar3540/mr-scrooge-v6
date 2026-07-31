@@ -130,32 +130,47 @@ def score_cell(pair, sess, sid, side, episodes, max_days, limit):
         if fam is None or par is None:
             continue
         rows.append((t, fam, par))
-    comp = [(t, f, p) for t, f, p in rows if not f.censored]
-    cens = len(rows) - len(comp)
-    last_censored = bool(rows) and rows[-1][1].censored
-    if not comp:
-        return {"cycles": 0, "censored": cens, "u_list": [], "days": 0,
-                "last_censored": last_censored}
+    return aggregate_policy_rows(rows)
+
+
+def aggregate_policy_rows(rows):
+    """Per-POLICY aggregation (external review r3, 2026-07-31): each policy
+    gets its OWN completion set, day count, and censoring flags — a
+    PARENT_ONLY candidate must not be judged on grid completion (a resolved
+    parent with poppers still open IS a completed parent-only cycle), and its
+    days/flat status are its own. GridLift is the PAIRED difference over
+    episodes where BOTH policies resolved. rows: [(t, fam_result, par_result)].
+    Pure — unit-testable with synthetic CycleResults."""
     def U(c):
-        liab = max(c.peak_liability_pips, 1.0)
-        return c.net_pips / liab
-    u_pp = [U(f) for _, f, _ in comp]
-    u_par = [U(p) for _, _, p in comp if not p.censored]
+        return c.net_pips / max(c.peak_liability_pips, 1.0)
+    comp_pp = [(t, f) for t, f, _ in rows if not f.censored]
+    comp_par = [(t, pr) for t, _, pr in rows if not pr.censored]
+    u_pp = [U(f) for _, f in comp_pp]
+    u_par = [U(pr) for _, pr in comp_par]
+    paired = [(U(f), U(pr)) for _, f, pr in rows
+              if not f.censored and not pr.censored]
     pos = sum(u for u in u_pp if u > 0)
     neg = sum(-u for u in u_pp if u < 0)
-    days = len({t.strftime("%Y-%m-%d") for t, _, _ in comp})
-    return {"cycles": len(comp), "censored": cens,
-            "u_list": [round(u, 3) for u in u_pp],
-            "u_par_list": [round(u, 3) for u in u_par],
-            "days": days, "last_censored": last_censored,
-            "U_pp": round(sum(u_pp) / len(u_pp), 3),
-            "U_par": round(sum(u_par) / len(u_par), 3) if u_par else None,
-            "grid_lift": (round(sum(u_pp) / len(u_pp) - sum(u_par) / len(u_par), 3)
-                          if u_par else None),
-            "coverage": round((pos + 0.5) / (neg + 0.5), 2),
-            "worst": round(min(u_pp), 3),
-            "net_pips_mean": round(sum(f.net_pips for _, f, _ in comp) / len(comp), 1),
-            "harvest_mean": round(sum(f.harvest for _, f, _ in comp) / len(comp), 1)}
+    return {
+        "cycles": len(comp_pp),
+        "censored": len(rows) - len(comp_pp),
+        "u_list": [round(u, 3) for u in u_pp],
+        "days": len({t.strftime("%Y-%m-%d") for t, _ in comp_pp}),
+        "last_censored": bool(rows) and rows[-1][1].censored,
+        "u_par_list": [round(u, 3) for u in u_par],
+        "days_par": len({t.strftime("%Y-%m-%d") for t, _ in comp_par}),
+        "last_censored_par": bool(rows) and rows[-1][2].censored,
+        "censored_par": len(rows) - len(comp_par),
+        "U_pp": round(sum(u_pp) / len(u_pp), 3) if u_pp else None,
+        "U_par": round(sum(u_par) / len(u_par), 3) if u_par else None,
+        "grid_lift": (round(sum(a - b for a, b in paired) / len(paired), 3)
+                      if paired else None),
+        "coverage": round((pos + 0.5) / (neg + 0.5), 2),
+        "worst": round(min(u_pp), 3) if u_pp else None,
+        "net_pips_mean": (round(sum(f.net_pips for _, f in comp_pp)
+                                / len(comp_pp), 1) if comp_pp else None),
+        "harvest_mean": (round(sum(f.harvest for _, f in comp_pp)
+                               / len(comp_pp), 1) if comp_pp else None)}
 
 
 def main():
