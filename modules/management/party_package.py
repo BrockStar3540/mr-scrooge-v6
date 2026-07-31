@@ -157,19 +157,22 @@ def _popper_client_ext(cfg: dict, offset_pips: float, anchor: float,
             "comment": json.dumps(fields, separators=(",", ":"))}
 
 
-def _cell_status_is_probe(cell_key: str) -> bool:
-    """True if the cell behind "PAIR|session|setup" currently holds a PROBE
-    seat (config/cells read fresh; any failure = False, never blocks load)."""
+def _cell_status(cell_key: str) -> Optional[str]:
+    """Current status for an exact ``PAIR|session|setup`` grid owner.
+
+    ``None`` is deliberately distinct from ACTIVE: callers reconciling legacy
+    state must fail toward reduced risk when the book cannot be read.
+    """
     try:
         pair, sess, sid = (cell_key.split("|") + ["", ""])[:3]
         cfg_path = _STATE_PATH.parent.parent / "config" / "cells" / f"{pair}.json"
         d = json.loads(cfg_path.read_text())
         for su in d.get("sessions", {}).get(sess, {}).get("setups", []):
             if su.get("id") == sid:
-                return su.get("status") == "PROBE"
+                return str(su.get("status") or "?")
     except Exception:
         pass
-    return False
+    return None
 
 
 class Grid:
@@ -177,7 +180,7 @@ class Grid:
 
     def __init__(self, pair: str, side: str, anchor: float, created: datetime,
                  parent_setup: str = "?", cell_key: str = "", gid: str = "",
-                 probe: bool = False):
+                 probe: bool = False, quiesced: bool = False):
         self.pair = pair
         self.side = side                    # popper direction == parent direction
         self.anchor = anchor
@@ -195,6 +198,11 @@ class Grid:
         # a 0.33x FAMILY — every popper this grid fires inherits the reduced
         # sizing, or "5% probe" quietly becomes 5% parent + 15% poppers.
         self.probe = bool(probe)
+        # Governance transitions persistently quiesce a grid before changing
+        # the seat era. Existing legs keep being managed; no new popper may
+        # fire. This is independent of the hot-reloaded per-cell switch so a
+        # restart or ambiguous legacy owner cannot reopen the race.
+        self.quiesced = bool(quiesced)
         # marker key (_okey(offset_pips)) -> {"armed": bool, "trade_id": Optional[str]}
         self.levels: dict[str, dict] = {}
         # lifetime ledger (persisted)
@@ -214,7 +222,7 @@ class Grid:
                 "created": self.created.isoformat(),
                 "parent_setup": self.parent_setup,
                 "cell_key": self.cell_key, "gid": self.gid,
-                "probe": self.probe,
+                "probe": self.probe, "quiesced": self.quiesced,
                 "fmt": "offsets",   # ladder era (2026-07-22): keys are pip offsets
                 "levels": dict(self.levels),
                 "greens": self.greens, "knives": self.knives,
@@ -227,7 +235,7 @@ class Grid:
         g = cls(d["pair"], d["side"], float(d["anchor"]),
                 datetime.fromisoformat(d["created"]), d.get("parent_setup", "?"),
                 d.get("cell_key", ""), d.get("gid", ""),
-                bool(d.get("probe", False)))
+                bool(d.get("probe", False)), bool(d.get("quiesced", False)))
         raw = d.get("levels") or {}
         if d.get("fmt") == "offsets":
             g.levels = {str(k): dict(v) for k, v in raw.items()}
@@ -265,6 +273,26 @@ class PartyPackage:
                      "| engine=pp_v1", pair, session, setup_id)
             return
         if pair in self.grids:
+            g = self.grids[pair]
+            requested_key = f"{pair}|{session}|{setup_id}"
+            if g.quiesced:
+                log.warning("PP GRID is governance-quiesced %s (%s) — parent "
+                            "cannot re-arm it | engine=pp_v1", pair, g.cell_key)
+                return
+            if g.cell_key and g.cell_key != requested_key:
+                log.error("PP GRID OWNER MISMATCH %s existing=%s requested=%s — "
+                          "parent will not inherit another family's grid | engine=pp_v1",
+                          pair, g.cell_key, requested_key)
+                return
+            # Never let a PROBE parent inherit a persisted full-size grid.  The
+            # reverse transition remains reduced until the flat grid is retired
+            # and a fresh ACTIVE parent creates a new one.
+            if probe and not g.probe:
+                g.probe = True
+                self._save_state()
+                log.warning("PP GRID forced to PROBE sizing %s (%s) — existing "
+                            "grid retained conservatively | engine=pp_v1",
+                            pair, requested_key)
             log.info("PP GRID exists for %s — parent joins existing grid | engine=pp_v1", pair)
             return
         g = Grid(pair, pos.ticket.direction, pos.entry_price,
@@ -280,6 +308,66 @@ class PartyPackage:
                  pair, g.side, g.anchor,
                  "/".join("-" + _okey(o) for o in cfg["marker_pips"]), setup_id)
         self._save_state()
+
+    def retire_cell_grid(self, cell_key: str,
+                         parent_pairs: Optional[set] = None) -> dict:
+        """Retire a flat grid before a governance/policy era transition.
+
+        A grid owns its anchor, creator gid, policy and sizing for its entire
+        lifetime.  Reusing it after DEMOTE/PROMOTE/GRADUATE crosses evidence
+        eras and can turn a reduced PROBE into full-size poppers.  Retirement
+        therefore fails closed while any parent or popper is open and requires
+        an exact owner match.
+        """
+        parts = str(cell_key or "").split("|")
+        if len(parts) != 3 or any(not p for p in parts):
+            return {"ok": False, "error": f"bad exact cell key: {cell_key!r}"}
+        pair = parts[0]
+        g = self.grids.get(pair)
+        if g is None:
+            return {"ok": True, "retired": False, "reason": "no-grid"}
+        parents = parent_pairs or set()
+        open_poppers = [tid for tid, (p, _) in self._popper_grid.items()
+                        if p == pair and tid in self.poppers]
+        level_busy = [str(lv.get("trade_id")) for lv in g.levels.values()
+                      if lv.get("trade_id")]
+        is_busy = pair in parents or bool(open_poppers) or bool(level_busy)
+        if g.cell_key != cell_key:
+            if g.cell_key:
+                # One grid per pair: another exact family owns this one. It is
+                # not stale state for the requested cell and must not be killed.
+                return {"ok": True, "retired": False,
+                        "reason": "other-cell-grid", "grid_cell": g.cell_key,
+                        "requested_cell": cell_key}
+            # Recovered legacy state without an exact owner is ambiguous. Stop
+            # new fires and require open risk to flatten; never guess a session
+            # from setup text. Once flat, removing an inert ambiguous grid is
+            # safe and unblocks exact ownership for the next parent.
+            if is_busy:
+                g.quiesced = True
+                self._save_state()
+                return {"ok": False, "error": "grid-owner-unknown-quiesced",
+                        "requested_cell": cell_key, "quiesced": True}
+            del self.grids[pair]
+            self._save_state()
+            return {"ok": True, "retired": True,
+                    "reason": "legacy-owner-unknown-flat", "cell": cell_key,
+                    "old_gid": g.gid, "old_anchor": g.anchor,
+                    "old_probe": g.probe}
+        if is_busy:
+            g.quiesced = True
+            self._save_state()
+            return {"ok": False, "error": "grid-not-flat",
+                    "parent_open": pair in parents,
+                    "open_poppers": sorted(set(open_poppers + level_busy)),
+                    "quiesced": True}
+        del self.grids[pair]
+        self._save_state()
+        log.info("PP GRID retired for governance transition %s anchor=%.5f gid=%s "
+                 "| engine=pp_v1", cell_key, g.anchor, g.gid or "-")
+        return {"ok": True, "retired": True, "cell": cell_key,
+                "old_gid": g.gid, "old_anchor": g.anchor,
+                "old_probe": g.probe}
 
     def recover(self, trade: dict) -> None:
         """Adopt an open OANDA popper trade (tag pp_v1[;g=<id>]) at startup."""
@@ -322,9 +410,14 @@ class PartyPackage:
                 g.levels[_okey(off)] = {"armed": False, "trade_id": None}
             if _gid:
                 g.gid = _gid
+            # A popper can reconstruct pair/anchor/setup but not the parent's
+            # exact session. Manage the recovered leg, but never manufacture
+            # new risk from an ambiguously-owned grid.
+            g.quiesced = True
             self.grids[pair] = g
-            log.info("PP GRID rebuilt from popper recovery %s anchor=%.5f gid=%s | engine=pp_v1",
-                     pair, anchor, g.gid or "-")
+            log.warning("PP GRID rebuilt QUIESCED from popper recovery %s "
+                        "anchor=%.5f gid=%s | engine=pp_v1",
+                        pair, anchor, g.gid or "-")
         if lvl_off:
             # ensure a state slot exists even if the offset left the config ladder
             self.grids[pair].levels[_okey(lvl_off)] = {"armed": False, "trade_id": trade_id}
@@ -467,6 +560,8 @@ class PartyPackage:
                 # ---- fire gates ----
                 if not cfg["enabled"]:
                     continue
+                if g.quiesced:
+                    continue     # manage existing legs; governance forbids fires
                 if g.cell_key:
                     _p, _s, _su = (g.cell_key.split("|") + ["?", "?"])[:3]
                     if not pp_cell_enabled(cfg, _p, _s, _su):
@@ -697,14 +792,26 @@ class PartyPackage:
                 # anything not re-adopted is cleared so levels can re-arm.
                 for lv in g.levels.values():
                     lv["trade_id"] = None
-                # legacy migration (review r3): a grid serialized before the
-                # probe field existed defaults to full-size — if its cell is
-                # CURRENTLY a PROBE seat, the audition sizing must win.
-                if "probe" not in gd and _cell_status_is_probe(g.cell_key):
+                # Reconcile against the CURRENT seat on every load, not only
+                # when the field is missing.  ACTIVE->SHADOW->PROBE can leave
+                # an explicit probe:false grid behind; that is the dangerous
+                # state.  Unknown legacy ownership fails toward reduced size.
+                status = _cell_status(g.cell_key)
+                if status == "PROBE" and not g.probe:
                     g.probe = True
-                    log.info("PP GRID migrated to PROBE sizing %s (%s) — "
-                             "legacy state lacked the probe field | engine=pp_v1",
-                             g.pair, g.cell_key)
+                    log.warning("PP GRID reconciled to PROBE sizing %s (%s) "
+                                "persisted_probe=%s | engine=pp_v1",
+                                g.pair, g.cell_key, gd.get("probe"))
+                elif "probe" not in gd and status is None:
+                    g.probe = True
+                    log.warning("PP GRID owner status unavailable %s (%s) — "
+                                "legacy state forced to reduced sizing | engine=pp_v1",
+                                g.pair, g.cell_key)
+                if status not in ("ACTIVE", "PROBE"):
+                    g.quiesced = True
+                    log.warning("PP GRID owner is not a live seat %s (%s, status=%s) "
+                                "— fires quiesced | engine=pp_v1",
+                                g.pair, g.cell_key, status)
                 self.grids[g.pair] = g
             if self.grids:
                 log.info("PP state loaded: %d grid(s) [%s]", len(self.grids),

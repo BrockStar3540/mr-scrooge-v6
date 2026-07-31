@@ -58,9 +58,12 @@ def test_coverage_gate_with_prior():
 
 
 def test_policy_selector_grid_lift():
-    assert cheater_v3_policy({"U_pp": 0.4, "U_par": 0.1}) == "FAMILY_PP"
+    assert cheater_v3_policy({"U_pp": 0.4, "U_par": 0.1,
+                              "grid_lift_lcb": 0.05}) == "FAMILY_PP"
     # strong parent, harmful grid -> seat WITHOUT poppers
-    assert cheater_v3_policy({"U_pp": -0.2, "U_par": 0.3}) == "PARENT_ONLY"
+    assert cheater_v3_policy({"U_pp": -0.2, "U_par": 0.3,
+                              "grid_lift_lcb": -0.1}) == "PARENT_ONLY"
     # both negative -> no seat regardless of the predicate
-    assert cheater_v3_policy({"U_pp": -0.2, "U_par": -0.1}) == "NONE"
+    assert cheater_v3_policy({"U_pp": -0.2, "U_par": -0.1,
+                              "grid_lift_lcb": -0.1}) == "NONE"
     assert cheater_v3_policy({"U_pp": None, "U_par": None}) == "NONE"
