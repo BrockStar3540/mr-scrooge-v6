@@ -4,6 +4,32 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.15.2] — 2026-07-31 — "Health Is Not Edge" (review round 5)
+
+The Commissioner's doctrine, corrected before its first commissioning tick:
+**health permits evaluation; evidence permits one PROBE; broker validation
+permits expansion.** Commissioning requires ≥2 spaced clean health batteries
+AND a current qualifying candidate (a real CHEATER-PROBE admission in that
+invocation's dry-run); healthy-with-zero-qualifiers holds indefinitely.
+Expansion to 2 seats requires the post-commission graduation + zero
+reconciler orphan-adoptions during the audition + a second current
+qualifier. First live run under the corrected logic: health=PASS,
+evidence=no → holding (correct). Suite 384.
+
+## [6.15.1] — 2026-07-31 — "Full Autonomy" (the Reconciler + the Commissioner)
+
+- **Engine Reconciler**: every 5 minutes the broker's open trades are compared
+  against the tracked set — including when the engine tracks nothing (the old
+  early-return made the fully-orphaned state the one never checked) — and any
+  orphan is adopted on the spot via the now-idempotent recovery path. The
+  B-112/B-114 orphan class is closed by standing code.
+- **The Commissioner** (`ops/commissioner.py`, cron :55 after each governor
+  run): staged fail-closed autonomous commissioning of the cheater-v4 lane.
+  Health battery = full suite (unpiped) + governor dry-run + broker/engine
+  reconcile + journal CRITICAL scan. Guard failure while commissioned =
+  immediate autonomous DECOMMISSION. `allow_promotions` is never touched.
+  Every transition ledgered. Suite 380.
+
 ## [6.14.9] — 2026-07-31 — "Cheater v4: Earn the Policy"
 
 ### Fixed

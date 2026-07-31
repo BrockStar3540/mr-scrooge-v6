@@ -212,7 +212,7 @@
           "id": "timing_lean_30_t20s",
           "side": "short",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
