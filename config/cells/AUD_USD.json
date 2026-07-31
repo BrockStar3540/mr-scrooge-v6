@@ -622,6 +622,340 @@
           },
           "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-07-31"
+        },
+        {
+          "id": "alpha_extended_fade_long_g_a10",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "alpha_extended_fade_short_g_a10",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_long_g_bb3",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.0,
+              "max": 2.0,
+              "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
@@ -1034,6 +1368,340 @@
           },
           "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
           "wired": "2026-07-27"
+        },
+        {
+          "id": "alpha_extended_fade_long_g_a10",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "alpha_extended_fade_short_g_a10",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_long_g_bb3",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.0,
+              "max": 2.0,
+              "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
         }
       ],
       "notes": "0 ACTIVE, 1 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
