@@ -276,3 +276,21 @@ If you got value from it, learned something from the falsifications, or just app
 ---
 
 > ⚠️ **Research software on an OANDA practice account. Not financial advice. The wide-stop result is a simulation with known inflators and its live verdict is pending. Leveraged forex can lose more than your deposit. If you run this, the outcomes are yours.**
+
+## Development
+
+### The pipe guard (required for contributors)
+
+One-time per clone:
+
+```
+git config core.hooksPath ops/hooks
+```
+
+Every `git push` then runs the full test suite (unpiped — the exit code is the
+verdict) and a secrets sweep over the outgoing diff, and blocks the push on
+any failure. History: B-111 documented that `pytest | tail -1` reports tail's
+exit code; B-118 proved the documented lesson gets recommitted without
+enforcement. This hook is the enforcement. `git push --no-verify` bypasses it
+— deliberately, visibly, on your head.
+

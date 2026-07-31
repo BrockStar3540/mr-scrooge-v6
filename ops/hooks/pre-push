@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# ops/hooks/pre-push — THE PIPE GUARD (B-118, Brock: "put a pipe guard so
+# that doesn't happen again").
+#
+# B-111 (2026-07-29) documented that `pytest | tail -1` reports tail's exit
+# code, not pytest's — and B-118 (2026-07-31) proved a documented lesson
+# without enforcement gets recommitted by its own author. This hook IS the
+# enforcement: every push runs the suite UNPIPED and the public-repo secrets
+# sweep, and a failure blocks the push at the git layer — no commit chain,
+# careless or clever, gets around it.
+#
+# Install (one-time per clone):   git config core.hooksPath ops/hooks
+# Emergency bypass (deliberate, visible, on your head):  git push --no-verify
+set -euo pipefail
+cd "$(git rev-parse --show-toplevel)"
+
+echo "pre-push: running suite (unpiped — the exit code IS the verdict)…"
+python3 -m pytest -q -x
+echo "pre-push: suite green."
+
+# ── secrets sweep over exactly the commits being pushed ──────────────────────
+# pattern built from split literals so the sweep can't match its own source
+PATTERN="oanda_api""_token|api-fx(trade|practice)\.oanda.*tok""en|ghp""_[A-Za-z0-9]|github_""pat_[A-Za-z0-9]|[0-9]{3}-[0-9]{3}-[0-9]{7,}-[0-9]{3}"
+EMPTY_TREE=$(git hash-object -t tree /dev/null)
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+    [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue  # deletion
+    if [ "$remote_sha" = "0000000000000000000000000000000000000000" ]; then
+        base="$EMPTY_TREE"           # new branch: sweep everything being born
+    else
+        base="$remote_sha"
+    fi
+    if git diff "$base" "$local_sha" | grep -niE "$PATTERN"; then
+        echo "pre-push: ❌ SECRETS SWEEP HIT in the outgoing diff — push blocked." >&2
+        exit 1
+    fi
+done
+echo "pre-push: secrets sweep clean. Push allowed."
