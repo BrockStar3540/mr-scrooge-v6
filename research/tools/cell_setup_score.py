@@ -57,14 +57,18 @@ SPREAD_PIPS = {
     "USD_CAD": 0.9, "USD_CHF": 0.8,
 }
 
-# ── Secrets ───────────────────────────────────────────────────────────────────
-for ln in open(os.path.expanduser("~/.openclaw/secrets.env")):
-    if "=" in ln and not ln.strip().startswith("#"):
-        k, v = ln.strip().split("=", 1)
-        os.environ[k.strip()] = v.strip().strip('"').strip("'")
-TOKEN = os.environ["OANDA_API_TOKEN"]
+# ── Secrets (EC2 has ~/.openclaw/secrets.env; CI runners and dev boxes don't —
+#    creds are needed only when the scorer RUNS, so the import must stay clean:
+#    tests import collapse_episodes() from this module on cred-less machines) ──
+_SEC = os.path.expanduser("~/.openclaw/secrets.env")
+if os.path.exists(_SEC):
+    for ln in open(_SEC):
+        if "=" in ln and not ln.strip().startswith("#"):
+            k, v = ln.strip().split("=", 1)
+            os.environ[k.strip()] = v.strip().strip('"').strip("'")
+TOKEN = os.environ.get("OANDA_API_TOKEN", "")
 BASE  = os.environ.get("OANDA_API_URL", "https://api-fxtrade.oanda.com")
-ACCT  = os.environ["OANDA_ACCOUNT_ID"]
+ACCT  = os.environ.get("OANDA_ACCOUNT_ID", "")
 
 # ── CELLSHADOW regex ──────────────────────────────────────────────────────────
 # CELLSHADOW GBP_USD/london setup=rvol_low_240 side=long conds={...} exp_ev=+0.350 status=ACTIVE
