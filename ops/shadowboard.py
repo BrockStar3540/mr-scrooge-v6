@@ -258,7 +258,8 @@ def _config_status():
             for sess, b in (d.get("sessions") or {}).items():
                 for su in (b.get("setups") or []):
                     out[(pair, sess, su.get("id"))] = (su.get("status", "?"),
-                                                       su.get("side", "?"))
+                                                       su.get("side", "?"),
+                                                       su.get("wired"))
     except OSError:
         pass
     return out
@@ -521,6 +522,8 @@ def _aggregate(db):
                 "med_mae": None, "avg_net60": None, "n_v2": 0, "n_ambig": 0,
                 "last7_avg": None, "era": None,
                 "last7_n": 0, "first": None, "bar_met": False, "queued": True,
+                "wired": (_cfgst.get((pair, sess, sid)) or (None, None, None))[2]
+                if len(_cfgst.get((pair, sess, sid)) or ()) > 2 else None,
                 "gov": gov,
             })
     # GOVERNOR ORDER (v6.8.0): tier asc (defended seats first, demote-due

@@ -1209,7 +1209,7 @@ async function pollShadowboard(){
         <td>${x.wr==null?'—':Math.round(x.wr*100)+'%'}</td><td>${x.hit_eng==null?'—':Math.round(x.hit_eng*100)+'%'}</td><td>${x.hit_sl==null?'—':(x.hit_sl>0?'<span style="color:var(--fail)">'+Math.round(x.hit_sl*100)+'%</span>':'0%')}</td><td class="mono">${x.ht&&x.ht.heat!=null?`${x.ht.heat>0?'+':''}${x.ht.heat.toFixed(2)}/${x.ht.trust>0?'+':''}${x.ht.trust.toFixed(2)}${x.ht.decaying?' ⚠️':x.ht.trusted?' 🔥':''}`:'—'}</td>
         <td class="mono muted" style="font-size:11px">${x.med_mfe==null?'—':x.med_mfe+'/'+x.med_mae}</td>
         <td class="mono" style="font-size:11px">${x.last7_avg==null?'—':(x.last7_avg>0?'+':'')+x.last7_avg+'p ('+x.last7_n+')'}</td>
-        <td class="muted" style="font-size:10px">${x.first==null?'—':x.first}</td>
+        <td class="muted" style="font-size:10px" title="first scored episode; w: = date the setup was WIRED into the book (queued rows: age matters — a 4-hour-old counterpart shadow and a 2-week-silent rare-gate setup are different kinds of zero)">${x.first==null?(x.wired?'w:'+x.wired:'—'):x.first}</td>
         <td style="white-space:nowrap">${ctrl}</td>
       </tr>`;
     }).join('');

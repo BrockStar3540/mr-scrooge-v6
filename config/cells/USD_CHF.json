@@ -70,7 +70,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_counter_long",
@@ -115,7 +116,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-29"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
@@ -174,7 +176,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. April: 458 (+$996 london) and 466 (+$262 ny) were THIS pair, THIS shape.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"

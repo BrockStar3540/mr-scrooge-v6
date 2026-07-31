@@ -55,7 +55,8 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean trend_4h sign=negative (corr=-0.0750, AUC=0.4636). lean confirmer dropped (trend_4h [-1,1] = full feature range, always-true no-op); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=3.676957 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED to shadow control 2026-07-06: corpus drift LONG in window, recent two windows +2.60/+8.17 p240."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean trend_4h sign=negative (corr=-0.0750, AUC=0.4636). lean confirmer dropped (trend_4h [-1,1] = full feature range, always-true no-op); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=3.676957 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED to shadow control 2026-07-06: corpus drift LONG in window, recent two windows +2.60/+8.17 p240.",
+          "wired": "2026-07-05"
         },
         {
           "id": "timing_lean_30_long_t20s",
@@ -106,7 +107,8 @@
             "drift": "STRENGTHENING"
           },
           "notes": "LIVE FLIP 2026-07-06 (Brock order) from timing_lean_30 short. Tripwire fast last_n=20 min_ev=-0.5 suspend. | SL 20->14 (winners MAE p75=13.8). | DIAL-IN 2026-07-08 batch: rvol<=1.321, atr_conc>=0.233 -> drift +8.87, cw 43%, dead 8%.",
-          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
         },
         {
           "id": "timing_lean_30_long",
@@ -156,7 +158,8 @@
             "source": "side-audit 2026-07-06: atr_5m>=3.677 asia window drift LONG last-60d +2.60, last-14d +8.17 p/240m (YTD ~flat)",
             "drift": "STRENGTHENING"
           },
-          "notes": "LIVE FLIP 2026-07-06 (Brock order) from timing_lean_30 short. Tripwire fast last_n=20 min_ev=-0.5 suspend. | SL 20->14 (winners MAE p75=13.8). | DIAL-IN 2026-07-08 batch: rvol<=1.321, atr_conc>=0.233 -> drift +8.87, cw 43%, dead 8%."
+          "notes": "LIVE FLIP 2026-07-06 (Brock order) from timing_lean_30 short. Tripwire fast last_n=20 min_ev=-0.5 suspend. | SL 20->14 (winners MAE p75=13.8). | DIAL-IN 2026-07-08 batch: rvol<=1.321, atr_conc>=0.233 -> drift +8.87, cw 43%, dead 8%.",
+          "wired": "2026-07-10"
         },
         {
           "id": "ps_floor_fade_long",
@@ -199,7 +202,8 @@
             "source": "prev-session screen: +3.07 YTD, 14d +12.0 (n=1701)",
             "drift": "STABLE"
           },
-          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
+          "wired": "2026-07-10"
         },
         {
           "id": "timing_lean_30_counter_long",
@@ -242,7 +246,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
@@ -317,7 +322,8 @@
               "action": "suspend"
             }
           },
-          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
         },
         {
           "id": "rvol_low_240",
@@ -377,7 +383,8 @@
               "min_ev": -0.5,
               "action": "suspend"
             }
-          }
+          },
+          "wired": "2026-07-05"
         },
         {
           "id": "timing_lean_30",
@@ -420,7 +427,8 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean ema5 sign=negative (corr=-0.0630, AUC=0.4820). lean confirmer dropped (ema5 = price level, AUC at noise floor); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=5.766878 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | CEMETERY 2026-07-06 (Brock doctrine): drift sign flips every window (+3.96/-3.78/+3.05 p240) \u2014 no defensible side, no separating filter found. Re-enters only via discovery loop with new evidence."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean ema5 sign=negative (corr=-0.0630, AUC=0.4820). lean confirmer dropped (ema5 = price level, AUC at noise floor); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=5.766878 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | CEMETERY 2026-07-06 (Brock doctrine): drift sign flips every window (+3.96/-3.78/+3.05 p240) \u2014 no defensible side, no separating filter found. Re-enters only via discovery loop with new evidence.",
+          "wired": "2026-07-05"
         },
         {
           "id": "classic_box_fade_long",
@@ -460,7 +468,8 @@
             "source": "classics-retrial 2026-07-09: YTD +5.0 drift, edge vs baseline +3.3 (strongest of batch)",
             "drift": "STABLE"
           },
-          "notes": "Restored to name-true LONG (Brock 2026-07-27: sides are never flipped in place). Its own long tape is the honest record (16 eps, -10.99/ep \u2014 the MAE-flip specimen). The winning opposite direction lives in classic_box_break_short."
+          "notes": "Restored to name-true LONG (Brock 2026-07-27: sides are never flipped in place). Its own long tape is the honest record (16 eps, -10.99/ep \u2014 the MAE-flip specimen). The winning opposite direction lives in classic_box_break_short.",
+          "wired": "2026-07-10"
         },
         {
           "id": "alpha_extended_fade_short",
@@ -516,7 +525,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_long",
@@ -569,7 +579,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_short",
@@ -615,7 +626,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_long",
@@ -659,7 +671,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 long side."
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
         },
         {
           "id": "mr2_bb_reversion_short",
@@ -712,7 +725,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "rg1_range_scalp_short",
@@ -761,7 +775,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "classic_box_break_short",
@@ -802,7 +817,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "building toward the bar under its own name"
           },
-          "notes": "Counterpart of classic_box_fade_long: SHORTS the lower-band tag (breakdown-follow \u2014 'through the wall, follow'). Carries Brock's 2026-07-22 promotion; its 12 eps @ +11.07/ep (2026-07-22..27) were stamped under the pre-rename flipped setup and are aliased in (config/setup_aliases.json)."
+          "notes": "Counterpart of classic_box_fade_long: SHORTS the lower-band tag (breakdown-follow \u2014 'through the wall, follow'). Carries Brock's 2026-07-22 promotion; its 12 eps @ +11.07/ep (2026-07-22..27) were stamped under the pre-rename flipped setup and are aliased in (config/setup_aliases.json).",
+          "wired": "2026-07-27"
         },
         {
           "id": "rvol_low_240_short",
@@ -860,7 +876,8 @@
               "min_ev": -0.5,
               "action": "suspend"
             }
-          }
+          },
+          "wired": "2026-07-27"
         },
         {
           "id": "timing_lean_30_counter_long",
@@ -903,7 +920,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -962,7 +980,8 @@
               "action": "suspend"
             }
           },
-          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
         },
         {
           "id": "control_rvol_60",
@@ -1006,7 +1025,8 @@
               "min_ev": -0.5,
               "action": "suspend"
             }
-          }
+          },
+          "wired": "2026-07-05"
         },
         {
           "id": "willr_recovery_short",
@@ -1055,7 +1075,8 @@
             "source": "phaseA_gate_rederivation 2026-07-04 (PARTIAL verdict; n=7 recoverable + 14 broker)",
             "n_floor_status": "small-n-hypothesis (n=7 journal; broker 12W/2L +42.4p)"
           },
-          "notes": "phaseA PARTIAL verdict: willr>=-50 replaces cert gate. m_cert>=0.40 DROPPED (never binding). Second loss (9636) not separable by any raw feature at n=7. Side short via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis. | DIAL-IN 2026-07-08: atr_5m<=6.349 -> drift +6.88. | DEMOTED 2026-07-09: broker -1.79p/trade (5W-9L) + stamp-forward -4.79p n=63 converge; atr<=6.35 filtered version re-earns in shadow or cemetery."
+          "notes": "phaseA PARTIAL verdict: willr>=-50 replaces cert gate. m_cert>=0.40 DROPPED (never binding). Second loss (9636) not separable by any raw feature at n=7. Side short via inverted_live convention. was locked \ud83d\udd12 -> priority_analysis. | DIAL-IN 2026-07-08: atr_5m<=6.349 -> drift +6.88. | DEMOTED 2026-07-09: broker -1.79p/trade (5W-9L) + stamp-forward -4.79p n=63 converge; atr<=6.35 filtered version re-earns in shadow or cemetery.",
+          "wired": "2026-07-05"
         },
         {
           "id": "box_pdl_short",
@@ -1096,7 +1117,8 @@
             "source": "box-screen 2026-07-09: drift +4.82p/240m n=4109, all measurable slices positive",
             "drift": "PERSISTENT"
           },
-          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20."
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
+          "wired": "2026-07-10"
         },
         {
           "id": "ps_ceil_fade_short",
@@ -1140,7 +1162,8 @@
             "source": "prev-session screen: +5.90 YTD (n=951), all slices",
             "drift": "STABLE"
           },
-          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
+          "wired": "2026-07-10"
         },
         {
           "id": "alpha_extended_fade_short",
@@ -1196,7 +1219,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_long",
@@ -1249,7 +1273,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_short",
@@ -1295,7 +1320,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_long",
@@ -1339,7 +1365,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 long side."
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
         },
         {
           "id": "mr2_bb_reversion_short",
@@ -1392,7 +1419,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "rg1_range_scalp_short",
@@ -1441,7 +1469,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_counter_long",
@@ -1487,7 +1516,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-30"
         },
         {
           "id": "mr2_bb_reversion_counter_long",
@@ -1540,7 +1570,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of mr2_bb_reversion_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of mr2_bb_reversion_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-31"
         },
         {
           "id": "rg1_range_scalp_counter_long",
@@ -1589,7 +1620,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of rg1_range_scalp_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of rg1_range_scalp_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-31"
         }
       ],
       "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."

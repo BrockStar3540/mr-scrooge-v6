@@ -57,7 +57,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 242 AUD_CAD long at psPos 0.00 won +$2.5k. Same conditions as the majors' validated floor fade."
+          "notes": "March-replay: txn 242 AUD_CAD long at psPos 0.00 won +$2.5k. Same conditions as the majors' validated floor fade.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_short",
@@ -102,7 +103,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. Asia wins: 485 AUD_CHF +$815, 494 AUD_CAD +$48."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. Asia wins: 485 AUD_CHF +$815, 494 AUD_CAD +$48.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "march-replay shadow cell"
@@ -167,7 +169,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "march-replay shadow cell"
@@ -226,7 +229,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txns 228/270 shorted range tops (psPos 1.00/0.91) and won. Same conditions as the majors' ceil fade."
+          "notes": "March-replay: txns 228/270 shorted range tops (psPos 1.00/0.91) and won. Same conditions as the majors' ceil fade.",
+          "wired": "2026-07-27"
         },
         {
           "id": "trend_pullback_long",
@@ -277,7 +281,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup."
+          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_counter_long",
@@ -322,7 +327,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-31"
         }
       ],
       "notes": "march-replay shadow cell"

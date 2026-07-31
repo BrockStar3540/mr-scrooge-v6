@@ -57,7 +57,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April 1217 AUD_USD longed the literal day low (cposD 0.04, rvol 2.64) +$1,168 \u2014 the recurring washout-long shape."
+          "notes": "April 1217 AUD_USD longed the literal day low (cposD 0.04, rvol 2.64) +$1,168 \u2014 the recurring washout-long shape.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_short",
@@ -102,7 +103,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes."
+          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april16-replay shadow cell"
@@ -164,7 +166,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k."
+          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april16-replay shadow cell"
@@ -223,7 +226,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes."
+          "notes": "April 990/1014 NZD_USD: THE shape on THIS pair (psPos 1.00, aroon +93/+100) \u2014 7th instrument for the ceil-fade across the replay tapes.",
+          "wired": "2026-07-27"
         },
         {
           "id": "trend_pullback_long",
@@ -271,7 +275,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k."
+          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april16-replay shadow cell"

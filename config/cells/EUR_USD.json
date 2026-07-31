@@ -56,7 +56,8 @@
             "source": "prev-session screen: +4.56 YTD (n=1624)",
             "drift": "STABLE"
           },
-          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
+          "wired": "2026-07-10"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -128,7 +129,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27)."
+          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27).",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_short",
@@ -184,7 +186,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_long",
@@ -237,7 +240,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_short",
@@ -283,7 +287,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_long",
@@ -327,7 +332,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 long side."
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
         },
         {
           "id": "mr2_bb_reversion_short",
@@ -380,7 +386,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "rg1_range_scalp_short",
@@ -429,7 +436,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -486,7 +494,8 @@
             "source": "prev-session screen: +4.59 YTD (n=1021)",
             "drift": "STABLE"
           },
-          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
+          "wired": "2026-07-10"
         },
         {
           "id": "trend_pullback_short",
@@ -544,7 +553,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27)."
+          "notes": "Strategy E on trial (errata added to the archived paper 2026-07-27).",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_short",
@@ -600,7 +610,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce."
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
         },
         {
           "id": "alpha_extended_fade_long",
@@ -653,7 +664,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85."
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_short",
@@ -699,7 +711,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade)."
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
         },
         {
           "id": "echo_box_fade_long",
@@ -743,7 +756,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book echo_box_fade_v2 long side."
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
         },
         {
           "id": "mr2_bb_reversion_short",
@@ -796,7 +810,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds."
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "rg1_range_scalp_short",
@@ -845,7 +860,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds."
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_counter_long",
@@ -889,7 +905,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of ps_ceil_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-29"
         },
         {
           "id": "trend_pullback_counter_long",
@@ -947,7 +964,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of trend_pullback_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of trend_pullback_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-30"
         },
         {
           "id": "mr2_bb_reversion_counter_long",
@@ -1000,7 +1018,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of mr2_bb_reversion_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of mr2_bb_reversion_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-30"
         },
         {
           "id": "echo_box_fade_counter_long",
@@ -1046,7 +1065,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of echo_box_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-30"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.196 ev_gross_short=-3.193, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

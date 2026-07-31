@@ -57,7 +57,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay floor shape; April counter-example 435 documents why ps_low_dist>=0 matters."
+          "notes": "March-replay floor shape; April counter-example 435 documents why ps_low_dist>=0 matters.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_ceil_fade_short",
@@ -102,7 +103,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments.",
+          "wired": "2026-07-27"
         },
         {
           "id": "ps_floor_fade_counter_short",
@@ -147,7 +149,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of ps_floor_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of ps_floor_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-30"
         }
       ],
       "notes": "april-replay shadow cell"
@@ -212,7 +215,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k."
+          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april-replay shadow cell"
@@ -271,7 +275,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments."
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments.",
+          "wired": "2026-07-27"
         },
         {
           "id": "trend_pullback_long",
@@ -322,7 +327,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k."
+          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april-replay shadow cell"

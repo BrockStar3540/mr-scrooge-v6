@@ -53,7 +53,8 @@
             "drift": "PERSISTENT"
           },
           "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
-          "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades"
+          "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
         },
         {
           "id": "box_pdl_short",
@@ -93,7 +94,8 @@
             "source": "box-screen 2026-07-09: drift +10.73p/240m YTD n=2465, positive ALL slices (May +58.6)",
             "drift": "PERSISTENT"
           },
-          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20."
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
+          "wired": "2026-07-10"
         },
         {
           "id": "box_pdl_counter_long",
@@ -134,7 +136,8 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of box_pdl_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+          "notes": "Counterpart of box_pdl_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-29"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -188,7 +191,8 @@
             "source": "prev-session screen 2026-07-10: +9.71 YTD, Jul +28.4, 14d +24.7 (n=1651)",
             "drift": "STABLE"
           },
-          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard."
+          "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
+          "wired": "2026-07-10"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -251,7 +255,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean pdh sign=negative (corr=-0.0626, AUC=0.4787). lean confirmer dropped (pdh = absolute price band (182-188), setup-killer on drift); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.787983 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | AUDIT 2026-07-08: side confirmed (+5.17); atr_h1_rel>=1.09 floor -> drift +8.32 (+61%), dead 12%, fill-odds unchanged.",
-          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades"
+          "_note": "EXPLORATORY t20 forward shadow of a live-ACTIVE setup \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
         },
         {
           "id": "timing_lean_30",
@@ -299,7 +304,8 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean pdh sign=negative (corr=-0.0626, AUC=0.4787). lean confirmer dropped (pdh = absolute price band (182-188), setup-killer on drift); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.787983 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | AUDIT 2026-07-08: side confirmed (+5.17); atr_h1_rel>=1.09 floor -> drift +8.32 (+61%), dead 12%, fill-odds unchanged."
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean pdh sign=negative (corr=-0.0626, AUC=0.4787). lean confirmer dropped (pdh = absolute price band (182-188), setup-killer on drift); side=short retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.787983 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | AUDIT 2026-07-08: side confirmed (+5.17); atr_h1_rel>=1.09 floor -> drift +8.32 (+61%), dead 12%, fill-odds unchanged.",
+          "wired": "2026-07-05"
         }
       ],
       "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
