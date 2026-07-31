@@ -33,3 +33,9 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-07-30T23:35:41Z,EUR_JPY,short,6124,-23.34,popper
 2026-07-31T02:01:04Z,GBP_USD,short,5189,3.11,popper
 2026-07-31T08:14:51Z,GBP_USD,short,5199,3.12,popper
+2026-07-31T12:39:00Z,GBP_USD,short,5322,14.80,popper
+2026-07-31T12:39:05Z,GBP_USD,short,5393,4.31,parent
+2026-07-31T12:39:06Z,GBP_USD,short,5324,11.71,popper
+2026-07-31T12:46:05Z,GBP_USD,short,5326,8.52,popper
+2026-07-31T12:49:25Z,AUD_USD,short,16590,36.50,popper
+2026-07-31T12:53:10Z,AUD_USD,short,16915,20.13,parent
