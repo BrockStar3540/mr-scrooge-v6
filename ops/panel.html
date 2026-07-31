@@ -1183,9 +1183,18 @@ async function pollShadowboard(){
       let fcell='<span class="muted">—</span>';
       if(g&&g.family&&(g.family.n||g.family.n_open)){
         const fn=g.family.net_pips, open=g.family.n_open;
+        const nc=g.family.n_cycles||0, lcb=g.family.edge_lcb,
+              wc=g.family.worst_cycle, bps=g.family.cycle_bps,
+              floor=g.family.open_floor_usd;
+        const vec=[`${nc} completed cycle(s) — the independent evidence unit`,
+                   lcb!=null?`edge LCB90: ${lcb>0?'+':''}${lcb}p/cycle`:'edge LCB: needs ≥2 cycles',
+                   wc!=null?`worst cycle: ${wc>0?'+':''}${wc}p`:null,
+                   bps!=null?`avg ${bps>0?'+':''}${bps} bps of account per cycle`:null,
+                   (open&&floor!=null)?`open floor (stops execute now): ${floor>=0?'+':''}$${floor}`:null
+                  ].filter(Boolean).join(' · ');
         fcell=`<span class="mono ${fn>0?'pos':(fn<0?'neg':'muted')}"
-          title="parent + its poppers, era broker net: ${fn>0?'+':''}${fn}p over ${g.family.n} closed trade(s) (\$${g.family.net_usd})${open?' · '+open+' open — verdict deferred until flat':''}">
-          ${g.family.n?((fn>0?'+':'')+fn+'p ('+g.family.n+')'):'no closes yet'}${open?' ⏳'+open:''}</span>`;
+          title="parent + its poppers, era broker net: ${fn>0?'+':''}${fn}p over ${g.family.n} closed leg(s) (\$${g.family.net_usd})${open?' · '+open+' open — verdict deferred until flat':''} · ${vec}">
+          ${g.family.n?((fn>0?'+':'')+fn+'p·'+nc+'cyc'):'no closes yet'}${open?' ⏳'+open:''}</span>`;
       }
       return hdr+`<tr${x.queued?' style="opacity:.55"':''}>
         <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>

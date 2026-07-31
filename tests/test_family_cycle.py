@@ -130,3 +130,25 @@ def test_trade_cap_limits_concurrency_not_total():
     r8 = replay_family_cycle(knife + flat_bars(1.0910, 3), "long", PIP, GEAR, PP,
                              max_total_trades=8)
     assert r8.n_poppers == 3
+
+
+# ── Geometry v3: the Cell Edge LCB ───────────────────────────────────────────
+
+def test_edge_lcb_small_sample_conservatism():
+    from core.family_cycle import edge_lcb
+    assert edge_lcb([]) is None
+    assert edge_lcb([50.0]) is None                   # one cycle = no spread
+    # two identical cycles: tiny spread, LCB ~ mean
+    assert edge_lcb([10.0, 10.0]) == pytest.approx(10.0)
+    # +85.8 as ONE of two mixed cycles must NOT look like proven edge
+    v = edge_lcb([85.8, -20.0])
+    assert v < 0                                       # the honest verdict
+    # consistency beats one monster: 3x +20 has a HIGHER LCB than 100/-10/-10
+    assert edge_lcb([20.0, 20.0, 20.0]) > edge_lcb([100.0, -10.0, -10.0])
+
+
+def test_edge_lcb_grows_with_n():
+    from core.family_cycle import edge_lcb
+    a = edge_lcb([15.0, 25.0])
+    b = edge_lcb([15.0, 25.0, 15.0, 25.0, 15.0, 25.0])
+    assert b > a                                       # same mean, more cycles

@@ -39,6 +39,37 @@ def _tag_parts(tag: str):
     return t, ""
 
 
+def _pip_usd(instrument: str, units: float, price: float) -> float:
+    """USD value of one pip for `units` of `instrument` (quote-currency
+    approximation: exact for xxx_USD, rate-converted for xxx_JPY et al)."""
+    pip = _pip(instrument)
+    quote = instrument.split("_")[1]
+    v = abs(units) * pip
+    if quote == "USD":
+        return v
+    return v / price if price else 0.0
+
+
+def _balance_at(ts: str) -> float:
+    """Account balance at an ISO minute (livelog/equity.csv hourly snapshots;
+    the last row at/before ts, else the first row, else 0)."""
+    import csv as _csv
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__)))), "livelog", "equity.csv")
+    best, first = 0.0, 0.0
+    try:
+        with open(path) as f:
+            for row in _csv.DictReader(f):
+                b = float(row.get("balance") or 0)
+                if not first:
+                    first = b
+                if row.get("utc", "")[:16] <= ts:
+                    best = b
+    except (OSError, ValueError):
+        return 0.0
+    return best or first
+
+
 def _sess_of(iso_time: str) -> str:
     """B-117: canonical session from an ISO open time (config/sessions.py is
     the single source of truth; fall back to its published windows if the
@@ -294,22 +325,38 @@ def main():
                 fam, fsess = family_key(op, parent_opens, opens)
             else:
                 fam, fsess = "?", "?"
+            # Geometry v3 open floor: realized-if-stops-execute for this leg
+            _floor = 0.0
+            try:
+                _slp = float((tr.get("stopLossOrder") or {}).get("price") or 0)
+                _units = float(tr.get("currentUnits", 0))
+                _entry = float(tr.get("price", 0))
+                if _slp and _units and _entry:
+                    _pips = ((_slp - _entry) / _pip(tr["instrument"])
+                             * (1 if _units > 0 else -1))
+                    _floor = _pips * _pip_usd(tr["instrument"], _units, _slp)
+            except (TypeError, ValueError):
+                pass
             open_rows.append({"id": tid, "instrument": tr["instrument"],
                               "su": op["su"], "tag": op["tag"], "family": fam,
                               "session": fsess,
                               "open_t": (op.get("time")
                                          or tr.get("openTime", "")[:16]),
+                              "floor_usd": round(_floor, 2),
                               "upl": float(tr.get("unrealizedPL", 0))})
     except Exception as e:
         print(f"open-trades fetch failed: {e}", file=sys.stderr)
 
-    open_by_fam = defaultdict(lambda: {"n": 0, "upl": 0.0, "open_ts": []})
+    open_by_fam = defaultdict(lambda: {"n": 0, "upl": 0.0, "open_ts": [],
+                                       "floor_usd": 0.0})
     for o in open_rows:
         if o["family"] != "?":
             ob = open_by_fam[(o["instrument"], o["session"], o["family"])]
             ob["n"] += 1
             ob["upl"] += o["upl"]
             ob["open_ts"].append(o.get("open_t") or "")
+            ob["floor_usd"] = round(ob.get("floor_usd", 0.0)
+                                    + o.get("floor_usd", 0.0), 2)
     for k in open_by_fam:        # open-only families must still reach callers
         fams[k]                  # defaultdict: materializes an empty closed row
 
@@ -327,8 +374,15 @@ def main():
         ob = open_by_fam.get((instr, fsess, fam),
                              {"n": 0, "upl": 0.0, "open_ts": []})
         cycles = cycles_of(g["trades"], ob["open_ts"])
+        for c in cycles:      # Geometry v3: account basis points per cycle
+            bal = _balance_at(c["start"])
+            c["bps"] = round(c["usd"] / bal * 1e4, 1) if bal else None
+        _bps = [c["bps"] for c in cycles if c.get("bps") is not None]
         fam_rows.append({"instrument": instr, "session": fsess, "setup": fam,
                          "n_cycles": len(cycles), "cycles": cycles,
+                         "cycle_bps": (round(sum(_bps) / len(_bps), 1)
+                                       if _bps else None),
+                         "open_floor_usd": ob.get("floor_usd", 0.0),
                          "open_ts": ob["open_ts"], "n": g["n"],
                          "greens": g["greens"], "usd": round(g["usd"], 2),
                          "pips": round(g["pips"], 1),

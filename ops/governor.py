@@ -235,12 +235,17 @@ def family_era_view(fam: dict, era_start: str) -> dict:
     # B-117: the independent unit is the completed GRID CYCLE, not the leg
     from research.tools.broker_setup_audit import cycles_of
     cycles = cycles_of(trades, fam.get("open_ts", []))
+    from core.family_cycle import edge_lcb
     return {"n": len(trades), "net_pips": round(sum(t["pips"] for t in trades), 1),
             "net_usd": round(sum(t["usd"] for t in trades), 2),
             "n_open": int(fam.get("n_open", 0)),
             "n_cycles": len(cycles),
             "cycle_nets": [c["pips"] for c in cycles],
-            "worst_cycle": min((c["pips"] for c in cycles), default=None)}
+            "worst_cycle": min((c["pips"] for c in cycles), default=None),
+            # Geometry v3 vector (broker side)
+            "edge_lcb": edge_lcb([c["pips"] for c in cycles]),
+            "cycle_bps": fam.get("cycle_bps"),
+            "open_floor_usd": fam.get("open_floor_usd")}
 
 
 def _post(url, payload, dry):

@@ -39,6 +39,23 @@ from typing import Optional
 BAR_MIN = 5.0
 
 
+# one-sided 90% t critical values by df (n-1); normal beyond
+_T90 = {1: 3.078, 2: 1.886, 3: 1.638, 4: 1.533, 5: 1.476, 6: 1.440,
+        7: 1.415, 8: 1.397, 9: 1.383, 10: 1.372}
+
+
+def edge_lcb(values: list) -> Optional[float]:
+    """Geometry v3 Cell Edge: LCB90 of the mean over INDEPENDENT cycles.
+    Conservative small-sample t; None below n=2 (one cycle has no spread)."""
+    n = len(values)
+    if n < 2:
+        return None
+    mean = sum(values) / n
+    var = sum((v - mean) ** 2 for v in values) / (n - 1)
+    t = _T90.get(n - 1, 1.282)
+    return round(mean - t * math.sqrt(var / n), 3)
+
+
 def floor_step_lock(peak: float, trigger: float, step: float,
                     trail: float) -> Optional[float]:
     """The live ratchet's lock level (ratchet.py / shadow_execution.py)."""
