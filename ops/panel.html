@@ -773,17 +773,16 @@ body.has-ticker{padding-bottom:32px}
     </div>
     <details style="padding:0 12px 6px">
       <summary class="muted" style="font-size:11px;cursor:pointer;user-select:none">
-        The bot flips its own switches every 6 hours (00:35/06:35/12:35/18:35 UTC) — promote on the stamp bar, demote/defend on family broker net pips, judge-when-flat. ⚠️ The stamp/era columns are PARENT-ONLY, HORIZON-CAPPED diagnostics — they cannot see the popper grid and have diverged from broker family results; family-cycle-v3 scoring is in progress. 🎲 Cheater v3 is LIVE: the ticket is risk-covered gain (≥+1.25R over ≥3 resolved virtual family cycles, consistency-gated, GridLift picks the popper policy) and every promotion lands on a 0.33× PROBE seat — full ACTIVE is earned by graduation on completed broker cycles. <b>Full standard ▾</b>
+        The bot reviews the book every 6 hours (00:35/06:35/12:35/18:35 UTC). Demotion/defense uses completed broker family cycles and judge-when-flat. ⚠️ Stamp/era columns remain PARENT-ONLY, HORIZON-CAPPED diagnostics. Both admission lanes are currently locked for validation. 🎲 Cheater v4 independently qualifies PARENT_ONLY and FAMILY_PP on complete virtual-cycle evidence; PP_ON additionally needs a positive paired GridLift LCB. When commissioned, it is capped at one 0.33× whole-family PROBE seat. <b>Full standard ▾</b>
       </summary>
     <div class="muted" style="padding:6px 0 0;font-size:11px">
-      <b>⬆ Promote</b> SHADOW→ACTIVE (D-7 predicate, executable-exit-v2 stamp evidence
-      only): n≥20 eps · ≥10 independent day-blocks · avg ≥ +2.0p/ep net ·
-      block-bootstrap LCB &gt; 0 · 7-day guard · BH-FDR q ≤ 0.05 across the whole docket — <b>OR the 🎲 CHEATER v3 RULE (opt-in — the toggle above)</b>: a shadow whose <b>virtual family cycles</b> (full live mechanics: grid, re-arms, bid/ask, no horizon) have covered <b>≥ +1.25R of their own peak risk</b> across ≥3 resolved cycles / ≥2 days, ≥2 positive, no cycle &gt;60% of the gain, smoothed coverage ≥1.20 — earns a <b>PROBE seat (0.33× size)</b> immediately, with GridLift choosing poppers ON or OFF. Graduates to full ACTIVE after 6 completed broker cycles with positive edge LCB; the leash benches it on one −45p cycle, cum&lt;0 after 2, or two straight reds. Ledgered as CHEATER-PROBE.<br>
-      <b>⬇ Demote — THE FAMILY RULE</b> (v6.7, net loss is the key): a parent setup and
+      <b>⬆ Admit</b> SHADOW→PROBE. The ordinary D-7 parent/horizon lane remains disabled. <b>🎲 CHEATER v4 (separate opt-in)</b> replays each shadow under PARENT_ONLY and FAMILY_PP, grades each policy on its own resolved cycles, rejects any missing or censored replay, and requires ≥+1.25R across ≥3 cycles / ≥2 days, ≥2 positive, no cycle &gt;60% of gain, and smoothed coverage ≥1.20. FAMILY_PP also needs ≥3 paired cycles with <b>GridLift LCB &gt; 0</b>; otherwise only a qualifying parent can seat, with poppers off. Commissioning is capped at one <b>0.33× whole-family PROBE</b>. Graduation needs 6 completed broker cycles with positive edge LCB; one −45p cycle, cumulative loss after 2, or two straight reds benches it. Every seat transition quiesces and retires the old grid before the status changes.<br>
+      <b>⬇ Demote — THE FAMILY RULE</b>: a parent setup and
       the poppers its grid fired are <b>one economic unit in broker net pips</b> (every
-      popper fill carries its parent&#39;s id). Family n≥5 at <b>≤ −60p</b> (one popper SL)
-      → demoted <b>and the cell&#39;s poppers switched off with the seat</b>; a family at
-      <b>≥ +60p defends the seat</b> — real broker green outranks the worst-case stamp
+      popper fill carries its parent&#39;s id). ≥2 completed cycles at <b>≤ −60p</b>, or one
+      catastrophic cycle ≤−90p, → demotion; ≥3 cycles at <b>≥ +60p defends the seat</b>.
+      The cell&#39;s poppers are quiesced and its flat grid retired before the status changes.
+      Real broker green outranks the worst-case stamp
       simulator. <b>Judge-when-flat</b>: while ANY family trade is open there is no verdict
       at all — a parent can stop −60 while its poppers ride toward +30, so the episode is
       scored only when it completes. Setups with no family record fall back to the stamp
@@ -831,7 +830,7 @@ body.has-ticker{padding-bottom:32px}
         <th title="The governor's own call for this row, today: DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING (with the bar conditions still failing) / QUEUED / DEMOTE DUE">verdict</th>
         <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
         <th>eps</th>
-        <th title="⚠️ PARENT/HORIZON DIAGNOSTIC — this simulates the PARENT trade only, force-closed at horizon_min, with coarser ratchet steps than live; it cannot see the Party Package and has diverged from broker family results (sign agreement 2/7 on the first live week). Treat as a parent-entry diagnostic, NOT projected live performance, until family-cycle-v3 scoring lands. THE BAR the governor currently reads, era executable-exit-v2 evidence: n≥20 episodes · ≥10 independent day-blocks · avg ≥ +2.0p/ep net · block-bootstrap LCB > 0 · BH-FDR q ≤ 0.05 (the 7-day guard is the 7d avg column). Green = condition met; all green = PROMOTE READY. ACTIVE rows are judged by the family column first — this bar applies only when the family can't speak (n<5).">era v2 bar</th>
+        <th title="⚠️ PARENT/HORIZON DIAGNOSTIC — this simulates the PARENT trade only, force-closed at horizon_min, with coarser ratchet steps than live; it cannot see the Party Package and has diverged from broker family results (sign agreement 2/7 on the first live week). It does NOT control the Cheater v4 lane. The ordinary promotion lane is currently disabled. ACTIVE/PROBE rows are governed by completed broker family cycles.">era v2 bar</th>
         <th>avg net/ep</th><th>cum net</th><th>WR</th><th title="ratchet-ENGAGE rate: share of episodes whose MFE reached this setup&#39;s trigger + 0.5p mid buffer (book gear 9p, t20s gear 20.5p). An engaged trade locks +6 and cannot lose. Replaced hit≥6p (the lock level), which flattered almost-winners that pop 6p and never engage.">hit≥trig</th><th title="DEATH rate: share of episodes whose MAE reached this setup&#39;s config SL − 0.5p (mid understates adverse excursion — the executable side hits the stop first; stops are range-sized 40/50/60). At lock 6 / SL 60, ONE death costs TEN engages — read this column against hit≥trig: the ratio must stay near 10:1 just to break even on the extremes.">hitSL</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
@@ -1229,9 +1228,9 @@ async function pollGovernor(){
         onclick="setGovernor(${!on})" title="Toggle autonomous promote/demote (writes config/governor_config.json)">
         AUTO-PROMOTE/DEMOTE: ${on?'ON':'OFF'}</button>
        <button class="pill ${ch?'pill-warn':'pill-block'}" style="cursor:pointer;border:none;font-weight:700;margin-left:6px"
-        onclick="setCheater(${!ch})" title="OPT-IN: instantly promote any shadow whose current-era cumulative net reaches +100 pips — no waiting for the 20-trade bar. A hot hand gets a seat fast; the family rule still demotes it if it cools. Default OFF.">
+        onclick="setCheater(${!ch})" title="OPT-IN Cheater v4: independently qualify parent-only and full-family replay; PP_ON requires positive paired GridLift LCB. One 0.33x PROBE seat maximum. Default OFF.">
         🎲 CHEATER PROMOTION: ${ch?'ON':'OFF'}</button>
-       ${ch?'<span class="muted" style="font-size:10px;margin-left:6px">era cum ≥ +100p ⇒ instant seat (ledgered CHEATER-PROMOTE)</span>':''}`;
+       ${ch?'<span class="muted" style="font-size:10px;margin-left:6px">v4 paired-policy ticket ⇒ one 0.33× PROBE max</span>':''}`;
     const led=(d.ledger_tail||[]).slice(0,3).map(e=>{
       // flip entries carry pair/session/setup; ERA-RESET entries carry "key"
       const who=e.pair?`${e.pair}/${e.session}/${e.setup}`:(e.key||'').replace(/\|/g,'/');
@@ -1242,7 +1241,7 @@ async function pollGovernor(){
   }catch(e){}
 }
 async function setGovernor(enabled){
-  if(enabled && !confirm('Enable the Bar Governor?\n\nThe bot will AUTONOMOUSLY promote shadows to ACTIVE (live trading) and demote actives to SHADOW, every 6 hours, by the published standard. Continue?'))return;
+  if(enabled && !confirm('Enable the Bar Governor?\n\nThe bot will autonomously apply the independently configured admission lanes and demote/graduate seats every 6 hours. Ordinary and Cheater admissions remain OFF unless separately enabled. Continue?'))return;
   if(!enabled && !confirm('Disable the Bar Governor?\n\nNo automatic promotions or demotions will run until re-enabled; the book only changes by hand.'))return;
   try{
     await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
@@ -1251,7 +1250,7 @@ async function setGovernor(enabled){
   pollGovernor();
 }
 async function setCheater(cheater){
-  if(cheater && !confirm('Enable CHEATER v3?\n\nShadows whose VIRTUAL FAMILY CYCLES (replayed under full live mechanics) have covered >= +1.25R of their own peak risk across >=3 resolved cycles earn a PROBE seat (0.33x size) immediately, bar bypassed. GridLift picks poppers ON or OFF. Graduation to full ACTIVE requires 6 completed broker cycles with positive edge; the leash benches one -45p cycle or two straight reds.\n\nStill trades sooner on less evidence - that is the point. Opt-in only. Continue?'))return;
+  if(cheater && !confirm('Enable CHEATER v4?\n\nThe bot will independently qualify PARENT_ONLY and FAMILY_PP on complete virtual-cycle evidence. PP_ON additionally requires a positive paired GridLift lower confidence bound. Missing or unresolved replay cycles veto admission. At most one whole-family PROBE trades at 0.33x size; graduation requires 6 positive-edge broker cycles and the fast loss leash remains active.\n\nThis is early admission on limited evidence. Opt-in only. Continue?'))return;
   try{
     await fetch('/api/governor',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({cheater})});

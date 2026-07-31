@@ -15,6 +15,7 @@ Routes:
   POST /api/config/playmaker→ live edit playmaker_config.json (validated, merge-preserving)
   POST /api/cell/status    → flip one setup ACTIVE/SHADOW/DISABLED in config/cells (hot-reload)
   POST /api/cell/exit      → live edit one setup's per-cell exit geometry (hot-reload)
+  POST /api/pp/retire      → retire one exact, flat grid before a governance era transition
   POST /api/credentials    → save+verify an OANDA credential set (writes credentials.local.json)
   POST /api/mode           → practice/live toggle (live-armed via SCROOGE_ALLOW_LIVE + confirm)
   POST /api/trading        → soft trading PAUSE switch (hot-reload; pause = no new entries)
@@ -1622,7 +1623,19 @@ class _Handler(http.server.BaseHTTPRequestHandler):
 
     def _do_post_inner(self):
         try:
-            if self.path.startswith("/api/pp/toggle"):
+            if self.path.startswith("/api/pp/retire"):
+                payload = self._read_json()
+                try:
+                    cell = str(payload.get("cell") or "")
+                    result = self._engine.pp.retire_cell_grid(
+                        cell, parent_pairs=set(self._engine.managers.keys()))
+                    body = _j.dumps(result).encode()
+                    ctype, code = "application/json", (200 if result.get("ok") else 409)
+                    log.info("pp grid retirement requested cell=%s result=%s", cell, result)
+                except Exception as exc:
+                    body = _j.dumps({"ok": False, "error": str(exc)}).encode()
+                    ctype, code = "application/json", 400
+            elif self.path.startswith("/api/pp/toggle"):
                 length = int(self.headers.get("Content-Length", "0") or 0)
                 raw = self.rfile.read(length) if length else b""
                 try:

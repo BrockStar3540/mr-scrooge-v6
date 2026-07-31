@@ -4,6 +4,33 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.14.9] — 2026-07-31 — "Cheater v4: Earn the Policy"
+
+### Fixed
+- **Independent policy qualification:** PARENT_ONLY and FAMILY_PP must each pass the
+  risk-covered ticket on their own completed cycles. PP_ON additionally requires a
+  positive LCB90 over paired per-episode GridLift; unpaired completed-only means cannot
+  choose the grid.
+- **Censor/missingness veto:** any unresolved selected-policy cycle or missing replay
+  path blocks admission instead of silently shrinking the denominator. Replay covers at
+  least the live seven-day grid lifetime plus one resolution day.
+- **Era-safe grid transitions:** every promotion, graduation and demotion now quiesces
+  new popper fires, retires the exact flat grid, establishes PP_ON/PARENT_ONLY, then
+  changes status. Quiescence persists across restart; unknown legacy ownership fails
+  closed while open risk is managed out.
+- **Status-truth cap and leash:** every current PROBE consumes the one-seat cap and gets
+  the fast loss leash. A crash or lost governor-state registry can no longer create a
+  second audition or remove its early-stop rule.
+- **Crash-safe era ordering:** the fresh evidence era is persisted after grid retirement
+  but before the status flip. A crash can discard evidence conservatively; it cannot put
+  new capital under an old clock.
+- **Production-path coverage:** candidacy, policy selection, seat bookkeeping, grid
+  retirement/restart reconciliation and transition ordering are pinned in the round-4
+  suite. Both admission switches remain OFF for commissioning; Cheater is explicitly
+  capped at one 0.33× whole-family PROBE seat.
+- **Honest commissioning command:** `--dry-run --cheater-diagnostic` evaluates the raw
+  candidate docket while admission stays OFF and can never queue a flip.
+
 ## [6.13.0] — 2026-07-31 — "The Unit of Evidence" (B-117 + interim safety)
 
 Start of the Family-Cycle program: an external design review (docs: see repo discussions

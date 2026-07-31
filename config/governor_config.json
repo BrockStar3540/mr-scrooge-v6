@@ -20,7 +20,11 @@
   "family_demote_pips": -60.0,
   "family_defend_pips": 60.0,
   "cheater_promotion_enabled": false,
-  "cheater_metric_version": "family-cycle-v3",
-  "_cheater_note": "2026-07-31 external review (v2): OFF again before the first real v3 run \u2014 the parent-EV admission gate, PP_ON-graded predicate, and PROBE popper sizing must land first. See v6.14.7.",
-  "_promotions_note": "2026-07-31 review r3: BOTH promotion lanes off \u2014 the ordinary bar still promotes on the parent metric (e.promotable) and now awards PROBE seats through the front door. Demotions (cycle-based, sound) stay on. Re-enable per the review's test bar."
+  "cheater_metric_version": "family-cycle-v4",
+  "cheater_max_seats": 1,
+  "cheater_replay_days": 8.0,
+  "cheater_min_paired_cycles": 3,
+  "cheater_min_grid_lift_lcb": 0.0,
+  "_cheater_note": "Cheater v4 is implemented but remains OFF for commissioning. Enable only after candidate-set dry-run; one 0.33x whole-family PROBE seat maximum.",
+  "_promotions_note": "Both promotion lanes remain OFF during v4 validation. Ordinary parent-metric promotions stay disabled. Cheater may be commissioned separately at one 0.33x whole-family seat only after the censor-aware paired-policy suite and candidate-set dry-run pass."
 }

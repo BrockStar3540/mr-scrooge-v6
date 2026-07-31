@@ -3,13 +3,10 @@
 **What it is:** the closing loop of the trial system. Every strategy setup in this bot runs
 as a **shadow** first — stamped on live markets, scored on the forward price path, ranked on
 the Shadowboard. The Bar Governor (`ops/governor.py`) is the daemon that acts on that
-evidence: it **promotes** shadows that prove themselves to ACTIVE (live orders), and
-**demotes** actives that lose their grip back to SHADOW. No human in the loop. Runs every SIX HOURS (00:35/06:35/12:35/18:35 UTC; daily-only before 2026-07-30). The humans
-set the standard; the bot flips the switches.
-
-It runs **daily at 06:35 UTC**, immediately after the nightly scorers and the
-[counterpart audit](../research/tools/counterpart_audit.py), and just before the daily
-backup snapshots the result.
+evidence: an enabled admission lane can move a shadow to a reduced-risk **PROBE**;
+completed broker family cycles then graduate it to ACTIVE or demote it to SHADOW.
+It runs every SIX HOURS (00:35/06:35/12:35/18:35 UTC). Humans set the standard and
+commission admission lanes; the bot applies it.
 
 ## The standard (what it's tuned to)
 
@@ -25,9 +22,10 @@ never governs capital.
 
 | Switch | Fires when |
 |---|---|
-| **PROMOTE (cheater rule — OPT-IN, default OFF)** SHADOW → ACTIVE | 🎲 era-v2 **cumulative net ≥ +100p** promotes immediately — no n-bar, no day-block minimum, no bootstrap/FDR. A hot hand gets a seat without waiting out the sample; the family rule demotes it if it cools. Enabled only via the dashboard toggle; every use ledgered as CHEATER-PROMOTE (operator amendment, 2026-07-30) |
-| **PROMOTE** SHADOW → ACTIVE | the full predicate (`core/trial_evidence.promotion_predicate`): raw n ≥ **20** v2 episodes **AND** ≥ **10 independent day/session blocks** **AND** average ≥ **+2.0 pips/episode net** **AND** the day-block **bootstrap** lower confidence bound > **0** **AND** the last-7-days average ≥ 0 (when it has ≥ 5 episodes) **AND** Benjamini–Hochberg **q ≤ 0.05** across the run's whole candidate docket |
-| **DEMOTE** ACTIVE → SHADOW | **THE FAMILY RULE** (2026-07-28): the parent setup + the poppers its grid fired are ONE unit in **broker net pips** — family n ≥ 5 at **≤ −60p** (one popper SL) → demoted **and the cell's poppers switched off**; a family at **≥ +60p defends the seat** (broker green outranks the stamp simulator). **Judge-when-flat**: while any family trade is open, no verdict at all — the episode is scored when it completes. Without family evidence: era v2 n ≥ 20 with average < +2.0 (**the bar is lost on stamps**) |
+| **ADMIT (Cheater v4 — separate opt-in, default OFF)** SHADOW → PROBE | Independently qualify PARENT_ONLY and FAMILY_PP on complete virtual family cycles: ≥ **+1.25R** covered gain, ≥ **3 resolved cycles / 2 days**, ≥2 positive cycles, ≤60% single-cycle gain share, coverage ≥1.20. Missing or censored replay vetoes admission. FAMILY_PP additionally needs ≥3 paired cycles with **GridLift LCB90 > 0**. One 0.33× whole-family seat maximum. |
+| **ADMIT (ordinary lane — default OFF)** SHADOW → PROBE | The legacy D-7 parent/horizon predicate remains available as a diagnostic but is disabled because it does not grade the grid family. |
+| **GRADUATE** PROBE → ACTIVE | ≥6 completed broker family cycles with positive family edge LCB. |
+| **DEMOTE** ACTIVE/PROBE → SHADOW | Completed broker family cycles are the unit: net ≤−60p after ≥2 cycles, or one catastrophic cycle ≤−90p. A seat defends at ≥3 cycles and ≥+60p. Cheater PROBE adds a fast leash: one ≤−45p cycle, cumulative loss after 2, or two consecutive red cycles. Judge-when-flat always applies. |
 
 Why these numbers: the measured retail execution toll on majors is ~0.4–0.5 pips per round
 trip, and six of seven edge families this program falsified died at exactly that wall — so
@@ -77,15 +75,12 @@ never award what the governor would reject.
   (`last_eval_blocks` in governor state) — daily re-rolls of unchanged
   evidence can't fish their way over the line. The counter clears on any
   flip (fresh era).
-- **Metric-version isolation (D-7).** Promotion evidence never mixes metric
-  versions: v2 episodes only, mechanics-hash-matched. The migration was
-  ledgered as one `METRIC-ERA-RESET` record per live setup on 2026-07-28 —
-  every setup's evidence restarted at zero under the new metric. The
-  reviewer recommended gating promotions off during the transition; the
-  operator ruled promotions **ON** — materially the same outcome, since no
-  setup can pass the predicate until its v2 sample accrues, and
-  `allow_promotions` remains a one-edit kill switch. Demotions (broker
-  fills) run daily regardless.
+- **Metric-version isolation (D-7).** Parent/horizon evidence never mixes metric
+  versions: v2 episodes only, mechanics-hash-matched. The migration was ledgered
+  as one `METRIC-ERA-RESET` per live setup. That historical admission lane is now
+  diagnostic-only by default (`allow_promotions: false`); Cheater v4 reads raw
+  era-clocked episodes and performs its own family replay. Demotions run every
+  six hours regardless.
 
 **Era clocks got stricter too:** any change to a setup's *mechanics*
 (conditions, exit, side, sizing, horizon — prose excluded) resets its
@@ -96,9 +91,12 @@ evidence clock automatically via config-hash comparison, ledgered as
 
 - **DISABLED is sacred**: a manually disabled setup is untouchable by every automation —
   the bar, the cheater rule, the counterpart audit, all of it. The governor skips
-  non-ACTIVE/SHADOW statuses AND re-checks the live status at flip time, so disabling a
+  non-ACTIVE/PROBE/SHADOW statuses AND re-checks the live status at flip time, so disabling a
   cell mid-run can never be overridden by a stale snapshot. Only a human re-enables.
-- **Max 2 promotions and 4 demotions per run** — evidence-strongest first; the rest wait.
+- **Cheater commissioning cap is one PROBE seat**; max 4 demotions per run.
+- **No grid crosses a governance era.** A transition quiesces new fires, retires the
+  exact flat grid, establishes PP_ON/PARENT_ONLY, and only then changes status. Busy or
+  ambiguously-owned legacy grids remain quiesced and block the flip.
 - **Sides are never flipped.** A losing direction gets a *counterpart* setup (own name, own
   record) via the daily MAE-flip counterpart audit — never an in-place inversion.
 - **DISABLED setups and setups marked `"manual_only": true`** in `config/cells/` are never
@@ -133,7 +131,11 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | Key | Default | Meaning |
 |---|---|---|
 | `enabled` | `true` | master switch (also on the dashboard) |
-| `allow_promotions` / `allow_demotions` | `true` / `true` | direction-specific switches |
+| `allow_promotions` / `allow_demotions` | `false` / `true` | ordinary admission / demotion switches |
+| `cheater_promotion_enabled` | `false` | separate Cheater v4 admission switch |
+| `cheater_max_seats` | `1` | maximum simultaneous PROBE seats; any current PROBE consumes the slot so a lost auxiliary registry cannot bypass the cap |
+| `cheater_replay_days` | `8.0` | replay window (at least live 7-day grid age + one day) |
+| `cheater_min_paired_cycles` / `cheater_min_grid_lift_lcb` | `3` / `0.0` | PP_ON incremental-edge proof |
 | `min_raw_episodes` | `20` | minimum era v2 episodes (`bar_n` honored as a deprecated alias) |
 | `min_independent_days` | `10` | minimum independent day/session blocks |
 | `bar_avg` | `2.0` | net pips/episode bar |
@@ -141,13 +143,20 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | `bootstrap_reps` / `bootstrap_confidence` | `10000` / `0.95` | block bootstrap settings |
 | `fdr_q` | `0.05` | Benjamini–Hochberg q-value ceiling across the docket |
 | `recent_n` / `recent_min` | `5` / `0.0` | the 7-day guard |
-| `family_min_trades` | `5` | minimum era family trades (parent + poppers) to convict or defend |
+| `family_min_cycles` / `family_defend_cycles` | `2` / `3` | completed broker-cycle conviction / defense floors |
 | `family_demote_pips` | `-60.0` | family era net pips at/below this → demote + poppers off |
 | `family_defend_pips` | `60.0` | family era net pips at/above this → seat safe from bar_lost |
 | `max_promotions` / `max_demotions` | `2` / `4` | per-run rails |
 | `slippage_pips` | `0.5` | slippage haircut per episode |
 | `per_test_z` | `2.33` | legacy-display LCB only — **not** a promotion input since D-7 |
 | `default_era_start` | *(era anchor)* | evidence floor for setups with no recorded clock |
+
+### Safe commissioning dry-run
+
+`python ops/governor.py --dry-run --cheater-diagnostic` evaluates the entire raw
+Cheater candidate docket even while both admission switches are OFF. It prints each
+policy verdict and a qualified/declined summary, never queues a status flip, and refuses
+to run without `--dry-run`. Use `--cheater-diagnostic-limit N` for a bounded smoke test.
 
 ## Context
 

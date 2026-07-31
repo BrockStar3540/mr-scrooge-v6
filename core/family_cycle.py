@@ -1,10 +1,10 @@
 """core/family_cycle.py — family-cycle-v3 virtual replay (charter, 2026-07-31).
 
 One completed GRID FAMILY CYCLE is the unit of evidence: a parent selection
-event, the grid it arms, every popper that grid fires (with re-arms), walked
-over executable bid/ask candles under the LIVE mechanics until the grid
-retires flat — no artificial horizon. A cycle still open when data ends is
-CENSORED, never an outcome.
+event, the grid it arms, and every overlapping popper leg that grid fires
+(including re-arms while another leg keeps the family open), walked over
+executable bid/ask candles under the LIVE mechanics until the family first
+goes flat. A cycle still open when data ends is CENSORED, never an outcome.
 
 Mechanics mirrored from the live modules (rule sources cited inline):
   * ratchet: floor-step lock, step/cadence from exit_config — live 2p/0.5min
@@ -15,8 +15,8 @@ Mechanics mirrored from the live modules (rule sources cited inline):
     per marker while open
   * fire gate: max_total_trades cap (book-wide margin caps are out of scope
     for a single-family replay)
-  * grid retirement: family flat AND (mid back above the shallowest marker
-    OR grid age > grid_max_age_days) (tick() retire rule)
+  * cycle boundary: first family-flat instant, matching broker interval-chain
+    evidence; a later parentless grid re-fire is a new broker cycle
   * executable prices: long manages/exits at BID, short at ASK; entries pay
     the spread (parent enters at ask-open for longs; poppers at marker mid
     plus half-spread)
@@ -167,7 +167,6 @@ def replay_family_cycle(bars: list, side: str, pip: float,
     pp_trig = _f(pp_cfg.get("trigger_pips", 8.5))
     pp_trail = _f(pp_cfg.get("trail_pips", 2.5))
     pp_step = _f(pp_cfg.get("step_size_pips", step) or step)
-    max_age_bars = _f(pp_cfg.get("grid_max_age_days", 7.0)) * 1440.0 / BAR_MIN
     n_refires = 0
     peak_liab = 0.0
 
@@ -271,16 +270,12 @@ def replay_family_cycle(bars: list, side: str, pip: float,
             new_lock = floor_step_lock(u.peak, u.trigger, u.step, u.trail)
             if new_lock is not None and (u.lock is None or new_lock > u.lock):
                 u.lock = new_lock
-        # 4) retirement check
+        # 4) cycle boundary.  Broker evidence defines one cycle as a chain of
+        # overlapping leg intervals; the first flat instant ends it.  A live
+        # grid may remain eligible for a later re-fire, but that is the next
+        # broker cycle, never part of this observation.
         peak_liab = max(peak_liab, liability())
         if all(u.done for u in legs):
-            if not markers:
-                return result(False, i + 1)
-            shallowest = marker_px[min(markers)]
-            back_in_zone = (m_c > shallowest) if sgn > 0 else (m_c < shallowest)
-            if back_in_zone or i >= max_age_bars:
-                return result(False, i + 1)
+            return result(False, i + 1)
 
-    # data exhausted: flat = complete (retirement pending is bookkeeping,
-    # the economics are final); any open leg = CENSORED
     return result(censored=not all(u.done for u in legs), bars_used=len(bars))

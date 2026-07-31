@@ -31,7 +31,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO))
-from core.family_cycle import replay_family_cycle
+from core.family_cycle import edge_lcb, replay_family_cycle
 import research.tools.cell_setup_score as css
 from research.tools.cell_setup_score import collapse_episodes
 
@@ -112,25 +112,38 @@ def score_cell(pair, sess, sid, side, episodes, max_days, limit):
     cfg_gear, pp = _setup_exit(pair, sess, sid), _pp()
     rows = []
     now = datetime.now(timezone.utc)
-    for ep in episodes[-limit:]:
+    # The live grid can remain economically alive until the age cap and then
+    # until its final open legs resolve.  A 2.5d research budget against a 7d
+    # grid manufactured right-censoring.  Fetch at least one full day beyond
+    # the configured age; anything still open remains explicitly censored.
+    replay_days = max(float(max_days), float(pp.get("grid_max_age_days", 7.0)) + 1.0)
+    requested = episodes[-limit:]
+    missing = 0
+    for ep in requested:
         if not isinstance(ep, dict):
             ep = {"t": ep, "entry": None, "exit_config": None}
         t = ep["t"]
         gear = dict(ep.get("exit_config") or cfg_gear)
         gear.setdefault("step_size_pips", 2.0)
         gear.setdefault("step_cadence_min", 0.5)
-        t1 = min(t + timedelta(days=max_days), now)
+        t1 = min(t + timedelta(days=replay_days), now)
         bars = _ba_candles(pair, t, t1)
         if len(bars) < 3:
+            missing += 1
             continue
         fam = replay_family_cycle(bars, side, PIP(pair), gear, pp, "FAMILY_PP",
                                   entry_px=ep.get("entry"))
         par = replay_family_cycle(bars, side, PIP(pair), gear, pp, "PARENT_ONLY",
                                   entry_px=ep.get("entry"))
         if fam is None or par is None:
+            missing += 1
             continue
         rows.append((t, fam, par))
-    return aggregate_policy_rows(rows)
+    result = aggregate_policy_rows(rows)
+    result.update({"episodes_requested": len(requested),
+                   "episodes_scored": len(rows),
+                   "missing_cycles": missing})
+    return result
 
 
 def aggregate_policy_rows(rows):
@@ -149,9 +162,11 @@ def aggregate_policy_rows(rows):
     u_par = [U(pr) for _, pr in comp_par]
     paired = [(U(f), U(pr)) for _, f, pr in rows
               if not f.censored and not pr.censored]
+    paired_diffs = [a - b for a, b in paired]
     pos = sum(u for u in u_pp if u > 0)
     neg = sum(-u for u in u_pp if u < 0)
     return {
+        "missing_cycles": 0,
         "cycles": len(comp_pp),
         "censored": len(rows) - len(comp_pp),
         "u_list": [round(u, 3) for u in u_pp],
@@ -163,8 +178,11 @@ def aggregate_policy_rows(rows):
         "censored_par": len(rows) - len(comp_par),
         "U_pp": round(sum(u_pp) / len(u_pp), 3) if u_pp else None,
         "U_par": round(sum(u_par) / len(u_par), 3) if u_par else None,
-        "grid_lift": (round(sum(a - b for a, b in paired) / len(paired), 3)
-                      if paired else None),
+        "grid_lift_list": [round(x, 3) for x in paired_diffs],
+        "grid_lift_n": len(paired_diffs),
+        "grid_lift": (round(sum(paired_diffs) / len(paired_diffs), 3)
+                      if paired_diffs else None),
+        "grid_lift_lcb": edge_lcb(paired_diffs),
         "coverage": round((pos + 0.5) / (neg + 0.5), 2),
         "worst": round(min(u_pp), 3) if u_pp else None,
         "net_pips_mean": (round(sum(f.net_pips for _, f in comp_pp)
