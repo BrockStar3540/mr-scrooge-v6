@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 from typing import Optional
 
 from config.pairs import PAIRS, PIP
-from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS, OrderUncertain
+from core.broker.oanda import DEFAULT_INITIAL_SL_PIPS, OrderUncertain, CloseRejected
 from modules.signals import formula_shadow as _formula_shadow
 from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct, pm_probe_mult,
                                           pm_max_concurrent,
@@ -381,8 +381,20 @@ class Engine:
                 if not self.dry_run:
                     try:
                         self.broker.close_position(mgr.position.oanda_trade_id)
+                    except CloseRejected as cr:
+                        # B-119: the broker KEPT the trade (MARKET_HALTED /
+                        # FIFO). Deleting the manager here would orphan a
+                        # live position on a phantom exit — keep managing.
+                        log.warning("parent close rejected %s (%s) — manager "
+                                    "kept, will retry", pair, cr.reason)
+                        continue
                     except Exception as exc:
-                        log.warning("close_position %s: %s (OANDA may have beaten us)", pair, exc)
+                        _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
+                        if not _gone:
+                            log.warning("parent close_position %s failed (%s) "
+                                        "— manager kept", pair, exc)
+                            continue
+                        log.info("parent close %s: already gone at broker", pair)
                 if signal.net_pips < 0:
                     self._sl_history[pair] = now
                 del self.managers[pair]

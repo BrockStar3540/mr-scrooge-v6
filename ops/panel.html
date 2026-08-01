@@ -103,6 +103,27 @@ body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-se
 .card-title .tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;
                  background:var(--bg3);color:var(--fg2);text-transform:none;letter-spacing:0}
 
+/* ── EDGE LAB identity (2026-08-01): purple/cyan ───────────────────────── */
+:root{--edge1:#a78bfa; --edge2:#22d3ee}
+.tab-edge{color:var(--edge1)!important;font-weight:700}
+.tab-edge.active{border-bottom-color:var(--edge2)!important;color:var(--edge2)!important}
+.new-badge{font-size:8px;font-weight:800;background:linear-gradient(90deg,var(--edge1),var(--edge2));
+           color:#0b0f14;border-radius:6px;padding:1px 5px;margin-left:5px;vertical-align:super;letter-spacing:.06em}
+.edge-card{border:1px solid rgba(167,139,250,.35)!important;
+           background:linear-gradient(180deg,#171226 0%,#10131c 100%)!important}
+.edge-title{background:linear-gradient(90deg,var(--edge1),var(--edge2));
+            -webkit-background-clip:text;background-clip:text;color:transparent!important}
+/* ── EDGE COMMAND cockpit (LIVE page) ──────────────────────────────────── */
+.pipeline{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0 14px}
+.pipe-stage{background:var(--bg3);border:1px solid var(--border);border-radius:8px;
+            padding:6px 12px;text-align:center;min-width:86px}
+.pipe-stage .n{font-size:19px;font-weight:800;font-family:"JetBrains Mono",monospace}
+.pipe-stage .l{font-size:9px;color:var(--fg3);letter-spacing:.08em;text-transform:uppercase}
+.pipe-arrow{color:var(--fg3);font-size:15px}
+.hotq-row{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;
+          border-bottom:1px solid var(--bg3);font-family:"JetBrains Mono",monospace}
+.cockpit-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+
 /* ── GOVERNANCE CARD GRID (enhanced dashboard, 2026-07-31) ─────────────── */
 .gov-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
           gap:12px;margin:14px 14px 0}
@@ -638,7 +659,7 @@ body.has-ticker{padding-bottom:32px}
   <button class="tab active" onclick="showTab('live',this)">LIVE</button>
   <button class="tab" onclick="showTab('pairs',this)">PAIRS</button>
   <button class="tab" onclick="showTab('cells',this)">BOOK</button>
-  <button class="tab" onclick="showTab('shadow',this)">SHADOW</button>
+  <button class="tab tab-edge" onclick="showTab('shadow',this)">EDGE LAB<span class="new-badge">NEW</span></button>
   <button class="tab" onclick="showTab('indicators',this)">INDICATORS</button>
   <button class="tab" onclick="showTab('health',this)">HEALTH</button>
   <button class="tab" onclick="showTab('system',this)">SYSTEM</button>
@@ -663,6 +684,19 @@ body.has-ticker{padding-bottom:32px}
 
 <!-- ─── LIVE TAB ─────────────────────────────────────────────────────────── -->
 <div id="tab-live" class="pane active">
+  <div class="card edge-card" style="margin:14px 14px 0">
+    <div class="card-title"><span class="edge-title">⚡ EDGE COMMAND</span>
+      <span class="tag">stamp → replay → probe → trust — the whole promotion machine at a glance</span></div>
+    <div class="pipeline" id="ec-pipeline"><span class="muted">loading…</span></div>
+    <div class="cockpit-grid">
+      <div><div class="stat-sub">ADMISSION</div><div id="ec-admission" class="stat-big" style="font-size:16px">—</div></div>
+      <div><div class="stat-sub">TRUSTED SEATS</div><div id="ec-trusted" class="stat-big pos">—</div></div>
+      <div><div class="stat-sub">DECAY WARNINGS</div><div id="ec-decay" class="stat-big warn">—</div></div>
+      <div><div class="stat-sub">OPEN-STOP LIABILITY</div><div id="ec-floor" class="stat-big">—</div></div>
+      <div style="grid-column:span 2;min-width:240px"><div class="stat-sub">🔥 HOT QUEUE — leading candidates by heat</div>
+        <div id="ec-hotq"><span class="muted">accruing…</span></div></div>
+    </div>
+  </div>
   <div id="banner" class="banner banner-gray">Loading...</div>
   <div id="live-cell-chip" class="live-cell-chip" style="display:none"><span class="dot"></span><span id="live-cell-chip-txt">—</span></div>
 
@@ -784,6 +818,10 @@ body.has-ticker{padding-bottom:32px}
 <!-- ─── SHADOW TAB (Phase C shadow-week scoreboard + stamp feed) ─────────── -->
 <div id="tab-shadow" class="pane">
   <div class="gov-grid">
+    <div class="card edge-card" style="grid-column:1/-1;padding:10px 18px">
+      <div class="card-title" style="margin-bottom:0"><span class="edge-title">🧬 EDGE LAB</span>
+        <span class="tag">where shadows earn capital: governor state · broker cycles · external trials · evidence freshness</span></div>
+    </div>
     <div class="card">
       <div class="card-title">📚 Evidence</div>
       <div class="stat-row" id="gc-evidence"><span class="muted">loading…</span></div>
@@ -1178,6 +1216,7 @@ async function pollShadowboard(){
     const d=await r.json();
     SBOARD=d;
     renderEvidenceChips();
+    renderEdgeCommand();
     loadGovLedger();
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
@@ -2935,6 +2974,51 @@ function renderShadowTab(){
       <td class="mono muted" style="font-size:10px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escape(s.conds||'')}">${escape((s.conds||'').slice(0,90))}</td>
     </tr>`;
   }).join('');
+}
+
+/* ── EDGE COMMAND cockpit (LIVE page, 2026-08-01) ──────────────────────── */
+async function renderEdgeCommand(){
+  const rows=SBOARD?.rows||[]; const m=SBOARD?.meta||{};
+  const stamps=m.episodes_total??0;
+  const replayable=rows.filter(r=>r.status==='SHADOW'&&(r.era?.n||0)>=3).length;
+  const probes=rows.filter(r=>r.status==='PROBE').length;
+  const trusted=rows.filter(r=>r.ht&&r.ht.trusted&&!r.ht.decaying).length;
+  const decaying=rows.filter(r=>r.ht&&r.ht.decaying).length;
+  const pipe=document.getElementById('ec-pipeline');
+  if(pipe){
+    const st=(n,l)=>`<div class="pipe-stage"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+    pipe.innerHTML=st(stamps,'stamped episodes')+'<span class="pipe-arrow">→</span>'+
+      st(replayable,'replay-eligible')+'<span class="pipe-arrow">→</span>'+
+      st(probes,'probe seats')+'<span class="pipe-arrow">→</span>'+
+      st(trusted,'trusted')+'<span class="pipe-arrow">→</span>'+
+      st(decaying,'decaying');
+  }
+  const t=document.getElementById('ec-trusted'); if(t)t.textContent=trusted;
+  const dd=document.getElementById('ec-decay'); if(dd)dd.textContent=decaying;
+  const fl=document.getElementById('ec-floor');
+  if(fl){const f=m.open_floor_usd;
+    fl.textContent=f!=null?(f>=0?'+':'−')+'$'+Math.abs(f).toFixed(0):'—';
+    fl.className='stat-big '+(f!=null&&f<0?'neg':'pos');}
+  const hq=document.getElementById('ec-hotq');
+  if(hq){
+    const cand=rows.filter(r=>r.status==='SHADOW'&&r.ht&&r.ht.heat!=null)
+      .sort((a,b)=>(b.ht.heat||0)-(a.ht.heat||0)).slice(0,5);
+    hq.innerHTML=cand.length?cand.map(r=>
+      `<div class="hotq-row"><span>${escape(r.cell)}/${escape(r.setup)}</span>`+
+      `<span class="${r.ht.heat>0?'pos':'neg'}">${r.ht.heat>0?'+':''}${r.ht.heat.toFixed(2)} heat · ${r.ht.n_cycles||0} cyc</span></div>`).join('')
+      :'<span class="muted">no shadow has broker-cycle heat yet — candidates appear as families complete</span>';
+  }
+  try{
+    const cs=await (await fetch('/api/commissioner')).json();
+    const g=await (await fetch('/api/governor')).json(); const c=g.config||g;
+    const el=document.getElementById('ec-admission');
+    if(el){
+      const lane=c.cheater_promotion_enabled;
+      el.innerHTML=lane
+        ?`<span class="pos">COMMISSIONED</span> <span class="stat-sub">${c.cheater_max_seats} seat max</span>`
+        :`<span class="warn">${escape(cs.stage||'VALIDATING')}</span> <span class="stat-sub">${(cs.passes||[]).length}/2 health · awaiting qualifier</span>`;
+    }
+  }catch(e){}
 }
 
 /* ── enhanced dashboard (2026-07-31): the governance card grid ─────────── */

@@ -313,3 +313,25 @@ def test_dashboard_state_shape(pp):
     g = st["grids"][0]
     assert g["pair"] == "EUR_USD" and g["level_prices"]["10"]
     assert sorted(p["level"] for p in g["open"]) == [10.0, 15.0]
+
+
+# ── B-119: rejected closes must never book phantom exits ─────────────────────
+
+def test_rejected_close_keeps_popper_tracked(pp, monkeypatch):
+    from core.broker.oanda import CloseRejected
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09895))      # fire -10 popper
+    assert pp.open_popper_count() == 1
+    tid = next(iter(pp.poppers))
+    def _reject(trade_id, units="ALL"):
+        raise CloseRejected(trade_id, "MARKET_HALTED")
+    monkeypatch.setattr(pp.broker, "close_position", _reject)
+    # rally far enough that the ratchet signals an exit
+    from datetime import timedelta
+    pp.tick(NOW + timedelta(minutes=30), {tid}, {"EUR_USD"}, _pricing(1.10100))
+    pp.tick(NOW + timedelta(minutes=31), {tid}, {"EUR_USD"}, _pricing(1.09990))
+    # the close was rejected: the popper must STILL be tracked, no exit booked
+    assert tid in pp.poppers, "phantom exit booked despite rejected close"
+    assert pp.grids["EUR_USD"].greens == 0
+    # and the backoff must prevent hammering the broker every tick
+    assert pp._close_backoff.get(tid, 0) > NOW.timestamp()

@@ -16,6 +16,14 @@ from typing import Optional
 
 from config.pairs import PIP
 
+class CloseRejected(Exception):
+    """A close order was created and CANCELLED by the broker (B-119) — the
+    trade is still open. reason e.g. MARKET_HALTED, FIFO_VIOLATION."""
+    def __init__(self, trade_id, reason):
+        super().__init__(f"close of {trade_id} rejected: {reason}")
+        self.trade_id, self.reason = trade_id, reason
+
+
 log = logging.getLogger("v5.broker")
 
 
@@ -364,13 +372,26 @@ class OandaBroker:
     def close_position(self, trade_id: str, units = "ALL") -> dict:
         """Close a trade by OANDA trade ID. units="ALL" = full close;
         positive int = partial close that many units (OANDA strips them from the
-        position; remaining units stay open at the same entry, same SL)."""
+        position; remaining units stay open at the same entry, same SL).
+
+        B-119 (2026-08-01): OANDA can return HTTP 200 with the close order
+        CREATED-AND-CANCELLED (orderCancelTransaction — e.g. MARKET_HALTED on
+        a weekend). Logging "CLOSED" on any 200 let the popper manager book
+        PHANTOM exits for trades still open at the broker. A cancelled close
+        now raises CloseRejected(reason); callers must keep managing."""
         body_units = "ALL" if (units == "ALL" or units is None) else str(int(units))
         result = self._req(
             "PUT",
             f"/v3/accounts/{self._acct}/trades/{trade_id}/close",
             {"units": body_units},
         )
+        if ("orderCancelTransaction" in result
+                and "orderFillTransaction" not in result):
+            reason = (result.get("orderCancelTransaction") or {}).get(
+                "reason", "UNKNOWN")
+            log.warning("CLOSE REJECTED trade %s: %s — trade remains OPEN",
+                        trade_id, reason)
+            raise CloseRejected(trade_id, reason)
         log.info("CLOSED trade %s (units=%s)", trade_id, body_units)
         return result
 

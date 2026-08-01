@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-118, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-119, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -743,6 +743,14 @@ When it draws wrong, every trade off it is contaminated — so these carry expli
 - **Root cause:** the commit chain ran `pytest -q | tail -1` and proceeded on tail's exit code — the **exact** pipe sin B-111 documented on 2026-07-29, recommitted verbatim by the same author two days later. The check that isn't allowed to fail the pipeline isn't a check.
 - **Fix:** schema whitelists `wired`, VALID_STATUSES gains PROBE, queued unpack tolerates the extended tuple; fix-commit ran under `set -e` with the exit code unpiped. Suite 348 green before push.
 - **Lesson:** B-111's lesson didn't fail — its *enforcement* did. A lesson that lives in a document and not in the tooling will be re-learned at the worst available moment. (CI caught it too — the red run on GitHub was the backstop that a local pipe can't swallow.)
+
+### B-119 — HTTP 200 is not a fill: phantom popper exits on a halted market
+- **Date:** 2026-08-01 (caught by the Commissioner's reconcile guard: "broker=6 tracked=5 missing=['7059']")
+- **Area:** `core/broker/oanda.py` close_position; `modules/management/party_package.py` exit booking; `core/engine.py` parent close path
+- **Symptom:** over the weekend halt, the engine repeatedly "closed" popper 7059, logged `CLOSED`, booked a **+8.0p exit into the grid ledger** and dropped tracking — while the trade stayed open at the broker. The reconciler then re-adopted it, the manager re-signalled, and the loop repeated (~every close attempt, 10 phantom exits in 40 minutes). Live money was never lost — the trade kept its server-side stop — but the pp ledger took phantom greens and the family stayed judged-open.
+- **Root cause:** OANDA answers a close request with **HTTP 200 even when the close order is created-and-CANCELLED** (`orderCancelTransaction`, here reason `MARKET_HALTED`; `FIFO_VIOLATION` is the same shape). `close_position` logged CLOSED on any 200, and both exit paths booked the exit unconditionally — the `except` clause only ever imagined network errors ("OANDA may have beaten us").
+- **Fix:** `close_position` inspects the response — cancel-without-fill raises typed `CloseRejected(reason)`. The popper path keeps the trade tracked on rejection with a 30-min backoff (no order-hammering through the halt); the parent path keeps its manager instead of deleting it onto a live position. Only a confirmed fill, or a genuinely-gone trade, books an exit. Regression test drives a rejecting broker through the production tick.
+- **Lesson:** a 200 status is transport, not truth — the *transaction inside* is the verdict. Same family as B-111/118 (the unexamined success path): every broker mutation needs its result READ, not assumed. And the autonomy stack worked exactly as designed: the Commissioner's guard flagged the mismatch hours before any human looked.
 - **Guard (2026-07-31, Brock: "put a pipe guard so that doesn't happen again"):** `ops/hooks/pre-push` — versioned git hook (installed via `git config core.hooksPath ops/hooks`) that runs the full suite UNPIPED and the secrets sweep over the outgoing diff on every push, blocking at the git layer. Verified both directions: green suite pushes, a deliberate red test blocked the push. The lesson now lives in the tooling.
 
 

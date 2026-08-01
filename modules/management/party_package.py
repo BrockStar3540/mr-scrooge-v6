@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import json
 import logging
+from core.broker.oanda import CloseRejected
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
@@ -257,6 +258,7 @@ class PartyPackage:
         self.grids: dict[str, Grid] = {}              # pair -> Grid
         self.poppers: dict[str, RatchetManager] = {}  # trade_id -> manager
         self._popper_grid: dict[str, tuple[str, int]] = {}  # trade_id -> (pair, level_idx)
+        self._close_backoff: dict = {}   # tid -> retry-after epoch (B-119)
         self._load_state()
 
     # ── lifecycle hooks ──────────────────────────────────────────────────────
@@ -491,11 +493,30 @@ class PartyPackage:
                 continue
             signal = mgr.update(px, now)
             if signal:
+                # B-119: a rejected close (MARKET_HALTED on weekends, FIFO,
+                # etc.) means the trade is STILL OPEN — booking the exit
+                # anyway created phantom +pips and dropped live trades from
+                # tracking (the reconciler then re-adopted them in a loop).
+                # Rejection => keep managing, back off 30 min. Only a
+                # confirmed fill (or a genuinely-gone trade) books the exit.
+                if self._close_backoff.get(tid, 0) > now.timestamp():
+                    continue
                 try:
                     self.broker.close_position(tid)
+                except CloseRejected as cr:
+                    log.warning("PP close rejected %s (%s) — popper stays "
+                                "tracked, retry after backoff", tid, cr.reason)
+                    self._close_backoff[tid] = now.timestamp() + 1800
+                    continue
                 except Exception as exc:
-                    log.warning("PP close_position %s: %s (OANDA may have beaten us)",
-                                tid, exc)
+                    _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
+                    if not _gone:
+                        log.warning("PP close_position %s failed (%s) — popper "
+                                    "stays tracked", tid, exc)
+                        self._close_backoff[tid] = now.timestamp() + 300
+                        continue
+                    log.info("PP close %s: trade already gone at broker — "
+                             "booking exit", tid)
                 self._book_exit(pair, lvl, tid, signal.net_pips, signal.reason, now)
 
         # 3) re-arm + fire per grid

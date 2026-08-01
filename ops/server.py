@@ -1488,6 +1488,14 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_sb.get_board(), default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/commissioner"):
+                # Edge Command cockpit: the Commissioner's stage + pass history
+                try:
+                    body = (_REPO_ROOT / "data" / "commissioner_state.json").read_bytes()
+                    ctype, code = "application/json", 200
+                except OSError:
+                    body = _j.dumps({"stage": "VALIDATING", "passes": []}).encode()
+                    ctype, code = "application/json", 200
             elif self.path.startswith("/api/governor/ledger"):
                 # enhanced dashboard (2026-07-31): the decision ledger, no
                 # METRIC-ERA-RESET noise, newest first, capped at 40. MUST sit
