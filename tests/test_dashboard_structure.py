@@ -33,3 +33,18 @@ def test_governance_cards_and_ledger():
 
 def test_script_tags_balanced():
     assert PANEL.count("<script") == PANEL.count("</script>")
+
+
+def test_every_pane_div_balanced():
+    """The bug Brock caught by eye (2026-08-01): one stray </div> in a pane
+    breaks tab switching for every pane after it. Structural invariant now."""
+    import re
+    panes = [(m.start(), m.group(1))
+             for m in re.finditer(r'<div id="(tab-\w+)" class="pane', PANEL)]
+    assert len(panes) >= 8
+    for i, (pos, name) in enumerate(panes):
+        end = panes[i + 1][0] if i + 1 < len(panes) else PANEL.find("<script")
+        seg = PANEL[pos:end]
+        opens = len(re.findall(r"<div\b", seg))
+        closes = seg.count("</div>")
+        assert opens == closes, f"{name}: {opens} opens vs {closes} closes"
