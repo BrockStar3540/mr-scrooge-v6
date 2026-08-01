@@ -4,6 +4,36 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.16.0 – 6.16.2] — 2026-07-31/08-01 — "The Edge Lab" (external trials, cockpit, B-119)
+
+### Added
+- **External-strategy trial docket** (from a six-repo source audit,
+  docs/slates/external_repos_audit_2026-07-31.md — verdict: no repo had a demonstrated
+  edge): 42 zero-authority SHADOW cells — TradeClaw's VWAP–EMA–BB pullback ×24 (wired
+  WITH its own negative costed test in each evidence note) and EuroScope's regime-routed
+  trend/mean-reversion/breakout ×18. New feed features: `vwap_dist_pips`
+  (session-anchored VWAP), `adx14` (H1 Wilder ADX). Promotion only via family cycles.
+- **Enhanced dashboard**: ⚡ EDGE COMMAND cockpit on the LIVE page (promotion pipeline
+  with live counts, admission status, trusted/decay tiles, open-floor hero number, hot
+  queue); SHADOW → **EDGE LAB** (purple/cyan identity, NEW badge); governance card grid
+  (evidence accounting, risk truth, autonomy lanes, trial docket, decision ledger with
+  full reasons); `/api/governor/ledger` + `/api/commissioner` endpoints; prospective
+  score snapshots (`data/score_snapshots.jsonl`, hindsight-proof) and
+  `research/tools/delta_promotion.py` (E[R_next | promoted] − E[R_next | eligible-not]).
+  Structure tests pin the conspicuous pieces AND per-pane div balance (a stray `</div>`
+  briefly broke tab switching for every pane after EDGE LAB — caught by the operator,
+  now a permanent red test).
+
+### Fixed
+- **B-119 (CRITICAL, caught by the Commissioner's reconcile guard)**: OANDA answers a
+  close request with HTTP 200 even when the close order is created-and-CANCELLED
+  (`orderCancelTransaction`; observed `MARKET_HALTED` over the weekend halt —
+  `FIFO_VIOLATION` is the same shape). `close_position` logged CLOSED on any 200, so the
+  popper manager booked phantom +8p exits for a still-open trade and the reconciler
+  re-adopted it in a churn loop. Fixed at all three layers: typed `CloseRejected` on
+  cancel-without-fill; popper stays tracked with 30-min backoff; parent keeps its
+  manager. A 200 is transport, not truth — read the transaction inside. Suite 391.
+
 ## [6.15.2] — 2026-07-31 — "Health Is Not Edge" (review round 5)
 
 The Commissioner's doctrine, corrected before its first commissioning tick:
