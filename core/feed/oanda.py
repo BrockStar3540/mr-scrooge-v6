@@ -116,6 +116,49 @@ class _Client:
 
 # ── Indicator helpers (match V3/V4 exactly — dm_04 corpus was built with these) ─
 
+def _adx14(df: pd.DataFrame, period: int = 14) -> float:
+    """Wilder ADX(14) on the given frame (H1). 0 when insufficient bars."""
+    if len(df) < period * 2 + 1:
+        return 0.0
+    h, l, c = df["high"].astype(float), df["low"].astype(float), df["close"].astype(float)
+    up = h.diff()
+    dn = -l.diff()
+    plus_dm = ((up > dn) & (up > 0)) * up
+    minus_dm = ((dn > up) & (dn > 0)) * dn
+    tr = pd.concat([h - l, (h - c.shift()).abs(), (l - c.shift()).abs()],
+                   axis=1).max(axis=1)
+    atr = tr.ewm(alpha=1.0 / period, adjust=False).mean()
+    pdi = 100 * plus_dm.ewm(alpha=1.0 / period, adjust=False).mean() / atr
+    mdi = 100 * minus_dm.ewm(alpha=1.0 / period, adjust=False).mean() / atr
+    dx = 100 * (pdi - mdi).abs() / (pdi + mdi).replace(0, 1e-9)
+    adx = dx.ewm(alpha=1.0 / period, adjust=False).mean()
+    v = float(adx.iloc[-1])
+    return round(v, 2) if v == v else 0.0
+
+
+def _session_vwap_dist(m5: pd.DataFrame, mid: float, pip: float) -> float:
+    """mid − VWAP anchored at the CURRENT coarse session's start, in pips.
+    Typical price × tick volume over the current session run of M5 bars
+    (session labels per config/sessions.py windows)."""
+    try:
+        if "time" in m5.columns:
+            hours = [int(str(t)[11:13]) for t in m5["time"]]
+        else:
+            hours = list(m5.index.hour)
+        lbl = [(0 if (h >= 22 or h < 7) else (1 if h < 13 else 2)) for h in hours]
+        start = len(lbl) - 1
+        while start > 0 and lbl[start - 1] == lbl[-1]:
+            start -= 1
+        seg = m5.iloc[start:]
+        tp = (seg["high"].astype(float) + seg["low"].astype(float)
+              + seg["close"].astype(float)) / 3.0
+        vol = seg["volume"].astype(float).clip(lower=1e-9)
+        vwap = float((tp * vol).sum() / vol.sum())
+        return round((mid - vwap) / pip, 1)
+    except Exception:
+        return 0.0
+
+
 def _atr14(df: pd.DataFrame, pip: float) -> float:
     """Wilder ATR14 in pips. V3-exact: slice last 30 bars → TR → EWM(1/14)."""
     if df is None or len(df) < 15:
@@ -462,6 +505,8 @@ def _compute_features(
         d_ret=round(d_ret, 4),
         close_pos_daily=round(close_pos_daily, 4),
         adr_consumed=round(adr_consumed, 4),
+        vwap_dist_pips=_session_vwap_dist(m5, mid, pip),
+        adx14=_adx14(h1),
         # Mean-reversion (M5)
         bb_pos=round(bb_pos, 4),
         bb_width=round(bb_width, 4),

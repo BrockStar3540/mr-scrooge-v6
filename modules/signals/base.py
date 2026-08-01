@@ -44,6 +44,9 @@ class MarketView:
     bb_pos:         float = 0.0     # Bollinger Band position (0=low, 1=high)  [-0.55p]
     bb_width:       float = 0.0     # Bollinger Band width, pips (in momentum) [+0.12p]
     zscore_5m:      float = 0.0     # 5m Z-score vs 20-bar SMA                [-0.55p]
+    # external-strategy trial features (2026-07-31: TradeClaw/EuroScope shadows)
+    vwap_dist_pips: float = 0.0     # mid − session-anchored VWAP, pips
+    adx14:          float = 0.0     # H1 ADX-14 (trend-strength regime gate)
     ema20_dist_pct: float = 0.0     # 5m EMA20 distance, frac of price        [-0.57p]
     ema5_dist_pips: float = 0.0     # 5m EMA5 distance, pips                  [-0.53p]
     ema50_dist_pct: float = 0.0     # 5m EMA50 distance, frac of price        [-0.39p]

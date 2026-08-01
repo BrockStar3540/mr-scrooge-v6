@@ -554,7 +554,30 @@ def _refresh_worker():
         rows = _aggregate(db)
         active = [r["avg_net240"] for r in rows
                   if r["status"] == "ACTIVE" and r["avg_net240"] is not None]
+        # enhanced dashboard (2026-07-31): board-level EVIDENCE ACCOUNTING +
+        # RISK TRUTH + FRESHNESS — TradeClaw-inspired, Scrooge-native units
+        _n_cens = sum(r.get("n_censored") or 0 for r in rows)
+        _n_eps = sum(r.get("episodes") or 0 for r in rows)
+        _fam_open = [r for r in rows
+                     if r.get("gov") and (r["gov"].get("family") or {}).get("n_open")]
+        _floor = sum((r["gov"]["family"].get("open_floor_usd") or 0)
+                     for r in _fam_open
+                     if isinstance(r["gov"]["family"].get("open_floor_usd"),
+                                   (int, float)))
+        _cyc_total = sum(((r.get("gov") or {}).get("family") or {}).get("n_cycles") or 0
+                         for r in rows if r.get("gov"))
+        try:
+            _heat_age_s = time.time() - os.path.getmtime(_ROOT / "data" / "heat_scores.json")
+        except OSError:
+            _heat_age_s = None
+        _meta = {"episodes_total": _n_eps, "episodes_censored": _n_cens,
+                 "family_cycles_completed": _cyc_total,
+                 "families_open": len(_fam_open),
+                 "open_floor_usd": round(_floor, 2),
+                 "heat_age_s": (round(_heat_age_s) if _heat_age_s is not None
+                                else None)}
         data = {"rows": rows,
+                "meta": _meta,
                 "tiers": TIER_LABELS,
                 "active_median": round(sorted(active)[len(active)//2], 2) if active else None,
                 "pending": sum(1 for e in db["episodes"].values() if not e["scores"]),

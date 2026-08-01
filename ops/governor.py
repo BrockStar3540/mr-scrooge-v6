@@ -847,6 +847,25 @@ def main():
     except OSError as _he:
         print(f"governor: heat file write failed ({_he})", file=sys.stderr)
 
+    # PROSPECTIVE SNAPSHOTS (enhanced dashboard, 2026-07-31): one compact
+    # line per run per scored key, written BEFORE outcomes are known — the
+    # substrate for the Δ_promotion metric (does admission actually predict
+    # the next broker family cycle, promoted vs eligible-but-not?). Append-
+    # only; hindsight-proof by construction.
+    try:
+        _promoted = {"|".join(k) for k, _, _ in cheater_promos}
+        _eligible = {"|".join(k) for k, _, _ in cheater_cands}
+        with open(REPO / "data" / "score_snapshots.jsonl", "a") as sf:
+            for k2, hs in heat_scores.items():
+                sf.write(json.dumps({
+                    "t": now_iso, "key": k2, "status": hs.get("status"),
+                    "heat": hs.get("heat"), "trust": hs.get("trust"),
+                    "n_cycles": hs.get("n_cycles"),
+                    "eligible": k2 in _eligible,
+                    "promoted": k2 in _promoted}) + "\n")
+    except OSError as _se2:
+        print(f"governor: snapshot write failed ({_se2})", file=sys.stderr)
+
     # strongest evidence first; rails cap the day's changes
     promotions.sort(key=lambda x: -(x[1].block_lcb or 0))
     demotions.sort(key=lambda x: (x[2]["net_pips"] if x[2] else

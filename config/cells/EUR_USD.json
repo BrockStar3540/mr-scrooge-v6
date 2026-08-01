@@ -58,6 +58,221 @@
           },
           "notes": "Prev-session floor/ceiling consciousness (Brock hypothesis 2026-07-10). At the wall -> fade; through the wall -> follow; never anticipate. SHADOW earns via scoreboard.",
           "wired": "2026-07-10"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_trend_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "min": 25.0,
+              "note": "EuroScope trend regime: ADX >= 25"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "price above EMA20"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_meanrev_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "max": 20.0,
+              "note": "EuroScope range regime: ADX <= 20"
+            },
+            {
+              "feature": "rsi14",
+              "min": 68.0,
+              "note": "RSI extreme"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "upper-band touch \u2014 fade"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_breakout_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdh_dist",
+              "min": 0.0,
+              "note": "above the previous day high (breakout leg)"
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "expansion regime"
+            },
+            {
+              "feature": "rsi14",
+              "min": 50.0,
+              "note": "momentum side of 50"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -838,6 +1053,221 @@
           },
           "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
           "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_trend_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "min": 25.0,
+              "note": "EuroScope trend regime: ADX >= 25"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "price above EMA20"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_meanrev_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "max": 20.0,
+              "note": "EuroScope range regime: ADX <= 20"
+            },
+            {
+              "feature": "rsi14",
+              "min": 68.0,
+              "note": "RSI extreme"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "upper-band touch \u2014 fade"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_breakout_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdh_dist",
+              "min": 0.0,
+              "note": "above the previous day high (breakout leg)"
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "expansion regime"
+            },
+            {
+              "feature": "rsi14",
+              "min": 50.0,
+              "note": "momentum side of 50"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -1867,6 +2297,221 @@
           },
           "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
           "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_trend_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "min": 25.0,
+              "note": "EuroScope trend regime: ADX >= 25"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "price above EMA20"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_meanrev_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "max": 20.0,
+              "note": "EuroScope range regime: ADX <= 20"
+            },
+            {
+              "feature": "rsi14",
+              "min": 68.0,
+              "note": "RSI extreme"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "upper-band touch \u2014 fade"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "es_breakout_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdh_dist",
+              "min": 0.0,
+              "note": "above the previous day high (breakout leg)"
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "expansion regime"
+            },
+            {
+              "feature": "rsi14",
+              "min": 50.0,
+              "note": "momentum side of 50"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: EuroScope regime-routed rules (MIT). No performance evidence in source - zero prior"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.196 ev_gross_short=-3.193, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

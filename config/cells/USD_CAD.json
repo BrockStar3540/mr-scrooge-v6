@@ -13,7 +13,94 @@
         "ev_gross_short": -7.481,
         "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      "setups": [],
+      "setups": [
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        }
+      ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs); tier-3 structural (ev_gross_long=-5.472 ev_gross_short=-7.481, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     },
     "london": {
@@ -667,6 +754,92 @@
           },
           "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
           "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -1322,6 +1495,92 @@
           },
           "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
           "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.596 ev_gross_short=-5.21, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

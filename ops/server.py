@@ -1488,6 +1488,26 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_sb.get_board(), default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/governor/ledger"):
+                # enhanced dashboard (2026-07-31): the decision ledger, no
+                # METRIC-ERA-RESET noise, newest first, capped at 40. MUST sit
+                # above the /api/governor prefix route.
+                try:
+                    _lp = _REPO_ROOT / "data" / "governor_ledger.jsonl"
+                    _rows = []
+                    for _ln in _lp.read_text().splitlines():
+                        try:
+                            _d = _j.loads(_ln)
+                        except ValueError:
+                            continue
+                        if _d.get("action") != "METRIC-ERA-RESET":
+                            _rows.append(_d)
+                    body = _j.dumps({"entries": _rows[-40:][::-1]},
+                                    default=str).encode()
+                    ctype, code = "application/json", 200
+                except OSError:
+                    body = _j.dumps({"entries": []}).encode()
+                    ctype, code = "application/json", 200
             elif self.path.startswith("/api/governor"):
                 body = _j.dumps(_governor_get(), default=str).encode()
                 ctype = "application/json"

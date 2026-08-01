@@ -843,6 +843,12 @@ body.has-ticker{padding-bottom:32px}
     <div class="card-title">Setup Scoreboard — simulated EV vs expected
       <span class="tag" id="cellscore-tag">—</span>
     </div>
+    <div id="evidence-chips" class="muted" style="font-size:11px;padding:6px 12px 2px"></div>
+    <div style="padding:4px 12px 10px">
+      <details><summary style="cursor:pointer;font-size:12px"><b>⚖️ Governor decision ledger</b> — every flip, admission, veto and era reset, newest first (the operator contract: the machine says why)</summary>
+      <div id="gov-ledger" class="mono-sm" style="font-size:10px;max-height:260px;overflow-y:auto;padding:6px 0"></div>
+      </details>
+    </div>
     <table id="cellscore-tbl">
       <thead><tr>
         <th>Setup</th><th>Cell</th><th>Side</th><th title="EPISODES (stamps): the engine re-stamps every scan cycle while conditions hold, so stamps cluster — stamps ≤30min apart are ONE episode = one real entry decision. Sim EV/WR are per-episode (most recent 50). The old per-stamp counting let a single runaway afternoon read as 78 trades at 100% WR.">N eps (stamps)</th>
@@ -1124,10 +1130,14 @@ window.fetch = async function(url, options = {}){
 };
 
 /* ── Shadowboard ───────────────────────────────────────────────────────── */
+let SBOARD=null;
 async function pollShadowboard(){
   try{
     const r=await fetch('/api/shadowboard'); if(!r.ok)return;
     const d=await r.json();
+    SBOARD=d;
+    renderEvidenceChips();
+    loadGovLedger();
     document.getElementById('sb-meta').textContent=
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${(d.generated||'').slice(11,16)}Z`;
     const TIER_ICON={0:'🔻',1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',7:'🪦'};
@@ -2884,6 +2894,35 @@ function renderShadowTab(){
       <td class="mono muted" style="font-size:10px;max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escape(s.conds||'')}">${escape((s.conds||'').slice(0,90))}</td>
     </tr>`;
   }).join('');
+}
+
+/* ── enhanced dashboard (2026-07-31): evidence chips + decision ledger ── */
+function renderEvidenceChips(){
+  const el=document.getElementById('evidence-chips');
+  const m=SBOARD?.meta;
+  if(!el||!m)return;
+  const age=s=>s==null?'—':(s<90?`${s}s`:s<5400?`${Math.round(s/60)}m`:`${(s/3600).toFixed(1)}h`);
+  el.innerHTML=[
+    `<b>evidence:</b> ${m.episodes_total??'—'} era episodes (${m.episodes_censored??0} censored/open)`,
+    `<b>family cycles completed:</b> ${m.family_cycles_completed??'—'}`,
+    `<b>risk truth:</b> ${m.families_open??0} famil${m.families_open===1?'y':'ies'} open · floor ${m.open_floor_usd!=null?(m.open_floor_usd>=0?'+':'')+'$'+m.open_floor_usd:'—'}`,
+    `<b>freshness:</b> board ${SBOARD?.generated?age(Math.round((Date.now()-new Date(SBOARD.generated).getTime())/1000)):'—'} · heat ${age(m.heat_age_s)}`
+  ].join('&nbsp;&nbsp;·&nbsp;&nbsp;');
+}
+async function loadGovLedger(){
+  const el=document.getElementById('gov-ledger');
+  if(!el)return;
+  try{
+    const r=await fetch('/api/governor/ledger');
+    const d=await r.json();
+    el.innerHTML=(d.entries||[]).map(e=>{
+      const who=e.actor==='commissioner'?'🏛':'⚖️';
+      const tag=e.action||'?';
+      const cls=/DEMOTE|DECOMMISSION/.test(tag)?'color:var(--fail)':/PROMOTE|PROBE|COMMISSION|GRADUATE|EXPANSION/.test(tag)?'color:var(--pass)':'color:var(--warn)';
+      const cell=e.pair?`${e.pair}/${e.session||''}/${e.setup||''}`:(e.key||'');
+      return `<div style="padding:2px 0;border-bottom:1px solid #21262d">${who} <b style="${cls}">${tag}</b> ${escape(cell)} <span class="muted">${(e.t||'').slice(0,16)}${e.dry_run?' (dry)':''}</span><br><span class="muted">${escape(String(e.why||'').slice(0,220))}</span></div>`;
+    }).join('')||'<div class="muted">no entries yet</div>';
+  }catch(e){el.innerHTML='<div class="muted">ledger unavailable</div>';}
 }
 
 /* ── SHADOW tab: scorer scoreboard ─────────────────────────────────────── */
