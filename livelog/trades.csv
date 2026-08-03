@@ -80,3 +80,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-07-31T20:14:23Z,GBP_USD,short,5065,3.04,popper
 2026-08-02T21:04:55Z,AUD_USD,short,16275,-17.25,popper
 2026-08-02T23:44:45Z,GBP_USD,short,5058,2.88,popper
+2026-08-03T01:41:05Z,AUD_USD,short,16176,12.94,popper
