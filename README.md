@@ -97,14 +97,17 @@ tapes, or contributed — walks the same ladder:
    carries its parent's setup id). Family n ≥ 5 at **−60p or worse** → demoted, and the
    cell's poppers are switched off with it; family at **+60p or better defends the seat** —
    real broker green outranks the worst-case stamp simulator. Only unfamilied actives fall
-   back to the stamp bar (era v2 n ≥ 20, avg < +2.0) — audited against the broker, never
+   back to the stamp bar (era v2 episodes below the configured minimum, avg < +2.0) — audited against the broker, never
    our own journal. **Judge-when-flat:** while any family trade is open there is no verdict
    at all — a parent can stop −60p while its poppers are still riding toward +30p, so the
    episode is scored only when it completes, never mid-scale-in. Demoted setups keep
    stamping as shadows and can re-earn the seat. Every flip
    restarts that setup's evidence clock: **proof never blends across eras**, and every
    decision is written to a public ledger (`data/governor_ledger.jsonl`). Rails: max 2
-   promotions + 4 demotions per day, sides never flipped, `manual_only` respected.
+   promotions + 4 demotions per day, sides never flipped, `manual_only` respected. **Three
+   strikes (2026-08-03):** every demotion is a permanent 🔻 strike; struck cells re-promote
+   only over the stricter redemption bar (20 episodes / 10 days), and the third strike
+   retires the cell to DISABLED for good — manual re-enable only.
 
 **The autonomous day:** `06:30Z` the [counterpart audit](research/tools/counterpart_audit.py)
 wires opposite-direction twins for any MAE-heavy loser → `06:35Z` the governor promotes and

@@ -23,7 +23,8 @@ never governs capital.
 | Switch | Fires when |
 |---|---|
 | **ADMIT (Cheater v4 — separate opt-in, default OFF)** SHADOW → PROBE | Independently qualify PARENT_ONLY and FAMILY_PP on complete virtual family cycles: ≥ **+1.25R** covered gain, ≥ **3 resolved cycles / 2 days**, ≥2 positive cycles, ≤60% single-cycle gain share, coverage ≥1.20. Missing or censored replay vetoes admission. FAMILY_PP additionally needs ≥3 paired cycles with **GridLift LCB90 > 0**. One 0.33× whole-family seat maximum. |
-| **ADMIT (ordinary lane — default OFF)** SHADOW → PROBE | The legacy D-7 parent/horizon predicate remains available as a diagnostic but is disabled because it does not grade the grid family. |
+| **ADMIT (ordinary lane — ON since 2026-08-03, operator decision)** SHADOW → PROBE | The D-7 parent/horizon predicate at the operator bar: **n ≥ 10 era v2 episodes / ≥ 5 independent day-blocks**, avg ≥ +2.0p, block LCB > 0, BH-FDR q ≤ 0.05. All admissions land on a 0.33× PROBE, max 2 per run, one seat per (pair, side) cluster. |
+| **THREE-STRIKES RULE (2026-08-03, operator)** | Every executed demotion is a **permanent strike** (`governor_state.demotion_counts`, 🔻 badge per strike on the dashboard, forever). An ever-demoted cell re-promotes only over the **redemption bar: n ≥ 20 / days ≥ 10** — the relaxed bar is for first offenders only. The **3rd strike retires the cell to DISABLED**: untouchable by every automation, manual re-enable only. |
 | **GRADUATE** PROBE → ACTIVE | ≥6 completed broker family cycles with positive family edge LCB. |
 | **DEMOTE** ACTIVE/PROBE → SHADOW | Completed broker family cycles are the unit: net ≤−60p after ≥2 cycles, or one catastrophic cycle ≤−90p. A seat defends at ≥3 cycles and ≥+60p. Cheater PROBE adds a fast leash: one ≤−45p cycle, cumulative loss after 2, or two consecutive red cycles. Judge-when-flat always applies. |
 
@@ -131,13 +132,15 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | Key | Default | Meaning |
 |---|---|---|
 | `enabled` | `true` | master switch (also on the dashboard) |
-| `allow_promotions` / `allow_demotions` | `false` / `true` | ordinary admission / demotion switches |
+| `allow_promotions` / `allow_demotions` | `false` / `true` | ordinary admission / demotion switches (shipped config: `true` / `true` since 2026-08-03) |
+| `redemption_min_raw_episodes` / `redemption_min_independent_days` | `20` / `10` | the stricter counting bar for ever-demoted cells |
+| `strike_disable_count` | `3` | the strike that permanently DISABLEs the cell |
 | `cheater_promotion_enabled` | `false` | separate Cheater v4 admission switch |
 | `cheater_max_seats` | `1` | maximum simultaneous PROBE seats; any current PROBE consumes the slot so a lost auxiliary registry cannot bypass the cap |
 | `cheater_replay_days` | `8.0` | replay window (at least live 7-day grid age + one day) |
 | `cheater_min_paired_cycles` / `cheater_min_grid_lift_lcb` | `3` / `0.0` | PP_ON incremental-edge proof |
-| `min_raw_episodes` | `20` | minimum era v2 episodes (`bar_n` honored as a deprecated alias) |
-| `min_independent_days` | `10` | minimum independent day/session blocks |
+| `min_raw_episodes` | `20` | minimum era v2 episodes (`bar_n` honored as a deprecated alias; shipped config: `10` since 2026-08-03) |
+| `min_independent_days` | `10` | minimum independent day/session blocks (shipped config: `5` since 2026-08-03) |
 | `bar_avg` | `2.0` | net pips/episode bar |
 | `lcb_min` | `0.0` | required block-bootstrap lower bound to promote |
 | `bootstrap_reps` / `bootstrap_confidence` | `10000` / `0.95` | block bootstrap settings |
