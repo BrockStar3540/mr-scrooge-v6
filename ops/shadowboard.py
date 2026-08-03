@@ -393,17 +393,19 @@ def _aggregate(db):
     # Lifetime columns stay as research context; only `era` governs capital.
     _gov_ok = False
     try:
-        from core.trial_evidence import current_era_evidence
+        from core.trial_evidence import current_era_evidence, required_bar
         from ops.governor import book as _gbook, cfg as _gcfg, \
             load_state as _gstate, _aliases as _gal, \
             family_era_view as _fview, active_verdict as _averdict
         _gc_full = _gcfg()
-        _eras = (_gstate() or {}).get("era_start", {})
+        _gst_full = _gstate() or {}
+        _eras = _gst_full.get("era_start", {})
+        _strk = _gst_full.get("demotion_counts", {})
         _ev = current_era_evidence(db["episodes"], _gbook(), _gstate(),
                                    _gc_full, aliases=_gal())
         _gov_ok = True
     except Exception:
-        _ev, _gc_full, _eras = {}, dict(_gc), {}
+        _ev, _gc_full, _eras, _strk = {}, dict(_gc), {}, {}
     _fams = _families() if _gov_ok else {}
     _min_raw = int(_gc_full.get("min_raw_episodes", _gc_full.get("bar_n", 20)))
     for (cell, setup, side), g in groups.items():
@@ -431,11 +433,16 @@ def _aggregate(db):
             _status = _st[0] if _st else g["status"]
         _e = None if _status == "EX-SIDE" else _ev.get(
             (pair, cell.split("/")[1] if "/" in cell else "?", setup))
+        _sess = cell.split("/")[1] if "/" in cell else "?"
+        # STRIKE RULE: lifetime demotion count — permanent, raises the bar
+        _stk_n = int(_strk.get("|".join((pair, _sess, setup)), 0))
         era = None
         if _e:
+            _rq = required_bar(_gc_full, _stk_n)
             era = {"n": _e.raw_n, "days": _e.independent_days,
                    "avg": _e.net_avg, "lcb": _e.block_lcb, "q": _e.q_value,
                    "promotable": _e.promotable,
+                   "req_n": _rq[0], "req_days": _rq[1],
                    "codes": list(_e.reason_codes)}
         # THE GOVERNOR'S OWN VIEW (v6.8.0): each row carries the verdict the
         # governor would reach today — family rule, judge-when-flat, promotion
@@ -459,6 +466,7 @@ def _aggregate(db):
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
+            "strikes": _stk_n,
             "episodes": len(rows),
             "cum_net240": round(sum(nets), 1),      # net-of-cost (D-6)
             "avg_net240": round(avg, 2),            # net-of-cost (D-6)

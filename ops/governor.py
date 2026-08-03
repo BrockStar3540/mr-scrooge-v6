@@ -70,6 +70,13 @@ DEFAULT_CFG = {
     # D-7 evidence bar (core/trial_evidence.promotion_predicate):
     "min_raw_episodes": 20,        # bar_n honored as a deprecated alias
     "min_independent_days": 10,
+    # ── STRIKE RULE (2026-08-03, operator) ──────────────────────────────────
+    # Every executed demotion is a permanent strike. Ever-demoted cells must
+    # clear the stricter redemption bar to promote again; the strike that
+    # reaches the limit retires the cell to DISABLED (manual re-enable only).
+    "redemption_min_raw_episodes": 20,
+    "redemption_min_independent_days": 10,
+    "strike_disable_count": 3,
     "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,
     "bootstrap_reps": 10000, "bootstrap_confidence": 0.95,
@@ -442,6 +449,15 @@ def _status_now(pair, sess, setup_id):
     except Exception:
         pass
     return "?"
+
+
+def demote_target(prior_strikes: int, cfg: dict) -> tuple:
+    """(new_status, strike_number) for one executed demotion. THREE-STRIKES
+    RULE (2026-08-03, operator): the strike that reaches strike_disable_count
+    retires the cell to DISABLED — untouchable by every automation."""
+    strike = prior_strikes + 1
+    limit = int(cfg.get("strike_disable_count", 3))
+    return ("DISABLED" if strike >= limit else "SHADOW", strike)
 
 
 def flip(pair, sess, setup_id, status, dry):
@@ -920,6 +936,15 @@ def main():
                 elif f:
                     why.append(f"family n={f['n']} net={f['net_pips']:+.1f}p "
                                f"(${f['net_usd']:+.2f}) [broker]")
+                target_status, strike = new_status, None
+                if kind == "DEMOTE":
+                    _sc = st.setdefault("demotion_counts", {})
+                    target_status, strike = demote_target(
+                        int(_sc.get("|".join((pair, sess, sid)), 0)), c)
+                    _lim = int(c.get("strike_disable_count", 3))
+                    why.append(f"strike {strike}/{_lim}"
+                               + (" -> DISABLED (three strikes, cell retired)"
+                                  if target_status == "DISABLED" else ""))
                 _policy = (f.get("policy") if isinstance(f, dict) else None)
                 grid_transition = prepare_grid_transition(
                     kind, pair, sess, sid, args.dry_run, policy=_policy)
@@ -938,12 +963,17 @@ def main():
                     # the fresh era durable, then expose the new cell status.
                     stage_era_reset(st, k2, now)
                     save_state(st)
-                res = flip(pair, sess, sid, new_status, args.dry_run)
+                res = flip(pair, sess, sid, target_status, args.dry_run)
                 line = {"t": now, "action": kind, "pair": pair, "session": sess,
                         "setup": sid, "why": "; ".join(why),
                         "dry_run": bool(args.dry_run), "result": res,
                         "grid_transition": grid_transition}
+                if strike is not None:
+                    line["strikes"] = strike
+                    line["new_status"] = target_status
                 if res.get("ok") and not args.dry_run:
+                    if strike is not None:
+                        st["demotion_counts"][k2] = strike
                     update_cheater_seat_book(kind, cheater_seats, k2, now,
                                              f if isinstance(f, dict) else None)
                     save_state(st)

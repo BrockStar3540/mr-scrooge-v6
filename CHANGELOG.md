@@ -4,6 +4,34 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.17.0] — 2026-08-03 — "Three Strikes" (operator promotion policy)
+
+### Added
+- **STRIKE RULE (operator decision)**: every executed demotion is a permanent
+  strike, persisted in `governor_state.demotion_counts` and backfilled from the
+  full governor ledger (4 cells carried historical strikes at ship time).
+  Ever-demoted cells promote only over the stricter **redemption bar**
+  (`redemption_min_raw_episodes` 20 / `redemption_min_independent_days` 10);
+  first offenders use the relaxed operator bar (10/5, set earlier today with
+  `allow_promotions: true`). The strike that reaches `strike_disable_count` (3)
+  retires the cell to **DISABLED** — untouchable by automation, manual
+  re-enable only. Implemented in the shared evidence engine
+  (`required_bar()` + strike-aware `promotion_predicate`), so the governor's
+  decision and the dashboard trophy stay one predicate.
+- **Dashboard**: 🔻 strike badges (one per demotion, forever) next to the setup
+  name with a full-rule tooltip; DISABLED rows in red; THE BAR gate chips now
+  read the per-cell required bar (`n…/req` `d…/req`) instead of a hardcoded
+  20/10 — they had gone stale the moment the bar became configurable.
+- Ledger `DEMOTE` lines now carry `strikes` and `new_status`; a third-strike
+  demotion logs `-> DISABLED (three strikes, cell retired)` in `why`.
+
+### Changed
+- `config/governor_config.json`: promotion bar relaxed to 10/5 and the
+  parent-metric lane switched ON (operator decision, commit 8ac6e1e), with a
+  one-time `last_eval_blocks` reset — the sequential-peeking guard caches the
+  day-count of failed tests against the OLD bar and would otherwise hold
+  every shadow until it earned a new independent day.
+
 ## [6.16.0 – 6.16.2] — 2026-07-31/08-01 — "The Edge Lab" (external trials, cockpit, B-119)
 
 ### Added

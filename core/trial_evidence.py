@@ -109,15 +109,29 @@ class SetupEvidence:
     q_value: Optional[float] = None
     promotable: bool = False
     reason_codes: tuple = ()
+    strikes: int = 0           # lifetime demotion count — permanent record
+
+
+def required_bar(cfg: dict, strikes: int = 0) -> tuple:
+    """(min_episodes, min_days) for a setup. STRIKE RULE (2026-08-03, operator):
+    a setup that has EVER been demoted must clear the stricter redemption bar —
+    the relaxed counting gates are for first offenders only."""
+    if strikes > 0:
+        return (int(cfg.get("redemption_min_raw_episodes", 20)),
+                int(cfg.get("redemption_min_independent_days", 10)))
+    return (int(cfg.get("min_raw_episodes", cfg.get("bar_n", 20))),
+            int(cfg.get("min_independent_days", 10)))
 
 
 def promotion_predicate(e: SetupEvidence, cfg: dict) -> tuple:
     """THE shared bar. Returns (ok, failure_codes). The dashboard trophy and
-    the governor's promote decision both call exactly this."""
+    the governor's promote decision both call exactly this. Strike-aware:
+    e.strikes raises the counting gates to the redemption bar."""
     failures = []
-    if e.raw_n < int(cfg.get("min_raw_episodes", cfg.get("bar_n", 20))):
+    min_n, min_days = required_bar(cfg, e.strikes)
+    if e.raw_n < min_n:
         failures.append("RAW_N")
-    if e.independent_days < int(cfg.get("min_independent_days", 10)):
+    if e.independent_days < min_days:
         failures.append("INDEPENDENT_DAYS")
     if e.net_avg is None or e.net_avg < float(cfg.get("bar_avg", 2.0)):
         failures.append("AVG")
@@ -145,6 +159,7 @@ def current_era_evidence(episodes: dict, book_map: dict, governor_state: dict,
     """
     now = now or datetime.now(timezone.utc)
     eras = (governor_state or {}).get("era_start", {})
+    strikes_map = (governor_state or {}).get("demotion_counts", {})
     default_era = str(governor_cfg.get("default_era_start",
                                        "2026-07-19T00:00:00+00:00"))
     slip = float(governor_cfg.get("slippage_pips", 0.5))
@@ -193,7 +208,8 @@ def current_era_evidence(episodes: dict, book_map: dict, governor_state: dict,
             net_avg=round(sum(nets) / len(nets), 2),
             recent_n=len(recent),
             recent_avg=round(sum(recent) / len(recent), 2) if recent else None,
-            block_lcb=binf.lcb, p_value=binf.p_value)
+            block_lcb=binf.lcb, p_value=binf.p_value,
+            strikes=int(strikes_map.get("|".join(key), 0)))
 
     q = benjamini_hochberg({k: e.p_value for k, e in evidence.items()
                             if e.p_value is not None})

@@ -537,7 +537,7 @@ body.has-ticker{padding-bottom:32px}
 .mode-LEGACY{background:var(--bg4);color:var(--fg2);border:1px solid var(--bg4)}
 #freeze-flag{background:#1a2b3a;color:#7fd4ff;border:1px solid #2e5a7a;animation:pulse 2s infinite}
 .bk-status{font-size:8.5px;font-weight:800;letter-spacing:.06em;margin-left:auto}
-.bk-status.ACTIVE{color:var(--pass)}.bk-status.SHADOW{color:var(--warn)}.bk-status.SUSPENDED{color:var(--fail)}
+.bk-status.ACTIVE{color:var(--pass)}.bk-status.SHADOW{color:var(--warn)}.bk-status.SUSPENDED{color:var(--fail)}.bk-status.DISABLED{color:var(--fail)}
 /* Condition proximity bars */
 .cbar{display:grid;grid-template-columns:82px 1fr 58px;gap:7px;align-items:center;
       font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:3px 0}
@@ -1237,7 +1237,11 @@ async function pollShadowboard(){
         :'no current-era v2 evidence yet (metric restarted 2026-07-28)';
       const beat=(x.status==='SHADOW'&&x.bar_met)?` <span title="${eraTip}">🏆</span>`:'';
       const warn=(x.status==='ACTIVE'&&!x.bar_met)?` <span title="${eraTip}">⚠️</span>`:'';
-      const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':'style="color:#f4c542"';
+      // STRIKE RULE: one 🔻 per lifetime demotion — permanent record. Struck
+      // cells promote only over the redemption bar; the third strike retires
+      // the cell to DISABLED (manual re-enable only).
+      const strikes=(x.strikes>0)?` <span title="demoted ${x.strikes} time${x.strikes>1?'s':''} — permanent strike record. Re-promotion needs the redemption bar (20 episodes / 10 days); the 3rd strike disables the cell." style="font-size:9px;letter-spacing:-2px">${'🔻'.repeat(Math.min(x.strikes,3))}</span>`:'';
+      const stcls=x.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':(x.status==='DISABLED'?'style="color:#ef4444;font-weight:700"':'style="color:#f4c542"');
       const ncls=x.avg_net240>0?'pos':'neg';
       // cell is "PAIR/session" → split for the status control
       const parts=String(x.cell||'').split('/');
@@ -1261,8 +1265,8 @@ async function pollShadowboard(){
         const el=(txt,ok,tip)=>`<span class="${ok?'pos':'muted'}" title="${tip}"
           style="font-size:10px">${txt}</span>`;
         ecell='<span class="mono">'+[
-          el(`n${e.n}/20`, e.n>=20, `era v2 episodes: ${e.n} of the 20 required`),
-          el(`d${e.days}/10`, e.days>=10, `independent day-blocks: ${e.days} of the 10 required`),
+          el(`n${e.n}/${e.req_n??20}`, e.n>=(e.req_n??20), `era v2 episodes: ${e.n} of the ${e.req_n??20} required${x.strikes?' — REDEMPTION BAR (ever-demoted cells need the strict 20/10)':''}`),
+          el(`d${e.days}/${e.req_days??10}`, e.days>=(e.req_days??10), `independent day-blocks: ${e.days} of the ${e.req_days??10} required${x.strikes?' — REDEMPTION BAR':''}`),
           el(`${e.avg==null?'—':(e.avg>0?'+':'')+e.avg}p`, e.avg!=null&&e.avg>=2, `era net avg/ep: ${e.avg}p vs the +2.0p bar`),
           el(`L${e.lcb==null?'—':(e.lcb>0?'+':'')+e.lcb}`, e.lcb!=null&&e.lcb>0, `block-bootstrap lower bound: ${e.lcb??'needs ≥2 day-blocks'} — must be > 0`),
           el(`q${e.q==null?'—':e.q}`, e.q!=null&&e.q<=0.05, `BH-FDR q across the docket: ${e.q??'—'} — must be ≤ 0.05`),
@@ -1285,7 +1289,7 @@ async function pollShadowboard(){
           ${g.family.n?((fn>0?'+':'')+fn+'p·'+nc+'cyc'):'no closes yet'}${open?' ⏳'+open:''}</span>`;
       }
       return hdr+`<tr${x.queued?' style="opacity:.55"':''}>
-        <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
+        <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${strikes}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td>
         <td>${vcell}</td>
