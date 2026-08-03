@@ -290,7 +290,9 @@ def test_era_reset_is_staged_before_status_truth_can_change():
 def test_commissioning_config_is_locked_to_one_seat():
     cfg = json.loads((Path(__file__).parents[1]
                       / "config" / "governor_config.json").read_text())
-    assert cfg["allow_promotions"] is False
+    # Parent-metric lane switched ON by operator decision 2026-08-03
+    # (bar 10 episodes / 5 days). The CODE default stays fail-closed.
+    assert cfg["allow_promotions"] is True
     assert DEFAULT_CFG["allow_promotions"] is False
     assert cfg["cheater_promotion_enabled"] is False
     assert cfg["cheater_metric_version"] == "family-cycle-v4"

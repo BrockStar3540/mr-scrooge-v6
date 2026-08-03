@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "bar_n": 20,
+  "bar_n": 10,
   "bar_avg": 2.0,
   "lcb_min": 0.0,
   "recent_n": 5,
@@ -9,10 +9,10 @@
   "max_demotions": 4,
   "default_era_start": "2026-07-19T00:00:00+00:00",
   "per_test_z": 2.33,
-  "allow_promotions": false,
+  "allow_promotions": true,
   "allow_demotions": true,
-  "min_raw_episodes": 20,
-  "min_independent_days": 10,
+  "min_raw_episodes": 10,
+  "min_independent_days": 5,
   "bootstrap_reps": 10000,
   "bootstrap_confidence": 0.95,
   "fdr_q": 0.05,
@@ -26,5 +26,5 @@
   "cheater_min_paired_cycles": 3,
   "cheater_min_grid_lift_lcb": 0.0,
   "_cheater_note": "Cheater v4 is implemented but remains OFF for commissioning. Enable only after candidate-set dry-run; one 0.33x whole-family PROBE seat maximum.",
-  "_promotions_note": "Both promotion lanes remain OFF during v4 validation. Ordinary parent-metric promotions stay disabled. Cheater may be commissioned separately at one 0.33x whole-family seat only after the censor-aware paired-policy suite and candidate-set dry-run pass."
+  "_promotions_note": "Parent-metric lane ON per operator decision 2026-08-03 (bar relaxed to n>=10 raw episodes, >=5 independent days; avg/LCB/FDR gates unchanged). All promotions land on PROBE 0.33x, max 2/run, cluster-filtered. Cheater lane still commissioned separately by the Commissioner."
 }
