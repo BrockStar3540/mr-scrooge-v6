@@ -110,3 +110,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-03T20:25:04Z,EUR_JPY,short,6252,2.33,popper
 2026-08-03T20:28:46Z,EUR_JPY,short,6293,-24.58,popper
 2026-08-03T20:45:03Z,EUR_JPY,short,6304,-21.55,popper
+2026-08-03T22:02:55Z,EUR_JPY,short,6312,-24.83,popper
