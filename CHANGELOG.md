@@ -4,6 +4,31 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.20.0] — 2026-08-04 — "V-Cycles" (family-aware shadow scoring + truth checks)
+
+### Added
+- **VIRTUAL FAMILY CYCLES on the shadowboard** (V-CYC column): every era stamp
+  replayed as a full family — parent + popper grid over real M5 bid/ask
+  candles (core/family_cycle.py) — batch-scored by `ops/virtual_scores.py`
+  (cron 6h, atomic data/virtual_cycles.json, 170 cells first run). Shown as
+  net pips per completed cycle × cycles (cycle WR), with U_pp/U_par/GridLift/
+  coverage/worst in the tooltip.
+- **TRUTH CHECK badges**: any cell with real broker fills gets its virtual sim
+  sign-checked against the FULL broker window (not the era view — demotions
+  reset era clocks but real fills stay real). Sim contradicting broker = ❌
+  with a "trust BROKER TRUTH" tooltip; agreement = small ✓. At ship: 5 ✓ / 5 ❌.
+
+### Validated (operator: "the shadowboard is way off")
+- Parent/horizon stamp sim vs broker sign across all 10 filled families:
+  **3/10** — anti-informative (flipped all four biggest losers AND the
+  second-biggest winner). Virtual family cycles: **5/10** — sees the grid
+  (harvest), but the live-selection effect (charter defect #6: the engine
+  executes only the first qualifying ACTIVE setup per pair, so real fills are
+  a selected subset of stamps) still separates all-firings metrics from the
+  live seat. Hence the layered board: BROKER TRUTH for anything that traded,
+  V-CYC for shadow economics, parent-era columns only as the bar's entry-
+  signal input — with contradictions flagged, never averaged away.
+
 ## [6.19.0] — 2026-08-04 — "Broker Truth" (the real-stats scoreboard)
 
 ### Added

@@ -301,6 +301,24 @@ def _families():
     return _FAM_CACHE["data"]
 
 
+_VC_CACHE: dict = {"mtime": 0.0, "rows": {}, "t": None}
+
+
+def _virtual_cycles():
+    """data/virtual_cycles.json — batch virtual FAMILY-cycle scores
+    (ops/virtual_scores.py, 6h cron). Stale >13h => served with stale flag."""
+    f = _ROOT / "data" / "virtual_cycles.json"
+    try:
+        mt = f.stat().st_mtime
+        if mt != _VC_CACHE["mtime"]:
+            d = json.loads(f.read_text())
+            _VC_CACHE.update(mtime=mt, rows=d.get("rows", {}), t=d.get("t"))
+    except (OSError, ValueError):
+        return {}, None, True
+    stale = (time.time() - _VC_CACHE["mtime"]) > 13 * 3600
+    return _VC_CACHE["rows"], _VC_CACHE["t"], stale
+
+
 def broker_truth():
     """BROKER TRUTH scoreboard (2026-08-04, operator: "I need functional
     data"): one row per family that has EVER filled on the broker, every
@@ -530,6 +548,10 @@ def _aggregate(db):
         _sess = cell.split("/")[1] if "/" in cell else "?"
         # STRIKE RULE: lifetime demotion count — permanent, raises the bar
         _stk_n = int(_strk.get("|".join((pair, _sess, setup)), 0))
+        _vc_rows, _vc_t, _vc_stale = _virtual_cycles()
+        _vc = _vc_rows.get("|".join((cell, setup, side)))
+        if _vc is not None:
+            _vc = dict(_vc, stale=_vc_stale)
         era = None
         if _e:
             _rq = required_bar(_gc_full, _stk_n)
@@ -610,6 +632,21 @@ def _aggregate(db):
             # EXACTLY (current-era v2 evidence, block bootstrap, FDR) —
             # the board can never award what the governor would reject.
             "era": era,
+            # VIRTUAL FAMILY CYCLES — the best forward metric for shadows
+            # (parent + popper grid over real candles). Validation 2026-08-04:
+            # broker sign agreement 5/10 vs the parent/horizon sim's 3/10 —
+            # residual gap is the live-selection effect (charter defect #6),
+            # so any cell where BROKER data contradicts the sim gets flagged.
+            "vc": _vc,
+            # TRUTH CHECK vs the FULL broker window (not the era view — a
+            # demotion resets the era clock, but real fills stay real):
+            # None = no broker evidence; False = sim contradicts real fills.
+            "vc_broker_agree": (
+                ((_vc.get("net_mean") or 0) > 0)
+                == ((((_fams.get((pair, _sess, setup)) or {}).get("usd")) or 0) > 0)
+                if (_vc and _vc.get("cycles")
+                    and ((_fams.get((pair, _sess, setup)) or {}).get("n") or 0) > 0)
+                else None),
             "bar_met": bool(era and era["promotable"]),
             "gov": gov,
             "ht": _heat.get("|".join((pair,
