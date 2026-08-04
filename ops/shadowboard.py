@@ -357,6 +357,25 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
     return 5, "QUEUED", "no scored episodes yet", 0.0
 
 
+def governor_sample(rows, era_start, cfg_hash):
+    """FUNCTIONAL-DATA RULE (2026-08-04, operator): the board's stat columns
+    must be computed on the EXACT sample the governor promotes on — current
+    era, executable-exit-v2 only, mechanics matching the setup's current
+    config. Lifetime blends (v1 frictionless + dead eras) made 15 of 174 rows
+    show the WRONG SIGN vs governor evidence. Returns the filtered rows."""
+    out = []
+    for r in rows:
+        sc = r.get("scores") or {}
+        if sc.get("mv") != 2:
+            continue
+        if era_start and r["t"] < era_start:
+            continue
+        if cfg_hash and r.get("mech") and r["mech"] != cfg_hash:
+            continue
+        out.append(r)
+    return out
+
+
 def _aggregate(db):
     import statistics as st
     aliases = _setup_aliases()
@@ -401,28 +420,50 @@ def _aggregate(db):
         _gst_full = _gstate() or {}
         _eras = _gst_full.get("era_start", {})
         _strk = _gst_full.get("demotion_counts", {})
-        _ev = current_era_evidence(db["episodes"], _gbook(), _gstate(),
+        _bmap = _gbook()
+        _ev = current_era_evidence(db["episodes"], _bmap, _gstate(),
                                    _gc_full, aliases=_gal())
         _gov_ok = True
     except Exception:
-        _ev, _gc_full, _eras, _strk = {}, dict(_gc), {}, {}
+        _ev, _gc_full, _eras, _strk, _bmap = {}, dict(_gc), {}, {}, {}
     _fams = _families() if _gov_ok else {}
     _min_raw = int(_gc_full.get("min_raw_episodes", _gc_full.get("bar_n", 20)))
     for (cell, setup, side), g in groups.items():
-        rows = g["rows"]; s = [r["scores"] for r in rows]
+        rows = g["rows"]
         pair = cell.split("/")[0]
+        _sess0 = cell.split("/")[1] if "/" in cell else "?"
+        # LIFETIME BLEND — research context ONLY (v1+v2, all eras). Shown in
+        # tooltips, never in the stat columns.
+        life_nets = [n for n in (episode_net(r["scores"]["net240"],
+                                             r.get("spread"), pair,
+                                             slippage_pips=_slip,
+                                             executable=bool(r["scores"].get("mv") == 2))
+                                 if r["scores"].get("net240") is not None else None
+                                 for r in rows) if n is not None]
+        # GOVERNOR-GRADE SAMPLE — what every visible stat column now uses.
+        _meta_b = _bmap.get((pair, _sess0, setup)) if _gov_ok else None
+        _era0 = (_eras.get("|".join((pair, _sess0, setup)),
+                           str(_gc_full.get("default_era_start", "")))
+                 if _gov_ok else "")
+        grows = (governor_sample(rows, _era0,
+                                 (_meta_b or {}).get("cfg_hash"))
+                 if _gov_ok else rows)
+        s = [r["scores"] for r in grows if r["scores"].get("net240") is not None]
         nets_all = [episode_net(x["net240"], r.get("spread"), pair,
                                 slippage_pips=_slip,
                                 executable=bool(x.get("mv") == 2))
-                    for r, x in zip(rows, s)]
-        last7 = [net for r, net in zip(rows, nets_all)
+                    for r, x in zip([r for r in grows
+                                     if r["scores"].get("net240") is not None], s)]
+        last7 = [net for r, net in zip([r for r in grows
+                                        if r["scores"].get("net240") is not None],
+                                       nets_all)
                  if net is not None and r["t"] >= cutoff7]
         nets = [n for n in nets_all if n is not None]   # censored excluded
-        if not nets:
+        if not nets and not life_nets:
             continue          # every episode still open — nothing to grade
-        avg = sum(nets) / len(nets)
-        n_eff = effective_n([r["t"] for r in rows])
-        lcb = _tlcb(nets, n_eff, _z)
+        avg = (sum(nets) / len(nets)) if nets else None
+        n_eff = effective_n([r["t"] for r in grows]) if grows else None
+        lcb = _tlcb(nets, n_eff, _z) if nets else None
         _st = _cfgst.get((cell.split("/")[0], cell.split("/")[1] if "/" in cell else "?", setup))
         # Side-aware status join (2026-07-27): a row whose side no longer matches
         # the config (an MAE-flip retired it) must not inherit the live side's
@@ -467,11 +508,14 @@ def _aggregate(db):
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
             "strikes": _stk_n,
-            "episodes": len(rows),
-            "cum_net240": round(sum(nets), 1),      # net-of-cost (D-6)
-            "avg_net240": round(avg, 2),            # net-of-cost (D-6)
+            # ALL stat columns: governor-grade sample (current era, v2,
+            # mechanics-matched, net-of-cost). None = no such evidence yet.
+            "episodes": len(nets),
+            "cum_net240": round(sum(nets), 1) if nets else None,
+            "avg_net240": round(avg, 2) if avg is not None else None,
             "lcb": lcb,
-            "wr": round(sum(1 for n in nets if n > 0)/len(nets), 3),
+            "wr": (round(sum(1 for n in nets if n > 0)/len(nets), 3)
+                   if nets else None),
             # hit_eng / hit_sl (2026-07-30, Brock): the two events that decide
             # a trade's fate, on the setup's OWN config geometry. Engage locks
             # +6 and cannot lose; death eats the full stop. At lock 6 / SL 60
@@ -479,18 +523,32 @@ def _aggregate(db):
             # breakeven math. (hit>=6p retired: it measured the lock level and
             # flattered almost-winners — rvol_low_240_t20s touched +6p in 61%
             # of episodes, reached its 20p trigger in 17%.)
-            "hit_eng": round(sum(1 for x in s if x["mfe240"] >= _te)/len(s), 3),
-            "hit_sl": round(sum(1 for x in s if x["mae240"] >= _td)/len(s), 3),
-            "med_mfe": round(st.median(x["mfe240"] for x in s), 1),
-            "med_mae": round(st.median(x["mae240"] for x in s), 1),
+            "hit_eng": (round(sum(1 for x in s if x["mfe240"] >= _te)/len(s), 3)
+                        if s else None),
+            "hit_sl": (round(sum(1 for x in s if x["mae240"] >= _td)/len(s), 3)
+                       if s else None),
+            "med_mfe": (round(st.median(x["mfe240"] for x in s), 1)
+                        if s else None),
+            "med_mae": (round(st.median(x["mae240"] for x in s), 1)
+                        if s else None),
             # net60 exists only on legacy-mid-v1 scores (v2 exits when the
             # SETUP says, not at a fixed 60m checkpoint)
             "avg_net60": (round(sum(_n60)/len(_n60), 2)
                           if (_n60 := [x["net60"] for x in s
                                        if x.get("net60") is not None]) else None),
-            "n_v2": sum(1 for x in s if x.get("mv") == 2),
-            "n_censored": sum(1 for x in s if x.get("censored")),
+            "n_v2": len(s),
+            "n_censored": sum(1 for r in grows if r["scores"].get("censored")),
             "n_ambig": sum(1 for x in s if x.get("ambiguous")),
+            # LIFETIME BLEND — context only, never decisions: all eras, both
+            # metric versions. This is what the columns used to show and why
+            # 15 rows had the wrong sign.
+            "life": {"n": len(life_nets), "stamps": len(rows),
+                     "avg": round(sum(life_nets)/len(life_nets), 2) if life_nets else None,
+                     "cum": round(sum(life_nets), 1) if life_nets else None,
+                     "wr": (round(sum(1 for n in life_nets if n > 0)
+                                  / len(life_nets), 3) if life_nets else None),
+                     "v1_n": sum(1 for r in rows
+                                 if r["scores"].get("mv") != 2)},
             "last7_avg": round(sum(last7)/len(last7), 2) if last7 else None,
             "last7_n": len(last7),
             "n_eff": n_eff,

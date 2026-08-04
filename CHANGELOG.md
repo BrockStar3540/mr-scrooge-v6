@@ -4,6 +4,27 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.18.0] — 2026-08-04 — "Functional Data" (governor-grade stat columns)
+
+### Changed
+- **EDGE LAB stat columns (avg net/ep, cum net, WR, hit≥trig, hitSL, medMFE/MAE,
+  7d, LCB) now compute on the GOVERNOR-GRADE sample**: current era,
+  executable-exit-v2 only, mechanics matching the setup's current config, net
+  of costs — the exact sample the promotion predicate uses (`governor_sample()`
+  in ops/shadowboard.py, mirroring core.trial_evidence filtering).
+  Operator audit that forced this: of 174 scored rows the old lifetime blend
+  (legacy-mid-v1 frictionless metric + dead config eras + censored stamps) had
+  59 rows contaminated with v1 episodes and put the WRONG SIGN on 15 —
+  e.g. GBP_USD/london/classic_box_fade_long showed −7.5p (16 of 22 eps were
+  frictionless-v1) vs +7.2p on real current-era evidence, while
+  EUR_USD/asia/ps_floor_fade_long showed +5.6p (15/17 v1) vs −6.2p real.
+  Paper-vs-broker divergence stays visible in the family column
+  (EUR_JPY/ny/timing_lean_30: +288p lifetime paper vs −174p broker family).
+- **Lifetime blend demoted to context**: a `life` object (n, stamps, avg, cum,
+  wr, v1 count) rendered only as a muted `life:` chip + tooltip in the eps
+  column, explicitly labeled non-decision data. Rows whose governor sample is
+  empty (fresh era after promote/demote) show — instead of dead-era numbers.
+
 ## [6.17.1] — 2026-08-04 — stale dashboard cell notes + PROBE display
 
 ### Fixed
