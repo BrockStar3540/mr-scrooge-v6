@@ -15,7 +15,9 @@ import pytest
 _ROOT = Path(__file__).resolve().parent.parent
 _CELL_FILES = sorted(glob.glob(str(_ROOT / "config" / "cells" / "*.json")))
 
-_STATUSES = {"ACTIVE", "SHADOW", "DISABLED"}
+# PROBE joined the on-disk statuses 2026-08-03 when the admission lane went
+# live (charter: every promotion lands as a 0.33x PROBE audition seat).
+_STATUSES = {"ACTIVE", "PROBE", "SHADOW", "DISABLED"}
 _SIDES = {"long", "short"}
 _EXIT_MODES = {"ratchet", "bracket"}
 

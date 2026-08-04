@@ -1131,7 +1131,7 @@
           }
         }
       ],
-      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "20 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
@@ -1963,7 +1963,7 @@
           }
         }
       ],
-      "notes": "0 ACTIVE, 1 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "1 ACTIVE, 15 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }

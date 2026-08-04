@@ -257,7 +257,7 @@
           "wired": "2026-07-13"
         }
       ],
-      "notes": "2 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
+      "notes": "4 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
     }
   }
 }

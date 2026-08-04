@@ -304,7 +304,7 @@
           "id": "timing_lean_30",
           "side": "short",
           "class": "TIMING",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
@@ -350,7 +350,7 @@
           "wired": "2026-07-05"
         }
       ],
-      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+      "notes": "2 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
     }
   }
 }

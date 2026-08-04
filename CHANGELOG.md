@@ -4,6 +4,20 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.17.1] — 2026-08-04 — stale dashboard cell notes + PROBE display
+
+### Fixed
+- **Stale "N ACTIVE, M SHADOW setups." cell notes** (operator report: EUR_JPY/ny
+  showed ACTIVE after its strike-2 demotion): the sentence was written once at
+  wiring time and never updated by status flips — 10 of the cells were lying.
+  `_set_cell_status` now regenerates the counts sentence on every flip
+  (hand-written notes untouched); one-time repair applied to all 10.
+- **PROBE was invisible in pair rollups**: `/api/cells` status_rollup and totals
+  now rank PROBE between ACTIVE and SHADOW (a live 0.33× audition seat is not a
+  shadow); panel gets a PROBE color. `tests/test_cell_configs.py` `_STATUSES`
+  also predated PROBE-on-disk — tripped by the first real PROBE landing
+  (USD_CHF/london/ps_ceil_fade_short, 18:35Z tick).
+
 ## [6.17.0] — 2026-08-03 — "Three Strikes" (operator promotion policy)
 
 ### Added

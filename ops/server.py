@@ -376,6 +376,30 @@ def _find_setup(data: dict, session: str, setup_id: str) -> dict:
             return s
     raise ValueError(f"setup '{setup_id}' not found in {session}")
 
+_NOTES_COUNTS_RE = None    # compiled lazily (re import stays top-of-file scoped)
+
+
+def _refresh_session_notes(scfg: dict) -> None:
+    """Rewrite the leading "N ACTIVE, M SHADOW setups." sentence in a session's
+    notes from the ACTUAL setup statuses. The sentence was written once at
+    wiring time and never updated on flips — 10 cells were lying on the
+    dashboard by the time this was caught (EUR_JPY/ny demotion, 2026-08-04)."""
+    import re
+    global _NOTES_COUNTS_RE
+    if _NOTES_COUNTS_RE is None:
+        _NOTES_COUNTS_RE = re.compile(r"^\s*(?:\d+\s+[A-Z-]+,?\s*)+setups\.\s*")
+    notes = scfg.get("notes")
+    if not isinstance(notes, str) or not _NOTES_COUNTS_RE.match(notes):
+        return                      # hand-written notes: leave untouched
+    counts = {}
+    for st in (s.get("status") for s in scfg.get("setups") or []):
+        counts[st or "?"] = counts.get(st or "?", 0) + 1
+    parts = [f"{counts[k]} {k}" for k in ("ACTIVE", "PROBE", "SHADOW", "DISABLED")
+             if counts.get(k)]
+    sentence = (", ".join(parts) if parts else "0") + " setups. "
+    scfg["notes"] = _NOTES_COUNTS_RE.sub(sentence, notes, count=1)
+
+
 def _set_cell_status(pair: str, session: str, setup_id: str, status: str) -> dict:
     """Flip one setup's status in config/cells/<PAIR>.json (merge-preserving)."""
     if status not in _CELL_STATUSES:
@@ -384,6 +408,7 @@ def _set_cell_status(pair: str, session: str, setup_id: str, status: str) -> dic
     setup = _find_setup(data, session, setup_id)
     old = setup.get("status")
     setup["status"] = status
+    _refresh_session_notes((data.get("sessions") or {}).get(session) or {})
     _write_cell_file(pair, data)
     return {"pair": pair, "session": session, "setup_id": setup_id,
             "old_status": old, "status": status}
@@ -1082,7 +1107,7 @@ def _cells(engine: "Engine") -> dict:
     views = {v.pair: v for v in (engine.last_views or [])}
 
     cells = []
-    totals = {"ACTIVE": 0, "SHADOW": 0, "NO-SIDE": 0, "DISABLED": 0}
+    totals = {"ACTIVE": 0, "PROBE": 0, "SHADOW": 0, "NO-SIDE": 0, "DISABLED": 0}
     for pair in _PAIRS_ALL:
         try:
             cfg = _j.loads((_CELLS_DIR / f"{pair}.json").read_text())
@@ -1102,9 +1127,11 @@ def _cells(engine: "Engine") -> dict:
                 rollup = "NO-SIDE"
             elif any(s.get("status") == "ACTIVE" for s in setups_cfg):
                 rollup = "ACTIVE"
+            elif any(s.get("status") == "PROBE" for s in setups_cfg):
+                rollup = "PROBE"      # live 0.33x audition seat — not a shadow
             else:
                 rollup = "SHADOW"
-            totals[rollup] += 1
+            totals[rollup] = totals.get(rollup, 0) + 1
 
             setups = []
             for s in setups_cfg:

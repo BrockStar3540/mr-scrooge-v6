@@ -465,7 +465,7 @@
           }
         }
       ],
-      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+      "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
     },
     "london": {
       "enabled": true,
@@ -1688,7 +1688,7 @@
           }
         }
       ],
-      "notes": "2 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 23 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
@@ -2937,7 +2937,7 @@
           }
         }
       ],
-      "notes": "1 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "2 ACTIVE, 23 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }

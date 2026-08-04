@@ -163,7 +163,7 @@
           "wired": "2026-07-13"
         }
       ],
-      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "3 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
     },
     "london": {
       "enabled": true,
@@ -348,7 +348,7 @@
           "wired": "2026-07-13"
         }
       ],
-      "notes": "1 ACTIVE, 0 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
+      "notes": "3 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
     },
     "ny": {
       "enabled": true,
@@ -538,7 +538,7 @@
           "wired": "2026-07-13"
         }
       ],
-      "notes": "0 ACTIVE, 1 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "2 ACTIVE, 2 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
