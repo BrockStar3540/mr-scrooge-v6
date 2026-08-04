@@ -30,5 +30,7 @@
   "redemption_min_raw_episodes": 20,
   "redemption_min_independent_days": 10,
   "strike_disable_count": 3,
-  "_strikes_note": "STRIKE RULE 2026-08-03 (operator): every executed demotion is a permanent strike (governor_state.demotion_counts, badge on the dashboard). Ever-demoted cells promote only over the redemption bar 20/10; the 3rd strike flips the cell to DISABLED \u2014 manual re-enable only."
+  "_strikes_note": "STRIKE RULE 2026-08-03 (operator): every executed demotion is a permanent strike (governor_state.demotion_counts, badge on the dashboard). Ever-demoted cells promote only over the redemption bar 20/10; the 3rd strike flips the cell to DISABLED \u2014 manual re-enable only.",
+  "truth_check_gate": true,
+  "_truth_gate_note": "TRUTH-CHECK GATE 2026-08-04 (operator): a shadow whose virtual family-cycle sign contradicts its own broker fills (full window) cannot promote \u2014 proven-wrong sim never spends money."
 }

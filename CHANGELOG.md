@@ -4,6 +4,17 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.21.0] — 2026-08-04 — truth-check promotion gate
+
+### Added
+- **TRUTH-CHECK GATE** (`truth_check_gate: true`): the governor blocks any
+  promotion whose virtual family-cycle sign contradicts the cell's own broker
+  fills (full window — era resets never erase real fills). Ledger action
+  `PROMOTE-GATED-TRUTH` with the contradiction spelled out; the board mirrors
+  the gate as a **TRUTH BLOCKED** verdict so the trophy and the governor can
+  never disagree. Cells with no broker record or no virtual cycles pass — the
+  gate fires only on a proven contradiction (5 cells at ship).
+
 ## [6.20.0] — 2026-08-04 — "V-Cycles" (family-aware shadow scoring + truth checks)
 
 ### Added

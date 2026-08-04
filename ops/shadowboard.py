@@ -579,6 +579,20 @@ def _aggregate(db):
                 _status, era, _e, f, _gc_full, _min_raw, lifetime_eps=len(rows))
             gov = {"tier": tier, "verdict": verdict, "reason": reason,
                    "score": round(float(score), 2), "family": f}
+        # TRUTH CHECK vs the FULL broker window (not the era view — a
+        # demotion resets the era clock, but real fills stay real).
+        _fam_full = _fams.get((pair, _sess, setup)) or {}
+        _tc_agree = (
+            ((_vc.get("net_mean") or 0) > 0) == ((_fam_full.get("usd") or 0) > 0)
+            if (_vc and _vc.get("cycles") and (_fam_full.get("n") or 0) > 0)
+            else None)
+        # MIRROR of the governor's truth_check_gate: the board must never
+        # award PROMOTE READY to a cell the gate would block.
+        if gov and _tc_agree is False and gov.get("verdict") == "PROMOTE READY":
+            gov["verdict"] = "TRUTH BLOCKED"
+            gov["reason"] = ("virtual family sim contradicts this cell's own "
+                             "broker fills — promotion gated (truth_check_gate); "
+                             + (gov.get("reason") or ""))
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
@@ -638,15 +652,9 @@ def _aggregate(db):
             # residual gap is the live-selection effect (charter defect #6),
             # so any cell where BROKER data contradicts the sim gets flagged.
             "vc": _vc,
-            # TRUTH CHECK vs the FULL broker window (not the era view — a
-            # demotion resets the era clock, but real fills stay real):
-            # None = no broker evidence; False = sim contradicts real fills.
-            "vc_broker_agree": (
-                ((_vc.get("net_mean") or 0) > 0)
-                == ((((_fams.get((pair, _sess, setup)) or {}).get("usd")) or 0) > 0)
-                if (_vc and _vc.get("cycles")
-                    and ((_fams.get((pair, _sess, setup)) or {}).get("n") or 0) > 0)
-                else None),
+            # None = no broker evidence; False = sim contradicts real fills
+            # (drives the ❌ badge AND the governor's truth_check_gate).
+            "vc_broker_agree": _tc_agree,
             "bar_met": bool(era and era["promotable"]),
             "gov": gov,
             "ht": _heat.get("|".join((pair,

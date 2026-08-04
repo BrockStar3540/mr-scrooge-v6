@@ -107,7 +107,9 @@ tapes, or contributed — walks the same ladder:
    promotions + 4 demotions per day, sides never flipped, `manual_only` respected. **Three
    strikes (2026-08-03):** every demotion is a permanent 🔻 strike; struck cells re-promote
    only over the stricter redemption bar (20 episodes / 10 days), and the third strike
-   retires the cell to DISABLED for good — manual re-enable only.
+   retires the cell to DISABLED for good — manual re-enable only. **Truth-check gate
+   (2026-08-04):** a shadow whose virtual family-cycle sim contradicts its own broker
+   fills cannot promote — proven-wrong sim never spends money.
 
 **The autonomous day:** `06:30Z` the [counterpart audit](research/tools/counterpart_audit.py)
 wires opposite-direction twins for any MAE-heavy loser → `06:35Z` the governor promotes and

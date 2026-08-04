@@ -77,6 +77,11 @@ DEFAULT_CFG = {
     "redemption_min_raw_episodes": 20,
     "redemption_min_independent_days": 10,
     "strike_disable_count": 3,
+    # ── TRUTH-CHECK GATE (2026-08-04, operator) ─────────────────────────────
+    # A shadow whose virtual family-cycle sign CONTRADICTS its own broker
+    # fills (full window — era resets never erase real fills) cannot promote:
+    # the sim is proven wrong for that cell, so it does not get to spend money.
+    "truth_check_gate": True,
     "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,
     "bootstrap_reps": 10000, "bootstrap_confidence": 0.95,
@@ -449,6 +454,22 @@ def _status_now(pair, sess, setup_id):
     except Exception:
         pass
     return "?"
+
+
+def truth_gate(vc_row, fam_row) -> tuple:
+    """(ok, detail). Blocks promotion ONLY on a proven contradiction: the cell
+    has resolved virtual family cycles AND real broker fills, and their signs
+    disagree. No broker record or no virtual cycles => nothing to contradict."""
+    if not vc_row or not vc_row.get("cycles"):
+        return True, "no virtual cycles"
+    if not fam_row or not (fam_row.get("n") or 0):
+        return True, "no broker fills"
+    vm = vc_row.get("net_mean") or 0
+    bu = fam_row.get("usd") or 0
+    if (vm > 0) == (bu > 0):
+        return True, f"vc {vm:+.1f}p/cyc agrees with broker ${bu:+.2f}"
+    return False, (f"vc {vm:+.1f}p/cyc CONTRADICTS broker ${bu:+.2f} "
+                   f"over {fam_row.get('n')} fill(s) — sim proven wrong here")
 
 
 def demote_target(prior_strikes: int, cfg: dict) -> tuple:
@@ -851,6 +872,30 @@ def main():
                 print(f"governor: cluster-best dropped {'|'.join(d[0])} "
                       f"(better peer in {d[0][0]}/{bmap.get(d[0], {}).get('side')})")
             return list(best.values())
+        # TRUTH-CHECK GATE: sim proven wrong by this cell's own broker fills
+        # never spends money, no matter how good the stamp evidence looks.
+        if c.get("truth_check_gate", True) and promotions:
+            try:
+                _vcd = json.loads((REPO / "data" / "virtual_cycles.json")
+                                  .read_text()).get("rows", {})
+            except (OSError, ValueError):
+                _vcd = {}
+            _tkept = []
+            for item in promotions:
+                (pair, sess, sid), e_, f_ = item
+                _side = bmap.get((pair, sess, sid), {}).get("side", "?")
+                _vc = _vcd.get("|".join((f"{pair}/{sess}", sid, _side)))
+                ok_, det_ = truth_gate(_vc, fams.get((pair, sess, sid)))
+                if ok_:
+                    _tkept.append(item)
+                else:
+                    print(f"governor: TRUTH GATE blocked {pair}/{sess}/{sid} — {det_}")
+                    with open(LEDGER, "a") as led:
+                        led.write(json.dumps({
+                            "t": now, "action": "PROMOTE-GATED-TRUTH",
+                            "pair": pair, "session": sess, "setup": sid,
+                            "why": det_, "dry_run": bool(args.dry_run)}) + "\n")
+            promotions = _tkept
         promotions = _cluster_filter(promotions,
                                      lambda i: (i[1].block_lcb or 0))
         cheater_promos = _cluster_filter(cheater_promos,

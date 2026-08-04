@@ -1312,7 +1312,7 @@ async function pollShadowboard(){
       const g=x.gov;
       const VCLS={'DEFENDED':'pill-pass','PROMOTE READY':'pill-pass','HOLDING':'pill-info',
                   'DEFERRED':'pill-warn','BUILDING':'pill-block','QUEUED':'pill-block',
-                  'AWAITING V2':'pill-warn','DEMOTE DUE':'pill-fail'};
+                  'AWAITING V2':'pill-warn','DEMOTE DUE':'pill-fail','TRUTH BLOCKED':'pill-fail'};
       const vcell=g?`<span class="pill ${VCLS[g.verdict]||'pill-block'}" title="${g.reason||''}"
         style="font-size:9.5px">${g.verdict}</span>`:'<span class="muted">—</span>';
       // THE BAR cell: the five promotion conditions with live values —

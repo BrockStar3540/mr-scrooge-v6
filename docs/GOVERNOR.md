@@ -24,6 +24,7 @@ never governs capital.
 |---|---|
 | **ADMIT (Cheater v4 — separate opt-in, default OFF)** SHADOW → PROBE | Independently qualify PARENT_ONLY and FAMILY_PP on complete virtual family cycles: ≥ **+1.25R** covered gain, ≥ **3 resolved cycles / 2 days**, ≥2 positive cycles, ≤60% single-cycle gain share, coverage ≥1.20. Missing or censored replay vetoes admission. FAMILY_PP additionally needs ≥3 paired cycles with **GridLift LCB90 > 0**. One 0.33× whole-family seat maximum. |
 | **ADMIT (ordinary lane — ON since 2026-08-03, operator decision)** SHADOW → PROBE | The D-7 parent/horizon predicate at the operator bar: **n ≥ 10 era v2 episodes / ≥ 5 independent day-blocks**, avg ≥ +2.0p, block LCB > 0, BH-FDR q ≤ 0.05. All admissions land on a 0.33× PROBE, max 2 per run, one seat per (pair, side) cluster. |
+| **TRUTH-CHECK GATE (2026-08-04, operator)** | A shadow whose **virtual family-cycle** sign (parent + popper grid replayed over real M5 bid/ask candles, `data/virtual_cycles.json`, 6h batch) **contradicts its own broker fills** (full window — era resets never erase real fills) cannot promote: proven-wrong sim never spends money. Ledger action `PROMOTE-GATED-TRUTH`; the board mirrors it as **TRUTH BLOCKED** and a ❌ badge. Measured basis: parent/horizon sim agreed with broker sign 3/10, virtual family 5/10 — contradictions are flagged and gated, never averaged away. |
 | **THREE-STRIKES RULE (2026-08-03, operator)** | Every executed demotion is a **permanent strike** (`governor_state.demotion_counts`, 🔻 badge per strike on the dashboard, forever). An ever-demoted cell re-promotes only over the **redemption bar: n ≥ 20 / days ≥ 10** — the relaxed bar is for first offenders only. The **3rd strike retires the cell to DISABLED**: untouchable by every automation, manual re-enable only. |
 | **GRADUATE** PROBE → ACTIVE | ≥6 completed broker family cycles with positive family edge LCB. |
 | **DEMOTE** ACTIVE/PROBE → SHADOW | Completed broker family cycles are the unit: net ≤−60p after ≥2 cycles, or one catastrophic cycle ≤−90p. A seat defends at ≥3 cycles and ≥+60p. Cheater PROBE adds a fast leash: one ≤−45p cycle, cumulative loss after 2, or two consecutive red cycles. Judge-when-flat always applies. |
@@ -135,6 +136,7 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | `allow_promotions` / `allow_demotions` | `false` / `true` | ordinary admission / demotion switches (shipped config: `true` / `true` since 2026-08-03) |
 | `redemption_min_raw_episodes` / `redemption_min_independent_days` | `20` / `10` | the stricter counting bar for ever-demoted cells |
 | `strike_disable_count` | `3` | the strike that permanently DISABLEs the cell |
+| `truth_check_gate` | `true` | block promotion when virtual family sign contradicts the cell's broker fills |
 | `cheater_promotion_enabled` | `false` | separate Cheater v4 admission switch |
 | `cheater_max_seats` | `1` | maximum simultaneous PROBE seats; any current PROBE consumes the slot so a lost auxiliary registry cannot bypass the cap |
 | `cheater_replay_days` | `8.0` | replay window (at least live 7-day grid age + one day) |
