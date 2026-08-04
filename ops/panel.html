@@ -822,6 +822,26 @@ body.has-ticker{padding-bottom:32px}
       <div class="card-title" style="margin-bottom:0"><span class="edge-title">🧬 EDGE LAB</span>
         <span class="tag">where shadows earn capital: governor state · broker cycles · external trials · evidence freshness</span></div>
     </div>
+    <div class="card" style="grid-column:1/-1">
+      <div class="card-title">💰 BROKER TRUTH — real OANDA fills only
+        <span class="tag">every number below is a broker transaction: realized $, completed grid-family cycles, cycle win rate. No simulator content anywhere in this table.</span></div>
+      <div id="btruth-recon" class="muted" style="font-size:11px;margin:2px 0 8px"></div>
+      <div style="overflow-x:auto"><table class="table" style="width:100%">
+        <thead><tr>
+          <th>family cell</th><th>setup</th><th>status</th>
+          <th title="closed legs: parents + poppers (green legs)">legs</th>
+          <th title="completed grid-family cycles — the independent evidence unit; a cycle ends when the family goes flat">cycles</th>
+          <th title="realized broker P/L, trade P/L only">realized $</th>
+          <th>pips</th>
+          <th title="share of completed cycles that closed net-positive">cycle WR</th>
+          <th title="mean realized $ per completed cycle">avg cyc $</th>
+          <th title="worst / best completed cycle, realized $">worst / best</th>
+          <th title="open legs right now (unrealized $, verdict deferred until flat)">open</th>
+          <th>last close</th>
+        </tr></thead>
+        <tbody id="btruth-body"><tr><td colspan="12" class="muted">loading broker truth…</td></tr></tbody>
+      </table></div>
+    </div>
     <div class="card">
       <div class="card-title">📚 Evidence</div>
       <div class="stat-row" id="gc-evidence"><span class="muted">loading…</span></div>
@@ -881,7 +901,7 @@ body.has-ticker{padding-bottom:32px}
   </div>
 
   <div class="card" style="margin:14px">
-    <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard
+    <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard <span class="pill pill-warn" style="font-size:9px" title="Everything in this table is SIMULATED paper-stamp data (current era, executable-v2, costed). It feeds the promotion bar. Real money lives in BROKER TRUTH above.">SIM</span>
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
     </div>
     <details style="padding:0 12px 8px">
@@ -924,7 +944,7 @@ body.has-ticker{padding-bottom:32px}
 
   <div id="shadow-phase" class="banner banner-gray">Loading shadow-phase status…</div>
   <div class="card">
-    <div class="card-title">Setup Scoreboard — simulated EV vs expected
+    <div class="card-title">Setup Scoreboard — simulated EV vs expected <span class="pill pill-warn" style="font-size:9px" title="Simulated paper stamps — not broker fills.">SIM</span>
       <span class="tag" id="cellscore-tag">—</span>
     </div>
     <table id="cellscore-tbl">
@@ -1207,6 +1227,42 @@ window.fetch = async function(url, options = {}){
   return r;
 };
 
+/* ── BROKER TRUTH — real fills only ────────────────────────────────────── */
+function renderBrokerTruth(d){
+  const body=document.getElementById('btruth-body'); if(!body)return;
+  const rows=d.rows||[];
+  const money=v=>v==null?'—':`<span class="${v>0?'pos':(v<0?'neg':'muted')}">${v>0?'+':''}$${Math.abs(v)<100?v.toFixed(2):Math.round(v)}${v<0?'':''}</span>`;
+  const rec=document.getElementById('btruth-recon');
+  if(rec&&d.account){
+    const a=d.account;
+    rec.innerHTML=`window since ${String(d.since||'').slice(0,10)} · account realized $${a.window_realized_usd} = attributed $${a.attributed_usd} + pre-era $${a.pre_era_usd} + unattributed $${a.unattributed_usd}`
+      +(Math.abs(a.unattributed_usd)>0.01?' <span class="neg">⚠ unattributed fills — attribution gap</span>':' <span class="pos">✓ every close attributed</span>');
+  }
+  if(!rows.length){body.innerHTML='<tr><td colspan="12" class="muted">no broker fills in window yet (or first cache refresh pending)</td></tr>';return;}
+  const t=d.totals||{};
+  body.innerHTML=rows.map(r=>{
+    const stcls=r.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':(r.status==='PROBE'?'style="color:#4aa3ff;font-weight:700"':(r.status==='RETIRED'?'class="muted"':'style="color:#f4c542"'));
+    return `<tr>
+      <td>${r.cell}</td><td class="mono" style="font-size:11px">${r.setup}</td>
+      <td ${stcls}>${r.status}</td>
+      <td title="${r.parents} parents + ${r.poppers} poppers, ${r.leg_greens} green">${r.legs} <span class="muted" style="font-size:9px">(${r.leg_greens}g)</span></td>
+      <td>${r.cycles}</td>
+      <td class="mono">${money(r.usd)}</td>
+      <td class="mono ${r.pips>0?'pos':(r.pips<0?'neg':'muted')}">${r.pips==null?'—':(r.pips>0?'+':'')+r.pips}</td>
+      <td>${r.cycle_wr==null?'—':Math.round(r.cycle_wr*100)+'%'}</td>
+      <td class="mono">${money(r.avg_cycle_usd)}</td>
+      <td class="mono" style="font-size:11px">${money(r.worst_cycle_usd)} / ${money(r.best_cycle_usd)}</td>
+      <td>${r.n_open?`${r.n_open} <span class="mono muted" style="font-size:10px">(${r.open_upl>0?'+':''}$${r.open_upl})</span>`:'—'}</td>
+      <td class="muted" style="font-size:10px">${r.last_close?String(r.last_close).replace('T',' '):'—'}</td>
+    </tr>`;
+  }).join('')+`<tr style="border-top:2px solid rgba(255,255,255,.15);font-weight:700">
+      <td colspan="3">TOTAL</td><td>${t.legs??''}</td><td>${t.cycles??''}</td>
+      <td class="mono">${money(t.usd)}</td>
+      <td class="mono ${t.pips>0?'pos':'neg'}">${t.pips>0?'+':''}${t.pips??''}</td>
+      <td colspan="4" class="muted" style="font-size:10px">open legs: ${t.open??0} · pre-era closes excluded: ${d.excluded_pre_era_closes??0}</td>
+    </tr>`;
+}
+
 /* ── Shadowboard ───────────────────────────────────────────────────────── */
 let SBOARD=null;
 async function pollShadowboard(){
@@ -1214,6 +1270,8 @@ async function pollShadowboard(){
     const r=await fetch('/api/shadowboard'); if(!r.ok)return;
     const d=await r.json();
     SBOARD=d;
+    try{const bt=await fetch('/api/broker/truth');
+        if(bt.ok)renderBrokerTruth(await bt.json());}catch(e){}
     renderEvidenceChips();
     renderEdgeCommand();
     loadGovLedger();

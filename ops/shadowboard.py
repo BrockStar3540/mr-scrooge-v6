@@ -292,12 +292,65 @@ def _families():
         out = subprocess.run(
             [_sys.executable, str(_ROOT / "research" / "tools" / "broker_setup_audit.py"),
              "--json"], capture_output=True, text=True, timeout=180)
+        _full = json.loads(out.stdout)
         fams = {(r["instrument"], r.get("session", "?"), r["setup"]): r
-                for r in json.loads(out.stdout).get("families", [])}
-        _FAM_CACHE.update(ts=now, data=fams)
+                for r in _full.get("families", [])}
+        _FAM_CACHE.update(ts=now, data=fams, full=_full)
     except Exception:
         _FAM_CACHE["ts"] = now          # don't hammer a failing audit
     return _FAM_CACHE["data"]
+
+
+def broker_truth():
+    """BROKER TRUTH scoreboard (2026-08-04, operator: "I need functional
+    data"): one row per family that has EVER filled on the broker, every
+    number derived from OANDA transaction-stream fills — realized $, pips,
+    completed cycles, cycle win rate, worst/best cycle — plus an account
+    reconciliation block proving the attribution covers every close the
+    account realized in the window. Zero simulator content."""
+    # CACHE-ONLY by design: the broker audit subprocess runs in the refresh
+    # daemon (via _families() inside _aggregate), never in a request handler —
+    # an empty result just means the first daemon refresh hasn't landed yet.
+    full = _FAM_CACHE.get("full") or {}
+    st_map = _config_status()
+    out = []
+    for f in full.get("families", []):
+        cyc = f.get("cycles") or []
+        cw = [c for c in cyc if (c.get("pips") or 0) > 0]
+        by_usd = sorted((c for c in cyc if c.get("usd") is not None),
+                        key=lambda c: c["usd"])
+        stt = st_map.get((f["instrument"], f.get("session", "?"), f["setup"]))
+        out.append({
+            "cell": f'{f["instrument"]}/{f.get("session", "?")}',
+            "setup": f["setup"],
+            "status": stt[0] if stt else "RETIRED",
+            "legs": f.get("n", 0),
+            "parents": f.get("n_parents", 0),
+            "poppers": f.get("n_poppers", 0),
+            "leg_greens": f.get("greens", 0),
+            "usd": f.get("usd"),
+            "pips": f.get("pips"),
+            "cycles": f.get("n_cycles", 0),
+            "cycle_wr": (round(len(cw) / len(cyc), 3) if cyc else None),
+            "avg_cycle_usd": (round(sum(c["usd"] for c in cyc) / len(cyc), 2)
+                              if cyc else None),
+            "worst_cycle_usd": by_usd[0]["usd"] if by_usd else None,
+            "best_cycle_usd": by_usd[-1]["usd"] if by_usd else None,
+            "avg_cycle_bps": f.get("cycle_bps"),
+            "n_open": f.get("n_open", 0),
+            "open_upl": f.get("open_upl"),
+            "open_floor_usd": f.get("open_floor_usd"),
+            "last_close": max((c.get("end") or "" for c in cyc), default=None),
+        })
+    out.sort(key=lambda r: r["usd"] if r["usd"] is not None else 0)
+    tot = {"usd": round(sum(r["usd"] or 0 for r in out), 2),
+           "pips": round(sum(r["pips"] or 0 for r in out), 1),
+           "legs": sum(r["legs"] for r in out),
+           "cycles": sum(r["cycles"] for r in out),
+           "open": sum(r["n_open"] for r in out)}
+    return {"since": full.get("since"), "rows": out, "totals": tot,
+            "account": full.get("account"),
+            "excluded_pre_era_closes": full.get("excluded_pre_era_closes")}
 
 
 # Governor-ordered tiers — the board sorts EXACTLY the way capital moves,

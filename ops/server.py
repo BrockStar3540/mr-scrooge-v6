@@ -1515,6 +1515,13 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 body = _j.dumps(_sb.get_board(), default=str).encode()
                 ctype = "application/json"
                 code = 200
+            elif self.path.startswith("/api/broker/truth"):
+                # BROKER TRUTH scoreboard — real fills only, served from the
+                # daemon-warmed cache (never runs the audit in-request)
+                from ops import shadowboard as _sb
+                body = _j.dumps(_sb.broker_truth(), default=str).encode()
+                ctype = "application/json"
+                code = 200
             elif self.path.startswith("/api/commissioner"):
                 # Edge Command cockpit: the Commissioner's stage + pass history
                 try:

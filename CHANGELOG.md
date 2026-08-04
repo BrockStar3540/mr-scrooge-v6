@@ -4,6 +4,25 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.19.0] — 2026-08-04 — "Broker Truth" (the real-stats scoreboard)
+
+### Added
+- **💰 BROKER TRUTH scoreboard** leading the EDGE LAB tab (operator: "I need
+  functional data — this made up shit is useless"): one row per family that has
+  ever filled on the broker, every number a real OANDA transaction — realized $
+  and pips, completed grid-family cycles, cycle win rate, avg/worst/best cycle,
+  open exposure, last close. Served by `/api/broker/truth` from the
+  daemon-warmed cache (`ops.shadowboard.broker_truth()`); the audit subprocess
+  never runs in a request handler.
+- **Account reconciliation line**, the proof of completeness: window realized $
+  = attributed + pre-era + unattributed, with an explicit ⚠ if any dollar is
+  unattributed. At ship time: −$155.64 window realized, 100% attributed, $0
+  unattributed.
+- `research/tools/broker_setup_audit.py --json` now emits the `account`
+  reconciliation block.
+- **SIM badges** on the stamp-forward scoreboard and setup scoreboard cards —
+  paper is now labeled paper wherever it appears.
+
 ## [6.18.0] — 2026-08-04 — "Functional Data" (governor-grade stat columns)
 
 ### Changed

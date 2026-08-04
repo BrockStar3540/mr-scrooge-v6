@@ -244,6 +244,13 @@ def main():
                                 "n_parents": 0, "n_poppers": 0, "trades": []})
     parent_opens = [o for o in opens.values() if o["tag"] == "cell_v1"]
     excluded = 0
+    # RECONCILIATION (2026-08-04, operator: "real stats"): prove attribution
+    # covers the account. Every realizedPL the account booked in the window is
+    # either attributed to an era setup leg, a pre-era close, or non-family.
+    acct_window_usd = 0.0     # all closes the account realized in window
+    attributed_usd = 0.0      # closes attributed to an era-opened setup leg
+    pre_era_usd = 0.0         # closes of trades opened before the era anchor
+    family_usd = 0.0          # subset of attributed that joined a family
     for t in txns:
         if t.get("type") != "ORDER_FILL":
             continue
@@ -253,10 +260,14 @@ def main():
         for tc in legs:
             tid = str(tc.get("tradeID"))
             op = opens.get(tid)
+            _pl0 = float(tc.get("realizedPL", 0))
+            acct_window_usd += _pl0
             if op is None:          # opened before the era anchor — old gear
                 excluded += 1
+                pre_era_usd += _pl0
                 continue
-            pl = float(tc.get("realizedPL", 0))
+            pl = _pl0
+            attributed_usd += pl
             px = float(tc.get("price", t.get("price", 0)))
             pips = (px - op["price"]) / _pip(op["instrument"]) * op["dir"]
             k = (op["instrument"], op["su"], op["tag"])
@@ -273,6 +284,7 @@ def main():
             if op["tag"] in ("cell_v1", "pp_v1"):
                 fam, fsess = family_key(op, parent_opens, opens)
                 if fam != "?":
+                    family_usd += pl
                     fg = fams[(op["instrument"], fsess, fam)]
                     fg["n"] += 1
                     fg["greens"] += 1 if pl > 0 else 0
@@ -399,7 +411,16 @@ def main():
         print(json.dumps({"since": args.since, "rows": rows,
                           "families": fam_rows,
                           "excluded_pre_era_closes": excluded,
-                          "open": open_rows}))
+                          "open": open_rows,
+                          # trade P/L only; financing/dividends live on the
+                          # account statement, not per-leg realizedPL
+                          "account": {
+                              "window_realized_usd": round(acct_window_usd, 2),
+                              "attributed_usd": round(attributed_usd, 2),
+                              "family_attributed_usd": round(family_usd, 2),
+                              "pre_era_usd": round(pre_era_usd, 2),
+                              "unattributed_usd": round(
+                                  acct_window_usd - attributed_usd - pre_era_usd, 2)}}))
         return
 
     print(f"Broker-truth per-setup scoreboard — trades OPENED since {args.since}"
