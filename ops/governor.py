@@ -898,6 +898,31 @@ def main():
             promotions = _tkept
         promotions = _cluster_filter(promotions,
                                      lambda i: (i[1].block_lcb or 0))
+        # TRUTH-CHECK GATE applies a fortiori to the cheater lane — it
+        # qualifies ON the virtual metric, so a broker contradiction is a
+        # direct falsification of its own admission ticket.
+        if c.get("truth_check_gate", True) and cheater_promos:
+            try:
+                _vcd2 = json.loads((REPO / "data" / "virtual_cycles.json")
+                                   .read_text()).get("rows", {})
+            except (OSError, ValueError):
+                _vcd2 = {}
+            _ckept = []
+            for item in cheater_promos:
+                (pair, sess, sid) = item[0]
+                _side = bmap.get((pair, sess, sid), {}).get("side", "?")
+                _vc = _vcd2.get("|".join((f"{pair}/{sess}", sid, _side)))
+                ok_, det_ = truth_gate(_vc, fams.get((pair, sess, sid)))
+                if ok_:
+                    _ckept.append(item)
+                else:
+                    print(f"governor: TRUTH GATE blocked cheater {pair}/{sess}/{sid} — {det_}")
+                    with open(LEDGER, "a") as led:
+                        led.write(json.dumps({
+                            "t": now, "action": "CHEATER-GATED-TRUTH",
+                            "pair": pair, "session": sess, "setup": sid,
+                            "why": det_, "dry_run": bool(args.dry_run)}) + "\n")
+            cheater_promos = _ckept
         cheater_promos = _cluster_filter(cheater_promos,
                                          lambda i: i[2]["cs"])
 
