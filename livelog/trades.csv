@@ -117,3 +117,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-04T19:07:03Z,AUD_USD,short,17274,-86.37,parent
 2026-08-05T13:36:14Z,USD_CHF,short,3685,2.66,parent
 2026-08-05T14:19:07Z,GBP_USD,short,5401,-32.46,parent
+2026-08-05T17:11:51Z,GBP_USD,short,4909,2.95,popper
