@@ -358,7 +358,16 @@ def broker_truth():
             "n_open": f.get("n_open", 0),
             "open_upl": f.get("open_upl"),
             "open_floor_usd": f.get("open_floor_usd"),
+            # IN-PROGRESS CYCLE (2026-08-04, operator: a -$86 leg closed
+            # mid-cycle and the row read like nothing happened): realized $
+            # inside the current censored cycle = family total minus all
+            # completed cycles. Only meaningful while legs are open.
+            "open_cycle_usd": (round((f.get("usd") or 0)
+                                     - sum(c.get("usd") or 0 for c in cyc), 2)
+                               if f.get("n_open") else None),
             "last_close": max((c.get("end") or "" for c in cyc), default=None),
+            "last_fill": max((t.get("ct") or "" for t in f.get("trades") or []),
+                             default=None) or None,
         })
     out.sort(key=lambda r: r["usd"] if r["usd"] is not None else 0)
     tot = {"usd": round(sum(r["usd"] or 0 for r in out), 2),

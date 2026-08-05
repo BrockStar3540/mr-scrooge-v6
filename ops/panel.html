@@ -836,8 +836,8 @@ body.has-ticker{padding-bottom:32px}
           <th title="share of completed cycles that closed net-positive">cycle WR</th>
           <th title="mean realized $ per completed cycle">avg cyc $</th>
           <th title="worst / best completed cycle, realized $">worst / best</th>
-          <th title="open legs right now (unrealized $, verdict deferred until flat)">open</th>
-          <th>last close</th>
+          <th title="open legs right now: (unrealized $) and ⏳ realized-so-far inside the current uncompleted cycle — cycle columns book only COMPLETED cycles (judge-when-flat), so a mid-cycle loss shows here and in realized $ before it ever becomes a cycle stat">open</th>
+          <th title="last broker fill (hover shows when the last completed cycle ended)">last fill</th>
         </tr></thead>
         <tbody id="btruth-body"><tr><td colspan="12" class="muted">loading broker truth…</td></tr></tbody>
       </table></div>
@@ -1261,8 +1261,8 @@ function renderBrokerTruth(d){
       <td>${r.cycle_wr==null?'—':Math.round(r.cycle_wr*100)+'%'}</td>
       <td class="mono">${money(r.avg_cycle_usd)}</td>
       <td class="mono" style="font-size:11px">${money(r.worst_cycle_usd)} / ${money(r.best_cycle_usd)}</td>
-      <td>${r.n_open?`${r.n_open} <span class="mono muted" style="font-size:10px">(${r.open_upl>0?'+':''}$${r.open_upl})</span>`:'—'}</td>
-      <td class="muted" style="font-size:10px">${r.last_close?String(r.last_close).replace('T',' '):'—'}</td>
+      <td style="white-space:nowrap">${r.n_open?`${r.n_open} <span class="mono ${r.open_upl<0?'neg':'muted'}" style="font-size:10px" title="unrealized on the ${r.n_open} open leg(s) · stop floor ${r.open_floor_usd!=null?'$'+r.open_floor_usd:'—'}">(${r.open_upl>0?'+':''}$${r.open_upl})</span>${r.open_cycle_usd?` <span class="mono ${r.open_cycle_usd<0?'neg':'pos'}" style="font-size:10px" title="⏳ CYCLE IN PROGRESS: already realized inside the current (uncompleted) cycle — NOT yet in the cycle columns, which book only completed cycles (judge-when-flat). It IS in the realized $ total.">⏳${r.open_cycle_usd>0?'+':''}$${r.open_cycle_usd}</span>`:''}`:'—'}</td>
+      <td class="muted" style="font-size:10px" title="last broker fill${r.last_close?' · last COMPLETED cycle ended '+String(r.last_close).replace('T',' '):''}">${r.last_fill?String(r.last_fill).replace('T',' '):(r.last_close?String(r.last_close).replace('T',' '):'—')}</td>
     </tr>`;
   }).join('')+`<tr style="border-top:2px solid rgba(255,255,255,.15);font-weight:700">
       <td colspan="3">TOTAL</td><td>${t.legs??''}</td><td>${t.cycles??''}</td>

@@ -1129,6 +1129,50 @@
           "sizing": {
             "risk_pct": 0.2
           }
+        },
+        {
+          "id": "kc_up_short_lean_counter_long",
+          "side": "long",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -15.0,
+              "max": 0.0,
+              "note": "Price within [-15, 0] pips of KC upper band; near/below upper KC. Clean-data re-derivation (2026-07-03): KEEP n=8391 -0.054p 49.2% WR vs BLOCKED -1.110p 47.9% WR. Fresh stump: -13.6459 (gt) WR=49.6%. Broker-validated: 6W 1L on live AUD_USD/london/short trades. phaseA (2026-07-04): survives raw re-derivation unchanged.",
+              "lineage": "rederivation-2026-07-03/v5_rederivation_REPORT.md item-3b; broker-validation-6W1L-2026-07; phaseA_gate_rederivation-2026-07-04 CELL 4"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: kc_up_short_lean (short) ran 6 eps @ -6.7p/ep with medMFE/MAE 4.8/11.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of kc_up_short_lean (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-05"
         }
       ],
       "notes": "20 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."

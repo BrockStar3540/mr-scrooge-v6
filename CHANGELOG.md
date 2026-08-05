@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.21.1] — 2026-08-05 — mid-cycle losses visible in BROKER TRUTH
+
+### Fixed
+- **A leg closed mid-cycle was invisible in the cycle columns** (operator
+  report: AUD_USD closed −$86.37 at 19:07Z; the row still read cycle WR 100%,
+  "last close" Aug 3 — the loss only netted silently into realized $). Cycle
+  stats correctly book only COMPLETED cycles (judge-when-flat), so the open
+  column now carries the missing signal: unrealized on open legs **plus
+  ⏳ realized-so-far inside the current uncompleted cycle**
+  (`open_cycle_usd` = family total − completed cycles), and "last close"
+  became **"last fill"** (completed-cycle end moved to the tooltip). A
+  family having a bad day now looks like one at a glance.
+
 ## [6.21.0] — 2026-08-04 — truth-check promotion gate
 
 ### Added
