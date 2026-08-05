@@ -110,11 +110,18 @@ def check_dryrun():
     """Health AND evidence in one pass: (ok, detail, qualifier_now).
     qualifier_now = the dry-run printed a real CHEATER-PROBE admission —
     a candidate passed the complete v4 ticket on current evidence."""
-    r = subprocess.run([sys.executable, "ops/governor.py", "--dry-run"],
-                       cwd=REPO, capture_output=True, text=True, timeout=900)
+    # B-120: a plain dry-run can NEVER print a cheater qualifier — candidate
+    # evaluation is gated on the lane being enabled or --cheater-diagnostic,
+    # so the VALIDATING -> COMMISSIONED transition was unreachable (2 clean
+    # passes + 13 real qualifiers, qualifier=False forever). The diagnostic
+    # evaluates the ticket while admission stays OFF and never queues a flip.
+    r = subprocess.run([sys.executable, "ops/governor.py", "--dry-run",
+                        "--cheater-diagnostic"],
+                       cwd=REPO, capture_output=True, text=True, timeout=1500)
     bad = ("Traceback" in r.stderr or "evaluation failed" in r.stdout
            or "evaluation failed" in r.stderr)
-    qualifier = "CHEATER-PROBE" in r.stdout
+    qualifier = ("CHEATER-PROBE" in r.stdout
+                 or "cheater-v4 diagnostic QUALIFIED" in r.stdout)
     return ((r.returncode == 0 and not bad),
             f"dry-run rc={r.returncode} bad={bad} qualifier={qualifier}",
             qualifier)

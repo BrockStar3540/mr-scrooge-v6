@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-119, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-120, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -823,6 +823,14 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
   genesis spec (*2026-02-14*) had **called for exactly these breakers**; the first live build shipped
   without them. Related later B-entries in the same lineage: **B-007** (re-entry not wired), **B-023**
   (cooldown wrongly applied to wins), **B-025** (consecutive-candle counting).
+
+### B-120 — the unreachable throne: Commissioner qualifier detection deadlocked
+- **Date:** 2026-08-05 (caught answering the operator's "how long until those shadows promote?" — the honest answer was "never")
+- **Area:** `ops/commissioner.py` check_dryrun; interaction with `ops/governor.py` candidate gating
+- **Symptom:** the Commissioner sat in VALIDATING indefinitely with clean health passes accruing (2 passes ≥6h apart on the books) while the cheater-v4 lane it exists to open stayed dark — despite 13 candidates passing the complete v4 ticket on current evidence (top: EUR_JPY/asia/box_pdl_short_t20s at +4.73R covered over 6 resolved virtual cycles).
+- **Root cause:** `check_dryrun` ran a **plain** `governor.py --dry-run` and grepped stdout for "CHEATER-PROBE". But the governor only *builds* cheater candidates when `cheater_promotion_enabled` (false — that is what the Commissioner is waiting to enable) or `--cheater-diagnostic` is passed. Circular dependency: the qualifier signal required the lane the qualifier was supposed to unlock. The VALIDATING → COMMISSIONED_1 transition was unreachable by construction.
+- **Fix:** the health battery now runs `--dry-run --cheater-diagnostic` (evaluates the full ticket while admission stays OFF, never queues a flip) and detects both "CHEATER-PROBE" and "cheater-v4 diagnostic QUALIFIED". Timeout 900 → 1500s for the replay budget.
+- **Lesson:** a state machine's advance condition must be provably reachable — test the *transition*, not just the states. Nobody noticed for 5 days because "healthy, waiting for evidence" looks identical to "healthy, structurally unable to see evidence." When a gate waits on a signal, ask: can the signal fire while the gate is closed?
 
 ---
 
