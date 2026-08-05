@@ -115,3 +115,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-04T02:03:56Z,EUR_USD,long,15020,9.01,parent
 2026-08-04T07:30:03Z,EUR_USD,long,15077,9.05,parent
 2026-08-04T19:07:03Z,AUD_USD,short,17274,-86.37,parent
+2026-08-05T13:36:14Z,USD_CHF,short,3685,2.66,parent
