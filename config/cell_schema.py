@@ -311,6 +311,9 @@ def _validate_setup(setup: Any, sess: str, errs: ValidationErrors) -> None:
         "wired",   # date the setup entered the book (QUEUED-row age, 2026-07-31)
         "_note",         # operator margin notes (e.g. side-flip history)
         "manual_only",   # governor opt-out: this setup is hand-ruled only
+        "watch",         # operator watch marker (emoji) — rendered on the board
+                         # so a cohort can be followed at a glance. Display only:
+                         # nothing in the governor, scorer or gates reads it.
     }
     _no_unknown_fields(setup, allowed_setup, ctx, errs)
 

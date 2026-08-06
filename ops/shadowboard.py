@@ -259,7 +259,8 @@ def _config_status():
                 for su in (b.get("setups") or []):
                     out[(pair, sess, su.get("id"))] = (su.get("status", "?"),
                                                        su.get("side", "?"),
-                                                       su.get("wired"))
+                                                       su.get("wired"),
+                                                       su.get("watch"))
     except OSError:
         pass
     return out
@@ -605,6 +606,7 @@ def _aggregate(db):
         out.append({
             "cell": cell, "setup": setup, "side": side,
             "status": _status,
+            "watch": (_st[3] if _st and len(_st) > 3 else None),
             "strikes": _stk_n,
             # ALL stat columns: governor-grade sample (current era, v2,
             # mechanics-matched, net-of-cost). None = no such evidence yet.
@@ -675,6 +677,7 @@ def _aggregate(db):
     # row, so the docket is visible — waiting is a state, not an absence.
     have = {(r["cell"], r["setup"]) for r in out}
     for (pair, sess, sid), (status, side, *_x) in _cfgst.items():
+        _watch = _x[1] if len(_x) > 1 else None
         cell = f"{pair}/{sess}"
         if status in ("ACTIVE", "PROBE", "SHADOW") and (cell, sid) not in have:
             gov = None
@@ -689,6 +692,7 @@ def _aggregate(db):
                        "score": round(float(score), 2), "family": f}
             out.append({
                 "cell": cell, "setup": sid, "side": side, "status": status,
+                "watch": _watch,
                 "episodes": 0, "cum_net240": None, "avg_net240": None,
                 "lcb": None, "wr": None, "hit_eng": None, "hit_sl": None,
                 "med_mfe": None,

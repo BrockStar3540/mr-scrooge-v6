@@ -45,8 +45,19 @@ def classify(r: dict) -> tuple[str, str]:
     if r.get("vc_broker_agree") is False:
         return "TRUTH-CONTRADICTED", "virtual sim disagrees with this cell's own fills"
     if eps == 0:
+        # `episodes` is the GOVERNOR-GRADE count (current era, v2, mechanics-
+        # matched), NOT lifetime. A cell can show 0 here having stamped dozens
+        # of times under the previous metric era — calling that "never fired"
+        # was wrong on the first run of this tool (GBP_USD/ny/box_pdl_short had
+        # 19 lifetime episodes). Always separate the two.
+        life_n = (r.get("life") or {}).get("n") or 0
+        if life_n > 0:
+            return ("WENT QUIET",
+                    f"{life_n} lifetime episodes, none in the current era "
+                    f"(last stamp {last_age:.0f}d ago)" if last_age is not None
+                    else f"{life_n} lifetime episodes, none in the current era")
         if wired_age is not None and wired_age >= 14:
-            return "NEVER FIRED", f"wired {wired_age:.0f}d ago, zero episodes"
+            return "NEVER FIRED", f"wired {wired_age:.0f}d ago, zero episodes ever"
         return "WAITING", "wired recently, no episodes yet"
     if last_age is not None and last_age >= 7:
         return "STALLED", f"no stamp in {last_age:.0f}d"
@@ -112,7 +123,7 @@ def main():
 
     order = ["PROMOTION-READY", "AT GATES (quality short)", "TRUTH-CONTRADICTED",
              "BUILDING (positive)", "BUILDING (negative)", "STALLED",
-             "NEVER FIRED", "WAITING", "AWAITING V2", "RETIRED"]
+             "WENT QUIET", "NEVER FIRED", "WAITING", "AWAITING V2", "RETIRED"]
     counts = Counter(r["bucket"] for r in out)
     print(f"SHADOW BOOK AUDIT — {len(out)} non-ACTIVE setups, {NOW:%Y-%m-%d %H:%M}Z\n")
     for b in order:
@@ -140,7 +151,7 @@ def main():
         show(b, limit=12 if b in ("BUILDING (positive)", "BUILDING (negative)",
                                   "WAITING", "AWAITING V2") else None)
 
-    dead = [r for r in out if r["bucket"] in ("NEVER FIRED", "STALLED")]
+    dead = [r for r in out if r["bucket"] in ("NEVER FIRED", "STALLED", "WENT QUIET")]
     print(f"REGISTRY COST: {len(dead)} setups are dormant or stalled out of "
           f"{len(out)} — they occupy the hypothesis registry and the board "
           f"while producing no evidence.")

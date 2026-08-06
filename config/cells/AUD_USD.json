@@ -1220,7 +1220,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         },
         {
           "id": "impulse_ob_short",
@@ -1268,7 +1269,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         }
       ],
       "notes": "23 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."

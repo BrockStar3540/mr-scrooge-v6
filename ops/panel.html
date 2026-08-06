@@ -908,6 +908,7 @@ body.has-ticker{padding-bottom:32px}
       <span><b>❌</b> = TRUTH CHECK FAILED — this cell's virtual family sim contradicts its own REAL broker fills; the column is proven wrong here, trust BROKER TRUTH (promotion is gated: PROMOTE-GATED-TRUTH / TRUTH BLOCKED)</span>
       <span><b>✓</b> = sim sign agrees with this cell's broker fills</span>
       <span><b>🔻</b> = one permanent strike per demotion (3 = DISABLED forever)</span>
+      <span><b>🍀</b> = operator watch cohort (market-structure trials wired 2026-08-06)</span>
       <span><b>🏆</b> = passes the full promotion bar today</span>
       <span><b>⚠</b> on V-CYC = virtual-cycle data stale &gt;13h</span>
       <span><b>life:</b> = lifetime blend (all eras + legacy metric), context only — never decision data</span>
@@ -1356,7 +1357,7 @@ async function pollShadowboard(){
           ${g.family.n?((fn>0?'+':'')+fn+'p·'+nc+'cyc'):'no closes yet'}${open?' ⏳'+open:''}</span>`;
       }
       return hdr+`<tr${x.queued?' style="opacity:.55"':''}>
-        <td class="mono" style="font-size:11px">${x.setup}${beat}${warn}${strikes}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
+        <td class="mono" style="font-size:11px">${x.watch?`<span title="operator watch cohort">${x.watch}</span> `:''}${x.setup}${beat}${warn}${strikes}${x.queued?' <span class="muted" title="wired, awaiting first scored episode (stamps mature after 4h)">⏳</span>':''}</td>
         <td>${x.cell}</td><td>${x.side==='long'?'▲L':'▼S'}</td>
         <td ${stcls}>${x.status}</td>
         <td>${vcell}</td>

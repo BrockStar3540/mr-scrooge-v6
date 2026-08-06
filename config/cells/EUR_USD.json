@@ -314,7 +314,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         },
         {
           "id": "liq_sweep_fade_short",
@@ -356,7 +357,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -1446,7 +1448,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         },
         {
           "id": "impulse_ob_short",
@@ -1494,7 +1497,8 @@
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
-          "wired": "2026-08-06"
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
