@@ -142,6 +142,36 @@ def _score(pair, t0, side):
     return {"mfe60": mfe60, "mae60": mae60, "net60": net60,
             "mfe240": mfe240, "mae240": mae240, "net240": net240}
 
+# How far past the horizon a still-open stamp may be followed before we give
+# up and call it genuinely censored. 5 days of M5 bars; live grids retire at
+# grid_max_age_days=7, so this sits inside the window the bot itself allows.
+FOLLOW_MAX_DAYS = 5.0
+
+
+def _candles_ba(pair, t0, n_bars, url, tok):
+    """n_bars of M5 bid/ask candles from t0, paged (OANDA caps count at 500)."""
+    out, cur, left = [], t0, int(n_bars)
+    while left > 0:
+        take = min(500, left)
+        u = (f"{url}/v3/instruments/{pair}/candles?granularity=M5"
+             f"&from={cur.strftime('%Y-%m-%dT%H:%M:%SZ')}&count={take}&price=BA")
+        try:
+            cs = json.load(urllib.request.urlopen(urllib.request.Request(
+                u, headers={"Authorization": f"Bearer {tok}"}), timeout=25))["candles"]
+        except Exception:
+            break
+        cs = [c for c in cs if c.get("complete", True)]
+        if not cs:
+            break
+        out += cs
+        left -= len(cs)
+        if len(cs) < take:
+            break                      # ran out of history (stamp near "now")
+        cur = datetime.fromisoformat(cs[-1]["time"].replace("Z", "+00:00")) \
+            + timedelta(minutes=5)
+    return out
+
+
 def _score_v2(ep, t0):
     """D-7 scorer: bid/ask candles + the setup's OWN exit, replayed from the
     STAMPED executable entry by core/shadow_execution. Spread is inside the
@@ -161,11 +191,27 @@ def _score_v2(ep, t0):
     o = simulate_shadow_exit(stamp, cs, _pip(pair))
     if o is None:
         return None
-    # CENSORED (charter, 2026-07-31): the live ratchet has no timeout, so a
-    # sim that reaches the horizon without a stop/ratchet exit is an episode
-    # STILL OPEN, not a closed outcome. Its MFE/MAE are real observations;
-    # its "net" is not — net240=None drops it from every net/WR aggregate.
+    # STILL OPEN AT THE HORIZON — the live ratchet has no timeout, so this is
+    # not an outcome yet. The 2026-07-31 charter censored it here and dropped
+    # the episode from every aggregate; measured 2026-08-06 that was discarding
+    # 616 of 2240 episodes (27%), biased toward trades that merely DRIFTED
+    # (neither stop nor trail), so any slow-moving setup could never accrue
+    # evidence and looked dead. We now FOLLOW IT to a real exit, which is what
+    # the live position would have done. MFE/MAE stay scoped to the horizon
+    # window so the hit>=trig / hitSL columns keep their meaning.
     if o.exit_reason == "horizon":
+        follow_bars = int(FOLLOW_MAX_DAYS * 24 * 60 / 5)
+        ext_cs = _candles_ba(pair, t0, follow_bars, url, tok)
+        ext = (simulate_shadow_exit(stamp, ext_cs, _pip(pair), max_bars=follow_bars)
+               if len(ext_cs) > len(cs) else None)
+        if ext is not None and ext.exit_reason != "horizon":
+            return {"mv": 2, "net240": ext.net_pips, "mfe240": o.mfe_pips,
+                    "mae240": o.mae_pips, "net60": None, "mfe60": None,
+                    "mae60": None, "exit_reason": ext.exit_reason,
+                    "exit_bar": ext.exit_bar, "ambiguous": ext.ambiguous_bar,
+                    "followed": True, "follow_bars": ext.exit_bar,
+                    "mfe_full": ext.mfe_pips, "mae_full": ext.mae_pips}
+        # genuinely unresolved even after FOLLOW_MAX_DAYS — still censored
         return {"mv": 2, "net240": None, "mfe240": o.mfe_pips,
                 "mae240": o.mae_pips, "net60": None, "mfe60": None,
                 "mae60": None, "exit_reason": "horizon", "censored": True,

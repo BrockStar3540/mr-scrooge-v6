@@ -78,10 +78,18 @@ def _ratchet_lock(peak_pips: float, trigger: float, step: float,
 
 
 def simulate_shadow_exit(stamp: dict, candles: Sequence[dict],
-                         pip: float) -> Optional[ShadowOutcome]:
+                         pip: float,
+                         max_bars: Optional[int] = None) -> Optional[ShadowOutcome]:
     """Replay the setup's exit over executable candles. `stamp` is a parsed
     TRIALSTAMP dict; `candles` are OANDA price=BA candles starting at/after
-    the stamp. Returns None when the data is unusable (caller skips)."""
+    the stamp. Returns None when the data is unusable (caller skips).
+
+    max_bars overrides the horizon truncation (2026-08-06). The live ratchet
+    has NO timeout, so stopping the replay at horizon_min manufactures an
+    artificial "still open" verdict for any trade that simply had not resolved
+    yet — which was discarding 27% of all episodes. Callers pass max_bars to
+    follow a stamp through to its REAL exit; horizon_min then only scopes the
+    MFE/MAE reporting window, which is what its name always implied."""
     side = stamp.get("side")
     entry = float(stamp.get("entry") or 0)
     exit_cfg = stamp.get("exit_config") or {}
@@ -95,7 +103,7 @@ def simulate_shadow_exit(stamp: dict, candles: Sequence[dict],
     if len(bars) < 2:
         return None
     horizon_bars = max(2, int(float(stamp.get("horizon_min", 240)) / 5.0))
-    bars = bars[:horizon_bars]
+    bars = bars[:(max_bars if max_bars is not None else horizon_bars)]
 
     mode = str(exit_cfg.get("mode", "ratchet") or "ratchet")
     if mode == "bracket":

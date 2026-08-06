@@ -4,6 +4,39 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.24.0] — 2026-08-06 — censoring was hiding losses (evidence recovery)
+
+### Fixed
+- **27% of all episodes were being silently discarded, and the discard was
+  biased toward losses.** The 2026-07-31 charter censored any stamp still open
+  at `horizon_min` (correct reasoning: the live ratchet has no timeout, so an
+  unresolved trade is not an outcome) — but the replay was TRUNCATED at the
+  horizon, so "unresolved" really meant "we stopped watching". Measured:
+  616 of 2240 episodes older than 8h, some 9 days old.
+
+  `simulate_shadow_exit()` gains `max_bars`, and `_score_v2` now FOLLOWS a
+  still-open stamp to its real exit (paged M5 fetch, capped at
+  `FOLLOW_MAX_DAYS`=5, inside the bot's own `grid_max_age_days`=7). MFE/MAE
+  stay scoped to the horizon window so `hit≥trig` / `hitSL` keep their meaning;
+  full-window extremes are carried as `mfe_full`/`mae_full`. A stamp still open
+  after 5 days remains genuinely censored.
+
+- **`research/tools/rescore_censored.py`** recovered the backlog: **503 of 657
+  censored episodes resolved (77%)**, 154 genuinely still open, 0 failures.
+
+### Why this mattered
+The recovered episodes are **75% winners but average −4.5p** — one in four ran
+to a full stop. Censoring was therefore removing losers preferentially and
+flattering every cell in the book. Post-rescore: cells with era evidence
+171 → 193, and **61 of 131 cells with grown samples got WORSE** (mean −1.15p).
+Two live seats were revealed as flattered — `CAD_JPY/asia/ps_ceil_fade_short`
+(ACTIVE) +13.50 → **−22.50p**, `USD_CHF/london/ps_ceil_fade_short` (PROBE)
++6.83 → **−12.50p**. The governor's next tick promotes two genuinely strong
+candidates (LCB +5.9 and +5.7, q=0.001) and demotes `GBP_USD/ny/control_rvol_60`
+(now −3.58p, LCB −8.23) with its first strike.
+
+Episode DB backed up to `data/shadowboard.json.pre-rescore-20260806` first.
+
 ## [6.23.1] — 2026-08-06 — operator raises FDR tolerance to 0.10
 
 ### Changed
