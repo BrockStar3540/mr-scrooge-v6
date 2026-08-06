@@ -15,6 +15,15 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
 echo "pre-push: running suite (unpiped — the exit code IS the verdict)…"
+# CI ALSO runs the suite in RANDOM order (pytest-randomly, requirements-dev).
+# If the plugin is missing here the hook silently tests a weaker property than
+# CI does — order-dependent breakage passes the guard and fails on GitHub.
+# Say so rather than differ quietly.
+if ! python3 -c 'import pytest_randomly' 2>/dev/null; then
+  echo "pre-push: NOTE pytest-randomly not installed — CI additionally runs the"
+  echo "pre-push:      suite in random order. Install requirements-dev.txt for parity."
+fi
+
 python3 -m pytest -q -x
 echo "pre-push: suite green."
 

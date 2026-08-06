@@ -2,10 +2,30 @@ name: tests
 on:
   push:
     branches: [ main ]
+    # The hourly livelog cron commits equity data + a README badge line and
+    # nothing else — 24 of 30 commits/day. Running the suite on those was
+    # pure queue contention, and jobs that waited too long for a runner were
+    # cancelled, which is what the red marks on the repo actually were (a
+    # cancelled job records ZERO steps — a real test failure records the
+    # failing step). paths-ignore only skips when EVERY changed path matches,
+    # so a commit touching README *and* code still runs the suite.
+    paths-ignore:
+      - 'livelog/**'
+      - 'README.md'
+      - 'docs/**'
+      - '**/*.md'
   pull_request:
+
+# One run per ref: a newer push supersedes an older queued run instead of
+# both fighting for a runner.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   pytest:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
