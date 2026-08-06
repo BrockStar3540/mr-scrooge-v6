@@ -1173,9 +1173,105 @@
           },
           "notes": "Counterpart of kc_up_short_lean (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-07-05"
+        },
+        {
+          "id": "impulse_ob_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bull_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "price at/inside the nearest UNMITIGATED impulse-origin zone (500.0 sentinel = no fresh zone, excluded by this band)"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5,
+              "note": "regime must agree \u2014 continuation setup, never counter-trend"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Independent implementation of public price-structure concepts (equal-high/low stop pools and their sweep; impulse-origin supply/demand zones with mitigation; fast/slow EMA regime). Built from core/feed/structure.py against our own M5 data \u2014 no third-party code, terminology or parameters. FX tick volume is not size, so these are PRICE structure only.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
+          "wired": "2026-08-06"
+        },
+        {
+          "id": "impulse_ob_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "price at/inside the nearest UNMITIGATED impulse-origin zone (500.0 sentinel = no fresh zone, excluded by this band)"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -0.5,
+              "note": "regime must agree \u2014 continuation setup, never counter-trend"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Independent implementation of public price-structure concepts (equal-high/low stop pools and their sweep; impulse-origin supply/demand zones with mitigation; fast/slow EMA regime). Built from core/feed/structure.py against our own M5 data \u2014 no third-party code, terminology or parameters. FX tick volume is not size, so these are PRICE structure only.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
+          "wired": "2026-08-06"
         }
       ],
-      "notes": "20 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "23 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,

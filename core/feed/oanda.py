@@ -116,6 +116,11 @@ class _Client:
 
 # ── Indicator helpers (match V3/V4 exactly — dm_04 corpus was built with these) ─
 
+from core.feed.structure import (ema_trend_pips as _ema_trend_pips,
+                                 impulse_blocks as _impulse_blocks,
+                                 liquidity_sweep as _liquidity_sweep)
+
+
 def _adx14(df: pd.DataFrame, period: int = 14) -> float:
     """Wilder ADX(14) on the given frame (H1). 0 when insufficient bars."""
     if len(df) < period * 2 + 1:
@@ -479,6 +484,15 @@ def _compute_features(
     # ATR concentration (atr_5m / atr_1h — short-term vs hourly vol ratio)
     atr_conc = atr_5m / atr_1h if atr_1h > 0 else 0.0
 
+    # ── Market structure (2026-08-06): stop pools, impulse-origin zones,
+    # trend regime. Recomputed from the M5 window every cycle, no state.
+    _m5h_l = [float(x) for x in m5h]
+    _m5l_l = [float(x) for x in m5l]
+    _m5c_l = [float(x) for x in m5c]
+    liq_hi, liq_lo = _liquidity_sweep(_m5h_l, _m5l_l, _m5c_l, pip, atr_5m)
+    ob_bull, ob_bear = _impulse_blocks(_m5h_l, _m5l_l, _m5c_l, mid, pip, atr_5m)
+    ema_trend = _ema_trend_pips(_m5c_l, pip)
+
     spread_pips = (ask - bid) / pip
 
     return MarketView(
@@ -536,6 +550,12 @@ def _compute_features(
         aroonosc_h1=round(aroonosc_h1, 2),
         kc_up_dist_pips=round(kc_up_dist_pips, 2),
         efi=round(efi, 4),
+        # Market structure (2026-08-06 trial features)
+        liq_sweep_high=liq_hi,
+        liq_sweep_low=liq_lo,
+        ob_bull_dist_pips=ob_bull,
+        ob_bear_dist_pips=ob_bear,
+        ema_trend_pips=ema_trend,
         # Execution
         bid=bid, ask=ask, spread_pips=round(spread_pips, 4),
     )

@@ -4,6 +4,43 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.22.0] — 2026-08-06 — market-structure trial features
+
+### Added
+- **`core/feed/structure.py`** — three pure, unit-tested feature builders on the
+  M5 window, no cross-cycle state: `liquidity_sweep()` (equal-high/low stop
+  pools + the sweeps that pierce and get REJECTED), `impulse_blocks()`
+  (impulse-origin supply/demand zones with mitigation tracking) and
+  `ema_trend_pips()` (fast/slow EMA separation as a regime scalar).
+  New MarketView fields: `liq_sweep_high`, `liq_sweep_low`,
+  `ob_bull_dist_pips`, `ob_bear_dist_pips`, `ema_trend_pips`.
+  Live-verified across 8 pairs: sweeps fire on ~2/8 at any moment (correctly
+  rare), fresh impulse zones exist on 8/8.
+- **12 zero-authority SHADOW setups** (`market_structure` class, registered in
+  `config/cell_schema.py`): `liq_sweep_fade_{long,short}` on EUR_USD/asia,
+  GBP_USD/london, USD_CHF/london (cells where fades already have broker
+  evidence) and `impulse_ob_{long,short}` on EUR_USD/london, GBP_USD/ny,
+  AUD_USD/london. Impulse setups require trend agreement; sweep setups do not.
+- **`research/tools/ema_regime_gate.py`** — reconstructs `ema_trend_pips` from
+  historical candles at each episode's stamp time so the gate hypothesis can be
+  tested on 836 existing episodes instead of waiting for forward data.
+
+### Notes
+- FX tick "volume" is not size, so these are PRICE-structure features only; no
+  claim of reading participation. EMA periods are the TIME-equivalent of the
+  source method's 1-minute 69/200 (~70/200 min = 14/40 on M5), not a bar-count
+  copy — a literal copy would silently mean 5.75h/16.7h and EMA200 would be
+  undercooked in a 240-bar window.
+- Implemented independently from public price-structure concepts against our own
+  M5 data; no third-party code, terminology, or parameters.
+
+### Fixed
+- `test_review_r4` config lock asserted `cheater_promotion_enabled is False`
+  forever — i.e. asserted that autonomy never works. The Commissioner
+  legitimately flipped it on reaching COMMISSIONED_1 (2026-08-06T12:56Z, first
+  time possible after the B-120 fix). Now pins the blast radius (one seat, v4
+  ticket, replay window, truth gate) and the fail-closed code default instead.
+
 ## [6.21.1] — 2026-08-05 — mid-cycle losses visible in BROKER TRUTH
 
 ### Fixed

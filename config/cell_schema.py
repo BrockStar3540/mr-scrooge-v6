@@ -25,6 +25,8 @@ VALID_CLASSES = {
     "session_structure", "trend_pullback",    # ps-wall + discovery-engine shapes
     "book_replay",                            # D-4 strategy-book trials
     "classic", "box", "control",              # classic/control probe families
+    "market_structure",                       # 2026-08-06: stop pools, impulse-
+                                              # origin zones, EMA trend regime
 }
 VALID_STATUSES = {"ACTIVE", "PROBE", "SHADOW", "SUSPENDED", "DISABLED"}
 # Pair universe: single source of truth is config/pairs.py — a list that exists

@@ -77,6 +77,16 @@ class MarketView:
     kc_up_dist_pips: float = 0.0    # Distance close→upper Keltner band, M5 period 20 (pips signed; +=close above)
     efi:             float = 0.0    # Elder Force Index on M5, period 13 (asia+london top binary rule, 22/32 cells)
 
+    # ── Market structure (2026-08-06 trial features) ─────────────────────────
+    # PRICE-structure only: FX tick "volume" is not size, so none of these
+    # claim to read participation. Combine with rvol_* if volume gating is
+    # wanted. NO_LEVEL_PIPS (500.0) = "no qualifying structure in range".
+    liq_sweep_high:    float = 0.0    # pips a rejected sweep pierced an equal-HIGH pool
+    liq_sweep_low:     float = 0.0    # pips a rejected sweep pierced an equal-LOW pool
+    ob_bull_dist_pips: float = 500.0  # mid − top of nearest UNMITIGATED demand zone
+    ob_bear_dist_pips: float = 500.0  # bottom of nearest UNMITIGATED supply zone − mid
+    ema_trend_pips:    float = 0.0    # EMA14−EMA40 on M5 (~70min vs ~200min), pips
+
     # ── Execution ────────────────────────────────────────────────────────────
     bid:            float = 0.0
     ask:            float = 0.0

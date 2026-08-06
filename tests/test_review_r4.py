@@ -294,10 +294,17 @@ def test_commissioning_config_is_locked_to_one_seat():
     # (bar 10 episodes / 5 days). The CODE default stays fail-closed.
     assert cfg["allow_promotions"] is True
     assert DEFAULT_CFG["allow_promotions"] is False
-    assert cfg["cheater_promotion_enabled"] is False
+    # `cheater_promotion_enabled` is the COMMISSIONER's switch, not a constant:
+    # it legitimately flips to true on reaching COMMISSIONED_1 (first observed
+    # 2026-08-06T12:56Z after the B-120 deadlock fix). Asserting it stays false
+    # was asserting that autonomy never works. What must ALWAYS hold is the
+    # blast radius — one seat, v4 ticket, full replay window — plus the code
+    # default staying fail-closed for a fresh install.
+    assert DEFAULT_CFG["cheater_promotion_enabled"] is False
     assert cfg["cheater_metric_version"] == "family-cycle-v4"
     assert cfg["cheater_max_seats"] == 1
     assert cfg["cheater_replay_days"] >= 8.0
+    assert cfg["truth_check_gate"] is True
 
 
 def test_cheater_diagnostic_refuses_non_dry_run():
