@@ -123,6 +123,16 @@ def required_bar(cfg: dict, strikes: int = 0) -> tuple:
             int(cfg.get("min_independent_days", 10)))
 
 
+def meets_counting_gates(e: SetupEvidence, cfg: dict) -> bool:
+    """Has this setup reached the SAMPLE-SIZE gates for its strike level?
+
+    Separated from promotion_predicate because it defines the BH family: a
+    setup below its counting gates is accruing evidence, not under test.
+    """
+    min_n, min_days = required_bar(cfg, e.strikes)
+    return e.raw_n >= min_n and e.independent_days >= min_days
+
+
 def promotion_predicate(e: SetupEvidence, cfg: dict) -> tuple:
     """THE shared bar. Returns (ok, failure_codes). The dashboard trophy and
     the governor's promote decision both call exactly this. Strike-aware:
@@ -211,8 +221,43 @@ def current_era_evidence(episodes: dict, book_map: dict, governor_state: dict,
             block_lcb=binf.lcb, p_value=binf.p_value,
             strikes=int(strikes_map.get("|".join(key), 0)))
 
-    q = benjamini_hochberg({k: e.p_value for k, e in evidence.items()
-                            if e.p_value is not None})
+    # BH FAMILY = THE CANDIDATE DOCKET (2026-08-06 fix).
+    #
+    # This module's contract has always read "Benjamini-Hochberg across the
+    # run's whole candidate DOCKET", but the implementation had drifted to
+    # "every row that has a p-value" — i.e. the entire scored book. With 274
+    # live hypotheses that taxed real candidates into oblivion: cells with
+    # n=21, avg +9.99p and LCB +1.46 were failing on q=0.072 alone, and every
+    # new shadow wired made it worse for everyone already in the queue.
+    #
+    # A setup below its counting gates is ACCRUING, not under test — the
+    # governor makes no promote/hold decision about it this run, so it does
+    # not belong in the family. Membership is decided by SAMPLE SIZE, which is
+    # independent of the effect estimate, so this does not bias the null
+    # distribution or inflate false discoveries among the tested set.
+    #
+    # MEASURED EFFECT (2026-08-06, do not re-derive from intuition): this
+    # shrank the family 128 -> 10 and stopped newly-wired shadows taxing the
+    # queue, but it did NOT rescue the marginal candidates and slightly
+    # TIGHTENED them (q 0.071 -> 0.091). Reason: BH normalises by rank/m, and
+    # the rows removed were disproportionately STRONG (low p) cells still
+    # short of their counting gates — dropping low-p members raises everyone
+    # else's rank-normalised position. Smaller family != weaker correction.
+    #
+    # Corollary worth knowing: when the docket is tiny, BH approaches no
+    # correction at all (m=1 => q=p). That is statistically correct — one test
+    # has no multiplicity — but it does mean a quiet run applies a lower
+    # evidential bar than a busy one. fdr_q is what governs that, not m.
+    #
+    # `fdr_family: "all"` restores the legacy whole-book behaviour.
+    _fam_mode = str((governor_cfg or {}).get("fdr_family", "docket")).lower()
+    if _fam_mode == "all":
+        _fam = {k: e.p_value for k, e in evidence.items() if e.p_value is not None}
+    else:
+        _fam = {k: e.p_value for k, e in evidence.items()
+                if e.p_value is not None
+                and meets_counting_gates(e, governor_cfg)}
+    q = benjamini_hochberg(_fam)
     for k, e in evidence.items():
         e.q_value = q.get(k)
         e.promotable, e.reason_codes = promotion_predicate(e, governor_cfg)

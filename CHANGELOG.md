@@ -4,6 +4,40 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.23.0] — 2026-08-06 — seat pools + BH family scope
+
+### Fixed
+- **Ordinary promotions structurally starved the cheater lane.** The cheater
+  cap was `cheater_max_seats − probe_seat_count`, and `probe_seat_count` counts
+  EVERY PROBE regardless of origin. Two ordinary-lane PROBEs therefore zeroed
+  the single seat the Commissioner had just spent five days earning — the lane
+  did not merely fail to seat, it skipped candidate evaluation entirely.
+  Seats are now two pools: `cheater_seat_count()` (per-lane policy, from the
+  cheater seat book) and a new **`max_probe_seats_total`** (default 4) — a
+  durable, status-derived ceiling across BOTH lanes, which is the real risk
+  control and survives loss of governor state.
+- **The ordinary lane had no standing seat ceiling at all.** `max_promotions`
+  bounded promotions *per run*; nothing bounded the total number of live
+  PROBEs across runs. It now respects `max_probe_seats_total`, with cheater
+  admissions reserved first (that lane already paid the validation cost).
+
+### Changed
+- **BH-FDR family scoped to the candidate docket** (`fdr_family: "docket"`,
+  `"all"` restores legacy). The module contract always said "across the run's
+  whole candidate docket"; the implementation had drifted to every scored row.
+  Family membership is decided by SAMPLE SIZE only, which is independent of the
+  effect estimate. Measured: family 128 → 10, so newly-wired shadows no longer
+  tax cells already in the queue.
+
+  **Honest result: this did NOT rescue the marginal candidates and slightly
+  tightened them** (USD_JPY/ny/classic_box_fade_short q 0.071 → 0.091). BH
+  normalises by rank/m and the rows removed were disproportionately strong
+  cells short of their counting gates; dropping low-p members raises everyone
+  else's rank-normalised position. Promotable count is unchanged (1 in both
+  modes) — this is not a loosening. The real constraint on those two cells is
+  their raw evidence (p ≈ 0.023 and 0.027) against `fdr_q = 0.05` in a family
+  of 10, which is a policy threshold, deliberately left alone.
+
 ## [6.22.0] — 2026-08-06 — market-structure trial features
 
 ### Added

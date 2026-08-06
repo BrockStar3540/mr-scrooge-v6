@@ -82,6 +82,13 @@ DEFAULT_CFG = {
     # fills (full window — era resets never erase real fills) cannot promote:
     # the sim is proven wrong for that cell, so it does not get to spend money.
     "truth_check_gate": True,
+    # ── SEAT POOLS (2026-08-06) ─────────────────────────────────────────────
+    # Durable, status-derived ceiling on TOTAL audition seats across BOTH
+    # lanes — the actual risk control. `cheater_max_seats` is a per-lane
+    # POLICY cap counted from governor state; if that state is ever lost the
+    # global ceiling still holds the line, which is why the risk control is
+    # the one derived from cell status.
+    "max_probe_seats_total": 4,
     "bar_avg": 2.0, "lcb_min": 0.0,
     "recent_n": 5, "recent_min": 0.0,
     "bootstrap_reps": 10000, "bootstrap_confidence": 0.95,
@@ -567,6 +574,17 @@ def probe_seat_count(book_map) -> int:
     return sum(1 for meta in book_map.values() if meta.get("status") == "PROBE")
 
 
+def cheater_seat_count(seats) -> int:
+    """PROBEs THIS LANE opened, from the cheater seat book.
+
+    Deliberately NOT derived from cell status: status cannot say which lane
+    seated a cell, and mis-attributing an ordinary PROBE to the cheater lane
+    is what starved it. This is a policy cap only — the durable risk ceiling
+    is `max_probe_seats_total`, enforced from status in probe_seat_count().
+    """
+    return len(seats or {})
+
+
 def probe_leash_breached(cycle_nets, c: dict) -> bool:
     """Fast broker loss leash for every reduced-risk audition seat."""
     cyc = list(cycle_nets or [])
@@ -774,8 +792,15 @@ def main():
     cheater_promos = []
     cheater_diagnostic_error = None
     cheater_scan_ok = False
-    seats_used = probe_seat_count(bmap)
-    seats_free = max(0, int(c.get("cheater_max_seats", 1)) - seats_used)
+    # SEAT POOLS: ordinary promotions no longer consume the cheater lane's
+    # allowance. Before this, two ordinary PROBEs zeroed out the single
+    # cheater seat and the lane the Commissioner spent five days earning
+    # could never seat anything.
+    probes_now  = probe_seat_count(bmap)                    # durable, all lanes
+    global_free = max(0, int(c.get("max_probe_seats_total", 4)) - probes_now)
+    cheater_used = cheater_seat_count(cheater_seats)        # policy, this lane
+    seats_free = max(0, min(int(c.get("cheater_max_seats", 1)) - cheater_used,
+                            global_free))
     # CANDIDACY (review r3 defect 1): straight from the episode DB — a shadow
     # whose parent episodes are all CENSORED (still open under the parent
     # horizon) can still resolve under the multi-day family replay; the
@@ -958,6 +983,17 @@ def main():
                                   (x[1].net_avg if x[1] and x[1].net_avg
                                    is not None else 0)))
     promotions = promotions[:c["max_promotions"]]
+    # Global seat ceiling applies to the ordinary lane too — max_promotions
+    # only ever bounded promotions PER RUN, so standing PROBE count could
+    # grow without limit across runs. Cheater admissions are reserved first
+    # because that lane already paid the Commissioner's validation cost.
+    _ord_room = max(0, global_free - len(cheater_promos))
+    if len(promotions) > _ord_room:
+        for (pair, sess, sid), _e, _f in promotions[_ord_room:]:
+            print(f"governor: seat ceiling — {pair}/{sess}/{sid} deferred "
+                  f"({probes_now} PROBE(s) open, cap "
+                  f"{c.get('max_probe_seats_total', 4)})")
+        promotions = promotions[:_ord_room]
     demotions = demotions[:c["max_demotions"]]
     if not c.get("allow_promotions", True) and promotions:
         print(f"governor: {len(promotions)} setup(s) meet the bar but promotions "
