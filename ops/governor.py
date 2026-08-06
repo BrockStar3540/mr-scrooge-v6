@@ -987,7 +987,15 @@ def main():
     # only ever bounded promotions PER RUN, so standing PROBE count could
     # grow without limit across runs. Cheater admissions are reserved first
     # because that lane already paid the Commissioner's validation cost.
-    _ord_room = max(0, global_free - len(cheater_promos))
+    # RESERVE the commissioned lane's seats. Sharing a ceiling first-come
+    # would re-create the starvation bug we just fixed: with fdr_q at 0.10 the
+    # ordinary lane can fill every free seat in a single run, and the cheater
+    # lane would again find nothing left on the next one.
+    _cheat_reserve = 0
+    if c.get("cheater_promotion_enabled", False):
+        _cheat_reserve = max(0, int(c.get("cheater_max_seats", 1))
+                             - cheater_used - len(cheater_promos))
+    _ord_room = max(0, global_free - len(cheater_promos) - _cheat_reserve)
     if len(promotions) > _ord_room:
         for (pair, sess, sid), _e, _f in promotions[_ord_room:]:
             print(f"governor: seat ceiling — {pair}/{sess}/{sid} deferred "

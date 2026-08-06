@@ -15,7 +15,7 @@
   "min_independent_days": 5,
   "bootstrap_reps": 10000,
   "bootstrap_confidence": 0.95,
-  "fdr_q": 0.05,
+  "fdr_q": 0.1,
   "family_min_trades": 5,
   "family_demote_pips": -60.0,
   "family_defend_pips": 60.0,
@@ -33,8 +33,8 @@
   "_strikes_note": "STRIKE RULE 2026-08-03 (operator): every executed demotion is a permanent strike (governor_state.demotion_counts, badge on the dashboard). Ever-demoted cells promote only over the redemption bar 20/10; the 3rd strike flips the cell to DISABLED \u2014 manual re-enable only.",
   "truth_check_gate": true,
   "_truth_gate_note": "TRUTH-CHECK GATE 2026-08-04 (operator): a shadow whose virtual family-cycle sign contradicts its own broker fills (full window) cannot promote \u2014 proven-wrong sim never spends money.",
-  "max_probe_seats_total": 4,
+  "max_probe_seats_total": 6,
   "fdr_family": "docket",
-  "_seat_note": "SEAT POOLS 2026-08-06: max_probe_seats_total is the durable risk ceiling across BOTH lanes (derived from cell status); cheater_max_seats is a per-lane policy cap from governor state. Ordinary promotions no longer starve the cheater lane.",
-  "_fdr_note": "fdr_family=docket (2026-08-06): BH runs over setups that have reached their counting gates \u2014 the hypotheses actually under test this run \u2014 not the whole scored book. 'all' restores the legacy behaviour."
+  "_seat_note": "SEAT POOLS 2026-08-06. max_probe_seats_total=6 is the durable risk ceiling across BOTH lanes (derived from cell status, survives loss of governor state). Sized as: 3 seats occupied at the time + 1 RESERVED for the commissioned cheater lane + room for 2 ordinary admissions at the new fdr_q=0.10. NOTE: before 2026-08-06 the ordinary lane had NO standing ceiling at all, so 6 is still far tighter than the prior behaviour. cheater_max_seats is a per-lane policy cap and its seat is reserved, never first-come. Concurrent RISK is bounded separately by the party-package caps (max_total_trades / max_margin_pct_total), not by this.",
+  "_fdr_note": "fdr_q RAISED 0.05 -> 0.10 by operator decision 2026-08-06: accept ~10% of admissions being flukes in exchange for testing marginal ideas faster. Justified by what sits BEHIND admission \u2014 every promotion lands on a 0.33x PROBE, must earn completed broker family cycles to graduate, and a demotion costs a permanent strike (3 = disabled). The audition IS the second filter. fdr_family=docket: BH runs over setups that reached their counting gates."
 }

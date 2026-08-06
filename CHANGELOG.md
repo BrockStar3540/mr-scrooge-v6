@@ -4,6 +4,36 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.23.1] — 2026-08-06 — operator raises FDR tolerance to 0.10
+
+### Changed
+- **`fdr_q` 0.05 → 0.10** (operator decision): accept roughly one in ten
+  admissions being a fluke in exchange for testing marginal ideas faster.
+  What justifies it is what sits BEHIND admission — every promotion lands on a
+  0.33× PROBE, must earn completed broker family cycles to graduate, and a
+  demotion costs a permanent strike. The audition is the second filter.
+- **`max_probe_seats_total` 4 → 6.** The ceiling added earlier the same day
+  immediately became the binding constraint at the looser threshold and blocked
+  the very cells the change was meant to give a chance. Sized as 3 occupied +
+  1 reserved for the commissioned lane + room for 2 ordinary admissions. Note
+  the ordinary lane had NO standing ceiling at all before today, so 6 remains
+  far tighter than prior behaviour; concurrent RISK is bounded separately by
+  the party-package caps, not by this number.
+- **The commissioned lane's seat is now RESERVED, not first-come.** At
+  fdr_q=0.10 the ordinary lane can fill every free seat in one run, which would
+  have re-created the starvation bug fixed hours earlier.
+- One-time `last_eval_blocks` reset (160 entries) — a threshold change is a bar
+  change, and the sequential-peeking guard caches the day-count of failed tests.
+
+### Note on effect
+Nothing promotes at the new threshold today, for reasons unrelated to it:
+`USD_JPY/ny/classic_box_fade_short` deteriorated on its own between measurements
+(n 21→23, avg +9.99→+6.90, **LCB +1.46→−4.47**) and now fails on LCB, not FDR;
+`GBP_USD/london/rvol_low_240`'s q rose 0.091→0.228 because the docket's
+strongest member (`rvol_low_240_short`, p=0.0002) promoted at 18:35Z and its era
+clock reset, removing it from the family — the same rank/m mechanic documented
+in 6.23.0. The looser threshold stands for future candidates.
+
 ## [6.23.0] — 2026-08-06 — seat pools + BH family scope
 
 ### Fixed

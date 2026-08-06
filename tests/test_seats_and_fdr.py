@@ -21,7 +21,7 @@ CFG = {"min_raw_episodes": 10, "min_independent_days": 5, "bar_avg": 2.0,
        "lcb_min": 0.0, "recent_n": 5, "recent_min": 0.0, "fdr_q": 0.05,
        "redemption_min_raw_episodes": 20, "redemption_min_independent_days": 10,
        "strike_disable_count": 3, "cheater_max_seats": 1,
-       "max_probe_seats_total": 4}
+       "max_probe_seats_total": 6}
 
 
 def _ev(n, days, strikes=0):
@@ -121,7 +121,7 @@ def test_ordinary_probes_no_longer_consume_the_cheater_allowance():
 
 
 def test_global_ceiling_still_binds_both_lanes():
-    book = {(f"P{i}", "s", "x"): {"status": "PROBE"} for i in range(4)}
+    book = {(f"P{i}", "s", "x"): {"status": "PROBE"} for i in range(6)}
     global_free = max(0, CFG["max_probe_seats_total"] - probe_seat_count(book))
     seats_free = max(0, min(CFG["cheater_max_seats"] - cheater_seat_count({}),
                             global_free))
@@ -132,5 +132,35 @@ def test_shipped_config_and_defaults_carry_the_new_keys():
     assert DEFAULT_CFG["max_probe_seats_total"] >= 1
     cfg = json.loads((Path(__file__).parents[1]
                       / "config" / "governor_config.json").read_text())
-    assert cfg["max_probe_seats_total"] == 4
+    assert cfg["max_probe_seats_total"] == 6
     assert cfg["fdr_family"] == "docket"
+
+
+# ── operator threshold + seat reservation (2026-08-06) ───────────────────────
+
+def test_fdr_threshold_is_the_operator_setting():
+    cfg = json.loads((Path(__file__).parents[1]
+                      / "config" / "governor_config.json").read_text())
+    assert cfg["fdr_q"] == 0.10, "operator raised the flat tolerance 0.05 -> 0.10"
+
+
+def test_commissioned_lane_keeps_a_reserved_seat():
+    """Ordinary promotions must not be able to take the last seat while the
+    cheater lane is live and still owed one — that is the starvation bug."""
+    max_total, cheater_max = 6, 1
+    probes_now = 4                      # four ordinary PROBEs already open
+    global_free = max(0, max_total - probes_now)
+    cheater_used, cheater_promos = 0, []
+    reserve = max(0, cheater_max - cheater_used - len(cheater_promos))
+    ord_room = max(0, global_free - len(cheater_promos) - reserve)
+    assert global_free == 2 and reserve == 1
+    assert ord_room == 1, "one seat must stay held for the commissioned lane"
+
+
+def test_no_reservation_once_the_cheater_lane_is_seated():
+    max_total, cheater_max = 6, 1
+    global_free = max(0, max_total - 4)
+    cheater_used = 1                    # lane already has its seat
+    reserve = max(0, cheater_max - cheater_used - 0)
+    assert reserve == 0
+    assert max(0, global_free - 0 - reserve) == 2, "no seat withheld unnecessarily"
