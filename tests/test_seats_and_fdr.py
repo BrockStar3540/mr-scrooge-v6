@@ -132,7 +132,8 @@ def test_shipped_config_and_defaults_carry_the_new_keys():
     assert DEFAULT_CFG["max_probe_seats_total"] >= 1
     cfg = json.loads((Path(__file__).parents[1]
                       / "config" / "governor_config.json").read_text())
-    assert cfg["max_probe_seats_total"] == 6
+    # operator 2026-08-07: 6 -> 9 (docket had 8 LCB>0 winners queued on full seats)
+    assert cfg["max_probe_seats_total"] == 9
     assert cfg["fdr_family"] == "docket"
 
 

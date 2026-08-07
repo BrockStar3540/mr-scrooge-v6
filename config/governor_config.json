@@ -5,7 +5,7 @@
   "lcb_min": 0.0,
   "recent_n": 5,
   "recent_min": 0.0,
-  "max_promotions": 2,
+  "max_promotions": 3,
   "max_demotions": 4,
   "default_era_start": "2026-07-19T00:00:00+00:00",
   "per_test_z": 2.33,
@@ -33,8 +33,8 @@
   "_strikes_note": "STRIKE RULE 2026-08-03 (operator): every executed demotion is a permanent strike (governor_state.demotion_counts, badge on the dashboard). Ever-demoted cells promote only over the redemption bar 20/10; the 3rd strike flips the cell to DISABLED \u2014 manual re-enable only.",
   "truth_check_gate": true,
   "_truth_gate_note": "TRUTH-CHECK GATE 2026-08-04 (operator): a shadow whose virtual family-cycle sign contradicts its own broker fills (full window) cannot promote \u2014 proven-wrong sim never spends money.",
-  "max_probe_seats_total": 6,
+  "max_probe_seats_total": 9,
   "fdr_family": "docket",
-  "_seat_note": "SEAT POOLS 2026-08-06. max_probe_seats_total=6 is the durable risk ceiling across BOTH lanes (derived from cell status, survives loss of governor state). Sized as: 3 seats occupied at the time + 1 RESERVED for the commissioned cheater lane + room for 2 ordinary admissions at the new fdr_q=0.10. NOTE: before 2026-08-06 the ordinary lane had NO standing ceiling at all, so 6 is still far tighter than the prior behaviour. cheater_max_seats is a per-lane policy cap and its seat is reserved, never first-come. Concurrent RISK is bounded separately by the party-package caps (max_total_trades / max_margin_pct_total), not by this.",
+  "_seat_note": "SEAT POOLS 2026-08-06; ceiling raised 6->9 by operator 2026-08-07. max_probe_seats_total is the durable risk ceiling across BOTH lanes (derived from cell status, survives loss of governor state). 2026-08-07 rationale: post-B-121 rescore surfaced 8 shadows at n>=10 with LCB>0 (mr2_bb_reversion/rg1_range_scalp family consistent across 4 pairs) while all 6 seats were full \u2014 discovery was outrunning audition capacity. 3 new seats + max_promotions 3/run let the docket flow; PROBE 0.33x sizing, truth gate, probe leash, three-strikes and broker-cycle graduation unchanged. Commissioned cheater lane seat stays RESERVED, never first-come. Concurrent RISK is bounded separately by the party-package caps (max_total_trades / max_margin_pct_total), not by this. Seat-ceiling deferrals do not write last_eval_blocks, so no peeking-guard reset was needed for this change.",
   "_fdr_note": "fdr_q RAISED 0.05 -> 0.10 by operator decision 2026-08-06: accept ~10% of admissions being flukes in exchange for testing marginal ideas faster. Justified by what sits BEHIND admission \u2014 every promotion lands on a 0.33x PROBE, must earn completed broker family cycles to graduate, and a demotion costs a permanent strike (3 = disabled). The audition IS the second filter. fdr_family=docket: BH runs over setups that reached their counting gates."
 }

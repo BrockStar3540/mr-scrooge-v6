@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [config] — 2026-08-07 — operator: probe seats 6→9, promotions 3/run
+
+Post-B-121-rescore the docket held 8 shadows at n≥10 with bootstrap LCB>0
+(the mr2_bb_reversion / rg1_range_scalp mean-reversion family is green on four
+pairs at once) while all 6 probe seats sat full — discovery was outrunning
+audition capacity. `max_probe_seats_total` 6→9, `max_promotions` 2→3.
+Everything downstream is unchanged: PROBE 0.33×, truth gate, probe leash,
+three-strikes, broker-cycle graduation, reserved cheater seat. Seat-ceiling
+deferrals never write `last_eval_blocks`, so no peeking-guard reset needed.
+Dry-run at the new capacity promotes USD_JPY/ny control_atr5m_60_t20s (q=0.042),
+EUR_USD/ny rg1_range_scalp_short (q=0.004), AUD_USD/ny rg1_range_scalp_short
+(q=0.020).
+
 ## [6.25.1] — 2026-08-07 — B-124: the max-spread entry veto is gone
 
 ### Removed
