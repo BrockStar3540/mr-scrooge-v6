@@ -6,7 +6,7 @@
 
 *Every strategy and entry/exit indicator runs as a **shadow** first — stamped on live markets, scored against forward broker-verified movement, and **promoted to live capital only when it clears an evidence bar**. Setups that degrade get demoted by the same evidence — **autonomously, daily, by a published standard**. The book is whatever survives.*
 
-*Six versions · 8 years of data · **18 pairs scanning · ~200 setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
+*Six versions · 8 years of data · **18 pairs scanning · 300+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
 **you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
@@ -80,43 +80,51 @@ tapes, or contributed — walks the same ladder:
    row's **verdict** (DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING / DEMOTE
    DUE) is computed by the governor's own code, so the board can never disagree with the
    06:35Z run — the whole docket is visible, waiting is a state, not an absence.
-3. **Promotion — the activation bar, flipped automatically.** The **[Bar Governor](docs/GOVERNOR.md)**
-   (`ops/governor.py`, daily) promotes a shadow to ACTIVE when its **current-era** evidence
-   clears the full predicate: **n ≥ 20 executable-exit episodes across ≥ 10 independent
-   day/session blocks, ≥ +2.0 net pips/episode, a positive day-block bootstrap lower
-   bound, a non-negative last-7-days, and a Benjamini–Hochberg q ≤ 0.05 across the whole
-   candidate docket** — margins chosen because the measured execution toll makes any
-   sub-1p claimed edge indistinguishable from zero, with real multiple-testing control
-   because ~150 hypotheses run at once. Shadow trials are scored on **executable prices**
-   (entry at the stamped ask/bid, the setup's own exit geometry simulated worst-case
-   intrabar), never frictionless mid drift. A setup that fails is re-tested only when it
-   has *new* independent evidence. No human in the loop; the dashboard trophy is computed
-   by the **same predicate** the governor promotes on — they can never disagree.
+3. **Promotion — an audition, not a seat.** The **[Bar Governor](docs/GOVERNOR.md)**
+   (`ops/governor.py`, every 6h) admits a shadow when its **current-era** evidence clears
+   the whole predicate: **n ≥ 10 executable-exit episodes over ≥ 5 independent day/session
+   blocks, ≥ +2.0 net pips/episode, a positive day-block bootstrap lower bound, a
+   non-negative last-7-days, and Benjamini–Hochberg q ≤ 0.10** across the candidate
+   docket. Margins are set by the measured execution toll — any sub-1p claimed edge is
+   indistinguishable from zero — with real multiple-testing control because the family is
+   scored, not assumed.
+   **Admission buys a 0.33× PROBE seat, not ACTIVE**: full size is earned by GRADUATION on
+   completed broker family cycles, and a hard ceiling caps live audition seats across both
+   admission lanes. Trials are scored on **executable prices** (entry at the stamped
+   ask/bid, the setup's own exit geometry replayed worst-case intrabar), never frictionless
+   mid drift — and a stamp still open at its horizon is **followed to its real exit**
+   rather than discarded ([B-121](docs/BOOK_OF_BUGS.md): censoring at the horizon deleted
+   27% of all evidence and deleted losers preferentially). A setup that fails re-tests only
+   on *new* independent evidence. No human in the loop; the dashboard trophy is the **same
+   predicate** the governor promotes on — they can never disagree.
 4. **Demotion — the FAMILY RULE: net loss is the key.** A parent setup and the poppers its
    grid fired are **one economic unit**, tracked in **broker net pips** (every popper fill
-   carries its parent's setup id). Family n ≥ 5 at **−60p or worse** → demoted, and the
-   cell's poppers are switched off with it; family at **+60p or better defends the seat** —
-   real broker green outranks the worst-case stamp simulator. Only unfamilied actives fall
-   back to the stamp bar (era v2 episodes below the configured minimum, avg < +2.0) — audited against the broker, never
-   our own journal. **Judge-when-flat:** while any family trade is open there is no verdict
-   at all — a parent can stop −60p while its poppers are still riding toward +30p, so the
-   episode is scored only when it completes, never mid-scale-in. Demoted setups keep
-   stamping as shadows and can re-earn the seat. Every flip
-   restarts that setup's evidence clock: **proof never blends across eras**, and every
-   decision is written to a public ledger (`data/governor_ledger.jsonl`). Rails: max 2
-   promotions + 4 demotions per day, sides never flipped, `manual_only` respected. **Three
-   strikes (2026-08-03):** every demotion is a permanent 🔻 strike; struck cells re-promote
-   only over the stricter redemption bar (20 episodes / 10 days), and the third strike
-   retires the cell to DISABLED for good — manual re-enable only. **Truth-check gate
-   (2026-08-04):** a shadow whose virtual family-cycle sim contradicts its own broker
-   fills cannot promote — proven-wrong sim never spends money.
+   carries its parent's setup id). Family n ≥ 5 at **−60p or worse** → demoted and the
+   cell's poppers switched off with it; **+60p or better defends the seat** — real broker
+   green outranks the worst-case stamp simulator. Only unfamilied actives fall back to the
+   stamp bar. Judged against the broker, never our own journal.
+   - **Judge-when-flat.** While any family trade is open there is no verdict at all: a
+     parent can stop −60p while its poppers ride toward +30p, so a family is scored only
+     once it completes, never mid-scale-in.
+   - **Three strikes.** Every demotion is a permanent 🔻 strike. A struck cell re-promotes
+     only over a stricter redemption bar (20 episodes / 10 days); the third strike retires
+     it to DISABLED — manual re-enable only.
+   - **Truth-check gate.** A shadow whose virtual family-cycle sim contradicts its own
+     broker fills cannot promote. Proven-wrong sim never spends money.
+   - **Eras never blend.** Every flip restarts that setup's evidence clock, and every
+     decision is written to a public ledger (`data/governor_ledger.jsonl`).
+
+   Rails: max 2 promotions + 4 demotions per run, a durable ceiling on total live audition
+   seats, sides never flipped, `manual_only` respected. Demoted setups keep stamping as
+   shadows and can re-earn the seat.
 
 **The autonomous day:** `06:30Z` the [counterpart audit](research/tools/counterpart_audit.py)
-wires opposite-direction twins for any MAE-heavy loser → `06:35Z` the governor promotes and
-demotes by the bar → `06:45Z` a change-gated, twice-verified backup snapshots the result.
-The humans set the standard; the bot flips the switches.
+wires opposite-direction twins for any MAE-heavy loser → the governor promotes and demotes by
+the bar every 6h (`00:35/06:35/12:35/18:35Z`) → `06:45Z` a change-gated, twice-verified backup
+snapshots the result. A separate **Commissioner** decides when a second, family-evidence
+admission lane may open at all. The humans set the standard; the bot flips the switches.
 
-**Currently on trial (~200 setups):**
+**Currently on trial (300+ setups):**
 - **The replay shadow book** — 10 pairs the book never traded (CAD, CHF, NZD crosses +
   GBP/JPY), resurrected from this account's own March/April 2026 tapes where session-extreme
   fades and trend-pullback entries kept winning. The standing prior: cross spread toll kills
@@ -290,11 +298,15 @@ One-time per clone:
 
 ```
 git config core.hooksPath ops/hooks
+python3 -m venv --system-site-packages .venv-test
+.venv-test/bin/pip install -r requirements-dev.txt
 ```
 
-Every `git push` then runs the full test suite (unpiped — the exit code is the
-verdict) and a secrets sweep over the outgoing diff, and blocks the push on
-any failure. History: B-111 documented that `pytest | tail -1` reports tail's
+Every `git push` then runs the full suite **twice — fixed order and randomised, matching
+CI** (unpiped: the exit code is the verdict) plus a secrets sweep over the outgoing diff,
+and blocks the push on any failure. The venv exists so the test plugins never enter the
+interpreter the live trader runs on; without it the hook refuses to run rather than test a
+weaker property than CI ([B-123](docs/BOOK_OF_BUGS.md)). History: B-111 documented that `pytest | tail -1` reports tail's
 exit code; B-118 proved the documented lesson gets recommitted without
 enforcement. This hook is the enforcement. `git push --no-verify` bypasses it
 — deliberately, visibly, on your head.

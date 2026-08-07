@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-120, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-123, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -831,6 +831,31 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 - **Root cause:** `check_dryrun` ran a **plain** `governor.py --dry-run` and grepped stdout for "CHEATER-PROBE". But the governor only *builds* cheater candidates when `cheater_promotion_enabled` (false — that is what the Commissioner is waiting to enable) or `--cheater-diagnostic` is passed. Circular dependency: the qualifier signal required the lane the qualifier was supposed to unlock. The VALIDATING → COMMISSIONED_1 transition was unreachable by construction.
 - **Fix:** the health battery now runs `--dry-run --cheater-diagnostic` (evaluates the full ticket while admission stays OFF, never queues a flip) and detects both "CHEATER-PROBE" and "cheater-v4 diagnostic QUALIFIED". Timeout 900 → 1500s for the replay budget.
 - **Lesson:** a state machine's advance condition must be provably reachable — test the *transition*, not just the states. Nobody noticed for 5 days because "healthy, waiting for evidence" looks identical to "healthy, structurally unable to see evidence." When a gate waits on a signal, ask: can the signal fire while the gate is closed?
+
+### B-121 — the censor that ate the losses: 27% of all evidence silently discarded
+- **Date:** 2026-08-06 (Brock: "it is statistically improbable that they have found zero entries over this amount of time")
+- **Area:** `core/shadow_execution.py` simulate_shadow_exit; `ops/shadowboard.py` _score_v2
+- **Symptom:** setups selected from an 8-year corpus *for high trade frequency* showed zero episodes after weeks live. Audit found 616 of 2240 episodes (27%) carrying a score block with `net240=None`, some 9 days old. Whole cells looked dead; entire families looked profitable.
+- **Root cause:** the replay was TRUNCATED at `horizon_min` (`bars = bars[:horizon_bars]`). Anything that had not hit a stop or ratchet exit inside 4 hours was labelled "still open" and its net was dropped from every aggregate. The reasoning in the 2026-07-31 charter was sound — the live ratchet has no timeout, so an unresolved trade is not an outcome — but "unresolved" in practice meant **we stopped watching**.
+- **Why it was worse than a data gap:** the discard was NOT random. Measured on a 60-episode sample, 80% of censored stamps resolve when followed to a real exit, and the recovered set is **75% winners averaging −4.5p** — one in four ran to a FULL STOP. Slow losers were being deleted preferentially, so every cell in the book read better than reality. Two live seats had been funded on flattered evidence (`CAD_JPY/asia/ps_ceil_fade_short` ACTIVE +13.50 → −22.50p; `USD_CHF/london/ps_ceil_fade_short` PROBE +6.83 → −12.50p) and both were demoted within 12h of the evidence becoming honest.
+- **Fix:** `simulate_shadow_exit` gains `max_bars`; `_score_v2` follows a still-open stamp to its real exit via a paged M5 fetch, capped at `FOLLOW_MAX_DAYS`=5 (inside the bot's own `grid_max_age_days`=7). MFE/MAE stay scoped to the horizon window so `hit≥trig`/`hitSL` keep their meaning. `research/tools/rescore_censored.py` recovered the backlog: **503 of 657, 0 failures**. Cells with era evidence 171 → 193; 61 of 131 grown cells got WORSE.
+- **Lesson:** a measurement that throws data away must justify WHAT it throws away, not just why. Censoring on "did it finish inside our window" silently selects on outcome speed — and losers are slower. Any filter applied to results needs its discarded set audited at least once, or the survivors quietly become the story.
+
+### B-122 — the lane that could never sit: ordinary promotions starved the commissioned seat
+- **Date:** 2026-08-06 (found while answering "so we actually have 6 shadows about to promote?")
+- **Area:** `ops/governor.py` cheater seat allocation
+- **Symptom:** the Commissioner reached COMMISSIONED_1 and enabled the cheater lane with one seat — and the lane seated nothing, ever. It did not merely fail to admit; it skipped candidate EVALUATION entirely.
+- **Root cause:** `seats_free = cheater_max_seats − probe_seat_count(bmap)`, and `probe_seat_count` counts EVERY PROBE regardless of which lane opened it. Two ordinary-lane PROBEs therefore zeroed the cheater allowance permanently. The cap was written when ordinary promotions were dark and had never had to share.
+- **Fix:** two pools. `cheater_seat_count()` reads the lane's own seat book (policy cap); a new **`max_probe_seats_total`** is a durable, status-derived ceiling across BOTH lanes (the real risk control, surviving loss of governor state). The commissioned seat is RESERVED, not first-come. The ordinary lane also gained a standing ceiling it never had — `max_promotions` only ever bounded promotions *per run*, so live PROBEs could accumulate without limit.
+- **Lesson:** when a second consumer appears for a shared resource, re-derive the allocation instead of assuming the old formula still means what it did. And a cap counted from non-durable state is a policy, not a safety control — say which one you are building.
+
+### B-123 — the guard that tested less than CI, and the cron that flooded it
+- **Date:** 2026-08-06/07 (Brock: "we have a bunch of error messages in the git rep")
+- **Area:** `.github/workflows/tests.yml`; `ops/hooks/pre-push`
+- **Symptom:** red marks across the public repo's commit history, including on the bot's own automated commits — while the suite passed locally and in a clean CI-matching venv.
+- **Root cause (two, unrelated):** (1) the failing runs executed **ZERO steps** and were cancelled after ~15 minutes — jobs that never got a runner, not tests that failed. 24 of 30 commits/day are the hourly livelog cron touching only `equity.csv`, `equity.svg` and a README badge line; every one triggered a full run and starved the queue. (2) CI runs the suite twice — fixed order AND randomised (`pytest-randomly`) — but the pre-push hook ran it once, unrandomised, and the plugin was not even installed on the box. The guard was testing a weaker property than CI and would have passed order-dependent breakage.
+- **Fix:** `paths-ignore` for livelog/README/docs (skips only when EVERY changed path matches, so README+code commits still run), a concurrency group so a newer push supersedes a queued one, and `timeout-minutes: 15`. The hook now runs BOTH orders and HARD FAILS without `pytest-randomly`, using a `.venv-test` built with `--system-site-packages` so the plugins never touch the interpreter the live trader runs on. Verified both directions: green push passes, missing plugin blocks with rc=1.
+- **Lesson:** **a cancelled job records zero steps; a real failure names the failing step.** Check that before assuming the tests broke. And a guard is only as strong as the weakest thing it actually runs — if CI tests a property the local hook does not, the hook is decoration on that property.
 
 ---
 
