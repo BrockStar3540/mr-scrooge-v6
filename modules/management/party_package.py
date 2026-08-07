@@ -38,8 +38,7 @@ from typing import Callable, Optional
 
 from config.pairs import PIP
 from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct, pm_probe_mult,
-                                          pm_max_concurrent,
-                                          _MAX_SPREAD, _DEFAULT_MAX_SPREAD)
+                                          pm_max_concurrent)
 from config.runtime import trading_enabled
 from core.exec_truth import adopt_fill, executable_price
 from .base import Position, in_rollover_freeze
@@ -595,7 +594,9 @@ class PartyPackage:
                     continue
                 if in_rollover_freeze(now):
                     continue
-                if spread_pips <= 0.0 or spread_pips > _MAX_SPREAD.get(pair, _DEFAULT_MAX_SPREAD):
+                if spread_pips <= 0.0:
+                    log.info("PP SKIP fire %s marker=-%sp reason=bad_tick | engine=pp_v1",
+                             pair, key)
                     continue
                 n_open = len(parent_pairs) + len(self.poppers)
                 cap = min(int(cfg["max_total_trades"]), pm_max_concurrent())

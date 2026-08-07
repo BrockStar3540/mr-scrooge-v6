@@ -7,7 +7,8 @@ the trade right now. Caps preserved verbatim from the playmaker era:
   - one position per pair
   - max_concurrent_trades          (playmaker_config.json account block)
   - max_per_currency_direction     (same-sign legs per currency)
-  - spread fail-closed             (playmaker _MAX_SPREAD table; <=0 = bad tick)
+  - spread fail-closed             (<=0 = bad tick only; B-124 removed the
+                                     max-spread cap — ratchet owns the toll)
   - post-loss cooldown per pair    (60 min after a losing exit)
 
 Among survivors, prefer the highest measured ev_seq (evidence, not a score);
@@ -20,8 +21,7 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from modules.playmaker.playmaker import (pm_max_concurrent,
-                                          pm_max_per_currency_direction,
-                                          _MAX_SPREAD, _DEFAULT_MAX_SPREAD)
+                                          pm_max_per_currency_direction)
 
 log = logging.getLogger("v5.cells.portfolio")
 
@@ -71,15 +71,22 @@ def select_intent(intents: list,
         if it.pair in open_pairs:
             continue
 
-        # Post-loss cooldown
+        # Post-loss cooldown (B-124 lesson: every veto logs — silent vetoes
+        # starved CAD_JPY for 11 days with zero trace)
         last_loss = sl_history.get(it.pair)
         if last_loss is not None and (now - last_loss) < timedelta(minutes=_COOLDOWN_MIN):
+            log.info("CELLSKIP %s/%s setup=%s reason=post_loss_cooldown", it.pair,
+                     it.session, getattr(it, "setup_id", "?"))
             continue
 
-        # Spread fail-closed: <=0 means bid==ask / bad tick — never trade it
+        # Spread fail-closed: <=0 means bid==ask / bad tick — never trade it.
+        # B-124: the max-spread cap is gone; the ratchet + broker-truth scoring
+        # price the toll instead of an entry veto.
         view = next((v for v in views if v.pair == it.pair), None)
         spread = getattr(view, "spread_pips", 0.0) if view is not None else 0.0
-        if spread <= 0.0 or spread > _MAX_SPREAD.get(it.pair, _DEFAULT_MAX_SPREAD):
+        if spread <= 0.0:
+            log.info("CELLSKIP %s/%s setup=%s reason=bad_tick spread=%.2f", it.pair,
+                     it.session, getattr(it, "setup_id", "?"), spread)
             continue
 
         # Per-currency directional cap

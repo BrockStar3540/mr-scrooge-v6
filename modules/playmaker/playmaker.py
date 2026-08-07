@@ -299,8 +299,6 @@ MIN_MOM_CERTAINTY   = 0.25   # momentum.certainty minimum
 # max_concurrent_trades in playmaker_config.json / _PM_ACCT_DEFAULTS["max_concurrent_trades"].
 # Confirmed zero references in repo before deletion.
 
-# Maximum spread to accept a trade (pips).  Above these levels the spread
-# consumes too much of the expected edge.
 # GATE SEMANTICS (2026-07-03 fix): spread_pips <= 0 means a pricing hiccup
 # (bid==ask or feed glitch) — treated as GATE FAILURE (candidate skipped) so a
 # zero-spread anomaly cannot bypass the protection. The feed (core/feed/oanda.py)
@@ -308,18 +306,11 @@ MIN_MOM_CERTAINTY   = 0.25   # momentum.certainty minimum
 # 0.0 only occurs if OANDA returns identical bid/ask, which is a bad tick.
 # Rate-limit tracker for spread=0 warnings (pair → last warning monotonic time)
 _SPREAD_WARN_TS: dict[str, float] = {}
-
-_MAX_SPREAD: dict[str, float] = {
-    "EUR_USD": 2.5,
-    "GBP_USD": 3.0,
-    "USD_JPY": 2.0,
-    "AUD_USD": 2.5,
-    "USD_CAD": 3.0,
-    "USD_CHF": 3.0,
-    "EUR_JPY": 3.5,
-    "AUD_JPY": 4.0,
-}
-_DEFAULT_MAX_SPREAD = 3.0
+# B-124 (2026-08-07): the _MAX_SPREAD table + default cap were removed. The
+# max-spread entry veto was a playmaker-era cost gate; ratchet exits and
+# broker-truth cycle scoring already price the spread toll, and the stale
+# majors-tuned table silently muted pairs whose floor spread exceeded it
+# (CAD_JPY floor ~3.4p vs 3.0p default — the cell could never trade).
 
 
 @dataclass
@@ -355,9 +346,10 @@ def _passes_gates(t: PairTicket, pcfg: dict) -> bool:
         return False
     if m.certainty < float(pcfg["min_mom_certainty"]):
         return False
-    # Spread gate: skip candidate on bad tick (spread_pips <= 0) or excessive spread.
+    # Spread gate: skip candidate on bad tick (spread_pips <= 0) ONLY.
     # A zero/negative spread = pricing hiccup, not "feed not yet live" — the feed
     # always provides a real spread from OANDA. Fail CLOSED on anomalies.
+    # B-124: no max-spread cap — the ratchet + net-of-cost scoring own the toll.
     if t.spread_pips <= 0.0:
         import logging as _logging
         _spread_log = _logging.getLogger("v5.playmaker")
@@ -369,9 +361,6 @@ def _passes_gates(t: PairTicket, pcfg: dict) -> bool:
             _spread_log.warning(
                 "spread=0 for %s — pricing hiccup? candidate skipped", t.pair
             )
-        return False
-    max_spread = _MAX_SPREAD.get(t.pair, _DEFAULT_MAX_SPREAD)
-    if t.spread_pips > max_spread:
         return False
     return True
 

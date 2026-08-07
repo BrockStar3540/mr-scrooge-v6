@@ -4,6 +4,24 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.25.1] — 2026-08-07 — B-124: the max-spread entry veto is gone
+
+### Removed
+- **The max-spread entry veto, at all three sites** (cell portfolio `select_intent`,
+  playmaker candidate gate, party-package popper fire gate) and the `_MAX_SPREAD`
+  table behind it. The table listed 8 pairs; anything else fell to a 3.0p default —
+  below CAD_JPY's floor spread (3.4p over 14 days of stamps), so that ACTIVE cell
+  was structurally vetoed for 11 days with zero trace. Operator decision: the
+  ratchet exit and broker-truth net-of-cost cycle scoring already price the spread
+  toll; a hard entry veto from the pre-ratchet era double-filtered on a stale table.
+
+### Changed
+- `spread <= 0` bad-tick guards remain (fail-closed) and now LOG: `CELLSKIP
+  reason=bad_tick` / `PP SKIP ... reason=bad_tick`. The post-loss-cooldown veto
+  logs `CELLSKIP reason=post_loss_cooldown`. No veto is silent anymore.
+
+See [Book of Bugs B-124](docs/BOOK_OF_BUGS.md).
+
 ## [6.25.0] — 2026-08-07 — 🍀 market-structure variant matrix
 
 ### Added
