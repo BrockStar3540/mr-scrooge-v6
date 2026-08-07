@@ -1375,9 +1375,201 @@
           },
           "notes": "Counterpart of rg1_range_scalp_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-07-27"
+        },
+        {
+          "id": "impulse_ob_long_nt",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bull_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "same zone trigger as the baseline"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, wired on the SAME cell/session as its baseline so the comparison is not confounded by pair, session or market period. Independent implementation of public price-structure concepts; no third-party code, terminology or parameters.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). _nt = baseline impulse zone MINUS the trend gate; fires more often than its baseline, so it accrues evidence faster. Judged against its paired baseline on the same cell.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "impulse_ob_short_nt",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "same zone trigger as the baseline"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, wired on the SAME cell/session as its baseline so the comparison is not confounded by pair, session or market period. Independent implementation of public price-structure concepts; no third-party code, terminology or parameters.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). _nt = baseline impulse zone MINUS the trend gate; fires more often than its baseline, so it accrues evidence faster. Judged against its paired baseline on the same cell.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "impulse_ob_long_adx",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bull_dist_pips",
+              "min": -3.0,
+              "max": 3.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "H1 ADX-14 >= 20: take the zone retest only in a measurably TRENDING regime, not chop. Baseline gates direction but not trend STRENGTH."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "impulse_ob_short_adx",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -0.5
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "H1 ADX-14 >= 20: take the zone retest only in a measurably TRENDING regime, not chop. Baseline gates direction but not trend STRENGTH."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
         }
       ],
-      "notes": "23 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "29 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,

@@ -4,6 +4,36 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.25.0] — 2026-08-07 — 🍀 market-structure variant matrix
+
+### Added
+- **30 paired variants** of the 2026-08-06 market-structure trials, each wired on
+  the SAME cell/session as its baseline so pair, session and market period cannot
+  confound the comparison. All tagged 🍀; cohort is now 42 setups across 6 cells.
+
+  | suffix | change vs baseline | question it answers |
+  |---|---|---|
+  | `_v` | sweep + `rvol_5bar ≥ 1.15` | does elevated activity separate real stop runs from drift? |
+  | `_t` | sweep + EMA regime agreement | does trend alignment help a REVERSAL setup? |
+  | `_m` | sweep + `willr_m5` stretched into the swept side | does exhaustion confirm the fade? |
+  | `_nt` | impulse zone MINUS the trend gate | does the trend gate the manuals demand earn its keep? |
+  | `_adx` | impulse zone + `adx14 ≥ 20` | does trend STRENGTH (not just direction) matter? |
+
+### Notes
+- `_t` is wired **against** existing evidence, at operator request: the 2026-08-06
+  gate test on 836 episodes produced a trimmed gap of only +1.28p with a bootstrap
+  CI straddling zero, and trend agreement narrows a reversal setup into a
+  continuation one. Forward evidence will settle it better than argument.
+- `_nt` fires MORE often than its baseline (a gate removed), so it accrues
+  evidence faster; every other variant fires LESS often and will be slower to the
+  bar. That is the accepted cost of a conjunction.
+- All gating features were verified to read non-default on live views before
+  wiring — an unreadable feature makes a setup skip silently forever, which is
+  how the audit's "never fired" cells were created.
+- FX tick volume is a COUNT, not size. `_v` does not claim an institutional
+  footprint; it claims a stop cascade is many orders firing, which tick count
+  does capture.
+
 ## [6.24.0] — 2026-08-06 — censoring was hiding losses (evidence recovery)
 
 ### Fixed

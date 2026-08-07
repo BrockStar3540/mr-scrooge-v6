@@ -204,6 +204,290 @@
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
           "wired": "2026-08-06",
           "watch": "\ud83c\udf40"
+        },
+        {
+          "id": "liq_sweep_fade_long_v",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0,
+              "note": "same sweep trigger as the baseline"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.15,
+              "note": "VOLUME-CONFIRMED sweep. FX tick volume is a COUNT, not size, so this is not an institutional-footprint claim \u2014 but a stop cascade is many orders firing, which tick count does capture. Tests whether requiring elevated activity separates real stop runs from drift."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, wired on the SAME cell/session as its baseline so the comparison is not confounded by pair, session or market period. Independent implementation of public price-structure concepts; no third-party code, terminology or parameters.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). _v = baseline sweep PLUS a volume-confirmation gate. Judged against its paired baseline on the same cell.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_short_v",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_high",
+              "min": 1.0,
+              "note": "same sweep trigger as the baseline"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.15,
+              "note": "VOLUME-CONFIRMED sweep. FX tick volume is a COUNT, not size, so this is not an institutional-footprint claim \u2014 but a stop cascade is many orders firing, which tick count does capture. Tests whether requiring elevated activity separates real stop runs from drift."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, wired on the SAME cell/session as its baseline so the comparison is not confounded by pair, session or market period. Independent implementation of public price-structure concepts; no third-party code, terminology or parameters.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). _v = baseline sweep PLUS a volume-confirmation gate. Judged against its paired baseline on the same cell.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_long_t",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5,
+              "note": "TREND-AGREEING fade: only fade a swept pool when the M5 EMA14-EMA40 regime already leans the same way. NOTE the prior evidence is AGAINST this \u2014 the 2026-08-06 gate test on 836 episodes gave a trimmed gap of only +1.28p with a bootstrap CI straddling zero, and it narrows a reversal setup into a continuation one. Wired at operator request to settle it on forward evidence rather than argument."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_short_t",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_high",
+              "min": 1.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -0.5,
+              "note": "TREND-AGREEING fade: only fade a swept pool when the M5 EMA14-EMA40 regime already leans the same way. NOTE the prior evidence is AGAINST this \u2014 the 2026-08-06 gate test on 836 episodes gave a trimmed gap of only +1.28p with a bootstrap CI straddling zero, and it narrows a reversal setup into a continuation one. Wired at operator request to settle it on forward evidence rather than argument."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_long_m",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0
+            },
+            {
+              "feature": "willr_m5",
+              "max": -80.0,
+              "note": "EXHAUSTION confirmation: Williams %R (M5/14, range -100..0) must be stretched INTO the swept side \u2014 near 0 for a high sweep, near -100 for a low sweep. Mechanically coherent with the fade thesis: the stop run should leave price at a range extreme."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_short_m",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_high",
+              "min": 1.0
+            },
+            {
+              "feature": "willr_m5",
+              "min": -20.0,
+              "note": "EXHAUSTION confirmation: Williams %R (M5/14, range -100..0) must be stretched INTO the swept side \u2014 near 0 for a high sweep, near -100 for a low sweep. Mechanically coherent with the fade thesis: the stop run should leave price at a range extreme."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Paired VARIANT of the 2026-08-06 market-structure trials, on the SAME cell as its baseline so pair/session/period cannot confound the comparison. Independent implementation of public price-structure concepts.",
+            "drift": "UNTESTED",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "ZERO-AUTHORITY TRIAL VARIANT (2026-08-07). Judged against its paired baseline on the same cell. More conditions = fires less often = slower to reach the bar; that is the cost being accepted.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
