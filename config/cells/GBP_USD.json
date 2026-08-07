@@ -482,7 +482,7 @@
           "id": "rvol_low_240_t20s",
           "side": "long",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2098,7 +2098,7 @@
           "wired": "2026-08-07"
         }
       ],
-      "notes": "1 ACTIVE, 1 PROBE, 30 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 2 PROBE, 29 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,

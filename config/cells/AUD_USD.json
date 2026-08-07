@@ -1835,7 +1835,7 @@
           "id": "echo_box_fade_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2448,7 +2448,7 @@
           "wired": "2026-07-27"
         }
       ],
-      "notes": "1 ACTIVE, 15 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "1 ACTIVE, 1 PROBE, 15 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }
