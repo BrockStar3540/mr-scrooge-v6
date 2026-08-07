@@ -1499,6 +1499,72 @@
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
           "wired": "2026-08-06",
           "watch": "\ud83c\udf40"
+        },
+        {
+          "id": "trend_pullback_short_g_rsi3_counter_long",
+          "side": "long",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "4h downtrend (paper: below-EMA context)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": -0.0015,
+              "max": 0.0,
+              "note": "below the H1 EMA20 but SHALLOW (within ~15p) \u2014 sell the bounce into resistance, not the extended drop (paper cond. 1+2)"
+            },
+            {
+              "feature": "rsi14",
+              "min": 40.0,
+              "max": 60.0,
+              "note": "paper RSI3+RSI4 zones \u2014 the two cells that backtested positive; the claimed gradient peaks at 50-60"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "signal bar turning back down (paper cond. 4)"
+            },
+            {
+              "feature": "rsi14",
+              "min": 40.0,
+              "max": 50.0,
+              "note": "gate RSI3: lower-neutral RSI \u2014 pullback not collapse (slate score 9666, n=13049)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: trend_pullback_short_g_rsi3 (short) ran 9 eps @ -12.72p/ep with medMFE/MAE 4.0/14.4 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of trend_pullback_short_g_rsi3 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-31"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -2086,7 +2152,7 @@
           "id": "echo_box_fade_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {

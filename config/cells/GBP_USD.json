@@ -1847,7 +1847,7 @@
           "id": "control_rvol_60",
           "side": "short",
           "class": "FORMULA",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -3176,9 +3176,58 @@
           "notes": "ZERO-AUTHORITY TRIAL (2026-08-06). Sweep-fade: fade the rejection of a swept stop pool. Impulse-OB: buy/sell the first return to an unmitigated impulse origin, trend-aligned. Earns its seat through the normal bar + truth gate or not at all.",
           "wired": "2026-08-06",
           "watch": "\ud83c\udf40"
+        },
+        {
+          "id": "willr_recovery_counter_long",
+          "side": "long",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "willr_m5",
+              "min": -50.0,
+              "max": 0.0,
+              "note": "willr_m5 >= -50 (willr bounded [-100, 0], so [-50, 0] IS a range). Blocks extreme-oversold shorts (countertrend risk): loss tid 9640 (willr=-73.1) blocked; keep 6 -> 5W/1L 83.3% WR vs base 71.4% (+11.9pp) on n=7 recoverable. Equivalent alternative: kc_up >= -10.",
+              "lineage": "phaseA_gate_rederivation-2026-07-04 CELL 1 (raw feature search)"
+            },
+            {
+              "feature": "atr_5m",
+              "max": 6.349
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: willr_recovery_short (short) ran 17 eps @ -1.82p/ep with medMFE/MAE 5.0/11.7 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of willr_recovery_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-05"
         }
       ],
-      "notes": "2 ACTIVE, 26 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "1 ACTIVE, 27 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }

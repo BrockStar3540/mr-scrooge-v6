@@ -20,6 +20,8 @@
     "USD_JPY|london|timing_lean_30": false,
     "EUR_JPY|ny|timing_lean_30_t20s": false,
     "AUD_JPY|ny|timing_lean_30": false,
-    "EUR_JPY|ny|timing_lean_30": false
+    "EUR_JPY|ny|timing_lean_30": false,
+    "GBP_USD|ny|control_rvol_60": false,
+    "USD_CHF|london|ps_ceil_fade_short": false
   }
 }

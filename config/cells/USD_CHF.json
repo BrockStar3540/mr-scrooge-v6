@@ -31,7 +31,7 @@
           "id": "ps_ceil_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {

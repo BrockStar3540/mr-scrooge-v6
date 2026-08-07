@@ -14,18 +14,33 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-echo "pre-push: running suite (unpiped — the exit code IS the verdict)…"
-# CI ALSO runs the suite in RANDOM order (pytest-randomly, requirements-dev).
-# If the plugin is missing here the hook silently tests a weaker property than
-# CI does — order-dependent breakage passes the guard and fails on GitHub.
-# Say so rather than differ quietly.
-if ! python3 -c 'import pytest_randomly' 2>/dev/null; then
-  echo "pre-push: NOTE pytest-randomly not installed — CI additionally runs the"
-  echo "pre-push:      suite in random order. Install requirements-dev.txt for parity."
+# CI PARITY (2026-08-07). CI runs the suite TWICE — once with order fixed and
+# once RANDOMISED (pytest-randomly, requirements-dev.txt). This hook used to
+# run neither variant explicitly and, on a box without the plugin installed,
+# silently tested a weaker property than CI: order-dependent breakage passed
+# the guard and went red on GitHub. Both variants now run here.
+#
+# PY picks a venv created with --system-site-packages, so the test plugins are
+# present WITHOUT installing anything into the system interpreter the live
+# trader runs on. Create it with:
+#     python3 -m venv --system-site-packages .venv-test
+#     .venv-test/bin/pip install -r requirements-dev.txt
+PY="python3"
+if [ -x ".venv-test/bin/python" ]; then
+    PY=".venv-test/bin/python"
+fi
+if ! "$PY" -c 'import pytest_randomly' 2>/dev/null; then
+    echo "pre-push: ❌ pytest-randomly missing — this guard would test LESS than CI." >&2
+    echo "pre-push:    python3 -m venv --system-site-packages .venv-test && \\" >&2
+    echo "pre-push:    .venv-test/bin/pip install -r requirements-dev.txt" >&2
+    exit 1
 fi
 
-python3 -m pytest -q -x
-echo "pre-push: suite green."
+echo "pre-push: running suite, fixed order (unpiped — the exit code IS the verdict)…"
+"$PY" -m pytest -q -x -p no:randomly
+echo "pre-push: running suite, RANDOMISED order (matches CI step 2)…"
+"$PY" -m pytest -q -x
+echo "pre-push: suite green (both orders)."
 
 # ── secrets sweep over exactly the commits being pushed ──────────────────────
 # VALUE-shaped patterns (split literals so the sweep can't match its own

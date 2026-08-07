@@ -18,3 +18,7 @@ config/credentials.tmp
 # Per-instance runtime state (trading pause switch) — operational, not source.
 config/runtime.json
 config/runtime.tmp
+
+# local test venv (--system-site-packages; gives the pre-push hook
+# CI parity without touching the interpreter the live trader uses)
+.venv-test/
