@@ -4,6 +4,30 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.26.0] — 2026-08-07 — 🗺️ regime-map gap fill: the full fade matrix, wired
+
+### Added
+- **593 zero-authority SHADOW setups** — every unwired (variant × pair × session)
+  combination of the five fade families (mr2_bb_reversion, rg1_range_scalp,
+  echo_box_fade, ps_ceil_fade, ps_floor_fade; 13 variants) across 18 pairs and
+  3 sessions. The regime map showed 125/675 wired with strongly patterned green
+  (spr1 gate 8/8, asia reversion, NY continuation via MAE-flips); operator ordered
+  the full fill — the counting clocks and the standard bars decide, one way or
+  the other. Notable virgin territory now covered: USD_JPY / EUR_JPY / AUD_JPY had
+  ZERO fade-family cells; the entire asia row was empty for the band-reversion
+  families; ps_floor_fade had no london/ny presence.
+- **Per-pair SPR1 spread bands.** The tight-spread gate's absolute 1.0–2.0p band
+  cannot fire on crosses (floor spread above the cap — the B-124 lesson recurring
+  as a condition). New cells carry a per-pair band [~0.7×p10, p40 capped at
+  1.3×p10 when the tail is polluted] computed from 14 days of live stamps.
+  Existing wired spr1 cells keep their original band untouched.
+
+### Notes
+- All new setups: SHADOW, zero authority, standard n≥10/d≥5/FDR/truth-gate bars.
+  BH family = candidate docket (v6.23.0), so the fill does not tax the FDR queue.
+- Cell configs hot-reload on mtime; the fill went live without a restart
+  (book 314 → 907 setups, no reload errors).
+
 ## [config] — 2026-08-07 — operator: probe seats 6→9, promotions 3/run
 
 Post-B-121-rescore the docket held 8 shadows at n≥10 with bootstrap LCB>0

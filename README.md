@@ -6,7 +6,7 @@
 
 *Every strategy and entry/exit indicator runs as a **shadow** first — stamped on live markets, scored against forward broker-verified movement, and **promoted to live capital only when it clears an evidence bar**. Setups that degrade get demoted by the same evidence — **autonomously, daily, by a published standard**. The book is whatever survives.*
 
-*Six versions · 8 years of data · **18 pairs scanning · 300+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
+*Six versions · 8 years of data · **18 pairs scanning · 900+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
 **you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
@@ -124,7 +124,7 @@ the bar every 6h (`00:35/06:35/12:35/18:35Z`) → `06:45Z` a change-gated, twice
 snapshots the result. A separate **Commissioner** decides when a second, family-evidence
 admission lane may open at all. The humans set the standard; the bot flips the switches.
 
-**Currently on trial (300+ setups):**
+**Currently on trial (900+ setups):**
 - **The replay shadow book** — 10 pairs the book never traded (CAD, CHF, NZD crosses +
   GBP/JPY), resurrected from this account's own March/April 2026 tapes where session-extreme
   fades and trend-pullback entries kept winning. The standing prior: cross spread toll kills
@@ -158,7 +158,7 @@ flowchart LR
     style G fill:#1f6feb,stroke:#58a6ff,color:#fff
 ```
 
-*Book today: 18 pairs · 54 cells · ~200 setups on the docket (8 ACTIVE cells holding seats, everything else stamping as shadows). Exit gear book-wide: engage +8.5 → lock +6 → trail 2.5. Nothing is DISABLED — under the governor, nothing is beyond the reach of evidence.*
+*Book today: 18 pairs · 54 cells · 900+ setups stamping (regime-map gap fill 2026-08-07) (8 ACTIVE cells holding seats, everything else stamping as shadows). Exit gear book-wide: engage +8.5 → lock +6 → trail 2.5. Nothing is DISABLED — under the governor, nothing is beyond the reach of evidence.*
 
 ## The dashboard
 
