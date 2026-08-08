@@ -4,6 +4,13 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.26.1] — 2026-08-07 — cohort badges: 🍄 gap fill, 🎭 MAE-flips
+
+`watch` tags so cohorts are visible moving through the ranks: 🍄 = the 593
+regime-map gap-fill shadows; 🎭 = every MAE-flip counterpart book-wide (smile
+now, cry later — rides the trigger its parent faded); 🍄🎭 = gap-filled flips.
+Panel legend updated. Board counts: 348 🍄 · 245 🍄🎭 · 35 🎭 · 42 🍀.
+
 ## [6.26.0] — 2026-08-07 — 🗺️ regime-map gap fill: the full fade matrix, wired
 
 ### Added

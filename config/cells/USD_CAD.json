@@ -152,7 +152,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "mr2_bb_reversion_short_g_spr1",
@@ -213,7 +214,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.1,1.7].",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "mr2_bb_reversion_counter_long",
@@ -267,7 +269,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "rg1_range_scalp_short",
@@ -317,7 +320,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "rg1_range_scalp_short_g_bb3",
@@ -373,7 +377,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "rg1_range_scalp_counter_long",
@@ -423,7 +428,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "echo_box_fade_short",
@@ -470,7 +476,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "echo_box_fade_long",
@@ -515,7 +522,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "echo_box_fade_counter_long",
@@ -562,7 +570,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_ceil_fade_short",
@@ -608,7 +617,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_ceil_fade_counter_long",
@@ -654,7 +664,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_floor_fade_long",
@@ -700,7 +711,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_floor_fade_counter_short",
@@ -746,7 +758,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     }
    ],
    "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs); tier-3 structural (ev_gross_long=-5.472 ev_gross_short=-7.481, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -1541,7 +1554,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "rg1_range_scalp_counter_long",
@@ -1591,7 +1605,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "echo_box_fade_counter_long",
@@ -1638,7 +1653,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_ceil_fade_short",
@@ -1684,7 +1700,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_ceil_fade_counter_long",
@@ -1730,7 +1747,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_floor_fade_long",
@@ -1776,7 +1794,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_floor_fade_counter_short",
@@ -1822,7 +1841,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     }
    ],
    "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -2617,7 +2637,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "rg1_range_scalp_counter_long",
@@ -2667,7 +2688,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "echo_box_fade_counter_long",
@@ -2714,7 +2736,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_ceil_fade_short",
@@ -2760,7 +2783,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_ceil_fade_counter_long",
@@ -2806,7 +2830,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     },
     {
      "id": "ps_floor_fade_long",
@@ -2852,7 +2877,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44"
     },
     {
      "id": "ps_floor_fade_counter_short",
@@ -2898,7 +2924,8 @@
       "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
      },
      "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07"
+     "wired": "2026-08-07",
+     "watch": "\ud83c\udf44\ud83c\udfad"
     }
    ],
    "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.596 ev_gross_short=-5.21, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
