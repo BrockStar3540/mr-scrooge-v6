@@ -556,6 +556,40 @@ def _set_trading(payload: dict) -> tuple[int, dict]:
 
 
 
+def _set_reaper(payload) -> tuple:
+    """POST /api/reaper {enabled: bool, hours?: number>=1, confirm?}.
+
+    The STALE-RED REAPER auto-closes positions that are RED and older than
+    `hours` (default 72). Disabling is unconfirmed (the safe direction).
+    Enabling while pointed at LIVE money requires confirm="REAP" — turning it
+    on liquidates real losing positions on the next manage tick."""
+    from config import runtime as _rt
+    if not isinstance(payload, dict) or not isinstance(payload.get("enabled"), bool):
+        return 400, {"ok": False, "error": "body must include {\"enabled\": true|false}"}
+    enabled = payload["enabled"]
+    hours = payload.get("hours")
+    if hours is not None:
+        try:
+            hours = float(hours)
+        except (TypeError, ValueError):
+            return 400, {"ok": False, "error": "hours must be a number >= 1"}
+        if not (hours >= 1.0):
+            return 400, {"ok": False, "error": "hours must be a number >= 1"}
+    if enabled:
+        try:
+            from config import credentials as _cred
+            mode = _cred.load_local().get("mode", "practice")
+        except Exception:
+            mode = "practice"
+        if mode == "live" and payload.get("confirm") != "REAP":
+            return 400, {"ok": False, "error": 'enabling the reaper in LIVE mode requires confirm="REAP"'}
+    cfg = _rt.set_reaper(enabled, hours)
+    log.warning("REAPER %s via dashboard — red positions older than %.0fh %s",
+                "ENABLED" if enabled else "DISABLED", cfg["hours"],
+                "will be closed on the manage tick" if enabled else "will stay open")
+    return 200, {"ok": True, "reaper": cfg}
+
+
 def _state(engine: "Engine") -> dict:
     now = datetime.now(timezone.utc)
 
@@ -901,6 +935,11 @@ def _state(engine: "Engine") -> dict:
         _trading_enabled = _te()
     except Exception:
         _trading_enabled = True
+    try:
+        from config.runtime import reaper_config as _rc
+        _reaper_cfg = _rc()
+    except Exception:
+        _reaper_cfg = {"enabled": False, "hours": 72.0}
     # ── Party Package (V6.1) — grids + poppers; defensive like everything else
     try:
         party_package = engine.pp.state()
@@ -911,6 +950,7 @@ def _state(engine: "Engine") -> dict:
         "account":         account,
         "rollover_freeze": _irf(now),
         "trading_enabled": _trading_enabled,
+        "reaper":          _reaper_cfg,
         "party_package":   party_package,
         "open_positions":  open_positions,
         "last_tickets":    last_tickets,
@@ -1784,6 +1824,11 @@ class _Handler(http.server.BaseHTTPRequestHandler):
             elif self.path.startswith("/api/trading"):
                 payload = self._read_json()
                 code, obj = _set_trading(payload)
+                body = _j.dumps(obj).encode()
+                ctype = "application/json"
+            elif self.path.startswith("/api/reaper"):
+                payload = self._read_json()
+                code, obj = _set_reaper(payload)
                 body = _j.dumps(obj).encode()
                 ctype = "application/json"
             elif self.path.startswith("/api/governor"):

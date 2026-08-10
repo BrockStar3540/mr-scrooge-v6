@@ -4,6 +4,26 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.27.0] — 2026-08-08 — 🪓 STALE-RED REAPER
+
+### Added
+- **Auto-close positions that are RED and older than 72h** (configurable ≥1h) —
+  they hog concurrency seats that ready cells could use; the operator had been
+  closing them by hand. Implemented at both close sites (parent managers +
+  party-package poppers) reusing the audited B-119 discipline verbatim: a
+  rejected close (MARKET_HALTED / FIFO) keeps the position tracked and retries;
+  only a confirmed close (or already-gone) books the exit. Reaped exits log
+  `EXIT (reaper: …)` / `PP REAP …`, book reason `reaper`, and apply the
+  post-loss cooldown.
+- **Dashboard toggle** (top bar, next to TRADING): `🪓 REAPER: ON (72h)/OFF`.
+  POST `/api/reaper {enabled, hours?}`; enabling in LIVE mode requires
+  `confirm="REAP"` (it liquidates real losing positions on the next tick);
+  disabling is unconfirmed. State in `/api/state.reaper`. Hot-reloaded via
+  `config/runtime.json` — no restart to toggle.
+- **FAIL-CLOSED config**: absent/malformed `reaper` block ⇒ OFF. A corrupted
+  file must never start liquidating. Pure decision `reap_due()` unit-tested
+  (22 new tests; suite 439 → 461).
+
 ## [6.26.1] — 2026-08-07 — cohort badges: 🍄 gap fill, 🎭 MAE-flips
 
 `watch` tags so cohorts are visible moving through the ranks: 🍄 = the 593

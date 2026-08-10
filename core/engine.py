@@ -36,7 +36,7 @@ from modules.management.bracket import BracketManager
 from modules.management.party_package import PartyPackage
 from modules.cells import PairModule, CELL_EXECUTION_ENABLED
 from modules.cells.portfolio import select_intent
-from config.runtime import trading_enabled
+from config.runtime import trading_enabled, reaper_config, reap_due
 from core.exec_truth import adopt_fill, executable_price
 
 log = logging.getLogger("v5.engine")
@@ -344,6 +344,8 @@ class Engine:
                 except Exception as exc:
                     log.exception("RECONCILER recovery failed: %s", exc)
 
+        _rcfg = reaper_config()
+
         for pair in list(self.managers.keys()):
             mgr = self.managers[pair]
             try:
@@ -369,6 +371,35 @@ class Engine:
                     self._sl_history[pair] = now
                 del self.managers[pair]
                 continue
+
+            # STALE-RED REAPER (operator, 2026-08-08): red past the age cap
+            # hogs a concurrency seat ready cells could use — close at market.
+            # Same B-119 discipline as every close: a rejection keeps the
+            # manager; only a confirmed close (or already-gone) books it.
+            if _rcfg["enabled"]:
+                _rnet = mgr.net_pips(mid)
+                if reap_due(mgr.position.entry_time, now, _rnet, _rcfg):
+                    log.info("EXIT (reaper: red > %.0fh) %s | trade_id=%s | net=%.2fp",
+                             _rcfg["hours"], pair, mgr.position.oanda_trade_id, _rnet)
+                    if not self.dry_run:
+                        try:
+                            self.broker.close_position(mgr.position.oanda_trade_id)
+                        except CloseRejected as cr:
+                            log.warning("reaper close rejected %s (%s) — manager "
+                                        "kept, will retry", pair, cr.reason)
+                            continue
+                        except Exception as exc:
+                            _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
+                            if not _gone:
+                                log.warning("reaper close_position %s failed (%s) "
+                                            "— manager kept", pair, exc)
+                                continue
+                            log.info("reaper close %s: already gone at broker", pair)
+                    self.recent_events.append(
+                        f"{now.strftime('%H:%M:%S')} REAP {pair} red>{_rcfg['hours']:.0f}h {_rnet:.1f}p")
+                    self._sl_history[pair] = now   # reaped = a loss; cooldown applies
+                    del self.managers[pair]
+                    continue
 
             # Tick ratchet -- may call broker.move_stop() if the floor tightens
             signal = mgr.update(mid, now)

@@ -624,6 +624,8 @@ body.has-ticker{padding-bottom:32px}
   <div id="mode-banner" class="mode-banner unknown" style="flex:1">● connection mode: loading…</div>
   <div id="trading-switch" class="trading-switch unknown" onclick="toggleTrading()"
        title="Pause suppresses NEW entries; open positions keep being managed. To fully stop the process, stop the service.">TRADING: —</div>
+  <div id="reaper-switch" class="trading-switch unknown" onclick="toggleReaper()"
+       title="STALE-RED REAPER: auto-close positions that are RED and older than 72h — they hog seats that ready cells could use. Hot toggle; closes happen on the next manage tick.">🪓 REAPER: —</div>
 </div>
 
 <!-- ─── TRADE EVENT OVERLAY (slides in from top on new trade) ─────────────── -->
@@ -1535,6 +1537,7 @@ function renderAll(){
   (STATE.last_views||[]).forEach(v=>pushHist(v));
   renderBanner();
   renderTradingSwitch();
+  renderReaperSwitch();
   renderAcctBar();
   renderGauges();
   renderPositions();
@@ -2737,6 +2740,38 @@ async function confirmLive(){
 }
 
 /* ── TRADING pause master switch (top bar) ─────────────────────────────── */
+function renderReaperSwitch(){
+  const el=document.getElementById('reaper-switch'); if(!el)return;
+  const r=STATE?STATE.reaper:undefined;
+  if(!r||r.enabled===undefined){el.className='trading-switch unknown';el.textContent='🪓 REAPER: —';return}
+  el.className='trading-switch '+(r.enabled?'on':'unknown');
+  el.textContent=r.enabled?('🪓 REAPER: ON ('+Math.round(r.hours)+'h)'):'🪓 REAPER: OFF';
+}
+async function toggleReaper(){
+  const r=STATE?STATE.reaper:undefined;
+  if(!r||r.enabled===undefined){alert('Reaper state not available yet (bot may need the queued restart to serve /api/reaper).');return}
+  const next=!r.enabled;
+  const payload={enabled:next};
+  if(next){
+    const live=(CRED&&CRED.mode==='live');
+    const msg='Enable the STALE-RED REAPER? Any position that is RED and older than '+Math.round(r.hours)+'h will be CLOSED AT MARKET on the next manage tick.';
+    if(live){
+      const c=prompt(msg+'\nLIVE mode (real money): type REAP to confirm:');
+      if(c===null)return;
+      payload.confirm=c;
+    } else {
+      if(!confirm(msg))return;
+    }
+  } else {
+    if(!confirm('Disable the reaper? Stale red positions will stay open until their stop or a manual close.'))return;
+  }
+  try{
+    const resp=await fetch('/api/reaper',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await resp.json();
+    if(d.ok){fetchState();}
+    else alert('Reaper toggle failed: '+(d.error||'error'));
+  }catch(e){alert('Reaper toggle failed: '+e.message);}
+}
 function renderTradingSwitch(){
   const el=document.getElementById('trading-switch'); if(!el)return;
   const t=STATE?STATE.trading_enabled:undefined;

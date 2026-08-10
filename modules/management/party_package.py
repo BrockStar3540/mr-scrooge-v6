@@ -39,7 +39,7 @@ from typing import Callable, Optional
 from config.pairs import PIP
 from modules.playmaker.playmaker import (TradeTicket, pm_margin_pct, pm_probe_mult,
                                           pm_max_concurrent)
-from config.runtime import trading_enabled
+from config.runtime import trading_enabled, reaper_config, reap_due
 from core.exec_truth import adopt_fill, executable_price
 from .base import Position, in_rollover_freeze
 from .ratchet import RatchetManager
@@ -478,6 +478,8 @@ class PartyPackage:
                 net = mgr.net_pips(px)
                 self._book_exit(pair, lvl, tid, net, "server-stop", now)
 
+        _rcfg = reaper_config()
+
         # 2) popper ratchet tick + local exit detect
         for tid in list(self.poppers.keys()):
             mgr = self.poppers[tid]
@@ -491,6 +493,32 @@ class PartyPackage:
                 log.warning("PP pricing %s failed: %s", pair, exc)
                 continue
             signal = mgr.update(px, now)
+            if signal is None and _rcfg["enabled"]:
+                # STALE-RED REAPER — same close discipline as the signal path
+                # below (B-119: rejection keeps the popper tracked + backoff).
+                _rnet = mgr.net_pips(px)
+                if reap_due(mgr.position.entry_time, now, _rnet, _rcfg):
+                    if self._close_backoff.get(tid, 0) > now.timestamp():
+                        continue
+                    try:
+                        self.broker.close_position(tid)
+                    except CloseRejected as cr:
+                        log.warning("PP reaper close rejected %s (%s) — popper "
+                                    "stays tracked, retry after backoff", tid, cr.reason)
+                        self._close_backoff[tid] = now.timestamp() + 1800
+                        continue
+                    except Exception as exc:
+                        _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
+                        if not _gone:
+                            log.warning("PP reaper close_position %s failed (%s) — "
+                                        "popper stays tracked", tid, exc)
+                            self._close_backoff[tid] = now.timestamp() + 300
+                            continue
+                        log.info("PP reaper close %s: already gone — booking exit", tid)
+                    log.info("PP REAP %s marker=-%sp trade_id=%s net=%.2fp (red > %.0fh) | engine=pp_v1",
+                             pair, lvl, tid, _rnet, _rcfg["hours"])
+                    self._book_exit(pair, lvl, tid, _rnet, "reaper", now)
+                    continue
             if signal:
                 # B-119: a rejected close (MARKET_HALTED on weekends, FIFO,
                 # etc.) means the trade is STILL OPEN — booking the exit
