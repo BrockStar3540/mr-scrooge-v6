@@ -139,3 +139,29 @@ def test_post_practice_mode_no_confirm_needed(runtime_path, monkeypatch):
     monkeypatch.setattr(credentials, "load_local", lambda: {"mode": "practice"})
     code, body = server._set_reaper({"enabled": True, "hours": 24})
     assert code == 200 and body["reaper"] == {"enabled": True, "hours": 24.0}
+
+
+# ── B-125: every dashboard status flip is attributed + ledgered ──────────────
+
+def test_flip_ledger_entry_attributed(tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "_GOVERNOR_LEDGER", tmp_path / "ledger.jsonl")
+    res = {"pair": "EUR_USD", "session": "ny", "setup_id": "rg1_range_scalp_short",
+           "old_status": "PROBE", "status": "SHADOW"}
+    server._ledger_status_flip(res, "dashboard-ui", "1.2.3.4:5")
+    line = json.loads((tmp_path / "ledger.jsonl").read_text())
+    assert line["action"] == "OPERATOR-FLIP" and line["actor"] == "dashboard-ui"
+    assert line["source"] == "1.2.3.4:5" and line["setup"] == "rg1_range_scalp_short"
+    assert "PROBE -> SHADOW" in line["why"]
+
+
+def test_flip_ledger_governor_actor(tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "_GOVERNOR_LEDGER", tmp_path / "ledger.jsonl")
+    server._ledger_status_flip({"pair": "X", "session": "s", "setup_id": "y",
+                                "old_status": "SHADOW", "status": "PROBE"},
+                               "governor", "127.0.0.1:1")
+    assert json.loads((tmp_path / "ledger.jsonl").read_text())["action"] == "GOVERNOR-FLIP"
+
+
+def test_flip_ledger_failure_never_raises(tmp_path, monkeypatch):
+    monkeypatch.setattr(server, "_GOVERNOR_LEDGER", tmp_path)   # a DIRECTORY: open() fails
+    server._ledger_status_flip({"pair": "X"}, "dashboard-ui", "?")   # must not raise

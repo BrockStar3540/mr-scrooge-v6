@@ -503,7 +503,8 @@ def flip(pair, sess, setup_id, status, dry):
     if status == "SHADOW" and cur not in ("ACTIVE", "PROBE"):
         return {"ok": False, "skipped": f"not ACTIVE/PROBE at flip time (now {cur})"}
     return _post(API, {"pair": pair, "session": sess,
-                       "setup_id": setup_id, "status": status}, dry)
+                       "setup_id": setup_id, "status": status,
+                       "actor": "governor"}, dry)
 
 
 def pp_off(pair, sess, setup_id, dry):

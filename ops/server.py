@@ -1314,6 +1314,31 @@ def _dashboard_token() -> str:
 _GOVERNOR_CFG = _REPO_ROOT / "config" / "governor_config.json"
 _GOVERNOR_LEDGER = _REPO_ROOT / "data" / "governor_ledger.jsonl"
 
+
+def _ledger_status_flip(res: dict, actor: str, source: str) -> None:
+    """B-125: EVERY status flip through the dashboard lands in the governor
+    ledger, attributed. On 2026-08-08 an unattributed /api/cell/status POST
+    silently reversed a governor promotion — the ledger (the operator
+    contract) never heard about it and the source remains unknown. Never
+    raises: a ledger-write failure must not fail the flip itself."""
+    try:
+        from datetime import datetime, timezone
+        entry = {
+            "t": datetime.now(timezone.utc).isoformat(),
+            "action": "GOVERNOR-FLIP" if actor == "governor" else "OPERATOR-FLIP",
+            "actor": actor, "source": source,
+            "pair": res.get("pair"), "session": res.get("session"),
+            "setup": res.get("setup_id"),
+            "why": f"/api/cell/status: {res.get('old_status')} -> {res.get('status')}",
+            "dry_run": False,
+            "result": {"ok": True, "old_status": res.get("old_status"),
+                       "status": res.get("status")},
+        }
+        with open(_GOVERNOR_LEDGER, "a") as fh:
+            fh.write(_j.dumps(entry) + "\n")
+    except Exception as _le:
+        log.warning("status-flip ledger write failed (flip still applied): %s", _le)
+
 def _governor_get() -> dict:
     """GET /api/governor — config, enabled state, and the recent ledger tail."""
     try:
@@ -1785,9 +1810,15 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                                            payload.get("setup_id"), payload.get("status"))
                     body = _j.dumps({"ok": True, **res}).encode()
                     ctype, code = "application/json", 200
-                    log.info("cell status %s/%s/%s: %s -> %s (dashboard)",
+                    # B-125: attribute every flip and ledger it — an
+                    # unattributed flip reversed a promotion on 2026-08-08.
+                    _actor = payload.get("actor") if isinstance(payload.get("actor"), str) else "UNATTRIBUTED"
+                    _src = "%s:%s" % (self.client_address[0], self.client_address[1]) \
+                           if getattr(self, "client_address", None) else "?"
+                    log.info("cell status %s/%s/%s: %s -> %s (actor=%s from %s)",
                              res["pair"], res["session"], res["setup_id"],
-                             res["old_status"], res["status"])
+                             res["old_status"], res["status"], _actor, _src)
+                    _ledger_status_flip(res, _actor, _src)
                     try:                     # B-113: board must show it NOW
                         from ops import shadowboard as _sb
                         _sb.invalidate()

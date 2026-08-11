@@ -4,6 +4,14 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.27.1] — 2026-08-10 — B-125: every status flip is signed and ledgered
+
+An unattributed dashboard POST silently reversed a governor promotion on
+2026-08-08 (see Book of Bugs B-125; all automation ruled out, source unknown).
+`/api/cell/status` now logs actor + client address and appends every flip to
+`governor_ledger.jsonl` (`GOVERNOR-FLIP` / `OPERATOR-FLIP`); governor and panel
+identify themselves. Suite 461 → 464.
+
 ## [6.27.0] — 2026-08-08 — 🪓 STALE-RED REAPER
 
 ### Added

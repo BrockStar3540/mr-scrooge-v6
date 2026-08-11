@@ -10,7 +10,7 @@ book. Nothing points off-repo for the content itself — the only external refer
 Dropbox `/SCROOGE/SCROOGE ARCHIVE/` paths where the original forensic source material (daily notes,
 postmortems, commit-linked audits) is filed.
 
-**Coverage:** B-001 → B-124, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
+**Coverage:** B-001 → B-125, all recoverable, all present below (B-091+ = V6.1 live era). See *Records not recovered*
 at the end — as of this consolidation there are **no gaps** in the B-001→B-090 range.
 
 **Recurring-pattern index and "bugs that shaped architecture" tables are at the bottom** —
@@ -867,6 +867,17 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 - **Root cause (two, compounding):** (1) the playmaker-era `_MAX_SPREAD` table listed only 8 pairs; unlisted pairs fell to `_DEFAULT_MAX_SPREAD = 3.0` pips. CAD_JPY's floor spread over 14 days of stamps was **3.4p** (mode 3.5–3.7) — the cap sat below the pair's best-ever spread, so 100% of its intents were vetoed, structurally and forever. (2) the veto was **silent**: the currency-cap branch logged CELLSKIP, but the spread and cooldown branches `continue`d with no trace — invisible to the journal, the dashboard, and a full audit.
 - **Fix (v6.25.1):** the max-spread entry veto is REMOVED at all three sites (operator decision: the ratchet exit and broker-truth net-of-cost cycle scoring already price the spread toll; a hard entry veto from the pre-ratchet era double-filtered on a stale table). The `spread <= 0` bad-tick fail-closed guards remain. Every surviving veto in `select_intent` now logs a CELLSKIP reason (`bad_tick`, `post_loss_cooldown`), and the popper bad-tick skip logs `PP SKIP ... reason=bad_tick`.
 - **Lesson:** every gate that can suppress a trade must say so in the journal — a silent `continue` is a mute button nobody can hear, and 11 days of "no sample yet" was actually 11 days of vetoed signal. And any per-pair table is a liability the day a new pair is wired: the default value decides, and nobody looks at the default. Cost controls belong in the exit/scoring layer that is actually measured, not in unmeasured entry vetoes.
+
+---
+
+### B-125 — the flip nobody signed: a dashboard POST silently reversed a governor promotion
+
+- **Discovered:** 2026-08-10, while answering "how do the shadows look" — EUR_USD/ny/rg1_range_scalp_short (promoted 2026-08-08T00:35Z with the docket's best stats: q=0.004, blcb=+5.19) was back in SHADOW with no demotion in the ledger.
+- **Area:** `ops/server.py` POST `/api/cell/status`; `ops/governor.py` `flip()`; `ops/panel.html` status UI.
+- **Symptom:** at 2026-08-08T07:21:39Z a `PROBE -> SHADOW` flip was applied through the dashboard endpoint — the ONLY off-tick flip in journal retention. The journal line said "(dashboard)" and nothing else: no actor, no source address, no ledger entry. The governor's own flips ride the same endpoint, so the ledger (the operator contract) captured governor actions but was structurally blind to everyone else's.
+- **Forensics:** governor (no tick, no ledger), commissioner (clean battery), test suite (planted-PROBE experiment in a repo copy survived a full run; no test touches the live API), counterpart-audit cron (ran clean that day), virtual-scores/livelog/backup/mirror crons (no cell writers), and the engine (never writes configs) — all ruled out with evidence. Source remains unknown.
+- **Fix (v6.27.1):** every `/api/cell/status` flip now (1) logs `actor` (from the POST body; `UNATTRIBUTED` when absent) plus the client address, and (2) appends a `GOVERNOR-FLIP`/`OPERATOR-FLIP` entry to `data/governor_ledger.jsonl` — never raising on ledger failure (a ledger problem must not fail the flip). The governor sends `actor="governor"`; the panel UI sends `actor="dashboard-ui"`. The reversed promotion was restored by operator order 2026-08-10 (OPERATOR-FLIP in the ledger).
+- **Lesson:** an audit trail that only covers the well-behaved writer is decoration — the same endpoint that serves the governor serves anyone on the network, and the ledger must hear about ALL of them or "read the ledger" is a false contract.
 
 ---
 
