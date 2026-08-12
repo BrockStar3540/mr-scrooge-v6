@@ -881,6 +881,17 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-126 — machine state stranded uncommitted: every writer wrote, nobody committed
+
+- **Discovered:** 2026-08-12, from the quick-status "7 uncommitted tracked changes" nag — governor flips from 2026-08-08 had sat in the working tree for four days.
+- **Area:** commit scope of the hourly livelog cron vs every config writer: governor flips, dashboard `/api/cell/status`, the counterpart-audit `--wire` cron, popper `per_cell` grid transitions.
+- **Symptom:** promotions/demotions and newly wired shadows mutate tracked files under `config/`, but the only process that ever committed (`ops/livelog_update.py`, hourly) stages `livelog/` + `README.md` only. Stranded in one batch: the 08-08 mr2 promotion, both 08-11 demotions plus their `pp_config` per_cell entries, and three counterpart-wired shadows.
+- **Risk:** any `git checkout -- config/` (deploy reset, recovery re-clone) would silently resurrect demoted cells and erase promotions — the ledger would say SHADOW while the running config said ACTIVE. The B-125 lesson, one layer down: the ledger heard every flip, but the durable store (git) heard about none of them.
+- **Fix (v6.27.2):** `ops/state_commit.py`, hourly cron at `:20` — commits tracked-modified `config/` files with a **semantic per-setup summary** (status flips named `pair/session/setup: A -> B`; the thousands of lines of JSON key-reorder churn per flip are ignored). Fail-soft on mid-write races (unparseable file → deferred to the next hour), on push failure, and it never touches untracked or already-staged paths.
+- **Lesson:** a state machine whose transitions land in tracked files needs a committer for every writer, or the repo is a stale copy wearing the clothes of a source of truth.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
