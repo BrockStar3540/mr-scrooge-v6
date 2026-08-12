@@ -2930,6 +2930,18 @@ async function setCellStatus(pair,session,setupId,status,btn,ctx='book'){
       fetchCells();
       if(ctx!=='book'){pollShadowboard();fetchCellScore();}
     }
+    else if((d.error||'').indexOf('OVERSEAT')>=0){
+      // B-127 seat guard: over-ceiling PROBE entry needs a typed confirm
+      const c=prompt(`${d.error}\n\nType OVERSEAT to override the seat ceiling:`);
+      if(c==='OVERSEAT'){
+        const r2=await fetch('/api/cell/status',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({pair,session,setup_id:setupId,status,actor:'dashboard-ui',confirm:'OVERSEAT'})});
+        const d2=await r2.json();
+        if(d2.ok){ if(msg)msg.innerHTML=`<span class="pos">→ ${d2.status} (over ceiling)</span>`;
+          fetchCells(); if(ctx!=='book'){pollShadowboard();fetchCellScore();} }
+        else{ if(msg)msg.innerHTML=`<span class="neg">${escape(d2.error||'error')}</span>`; }
+      } else { if(msg)msg.innerHTML='<span class="neg">seat ceiling — cancelled</span>'; }
+    }
     else{ if(msg)msg.innerHTML=`<span class="neg">${escape(d.error||'error')}</span>`; }
   }catch(e){ if(msg)msg.innerHTML=`<span class="neg">${e.message}</span>`; }
 }

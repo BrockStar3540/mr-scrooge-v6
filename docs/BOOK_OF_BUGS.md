@@ -892,6 +892,16 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-127 — the seat nobody counted: dashboard flips bypass the probe ceiling
+
+- **Discovered:** 2026-08-12, strategy audit — the governor had logged ~61 seat-ceiling deferrals across 4 days: 10 PROBEs open against `max_probe_seats_total=9`, so every docket candidate (three of them LCB > +5) was frozen out while the pool sat over-full.
+- **Area:** `ops/server.py` `_set_cell_status` / POST `/api/cell/status`.
+- **Symptom:** the 2026-08-10 operator restore of EUR_USD/ny/rg1 (reversing the B-125 phantom flip) went through the dashboard endpoint, which did **no seat accounting** — by then the governor had already legitimately refilled the phantom-freed seat, so the restore silently over-filled the pool. The governor only *defers promotions* when over ceiling; it never sheds a seat to correct the count, so the freeze was indefinite and invisible outside its own log lines.
+- **Fix (v6.27.3):** a flip **into** a PROBE seat now counts status-derived PROBEs across all cell files (the same durable truth `probe_seat_count` uses) against `max_probe_seats_total` and is refused when it would over-fill — unless explicitly overridden with `confirm="OVERSEAT"` (the reaper's typed-confirm pattern; the panel prompts for it). A confirmed override is flagged `over_ceiling: true` in the B-125 ledger entry. Fail-closed: an unreadable governor config refuses seat *entry* only — seat-reducing and lateral flips are never guarded, so demotions always work.
+- **Lesson:** B-125 taught that every writer must be *heard* (attribution); B-127 is the next layer — every writer must also be *governed*. An invariant enforced in only one caller of a shared endpoint is not an invariant, and a governor that defers-but-never-sheds turns one silent over-fill into a permanent freeze.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

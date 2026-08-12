@@ -13,7 +13,8 @@ Routes:
   GET /api/credentials     → credential status (masked last4 + mode; NEVER values)
   POST /api/config/exit    → live edit exit_config.json (validated; RECOVERY FALLBACK only)
   POST /api/config/playmaker→ live edit playmaker_config.json (validated, merge-preserving)
-  POST /api/cell/status    → flip one setup ACTIVE/SHADOW/DISABLED in config/cells (hot-reload)
+  POST /api/cell/status    → flip one setup ACTIVE/PROBE/SHADOW/DISABLED in config/cells (hot-reload;
+                             B-127: PROBE entry respects max_probe_seats_total, override confirm=OVERSEAT)
   POST /api/cell/exit      → live edit one setup's per-cell exit geometry (hot-reload)
   POST /api/pp/retire      → retire one exact, flat grid before a governance era transition
   POST /api/credentials    → save+verify an OANDA credential set (writes credentials.local.json)
@@ -400,18 +401,77 @@ def _refresh_session_notes(scfg: dict) -> None:
     scfg["notes"] = _NOTES_COUNTS_RE.sub(sentence, notes, count=1)
 
 
-def _set_cell_status(pair: str, session: str, setup_id: str, status: str) -> dict:
+def _count_probe_seats() -> int:
+    """Status-derived PROBE count across ALL cell files — the same durable
+    truth `ops/governor.probe_seat_count` uses (cell status on disk, never
+    auxiliary state). An unparseable cell file is skipped with a warning; the
+    bigger alarm for that lives elsewhere."""
+    n = 0
+    for f in sorted(_CELLS_DIR.glob("*.json")):
+        try:
+            doc = _j.loads(f.read_text())
+        except Exception as exc:
+            log.warning("seat guard: skipping unreadable %s (%s)", f.name, exc)
+            continue
+        for body in (doc.get("sessions") or {}).values():
+            n += sum(1 for s in (body or {}).get("setups", [])
+                     if s.get("status") == "PROBE")
+    return n
+
+
+def _probe_seat_guard(old_status, new_status, confirm) -> bool:
+    """B-127: a flip INTO a PROBE seat must respect max_probe_seats_total.
+
+    The 2026-08-10 operator restore went through this endpoint with no seat
+    accounting at all and silently over-filled the pool to 10/9 — every docket
+    candidate then deferred for ~4 days. The governor accounts for seats
+    before it flips; everyone else lands here. Over-ceiling entry is refused
+    unless the caller explicitly overrides with confirm="OVERSEAT" (the
+    reaper's typed-confirm pattern); a confirmed override is flagged in the
+    ledger. Fail-CLOSED: if the ceiling can't be read the seat entry is
+    refused — seat-reducing and lateral flips are never guarded, so demotions
+    always work no matter what.
+
+    Returns True when this is a confirmed over-ceiling entry (for the ledger).
+    """
+    if new_status != "PROBE" or old_status == "PROBE":
+        return False
+    try:
+        ceiling = int(_j.loads(_GOVERNOR_CFG.read_text())["max_probe_seats_total"])
+    except Exception as exc:
+        raise ValueError(
+            "seat guard: cannot read max_probe_seats_total from "
+            f"{_GOVERNOR_CFG.name} ({exc}) — refusing PROBE entry (demotions "
+            "are unaffected)") from exc
+    probes_now = _count_probe_seats()
+    if probes_now + 1 <= ceiling:
+        return False
+    if confirm == "OVERSEAT":
+        return True
+    raise ValueError(
+        f"seat ceiling: {probes_now} PROBE seat(s) already open, ceiling "
+        f"{ceiling} (max_probe_seats_total) — this flip would over-fill the "
+        "pool and freeze governor promotions (B-127). Resend with "
+        '"confirm": "OVERSEAT" to override; the override is ledgered.')
+
+
+def _set_cell_status(pair: str, session: str, setup_id: str, status: str,
+                     confirm=None) -> dict:
     """Flip one setup's status in config/cells/<PAIR>.json (merge-preserving)."""
     if status not in _CELL_STATUSES:
         raise ValueError(f"status must be one of {sorted(_CELL_STATUSES)}, got {status!r}")
     data = _load_cell_file(pair)
     setup = _find_setup(data, session, setup_id)
     old = setup.get("status")
+    over = _probe_seat_guard(old, status, confirm)
     setup["status"] = status
     _refresh_session_notes((data.get("sessions") or {}).get(session) or {})
     _write_cell_file(pair, data)
-    return {"pair": pair, "session": session, "setup_id": setup_id,
-            "old_status": old, "status": status}
+    res = {"pair": pair, "session": session, "setup_id": setup_id,
+           "old_status": old, "status": status}
+    if over:
+        res["over_ceiling"] = True
+    return res
 
 def _validate_cell_exit(patch: dict) -> dict:
     if not isinstance(patch, dict):
@@ -1332,7 +1392,9 @@ def _ledger_status_flip(res: dict, actor: str, source: str) -> None:
             "why": f"/api/cell/status: {res.get('old_status')} -> {res.get('status')}",
             "dry_run": False,
             "result": {"ok": True, "old_status": res.get("old_status"),
-                       "status": res.get("status")},
+                       "status": res.get("status"),
+                       **({"over_ceiling": True} if res.get("over_ceiling")
+                          else {})},
         }
         with open(_GOVERNOR_LEDGER, "a") as fh:
             fh.write(_j.dumps(entry) + "\n")
@@ -1807,7 +1869,8 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 payload = self._read_json()
                 try:
                     res = _set_cell_status(payload.get("pair"), payload.get("session"),
-                                           payload.get("setup_id"), payload.get("status"))
+                                           payload.get("setup_id"), payload.get("status"),
+                                           confirm=payload.get("confirm"))
                     body = _j.dumps({"ok": True, **res}).encode()
                     ctype, code = "application/json", 200
                     # B-125: attribute every flip and ledger it — an
