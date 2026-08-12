@@ -1,2934 +1,2979 @@
 {
- "pair": "USD_CAD",
- "generated": "2026-07-04T08:00:04Z",
- "generator": "generate_cell_configs.py-2026-07-04",
- "sessions": {
-  "asia": {
-   "enabled": true,
-   "structure": {
-    "tier": 3,
-    "rh_offer_rate_60m": 0.2041,
-    "dead_rate_60m": 0.7502,
-    "ev_gross_long": -5.472,
-    "ev_gross_short": -7.481,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "tc_vwapbb_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.08,
-       "note": "lower-band excursion (TradeClaw: BB touch leg)"
+  "pair": "USD_CAD",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2041,
+        "dead_rate_60m": 0.7502,
+        "ev_gross_long": -5.472,
+        "ev_gross_short": -7.481,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "vwap_dist_pips",
-       "min": 0.0,
-       "note": "still above session VWAP (trend condition)"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "min": 0.0,
-       "note": "M5 EMA20 uptrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
+      "setups": [
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.1,
+              "max": 1.7,
+              "note": "gate SPR1 per-pair band [1.1,1.7] = tight-spread regime for USD_CAD (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.1,1.7].",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        }
+      ],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs); tier-3 structural (ev_gross_long=-5.472 ev_gross_short=-7.481, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     },
-    {
-     "id": "tc_vwapbb_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.92,
-       "note": "upper-band excursion"
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.3344,
+        "dead_rate_60m": 0.5083,
+        "ev_gross_long": -1.457,
+        "ev_gross_short": -2.076,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "vwap_dist_pips",
-       "max": 0.0,
-       "note": "below session VWAP"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "max": 0.0,
-       "note": "EMA20 downtrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
+      "setups": [
+        {
+          "id": "alpha_extended_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "alpha_extended_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "direction-keyed amendment: fade edge exists on both sides"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "PROBE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "alpha_extended_fade_long_g_a10",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "alpha_extended_fade_short_g_a10",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_long_g_bb3",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.0,
+              "max": 2.0,
+              "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_long (long) ran 6 eps @ -7.83p/ep with medMFE/MAE 5.5/11.4 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-27"
+        }
+      ],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     },
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 3,
+        "rh_offer_rate_60m": 0.2996,
+        "dead_rate_60m": 0.4783,
+        "ev_gross_long": -3.596,
+        "ev_gross_short": -5.21,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.1,
-       "max": 1.7,
-       "note": "gate SPR1 per-pair band [1.1,1.7] = tight-spread regime for USD_CAD (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.1,1.7].",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
+      "setups": [
+        {
+          "id": "alpha_extended_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "alpha_extended_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "direction-keyed amendment: fade edge exists on both sides"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "PROBE",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book echo_box_fade_v2 long side.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-07-27"
+        },
+        {
+          "id": "alpha_extended_fade_long_g_a10",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "max": 35.0
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "alpha_extended_fade_short_g_a10",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "rsi14",
+              "min": 65.0,
+              "note": "book: RSI>=65 overextension"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "book: close>EMA20 (stretched above)"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection bar turning down"
+            },
+            {
+              "feature": "atr_1h",
+              "max": 20.0,
+              "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_long_g_bb3",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "echo_box_fade_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.0,
+              "max": 2.0,
+              "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
+          "wired": "2026-07-31"
+        },
+        {
+          "id": "tc_vwapbb_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.08,
+              "note": "lower-band excursion (TradeClaw: BB touch leg)"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "min": 0.0,
+              "note": "still above session VWAP (trend condition)"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "M5 EMA20 uptrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "tc_vwapbb_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "max": 0.0,
+              "note": "EMA20 downtrend agreement"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
+          },
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        }
+      ],
+      "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.596 ev_gross_short=-5.21, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     }
-   ],
-   "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs); tier-3 structural (ev_gross_long=-5.472 ev_gross_short=-7.481, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
-  },
-  "london": {
-   "enabled": true,
-   "structure": {
-    "tier": 2,
-    "rh_offer_rate_60m": 0.3344,
-    "dead_rate_60m": 0.5083,
-    "ev_gross_long": -1.457,
-    "ev_gross_short": -2.076,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "alpha_extended_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "min": 65.0,
-       "note": "book: RSI>=65 overextension"
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "min": 0.0,
-       "note": "book: close>EMA20 (stretched above)"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection bar turning down"
-      },
-      {
-       "feature": "trend_4h",
-       "max": -0.5,
-       "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "alpha_extended_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "max": 35.0
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "max": 0.0
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "trend_4h",
-       "min": 0.5,
-       "note": "direction-keyed amendment: fade edge exists on both sides"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "PROBE",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book echo_box_fade_v2 long side.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "alpha_extended_fade_long_g_a10",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "max": 35.0
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "max": 0.0
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "atr_1h",
-       "max": 20.0,
-       "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "alpha_extended_fade_short_g_a10",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "min": 65.0,
-       "note": "book: RSI>=65 overextension"
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "min": 0.0,
-       "note": "book: close>EMA20 (stretched above)"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection bar turning down"
-      },
-      {
-       "feature": "atr_1h",
-       "max": 20.0,
-       "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "echo_box_fade_long_g_bb3",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "echo_box_fade_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.0,
-       "max": 2.0,
-       "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "tc_vwapbb_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.08,
-       "note": "lower-band excursion (TradeClaw: BB touch leg)"
-      },
-      {
-       "feature": "vwap_dist_pips",
-       "min": 0.0,
-       "note": "still above session VWAP (trend condition)"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "min": 0.0,
-       "note": "M5 EMA20 uptrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
-    },
-    {
-     "id": "tc_vwapbb_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.92,
-       "note": "upper-band excursion"
-      },
-      {
-       "feature": "vwap_dist_pips",
-       "max": 0.0,
-       "note": "below session VWAP"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "max": 0.0,
-       "note": "EMA20 downtrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
-    },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    }
-   ],
-   "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
-  },
-  "ny": {
-   "enabled": true,
-   "structure": {
-    "tier": 3,
-    "rh_offer_rate_60m": 0.2996,
-    "dead_rate_60m": 0.4783,
-    "ev_gross_long": -3.596,
-    "ev_gross_short": -5.21,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "alpha_extended_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "min": 65.0,
-       "note": "book: RSI>=65 overextension"
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "min": 0.0,
-       "note": "book: close>EMA20 (stretched above)"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection bar turning down"
-      },
-      {
-       "feature": "trend_4h",
-       "max": -0.5,
-       "note": "align context: fade back into the 4h downtrend (cube best at align 3-4)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "alpha_extended_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "max": 35.0
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "max": 0.0
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "trend_4h",
-       "min": 0.5,
-       "note": "direction-keyed amendment: fade edge exists on both sides"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Mirror of the book #1 fade \u2014 direction-keyed table showed long side +2.4..+2.85.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "PROBE",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book echo_box_fade_v2 short side (BB-band fade \u2014 distinct from the ps-range classic_box_fade).",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book echo_box_fade_v2 long side.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "Strategy-Book cube re-adjudication (Brock, 2026-07-27): 8yr align-factor table EVs \u2014 alpha_extended_fade align4 +2.7..+4.5 (n~20k), MR2 +1.4, RG1 +1.9, echo +1.1 \u2014 ALL pre-H1-leak-fix upper bounds on the retired ladder exit. Entry definitions from the book Strategy Setups sheet, verbatim thresholds. Current-era stamps re-adjudicate under the live ratchet.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
-     "wired": "2026-07-27"
-    },
-    {
-     "id": "alpha_extended_fade_long_g_a10",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "max": 35.0
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "max": 0.0
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "atr_1h",
-       "max": 20.0,
-       "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of alpha_extended_fade_long (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "alpha_extended_fade_short_g_a10",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "rsi14",
-       "min": 65.0,
-       "note": "book: RSI>=65 overextension"
-      },
-      {
-       "feature": "ema20_1h_dist",
-       "min": 0.0,
-       "note": "book: close>EMA20 (stretched above)"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection bar turning down"
-      },
-      {
-       "feature": "atr_1h",
-       "max": 20.0,
-       "note": "gate A1_0: atr_1h/stop < 2.0 @10p \u2014 calm hourly vol (slate #1, score 9904, n=4912, exp 2.016)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: alpha_extended_fade_v2 al2 A1_0",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of alpha_extended_fade_short (alpha_extended_fade_v2 al2 A1_0); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: RG1_range_bound_scalp_short al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "echo_box_fade_long_g_bb3",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "echo_box_fade_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: wide-range regime (slate score 9617, n=9610, exp 1.001)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: echo_box_fade_v2 al4 BB3",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.0,
-       "max": 2.0,
-       "note": "gate SPR1: tight-spread regime (slate score 8952, n=9672)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 60.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context | row: MR2_bb_reversion_short al3 SPR1",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "align-cube gated variant of mr2_bb_reversion_short (MR2_bb_reversion_short al3 SPR1); align<=2 drops the trend_4h context per slate",
-     "wired": "2026-07-31"
-    },
-    {
-     "id": "tc_vwapbb_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.08,
-       "note": "lower-band excursion (TradeClaw: BB touch leg)"
-      },
-      {
-       "feature": "vwap_dist_pips",
-       "min": 0.0,
-       "note": "still above session VWAP (trend condition)"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "min": 0.0,
-       "note": "M5 EMA20 uptrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
-    },
-    {
-     "id": "tc_vwapbb_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "wired": "2026-08-01",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.92,
-       "note": "upper-band excursion"
-      },
-      {
-       "feature": "vwap_dist_pips",
-       "max": 0.0,
-       "note": "below session VWAP"
-      },
-      {
-       "feature": "ema20_dist_pct",
-       "max": 0.0,
-       "note": "EMA20 downtrend agreement"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
-     },
-     "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
-     "sizing": {
-      "risk_pct": 0.2
-     }
-    },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    }
-   ],
-   "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.596 ev_gross_short=-5.21, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
   }
- }
 }
