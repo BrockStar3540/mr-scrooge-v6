@@ -3110,7 +3110,7 @@
           "id": "mr2_bb_reversion_short_g_spr1",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3596,7 +3596,7 @@
           "watch": "\ud83c\udf44\ud83c\udfad"
         }
       ],
-      "notes": "2 PROBE, 21 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "3 PROBE, 20 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }

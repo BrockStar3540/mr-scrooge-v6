@@ -1654,7 +1654,7 @@
           "id": "rvol_low_240_short",
           "side": "short",
           "class": "FORMULA",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3056,7 +3056,7 @@
           "watch": "\ud83c\udf44\ud83c\udfad"
         }
       ],
-      "notes": "1 ACTIVE, 2 PROBE, 29 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 1 PROBE, 37 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
@@ -3608,7 +3608,7 @@
           "id": "echo_box_fade_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4841,7 +4841,7 @@
           "watch": "\ud83c\udf44\ud83c\udfad"
         }
       ],
-      "notes": "1 PROBE, 35 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "2 PROBE, 34 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
