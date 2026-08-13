@@ -1264,7 +1264,7 @@
           "id": "classic_box_fade_long",
           "side": "long",
           "class": "classic",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1562,7 +1562,7 @@
           "id": "rg1_range_scalp_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3056,7 +3056,7 @@
           "watch": "\ud83c\udf44\ud83c\udfad"
         }
       ],
-      "notes": "1 ACTIVE, 1 PROBE, 37 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 3 PROBE, 35 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
