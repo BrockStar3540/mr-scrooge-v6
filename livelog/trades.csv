@@ -169,3 +169,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-12T18:10:34Z,GBP_USD,short,4135,4.13,popper
 2026-08-13T06:32:17Z,GBP_USD,short,4133,4.96,parent
 2026-08-13T08:02:25Z,EUR_USD,long,4056,3.24,popper
+2026-08-13T10:57:30Z,EUR_USD,long,4055,4.05,popper
