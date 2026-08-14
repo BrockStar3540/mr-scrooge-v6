@@ -181,3 +181,6 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-13T23:29:37Z,USD_CAD,short,4731,1.98,parent
 2026-08-14T01:05:27Z,EUR_USD,long,4104,2.46,popper
 2026-08-14T08:20:05Z,EUR_USD,long,4082,4.82,popper
+2026-08-14T11:44:28Z,EUR_USD,long,4030,8.02,popper
+2026-08-14T11:44:38Z,EUR_USD,long,4111,6.58,popper
+2026-08-14T11:45:39Z,EUR_USD,long,4023,4.83,popper
