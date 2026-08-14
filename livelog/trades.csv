@@ -188,3 +188,6 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-14T12:29:59Z,NZD_USD,short,5385,-21.54,parent
 2026-08-14T12:42:18Z,USD_JPY,long,1890,1.65,popper
 2026-08-14T12:42:22Z,USD_JPY,long,1911,0.94,popper
+2026-08-14T15:23:10Z,USD_JPY,long,1907,0.69,popper
+2026-08-14T15:46:20Z,USD_JPY,long,1914,0.71,popper
+2026-08-14T16:01:12Z,USD_JPY,long,1918,1.18,popper
