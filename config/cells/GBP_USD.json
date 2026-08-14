@@ -2307,7 +2307,7 @@
           "id": "liq_sweep_fade_long",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3056,7 +3056,7 @@
           "watch": "\ud83c\udf44\ud83c\udfad"
         }
       ],
-      "notes": "1 ACTIVE, 3 PROBE, 35 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 4 PROBE, 34 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
