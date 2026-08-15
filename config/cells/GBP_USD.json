@@ -269,9 +269,9 @@
               "note": "still above session VWAP (trend condition)"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "min": 0.0,
-              "note": "M5 EMA20 uptrend agreement"
+              "note": "H1 EMA20 uptrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos dip -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {
@@ -312,9 +312,9 @@
               "note": "below session VWAP"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "max": 0.0,
-              "note": "EMA20 downtrend agreement"
+              "note": "H1 EMA20 downtrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos excursion -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {
@@ -2107,9 +2107,9 @@
               "note": "still above session VWAP (trend condition)"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "min": 0.0,
-              "note": "M5 EMA20 uptrend agreement"
+              "note": "H1 EMA20 uptrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos dip -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {
@@ -2150,9 +2150,9 @@
               "note": "below session VWAP"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "max": 0.0,
-              "note": "EMA20 downtrend agreement"
+              "note": "H1 EMA20 downtrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos excursion -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {
@@ -4111,9 +4111,9 @@
               "note": "still above session VWAP (trend condition)"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "min": 0.0,
-              "note": "M5 EMA20 uptrend agreement"
+              "note": "H1 EMA20 uptrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos dip -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {
@@ -4154,9 +4154,9 @@
               "note": "below session VWAP"
             },
             {
-              "feature": "ema20_dist_pct",
+              "feature": "ema20_1h_dist",
               "max": 0.0,
-              "note": "EMA20 downtrend agreement"
+              "note": "H1 EMA20 downtrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos excursion -- 24 cells mute 08-01..08-14)"
             }
           ],
           "exit": {

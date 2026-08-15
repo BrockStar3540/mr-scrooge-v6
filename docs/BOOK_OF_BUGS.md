@@ -902,6 +902,16 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-128 — the pullback that could never happen: same-timeframe band-vs-EMA contradiction muted 24 cells
+
+- **Discovered:** 2026-08-12, chasing "305 zero-episode shadows — something isn't stamping" (operator). The statistical split cleared everything except one family: `tc_vwapbb_long/short`, 24 cells, 100% silent since wiring on 2026-08-01, zero journal mentions.
+- **Area:** `config/cells/*` tc_vwapbb condition sets (external-repo trial slate, TradeClaw VWAP-EMA-BB pullback).
+- **Symptom / root cause:** the long required `bb_pos <= 0.08` (price at the lower Bollinger band, ~1.7σ below the 20-bar M5 mean) AND `ema20_dist_pct >= 0` (price above the M5 EMA20) — but both are computed from the SAME 20 M5 bars, so the AND demands price simultaneously far below and above nearly the same average. Satisfiable only in freak V-crash geometry; measured pass rate over 13 days of scans: zero. The short mirrored the same contradiction. The TradeClaw source is a *higher-timeframe trend* pullback; the port collapsed the trend filter onto the band's own timeframe.
+- **Fix (v6.27.4, 2026-08-14):** trend condition rewired to `ema20_1h_dist` (H1 EMA20 distance, same 0.0 bound, mirrored for the short) across all 24 cells — M5 dip, H1 trend, independent timeframes, the source strategy's actual shape. Plus `tests/test_config_lint.py`: a config lint that fails on any same-TF band-vs-EMA contradiction book-wide and pins the tc_vwapbb H1 filter, so the class can't ship silently again.
+- **Lesson:** B-124's mute button was an unmeasured veto; B-128's is an unsatisfiable predicate. Every condition set is a claim that some market state exists — a wiring review that never asks "can these all be true at once, on these timeframes?" will keep shipping cells whose true failure mode is not "no edge" but "no trials." Zero episodes is a result that demands a reason, never a shrug.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
