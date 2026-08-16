@@ -78,3 +78,19 @@ def test_every_orb_setup_carries_the_formation_gate():
                  and c.get("min") is not None and float(c["min"]) > 0]
         assert gates, f"{fname}/{sess}/{s.get('id')} lacks the orb_range_pips formation gate"
     assert seen == 60, f"expected 60 ORB cells, found {seen}"
+
+
+def test_playmaker_disabled_cells_stays_empty():
+    """2026-08-16 (integrity audit #3): the playmaker-era disabled_cells kill
+    list is enforced ONLY on the retired playmaker ticket path — cell-era
+    entries never consult it, so a triple added here mutes NOTHING while
+    looking like it does. If you are trying to disable a cell: flip the
+    setup's status (SHADOW/DISABLED) or use pp_config per_cell for poppers.
+    If you are resurrecting the playmaker path in V7, delete this test with
+    the wiring that makes the list real again."""
+    import json as _json
+    cfg = _json.loads((Path(__file__).parents[1] / "config"
+                       / "playmaker_config.json").read_text())
+    assert cfg.get("disabled_cells") == [], (
+        "disabled_cells is a dead switch in the cell era — see "
+        "_disabled_cells_note in playmaker_config.json for the real levers")
