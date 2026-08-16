@@ -1295,7 +1295,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -1334,7 +1335,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwh_fade_short",
@@ -1372,7 +1374,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwl_fade_long",
@@ -1410,7 +1413,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -3143,7 +3147,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -3182,7 +3187,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -3221,7 +3227,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -3260,7 +3267,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -3298,7 +3306,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -3336,7 +3345,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -4768,7 +4778,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -4807,7 +4818,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -4846,7 +4858,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -4885,7 +4898,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "mr2_bb_reversion_short_g_er",
@@ -4942,7 +4956,8 @@
             "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
           },
           "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
-          "wired": "2026-08-16"
+          "wired": "2026-08-16",
+          "watch": "\u26bd"
         },
         {
           "id": "rg1_range_scalp_short_g_er",
@@ -4995,7 +5010,8 @@
             "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
           },
           "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
-          "wired": "2026-08-16"
+          "wired": "2026-08-16",
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -5033,7 +5049,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -5071,7 +5088,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.196 ev_gross_short=-3.193, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

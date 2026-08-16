@@ -798,7 +798,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -837,7 +838,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwh_fade_short",
@@ -875,7 +877,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwl_fade_long",
@@ -913,7 +916,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs); tier-3 structural (ev_gross_long=-5.472 ev_gross_short=-7.481, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -2080,7 +2084,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -2119,7 +2124,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -2158,7 +2164,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -2197,7 +2204,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -2235,7 +2243,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -2273,7 +2282,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
@@ -3395,7 +3405,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -3434,7 +3445,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -3473,7 +3485,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -3512,7 +3525,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -3550,7 +3564,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -3588,7 +3603,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-3.596 ev_gross_short=-5.21, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

@@ -922,7 +922,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -961,7 +962,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwh_fade_short",
@@ -999,7 +1001,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwl_fade_long",
@@ -1037,7 +1040,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "3 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
@@ -2030,7 +2034,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -2069,7 +2074,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -2108,7 +2114,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -2147,7 +2154,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -2185,7 +2193,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -2223,7 +2232,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "3 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -3113,7 +3123,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -3152,7 +3163,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -3191,7 +3203,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -3230,7 +3243,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -3268,7 +3282,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -3306,7 +3321,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "2 ACTIVE, 1 PROBE, 1 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."

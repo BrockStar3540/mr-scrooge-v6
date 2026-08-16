@@ -1116,7 +1116,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -1155,7 +1156,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwh_fade_short",
@@ -1193,7 +1195,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwl_fade_long",
@@ -1231,7 +1234,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
@@ -3307,7 +3311,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -3346,7 +3351,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -3385,7 +3391,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -3424,7 +3431,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -3462,7 +3470,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -3500,7 +3509,8 @@
           },
           "sizing": {
             "risk_pct": 0.5
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "1 ACTIVE, 4 PROBE, 34 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -5325,7 +5335,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -5365,7 +5376,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -5405,7 +5417,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -5445,7 +5458,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "mr2_bb_reversion_short_g_er",
@@ -5502,7 +5516,8 @@
             "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
           },
           "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
-          "wired": "2026-08-16"
+          "wired": "2026-08-16",
+          "watch": "\u26bd"
         },
         {
           "id": "rg1_range_scalp_short_g_er",
@@ -5555,7 +5570,8 @@
             "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
           },
           "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
-          "wired": "2026-08-16"
+          "wired": "2026-08-16",
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -5594,7 +5610,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -5633,7 +5650,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "2 PROBE, 34 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."

@@ -712,7 +712,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -751,7 +752,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwh_fade_short",
@@ -789,7 +791,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "pwl_fade_long",
@@ -827,7 +830,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=None ev_gross_short=None. Source: config/cell_calibration.json metadata.killed_note."
@@ -1910,7 +1914,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -1949,7 +1954,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -1988,7 +1994,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -2027,7 +2034,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -2065,7 +2073,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -2103,7 +2112,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
@@ -2816,7 +2826,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_break_short",
@@ -2855,7 +2866,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_long",
@@ -2894,7 +2906,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "orb_fade_short",
@@ -2933,7 +2946,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_long",
@@ -2971,7 +2985,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         },
         {
           "id": "fvg_fill_short",
@@ -3009,7 +3024,8 @@
           },
           "sizing": {
             "risk_pct": 0.2
-          }
+          },
+          "watch": "\u26bd"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
