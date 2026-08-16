@@ -117,6 +117,8 @@ class _Client:
 # ── Indicator helpers (match V3/V4 exactly — dm_04 corpus was built with these) ─
 
 from core.feed.structure import (ema_trend_pips as _ema_trend_pips,
+                                 efficiency_ratio as _efficiency_ratio,
+                                 fair_value_gaps as _fair_value_gaps,
                                  session_orb as _session_orb_calc,
                                  impulse_blocks as _impulse_blocks,
                                  liquidity_sweep as _liquidity_sweep)
@@ -413,6 +415,8 @@ def _compute_features(
     atr_d_pips     = 0.0
     pdh_dist       = 0.0
     pdl_dist       = 0.0
+    pwh_dist       = 0.0
+    pwl_dist       = 0.0
     pdh_dist_atr_pct = 0.0
     pdl_dist_atr_pct = 0.0
     d_range_pips   = 0.0
@@ -446,6 +450,28 @@ def _compute_features(
         pdl = float(dl.iloc[-2])
         pdh_dist = (mid - pdh) / pip
         pdl_dist = (mid - pdl) / pip
+
+        # prev-WEEK levels (v6.29.0): high/low of the last COMPLETED ISO week
+        # in the daily frame — the weekly analog of pdh/pdl for a book whose
+        # trades routinely live for days under wide stops. Fail-soft 0.0
+        # (same convention as pdh_dist when daily context is absent).
+        try:
+            if "time" in d.columns:
+                _dk = [__import__("datetime").date.fromisoformat(str(x)[:10]).isocalendar()[:2]
+                       for x in d["time"]]
+            else:
+                _dk = [(x.isocalendar()[0], x.isocalendar()[1]) for x in d.index]
+            _cur = _dk[-1]
+            _prev_keys = [k for k in _dk if k != _cur]
+            if _prev_keys:
+                _pk = _prev_keys[-1]
+                _idx = [i for i, k in enumerate(_dk) if k == _pk]
+                pwh = max(float(dh.iloc[i]) for i in _idx)
+                pwl = min(float(dl.iloc[i]) for i in _idx)
+                pwh_dist = (mid - pwh) / pip
+                pwl_dist = (mid - pwl) / pip
+        except Exception:
+            pass
         if atr_d_val > 0:
             pdh_dist_atr_pct = pdh_dist / atr_d_val
             pdl_dist_atr_pct = pdl_dist / atr_d_val
@@ -510,6 +536,8 @@ def _compute_features(
     ob_bull, ob_bear = _impulse_blocks(_m5h_l, _m5l_l, _m5c_l, mid, pip, atr_5m)
     ema_trend = _ema_trend_pips(_m5c_l, pip)
     _orb = _session_orb(m5, mid, pip)
+    eff10 = _efficiency_ratio(_m5c_l)
+    fvg_bull, fvg_bear = _fair_value_gaps(_m5h_l, _m5l_l, mid, pip, atr_5m)
 
     spread_pips = (ask - bid) / pip
 
@@ -541,6 +569,10 @@ def _compute_features(
         # Session opening range (v6.28.0, Máximo toolkit translation)
         orb_hi_dist=_orb[0], orb_lo_dist=_orb[1],
         orb_pos=_orb[2], orb_range_pips=_orb[3],
+        # v6.29.0 trial features: chop/efficiency, fair value gaps, prev-week levels
+        efficiency_10=eff10,
+        fvg_bull_dist_pips=fvg_bull, fvg_bear_dist_pips=fvg_bear,
+        pwh_dist=round(pwh_dist, 4), pwl_dist=round(pwl_dist, 4),
         adx14=_adx14(h1),
         # Mean-reversion (M5)
         bb_pos=round(bb_pos, 4),

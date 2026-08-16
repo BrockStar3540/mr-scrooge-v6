@@ -127,6 +127,12 @@ running state ([B-126](docs/BOOK_OF_BUGS.md)). A separate **Commissioner** decid
 admission lane may open at all. The humans set the standard; the bot flips the switches.
 
 **Currently on trial (900+ setups):**
+- **The ER / FVG / weekly-level slate (2026-08-16)** — three concepts mined from the
+  August TradingView feed: a Kaufman efficiency-ratio chop gate laid over the live
+  mean-reversion families (judged against their own parents), three-candle fair value
+  gaps completing the SMC trio next to sweep pools and impulse blocks, and prev-week
+  high/low fades — the box_pdl idea one horizon up. 42 cells, zero authority, the
+  usual bar.
 - **The ORB slate (2026-08-15)** — session opening-range breakouts and fades on the six
   majors, translated from the open-source Máximo NQ/MNQ scalping toolkit. The honest
   prior is WEAK: FX session opens are softer than an equity cash open, and the wiring

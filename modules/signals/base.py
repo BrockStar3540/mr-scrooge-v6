@@ -95,6 +95,13 @@ class MarketView:
     orb_pos:        float = 0.5     # position within ORB (0=low, 1=high, unclamped)
     orb_range_pips: float = 0.0     # ORB height, pips; 0.0 = forming/absent
 
+    # ── v6.29.0 trial features ───────────────────────────────────────────────
+    efficiency_10:      float = 0.0    # Kaufman ER, 10 M5 bars: 1=trend, 0=chop
+    fvg_bull_dist_pips: float = 500.0  # mid − top of nearest UNTOUCHED bullish FVG
+    fvg_bear_dist_pips: float = 500.0  # bottom of nearest UNTOUCHED bearish FVG − mid
+    pwh_dist:           float = 0.0    # mid − previous completed ISO week's high, pips
+    pwl_dist:           float = 0.0    # mid − previous completed ISO week's low, pips
+
     # ── Execution ────────────────────────────────────────────────────────────
     bid:            float = 0.0
     ask:            float = 0.0

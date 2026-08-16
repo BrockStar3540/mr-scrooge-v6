@@ -259,3 +259,73 @@ def session_orb(labels: Sequence[int], highs: Sequence[float],
                 round(rng / pip, 1))
     except Exception:
         return 0.0, 0.0, 0.5, 0.0
+
+
+def efficiency_ratio(closes: Sequence[float], *, n: int = 10) -> float:
+    """Kaufman directional efficiency over the last `n` bars: |net move| /
+    sum(|bar-to-bar moves|), clamped 0..1. Near 1 = straight-line trend, near
+    0 = chop covering the same ground. Source: recurring load-bearing control
+    variable in three independent 2026-08 TradingView regime scripts
+    (Uptrick Adaptive Trend Trail et al.) — the one component of those
+    composites worth extracting. Degenerate input (no path) returns 0.0:
+    a dead tape reads as maximum chop, which fail-closes `min` trend gates.
+    """
+    try:
+        c = [float(x) for x in closes]
+        if len(c) < n + 1:
+            return 0.0
+        w = c[-(n + 1):]
+        path = sum(abs(w[i] - w[i - 1]) for i in range(1, len(w)))
+        if path <= 0:
+            return 0.0
+        return round(min(1.0, abs(w[-1] - w[0]) / path), 4)
+    except Exception:
+        return 0.0
+
+
+def fair_value_gaps(highs: Sequence[float], lows: Sequence[float],
+                    mid: float, pip: float, atr_pips: float, *,
+                    lookback: int = 120,
+                    min_gap_atr: float = 0.10) -> tuple:
+    """(bull_dist_pips, bear_dist_pips) — signed distance from `mid` to the
+    nearest UNMITIGATED fair value gap, NO_LEVEL_PIPS when none exists.
+
+    Three-candle construction (source: Creedbentley 'Three-Candle
+    Supply/Demand Zones + FVGs', MPL-2.0, translated 2026-08-16 — concept,
+    not code): a bullish FVG exists when candle-1's high < candle-3's low;
+    the zone is exactly that empty window [high[i-2] .. low[i]]. Bearish is
+    the mirror. Mitigation is TOUCH-based like the source's remove-on-touch
+    mode: the first later wick that re-enters the window spends it.
+
+    Additions for M5 FX (not in the source): a minimum gap size of
+    max(0.5 pip, `min_gap_atr` x ATR) so spread-sized micro-gaps don't
+    register, and the NO_LEVEL_PIPS / signed-distance convention shared with
+    `impulse_blocks` (bull: mid - zone_top, positive above the gap;
+    bear: zone_bottom - mid, positive below the gap).
+    """
+    try:
+        n = min(len(highs), len(lows))
+        if n < 4 or pip <= 0:
+            return NO_LEVEL_PIPS, NO_LEVEL_PIPS
+        start = max(2, n - lookback)
+        min_gap = max(0.5, min_gap_atr * max(atr_pips, 0.0)) * pip
+        bull, bear = None, None
+        for i in range(start, n):
+            # bullish: candle-1 high (i-2) below candle-3 low (i)
+            top, bot = lows[i], highs[i - 2]
+            if top - bot >= min_gap:
+                if min(lows[i + 1:n], default=top) >= top:  # untouched
+                    d = (mid - top) / pip
+                    if bull is None or abs(d) < abs(bull):
+                        bull = d
+            # bearish mirror: candle-1 low above candle-3 high
+            top2, bot2 = lows[i - 2], highs[i]
+            if top2 - bot2 >= min_gap:
+                if max(highs[i + 1:n], default=bot2) <= bot2:  # untouched
+                    d = (bot2 - mid) / pip
+                    if bear is None or abs(d) < abs(bear):
+                        bear = d
+        return (round(bull, 1) if bull is not None else NO_LEVEL_PIPS,
+                round(bear, 1) if bear is not None else NO_LEVEL_PIPS)
+    except Exception:
+        return NO_LEVEL_PIPS, NO_LEVEL_PIPS

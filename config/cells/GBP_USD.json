@@ -1156,6 +1156,82 @@
           "sizing": {
             "risk_pct": 0.2
           }
+        },
+        {
+          "id": "pwh_fade_short",
+          "side": "short",
+          "class": "box",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pwh_dist",
+              "min": -5.0,
+              "max": 5.0,
+              "note": "at previous completed week's high"
+            },
+            {
+              "feature": "rsi14",
+              "min": 60.0,
+              "note": "stretched into the weekly level"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "v6.29.0 weekly-level trial: the pdh/pdl idea one horizon up (box_pdl_short is the best asia short on the book). Concept surfaced via Liquidity Suite / AWR scripts."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "pwl_fade_long",
+          "side": "long",
+          "class": "box",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pwl_dist",
+              "min": -5.0,
+              "max": 5.0,
+              "note": "at previous completed week's low"
+            },
+            {
+              "feature": "rsi14",
+              "max": 40.0,
+              "note": "stretched into the weekly level"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "v6.29.0 weekly-level trial: the pdh/pdl idea one horizon up (box_pdl_short is the best asia short on the book). Concept surfaced via Liquidity Suite / AWR scripts."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
@@ -3349,6 +3425,82 @@
           "sizing": {
             "risk_pct": 0.5
           }
+        },
+        {
+          "id": "fvg_fill_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Creedbentley Three-Candle S/D + FVGs (MPL-2.0, TradingView) translated 2026-08-16 (v6.29.0): first revisit of an untouched imbalance in H1 trend direction. Completes the SMC trio next to liq_sweep pools and impulse blocks."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.5
+          }
+        },
+        {
+          "id": "fvg_fill_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bear_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just below an UNTOUCHED bearish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Creedbentley Three-Candle S/D + FVGs (MPL-2.0, TradingView) translated 2026-08-16 (v6.29.0): first revisit of an untouched imbalance in H1 trend direction. Completes the SMC trio next to liq_sweep pools and impulse blocks."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.5
+          }
         }
       ],
       "notes": "1 ACTIVE, 4 PROBE, 34 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
@@ -5290,6 +5442,194 @@
           "evidence": {
             "ev_seq": 0.0,
             "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_er",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.35,
+              "note": "chop gate (Kaufman ER<=0.35): mean reversion wants inefficiency (v6.29.0)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
+          },
+          "notes": "Book MR2 Bollinger reversion short, verbatim thresholds.",
+          "wired": "2026-08-16"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_er",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.35,
+              "note": "chop gate (Kaufman ER<=0.35): mean reversion wants inefficiency (v6.29.0)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "v6.29.0 ER-gate trial: identical to the parent setup plus efficiency_10<=0.35. Hypothesis: the family's losses concentrate in efficient (trending) tape. Judge against the parent, not in isolation."
+          },
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "wired": "2026-08-16"
+        },
+        {
+          "id": "fvg_fill_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Creedbentley Three-Candle S/D + FVGs (MPL-2.0, TradingView) translated 2026-08-16 (v6.29.0): first revisit of an untouched imbalance in H1 trend direction. Completes the SMC trio next to liq_sweep pools and impulse blocks."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "fvg_fill_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bear_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just below an UNTOUCHED bearish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "Creedbentley Three-Candle S/D + FVGs (MPL-2.0, TradingView) translated 2026-08-16 (v6.29.0): first revisit of an untouched imbalance in H1 trend direction. Completes the SMC trio next to liq_sweep pools and impulse blocks."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
           },
           "sizing": {
             "risk_pct": 0.2
