@@ -1516,7 +1516,7 @@
           "id": "ps_ceil_fade_counter_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {

@@ -1236,6 +1236,51 @@
             "risk_pct": 0.2
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "es_trend_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "min": 25.0,
+              "note": "EuroScope trend regime: ADX >= 25"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "price above EMA20"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: es_trend_long (long) ran 10 eps @ -3.7p/ep with medMFE/MAE 5.0/9.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of es_trend_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
@@ -1770,7 +1815,7 @@
           "id": "classic_box_break_short",
           "side": "short",
           "class": "classic",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3511,9 +3556,57 @@
             "risk_pct": 0.5
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "liq_sweep_fade_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_high",
+              "min": 1.0,
+              "note": "a >=2-touch stop pool was pierced and REJECTED (close back inside) within the last 6 bars \u2014 level taken, not broken"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.5
+          },
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_h1_relative_monthly_mean",
+              "gte": null,
+              "action": "size_down"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: liq_sweep_fade_short (short) ran 12 eps @ -7.5p/ep with medMFE/MAE 6.7/18.7 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of liq_sweep_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
         }
       ],
-      "notes": "1 ACTIVE, 4 PROBE, 34 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "4 PROBE, 43 SHADOW setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
@@ -4814,7 +4907,7 @@
           "id": "impulse_ob_long",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 60,
           "conditions": [
             {
@@ -5652,9 +5745,157 @@
             "risk_pct": 0.2
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "impulse_ob_short_nt_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "same zone trigger as the baseline"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: impulse_ob_short_nt (short) ran 18 eps @ -1.42p/ep with medMFE/MAE 2.3/6.0 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of impulse_ob_short_nt (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "impulse_ob_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "price at/inside the nearest UNMITIGATED impulse-origin zone (500.0 sentinel = no fresh zone, excluded by this band)"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -0.5,
+              "note": "regime must agree \u2014 continuation setup, never counter-trend"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: impulse_ob_short (short) ran 11 eps @ -15.14p/ep with medMFE/MAE 1.0/5.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of impulse_ob_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
+        },
+        {
+          "id": "impulse_ob_short_adx_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "ob_bear_dist_pips",
+              "min": -3.0,
+              "max": 3.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -0.5
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "H1 ADX-14 >= 20: take the zone retest only in a measurably TRENDING regime, not chop. Baseline gates direction but not trend STRENGTH."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: impulse_ob_short_adx (short) ran 7 eps @ -1.14p/ep with medMFE/MAE 0.1/5.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of impulse_ob_short_adx (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
         }
       ],
-      "notes": "2 PROBE, 34 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "3 PROBE, 44 SHADOW setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }

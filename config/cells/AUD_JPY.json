@@ -1,2248 +1,2293 @@
 {
- "pair": "AUD_JPY",
- "generated": "2026-07-04T08:00:04Z",
- "generator": "generate_cell_configs.py-2026-07-04",
- "sessions": {
-  "asia": {
-   "enabled": true,
-   "structure": {
-    "tier": 1,
-    "rh_offer_rate_60m": 0.3216,
-    "dead_rate_60m": 0.3239,
-    "ev_gross_long": -0.541,
-    "ev_gross_short": -0.07,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
+  "pair": "AUD_JPY",
+  "generated": "2026-07-04T08:00:04Z",
+  "generator": "generate_cell_configs.py-2026-07-04",
+  "sessions": {
+    "asia": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3216,
+        "dead_rate_60m": 0.3239,
+        "ev_gross_long": -0.541,
+        "ev_gross_short": -0.07,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
+      "setups": [
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.5,
+              "max": 2.5,
+              "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        }
+      ],
+      "notes": "was locked \ud83d\udd12; phaseA verdict NOT-RE-EXPRESSIBLE (m_cert ceiling never binding in natural era; 1W/4L n=5, no raw separator); re-enters via monthly discovery only. Alternative flagged for Brock: short ungated + 15-trade requalification. Structural: tier=1 ev_gross_long=-0.541 ev_gross_short=-0.07."
     },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
+    "london": {
+      "enabled": true,
+      "structure": {
+        "tier": 1,
+        "rh_offer_rate_60m": 0.3307,
+        "dead_rate_60m": 0.295,
+        "ev_gross_long": 0.159,
+        "ev_gross_short": -0.642,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.5,
-       "max": 2.5,
-       "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
+      "setups": [
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.5,
+              "max": 2.5,
+              "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        }
+      ],
+      "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
     },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
+    "ny": {
+      "enabled": true,
+      "structure": {
+        "tier": 2,
+        "rh_offer_rate_60m": 0.289,
+        "dead_rate_60m": 0.3765,
+        "ev_gross_long": null,
+        "ev_gross_short": null,
+        "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
       },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
+      "setups": [
+        {
+          "id": "regime_short_240_t20s",
+          "side": "short",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": null,
+              "max": 2.81,
+              "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
+            },
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -4.54
+            },
+            {
+              "feature": "willr_m5",
+              "min": -66.37
+            },
+            {
+              "feature": "htf_pct_60",
+              "max": -0.005
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 17.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_5m_monthly_mean",
+              "lte": 2.836,
+              "action": "suspend",
+              "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": -0.07,
+            "drift": "STABLE",
+            "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
+            "n_floor_status": "shadow-only-session-disabled"
+          },
+          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%.",
+          "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades",
+          "wired": "2026-07-16"
+        },
+        {
+          "id": "regime_short_240",
+          "side": "short",
+          "class": "LEAN",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": null,
+              "max": 2.81,
+              "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
+            },
+            {
+              "feature": "kc_up_dist_pips",
+              "min": -4.54
+            },
+            {
+              "feature": "willr_m5",
+              "min": -66.37
+            },
+            {
+              "feature": "htf_pct_60",
+              "max": -0.005
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 17.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "monthly": {
+              "metric": "atr_5m_monthly_mean",
+              "lte": 2.836,
+              "action": "suspend",
+              "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
+            },
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": -0.07,
+            "drift": "STABLE",
+            "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
+            "n_floor_status": "shadow-only-session-disabled"
+          },
+          "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%.",
+          "wired": "2026-07-05"
+        },
+        {
+          "id": "timing_lean_30",
+          "side": "long",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.617985,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "drift": "PERSISTENT",
+            "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
+            "n_floor_status": "shadow-only-awaiting-live-stamps"
+          },
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean q_yzv_m5 sign=positive (corr=0.0609, AUC=0.5297). lean confirmer dropped (q_yzv_m5 not on live feed (queued feed-extension)); side=long retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.617985 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED 2026-07-08: window (atr_5m>=6.62 ny) drifts -2.95p/240m = SHORT side; caught before first cell-era fire.",
+          "wired": "2026-07-05"
+        },
+        {
+          "id": "timing_lean_30_short",
+          "side": "short",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 5.91,
+              "max": 8.13,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "side-audit 2026-07-08: loud-vol ny window drift -2.95p/240m (n=389, 60d); NY fade consistent with regime_short_240 sibling",
+            "drift": "STABLE"
+          },
+          "notes": "LIVE FLIP 2026-07-08 from timing_lean_30 long. FAST bracket retained. Tripwire fast last_n=20 min_ev=-0.5. | DIAL-IN 2026-07-08: atr window [6.618,7.947] -> drift +4.61.",
+          "wired": "2026-07-13"
+        },
+        {
+          "id": "mr2_bb_reversion_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.5,
+              "max": 2.5,
+              "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "mr2_bb_reversion_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "echo_box_fade_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "echo_box_fade_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_ceil_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_ceil_fade_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.85
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "ps_floor_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "ps_floor_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "max": 0.15
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": 0.0,
+              "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
+            "drift": "UNKNOWN",
+            "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
+          },
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "timing_lean_30_counter_long",
+          "side": "long",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 5.91,
+              "max": 8.13,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: timing_lean_30_short (short) ran 8 eps @ -18.75p/ep with medMFE/MAE 3.6/11.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of timing_lean_30_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-13"
+        }
+      ],
+      "notes": "4 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
     }
-   ],
-   "notes": "was locked \ud83d\udd12; phaseA verdict NOT-RE-EXPRESSIBLE (m_cert ceiling never binding in natural era; 1W/4L n=5, no raw separator); re-enters via monthly discovery only. Alternative flagged for Brock: short ungated + 15-trade requalification. Structural: tier=1 ev_gross_long=-0.541 ev_gross_short=-0.07."
-  },
-  "london": {
-   "enabled": true,
-   "structure": {
-    "tier": 1,
-    "rh_offer_rate_60m": 0.3307,
-    "dead_rate_60m": 0.295,
-    "ev_gross_long": 0.159,
-    "ev_gross_short": -0.642,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.5,
-       "max": 2.5,
-       "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    }
-   ],
-   "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
-  },
-  "ny": {
-   "enabled": true,
-   "structure": {
-    "tier": 2,
-    "rh_offer_rate_60m": 0.289,
-    "dead_rate_60m": 0.3765,
-    "ev_gross_long": null,
-    "ev_gross_short": null,
-    "lineage": "truth-matrix-2026-07/ratchet_ev_cells.csv (ev_gross, tier); range-harvest-2026-07-04/cell_base_rates_multihorizon.csv (rh_offer_rate, dead_rate floor=6.0 h=60)"
-   },
-   "setups": [
-    {
-     "id": "regime_short_240_t20s",
-     "side": "short",
-     "class": "LEAN",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "atr_5m",
-       "min": null,
-       "max": 2.81,
-       "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
-       "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
-      },
-      {
-       "feature": "kc_up_dist_pips",
-       "min": -4.54
-      },
-      {
-       "feature": "willr_m5",
-       "min": -66.37
-      },
-      {
-       "feature": "htf_pct_60",
-       "max": -0.005
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 20.0,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED",
-      "entry_cutoff_utc": 17.0
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "monthly": {
-       "metric": "atr_5m_monthly_mean",
-       "lte": 2.836,
-       "action": "suspend",
-       "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
-      },
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": -0.07,
-      "drift": "STABLE",
-      "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
-      "n_floor_status": "shadow-only-session-disabled"
-     },
-     "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%.",
-     "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades",
-     "wired": "2026-07-16"
-    },
-    {
-     "id": "regime_short_240",
-     "side": "short",
-     "class": "LEAN",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "atr_5m",
-       "min": null,
-       "max": 2.81,
-       "note": "Per-bar entry condition: atr_5m <= p25 boundary (3.604874) from top5_per_cell_per_horizon.csv h=240 (AUC=0.6343, plateau_ok=True, sign_good='-'). Low per-bar volatility favors short at 240m horizon. Distinct from the monthly-mean regime tripwire (2.836).",
-       "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=240 atr_5m AUD_JPY/ny/short"
-      },
-      {
-       "feature": "kc_up_dist_pips",
-       "min": -4.54
-      },
-      {
-       "feature": "willr_m5",
-       "min": -66.37
-      },
-      {
-       "feature": "htf_pct_60",
-       "max": -0.005
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED",
-      "entry_cutoff_utc": 17.0
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "monthly": {
-       "metric": "atr_5m_monthly_mean",
-       "lte": 2.836,
-       "action": "suspend",
-       "lineage": "v5-regime-edges 2026-07 (Mini ~/v5-regime-edges/, not in repo \u2014 monthly refit re-derives)"
-      },
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": -0.07,
-      "drift": "STABLE",
-      "source": "ratchet-ev-cells-2026-07-03/ratchet_ev_cells.csv (ev_gross=-0.07 short)",
-      "n_floor_status": "shadow-only-session-disabled"
-     },
-     "notes": "SHADOW regime setup for AUD_JPY/ny/short at 240m horizon. Session not currently enabled (AUD_JPY/ny was in disabled_cells). MONTHLY tripwire = regime-edges monthly-mean switch: monthly mean atr_5m > 2.836 -> edge ON (+2.88/trade), below -> OFF (-1.06/trade); metric atr_5m_monthly_mean, threshold 2.836 (v5-regime-edges study on Mini). Per-bar p25 boundary 3.604874 is the ENTRY condition only (top5 h=240) \u2014 these are different quantities, do not conflate. q_yzv_m5 secondary confirmer (p25 0.000231, AUC=0.632) NOT emitted: feature not on live feed (queued feed-extension); re-add when feed lands. Direction lean (q_yzv_m5 PERSISTENT) independently supports short. | REGEARED 2026-07-08 (Brock deep dive): dual filter kc_up_dist>=-6.75 & willr>=-66.4 (short the band top, not the bottom; clean-win 37->43%, drift +5.0->+7.4). SL 20->12 (winner MAE p75 8.8). | DIAL-IN 2026-07-08: atr cap 2.81, kc floor -4.54 (quintile tables). drift +10.38, cw 53%, dead 8%.",
-     "wired": "2026-07-05"
-    },
-    {
-     "id": "timing_lean_30",
-     "side": "long",
-     "class": "TIMING",
-     "status": "SHADOW",
-     "horizon_min": 30,
-     "conditions": [
-      {
-       "feature": "atr_5m",
-       "min": 6.617985,
-       "max": null,
-       "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
-       "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED",
-      "entry_cutoff_utc": 20.0
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "drift": "PERSISTENT",
-      "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
-      "n_floor_status": "shadow-only-awaiting-live-stamps"
-     },
-     "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean q_yzv_m5 sign=positive (corr=0.0609, AUC=0.5297). lean confirmer dropped (q_yzv_m5 not on live feed (queued feed-extension)); side=long retained from calibration lean, first-live-stamps will judge. atr_5m boundary p75=6.617985 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | DEMOTED 2026-07-08: window (atr_5m>=6.62 ny) drifts -2.95p/240m = SHORT side; caught before first cell-era fire.",
-     "wired": "2026-07-05"
-    },
-    {
-     "id": "timing_lean_30_short",
-     "side": "short",
-     "class": "TIMING",
-     "status": "SHADOW",
-     "horizon_min": 30,
-     "conditions": [
-      {
-       "feature": "atr_5m",
-       "min": 5.91,
-       "max": 8.13,
-       "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
-       "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED",
-      "entry_cutoff_utc": 20.0
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "side-audit 2026-07-08: loud-vol ny window drift -2.95p/240m (n=389, 60d); NY fade consistent with regime_short_240 sibling",
-      "drift": "STABLE"
-     },
-     "notes": "LIVE FLIP 2026-07-08 from timing_lean_30 long. FAST bracket retained. Tripwire fast last_n=20 min_ev=-0.5. | DIAL-IN 2026-07-08: atr window [6.618,7.947] -> drift +4.61.",
-     "wired": "2026-07-13"
-    },
-    {
-     "id": "mr2_bb_reversion_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_short_g_spr1",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "spread_pips",
-       "min": 1.5,
-       "max": 2.5,
-       "note": "gate SPR1 per-pair band [1.5,2.5] = tight-spread regime for AUD_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. SPR1 band per-pair [1.5,2.5].",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "mr2_bb_reversion_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "zscore_5m",
-       "min": 1.2,
-       "note": "book: z>=1.2"
-      },
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 58.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "rg1_range_scalp_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_short_g_bb3",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      },
-      {
-       "feature": "bb_width",
-       "min": 25.0,
-       "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
-       "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": 0.0,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "rg1_range_scalp_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.78
-      },
-      {
-       "feature": "rsi14",
-       "min": 62.0,
-       "max": 80.0
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "echo_box_fade_short",
-     "side": "short",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "max": 0.03
-      },
-      {
-       "feature": "ret_5m",
-       "min": 0.0
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "echo_box_fade_counter_long",
-     "side": "long",
-     "class": "book_replay",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "bb_pos",
-       "min": 0.87,
-       "note": "book: extreme upper band tag"
-      },
-      {
-       "feature": "ret_5m",
-       "max": 0.0,
-       "note": "book: rejection"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 50.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_ceil_fade_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_ceil_fade_counter_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "min": 0.85
-      },
-      {
-       "feature": "ps_high_dist",
-       "max": 0.0,
-       "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    },
-    {
-     "id": "ps_floor_fade_long",
-     "side": "long",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44"
-    },
-    {
-     "id": "ps_floor_fade_counter_short",
-     "side": "short",
-     "class": "session_structure",
-     "status": "SHADOW",
-     "horizon_min": 240,
-     "conditions": [
-      {
-       "feature": "ps_pos",
-       "max": 0.15
-      },
-      {
-       "feature": "ps_low_dist",
-       "min": 0.0,
-       "note": "at prev session floor, unbroken -> buy the test (copied from EUR_USD/asia)"
-      }
-     ],
-     "exit": {
-      "mode": "ratchet",
-      "sl_pips": 40.0,
-      "trigger_pips": 8.5,
-      "trail_pips": 2.5,
-      "trail_mult": 0.0,
-      "trail_min": 2.5,
-      "trail_max": 10.0,
-      "_class": "RANGE_SIZED"
-     },
-     "sizing": {
-      "risk_pct": 0.2
-     },
-     "tripwires": {
-      "fast": {
-       "last_n": 20,
-       "min_ev": -0.5,
-       "action": "suspend"
-      }
-     },
-     "evidence": {
-      "ev_seq": null,
-      "source": "regime-map gap fill 2026-08-07 (operator): matrix of 5 fade families x 18 pairs x 3 sessions showed 125/675 wired; operator ordered the full fill as zero-authority shadows \u2014 the counting clocks decide. Neighborhood priors on the map artifact; hypothesis, not validation.",
-      "drift": "UNKNOWN",
-      "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
-     },
-     "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
-     "wired": "2026-08-07",
-     "watch": "\ud83c\udf44\ud83c\udfad"
-    }
-   ],
-   "notes": "4 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."
   }
- }
 }

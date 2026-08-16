@@ -2177,6 +2177,58 @@
           "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "trend_pullback_counter_short",
+          "side": "short",
+          "class": "trend_pullback",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "h1_ret_4bar",
+              "min": 10.0,
+              "note": "real H1 momentum"
+            },
+            {
+              "feature": "willr_m5",
+              "max": -85.0,
+              "note": "M5 washed out \u2014 buy the dip"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: trend_pullback_long (long) ran 9 eps @ -14.28p/ep with medMFE/MAE 4.0/31.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of trend_pullback_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-07-27"
         }
       ],
       "notes": "april-replay shadow cell"

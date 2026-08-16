@@ -26,6 +26,7 @@
     "AUD_USD|ny|echo_box_fade_long": false,
     "AUD_USD|ny|control_atrconc_60": false,
     "GBP_USD|ny|control_rvol_60_t20s": false,
-    "GBP_USD|london|liq_sweep_fade_long": false
+    "GBP_USD|london|liq_sweep_fade_long": false,
+    "GBP_USD|london|classic_box_break_short": false
   }
 }
