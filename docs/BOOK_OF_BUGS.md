@@ -912,6 +912,26 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-129 — censored-forever: the scorer looked at each episode exactly once
+
+- **Discovered:** 2026-08-16, chasing the operator's "we have a lot of shadows that never scored anything." Condition replay over 6 days of real candles proved the silent cells' conditions fired normally (9.4 qualifying bars avg vs 10.5 for scoring cells; CAD_JPY/ny rg1 had 39 passes, 25 journal stamps, 14 stored episodes — and a board that said it never fired).
+- **Area:** `ops/shadowboard.py` `_refresh` scoring loop.
+- **Symptom / root cause:** `if ep["scores"] is not None: continue` — an episode was scored exactly ONCE, minutes after its horizon. The v6.24 "follow a still-open trade to its real exit (cap 5 days)" could only follow through candles that existed at that single scoring moment, so any trade still drifting 4 hours in was stamped `censored: true` and never revisited. The exact censoring bias v6.24 was built to kill, resurrected one layer down: 2,900+ censored episodes by discovery, ~470 past the follow cap, losers censored preferentially (drifting underwater trades are the censored path), every sim LCB — including docket LCBs the governor promotes on — flattered.
+- **Fix (v6.29.2):** `_needs_score()` — unscored episodes score at maturity as before; CENSORED episodes re-score on every refresh until they resolve or their STAMP age truly exceeds `FOLLOW_MAX_DAYS`, then `censored_final` pins them permanently. Fresh episodes drain first so the backlog never starves new evidence; one-time weekend backfill re-scored the standing backlog.
+- **Lesson:** "follow to exit" is a promise about the FUTURE of a trade, and a scorer that runs once at the horizon cannot keep it — re-visitation is part of the contract. Any pipeline stage that writes a terminal-looking state (`censored`) must either be genuinely terminal or carry a retry path; B-121 counted the discarded, B-129 counts the abandoned.
+
+---
+
+### B-130 — waiting rendered as absence: all-censored cells vanished into QUEUED rows
+
+- **Discovered:** same investigation — 108 cells with 566 real episodes displayed as "QUEUED — no scored episodes yet."
+- **Area:** `ops/shadowboard.py` `_aggregate` row builder.
+- **Symptom / root cause:** a group whose every episode was censored hit `if not nets and not life_nets: continue` and emitted NO row; the queued-row backfill (2026-07-27: "waiting is a state, not an absence") then added a placeholder that read as never-stamped — violating its own design rule one layer down, and sending the operator (and the operator's agent, twice) hunting for stamping bugs that did not exist.
+- **Fix (v6.29.2):** the skip is removed — all-censored groups emit a real row: `episodes` (resolved) stays honestly 0, `n_censored` shows the waiting evidence, and the row is never marked queued. With B-129 these rows now drain toward resolution instead of accumulating.
+- **Lesson:** placeholders must be reserved for cells with literally zero evidence; anything that has fired must show WHERE its evidence is sitting. A dashboard that renders limbo as absence turns a scoring backlog into a false wiring alarm.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

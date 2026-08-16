@@ -260,23 +260,53 @@ def _save(db):
     _STORE.parent.mkdir(exist_ok=True)
     tmp = _STORE.with_suffix(".tmp"); tmp.write_text(json.dumps(db)); tmp.replace(_STORE)
 
+def _needs_score(ep, now) -> bool:
+    """B-129: which episodes does a refresh (re)score?
+
+    An episode used to be scored EXACTLY ONCE, minutes after its horizon — so
+    the v6.24 "follow a still-open trade to its real exit (cap 5 days)" could
+    only follow through candles that existed at that single moment. Any trade
+    still drifting at score time was stamped censored:true and NEVER looked at
+    again, silently re-creating the exact censoring bias v6.24 was built to
+    kill (2,900+ censored episodes by 2026-08-16; 108 cells rendered as
+    never-fired). Now: unscored episodes score at maturity as before, and
+    CENSORED episodes are re-scored on every refresh until they resolve or
+    their STAMP age truly exceeds FOLLOW_MAX_DAYS — then censored_final pins
+    them and they are never fetched again."""
+    sc = ep.get("scores")
+    if sc is None:
+        t0 = datetime.fromisoformat(ep["t"])
+        mature_s = ((int(ep.get("horizon_min") or 240) + 5) * 60
+                    if ep.get("mv") == 2 else _MATURE_S)
+        return (now - t0).total_seconds() >= mature_s
+    if sc.get("censored") and not sc.get("censored_final"):
+        return True
+    return False
+
+
 def _refresh(max_new_scores=40):
     db = _load()
     eps = _fold_stamps(_stamps(), db["episodes"])
     now = datetime.now(timezone.utc)
     n_scored = 0
-    for ek, ep in eps.items():
-        if ep["scores"] is not None or n_scored >= max_new_scores: continue
+    # Fresh episodes first (never starved by the censored backlog), then
+    # censored re-scores oldest-first, all within the same fetch budget.
+    fresh = [(k, e) for k, e in eps.items()
+             if e.get("scores") is None and _needs_score(e, now)]
+    retry = sorted(((k, e) for k, e in eps.items()
+                    if e.get("scores") is not None and _needs_score(e, now)),
+                   key=lambda kv: kv[1]["t"])
+    for ek, ep in fresh + retry:
+        if n_scored >= max_new_scores: break
         t0 = datetime.fromisoformat(ep["t"])
-        # v2 episodes mature at their OWN horizon (+1 bar); legacy at 240m+5.
-        mature_s = ((int(ep.get("horizon_min") or 240) + 5) * 60
-                    if ep.get("mv") == 2 else _MATURE_S)
-        if (now - t0).total_seconds() < mature_s: continue
         try:
             if ep.get("mv") == 2:
                 ep["scores"] = _score_v2(ep, t0)
             else:
                 ep["scores"] = _score(ep["cell"].split("/")[0], t0, ep["side"])
+            sc = ep.get("scores") or {}
+            if sc.get("censored") and                     (now - t0).total_seconds() >= FOLLOW_MAX_DAYS * 86400:
+                sc["censored_final"] = True   # past cap — stop retrying
             n_scored += 1; time.sleep(0.05)
         except Exception:
             continue
@@ -586,8 +616,10 @@ def _aggregate(db):
                                        nets_all)
                  if net is not None and r["t"] >= cutoff7]
         nets = [n for n in nets_all if n is not None]   # censored excluded
-        if not nets and not life_nets:
-            continue          # every episode still open — nothing to grade
+        # B-130: a group whose every episode is still censored used to emit NO
+        # row — the board then backfilled a QUEUED "no scored episodes yet"
+        # placeholder, rendering 108 cells (566 real stamps) as never-fired.
+        # Stamped-but-unresolved must read as RESOLVING, never as absence.
         avg = (sum(nets) / len(nets)) if nets else None
         n_eff = effective_n([r["t"] for r in grows]) if grows else None
         lcb = _tlcb(nets, n_eff, _z) if nets else None
