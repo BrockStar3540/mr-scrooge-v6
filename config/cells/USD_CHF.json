@@ -4,7 +4,7 @@
   "generator": "generate_cell_configs.py-2026-07-04",
   "sessions": {
     "asia": {
-      "enabled": false,
+      "enabled": true,
       "structure": {
         "tier": 2,
         "rh_offer_rate_60m": 0.1755,

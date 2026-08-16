@@ -135,7 +135,8 @@ def test_shipped_config_and_defaults_carry_the_new_keys():
     # operator 2026-08-07: 6 -> 9 (docket had 8 LCB>0 winners queued on full seats)
     # operator 2026-08-12: 9 -> 15 (pool froze at 10/9 after the B-125-restore
     # over-fill; audit ordered a shed + headroom so the green docket auditions)
-    assert cfg["max_probe_seats_total"] == 15
+    # operator 2026-08-16: 15 -> 20 (B-129 backfill surfaced a 52-cell docket)
+    assert cfg["max_probe_seats_total"] == 20
     assert cfg["fdr_family"] == "docket"
 
 
