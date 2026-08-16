@@ -884,6 +884,84 @@
           "notes": "Counterpart of mr2_bb_reversion_short_g_spr1 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "orb_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": -0.5,
+              "max": 0.05,
+              "note": "at/just under ORB low, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": 0.95,
+              "max": 1.5,
+              "note": "at/just over ORB high, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "3 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
@@ -1838,6 +1916,162 @@
           "notes": "Counterpart of echo_box_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "orb_break_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_hi_dist",
+              "min": 1.0,
+              "max": 10.0,
+              "note": "fresh close 1-10p above ORB high (no late chase)"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_break_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_lo_dist",
+              "min": -10.0,
+              "max": -1.0,
+              "note": "fresh close 1-10p below ORB low (no late chase)"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": -0.5,
+              "max": 0.05,
+              "note": "at/just under ORB low, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": 0.95,
+              "max": 1.5,
+              "note": "at/just over ORB high, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "3 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -2689,6 +2923,162 @@
           "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "orb_break_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_hi_dist",
+              "min": 1.0,
+              "max": 10.0,
+              "note": "fresh close 1-10p above ORB high (no late chase)"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_break_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_lo_dist",
+              "min": -10.0,
+              "max": -1.0,
+              "note": "fresh close 1-10p below ORB low (no late chase)"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_fade_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": -0.5,
+              "max": 0.05,
+              "note": "at/just under ORB low, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
+        },
+        {
+          "id": "orb_fade_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": 0.95,
+              "max": 1.5,
+              "note": "at/just over ORB high, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "M\u00e1ximo NQ/MNQ 1-Minute Scalping Toolkit (open-source TradingView, pub 2026-08-13) \u2014 session ORB was the one concept the feed lacked; translated 2026-08-15 (v6.28.0). FX caveat: session opens are softer than NQ's cash open, prior deliberately weak \u2014 zero-authority trial, standard bar. Asia gets fades only (soft open + revert session); london/ny get breaks + fades."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "2 ACTIVE, 1 PROBE, 1 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."

@@ -117,6 +117,7 @@ class _Client:
 # ── Indicator helpers (match V3/V4 exactly — dm_04 corpus was built with these) ─
 
 from core.feed.structure import (ema_trend_pips as _ema_trend_pips,
+                                 session_orb as _session_orb_calc,
                                  impulse_blocks as _impulse_blocks,
                                  liquidity_sweep as _liquidity_sweep)
 
@@ -162,6 +163,22 @@ def _session_vwap_dist(m5: pd.DataFrame, mid: float, pip: float) -> float:
         return round((mid - vwap) / pip, 1)
     except Exception:
         return 0.0
+
+
+def _session_orb(m5: pd.DataFrame, mid: float, pip: float) -> tuple:
+    """(orb_hi_dist, orb_lo_dist, orb_pos, orb_range_pips) for the CURRENT
+    coarse session — same session labeling as _session_vwap_dist; the range
+    math lives in core.feed.structure.session_orb (pure, tested)."""
+    try:
+        if "time" in m5.columns:
+            hours = [int(str(t)[11:13]) for t in m5["time"]]
+        else:
+            hours = list(m5.index.hour)
+        lbl = [(0 if (h >= 22 or h < 7) else (1 if h < 13 else 2)) for h in hours]
+        return _session_orb_calc(lbl, [float(x) for x in m5["high"]],
+                                 [float(x) for x in m5["low"]], mid, pip)
+    except Exception:
+        return 0.0, 0.0, 0.5, 0.0
 
 
 def _atr14(df: pd.DataFrame, pip: float) -> float:
@@ -492,6 +509,7 @@ def _compute_features(
     liq_hi, liq_lo = _liquidity_sweep(_m5h_l, _m5l_l, _m5c_l, pip, atr_5m)
     ob_bull, ob_bear = _impulse_blocks(_m5h_l, _m5l_l, _m5c_l, mid, pip, atr_5m)
     ema_trend = _ema_trend_pips(_m5c_l, pip)
+    _orb = _session_orb(m5, mid, pip)
 
     spread_pips = (ask - bid) / pip
 
@@ -520,6 +538,9 @@ def _compute_features(
         close_pos_daily=round(close_pos_daily, 4),
         adr_consumed=round(adr_consumed, 4),
         vwap_dist_pips=_session_vwap_dist(m5, mid, pip),
+        # Session opening range (v6.28.0, Máximo toolkit translation)
+        orb_hi_dist=_orb[0], orb_lo_dist=_orb[1],
+        orb_pos=_orb[2], orb_range_pips=_orb[3],
         adx14=_adx14(h1),
         # Mean-reversion (M5)
         bb_pos=round(bb_pos, 4),

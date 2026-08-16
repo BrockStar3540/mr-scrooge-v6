@@ -87,6 +87,14 @@ class MarketView:
     ob_bear_dist_pips: float = 500.0  # bottom of nearest UNMITIGATED supply zone − mid
     ema_trend_pips:    float = 0.0    # EMA14−EMA40 on M5 (~70min vs ~200min), pips
 
+    # ── Session opening range (v6.28.0 trial features) ───────────────────────
+    # First 15 min of the CURRENT coarse session. orb_range_pips is 0.0 while
+    # the range is forming, so a `min` gate on it fail-closes every ORB setup.
+    orb_hi_dist:    float = 0.0     # mid − ORB high, pips
+    orb_lo_dist:    float = 0.0     # mid − ORB low, pips
+    orb_pos:        float = 0.5     # position within ORB (0=low, 1=high, unclamped)
+    orb_range_pips: float = 0.0     # ORB height, pips; 0.0 = forming/absent
+
     # ── Execution ────────────────────────────────────────────────────────────
     bid:            float = 0.0
     ask:            float = 0.0

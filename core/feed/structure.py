@@ -216,3 +216,46 @@ def ema_trend_pips(closes: Sequence[float], pip: float, *,
         return round((_ema(c, fast) - _ema(c, slow)) / pip, 2)
     except Exception:
         return 0.0
+
+
+def session_orb(labels: Sequence[int], highs: Sequence[float],
+                lows: Sequence[float], mid: float, pip: float, *,
+                orb_bars: int = 3) -> tuple:
+    """Session OPENING RANGE (first `orb_bars` M5 bars = 15 min) of the
+    CURRENT session run. Source: Máximo NQ/MNQ 1-Minute Scalping Toolkit
+    (open-source TradingView, translated 2026-08-15) — the one concept in it
+    the feed lacked. FX caveat logged at wiring: session opens are softer than
+    a cash equity open, so the prior is deliberately weaker.
+
+    labels: per-bar coarse-session ids (same walk `_session_vwap_dist` uses);
+    the current run = trailing bars sharing the last label.
+
+    Returns (orb_hi_dist, orb_lo_dist, orb_pos, orb_range_pips), all vs `mid`:
+      orb_hi_dist  pips above (+) / below (−) the ORB high
+      orb_lo_dist  pips above (+) / below (−) the ORB low
+      orb_pos      0..1 inside the range (can exceed either side)
+      orb_range_pips  ORB height — 0.0 while the range is STILL FORMING (or on
+        any degenerate input), so a `min` condition on it fail-closes every
+        ORB setup until 15 real minutes exist.
+    """
+    try:
+        n = len(labels)
+        if n == 0 or n != len(highs) or n != len(lows) or pip <= 0:
+            return 0.0, 0.0, 0.5, 0.0
+        start = n - 1
+        while start > 0 and labels[start - 1] == labels[-1]:
+            start -= 1
+        run = n - start
+        if run < orb_bars:                      # range still forming
+            return 0.0, 0.0, 0.5, 0.0
+        orb_hi = max(highs[start:start + orb_bars])
+        orb_lo = min(lows[start:start + orb_bars])
+        rng = orb_hi - orb_lo
+        if rng <= 0:
+            return 0.0, 0.0, 0.5, 0.0
+        return (round((mid - orb_hi) / pip, 1),
+                round((mid - orb_lo) / pip, 1),
+                round((mid - orb_lo) / rng, 4),
+                round(rng / pip, 1))
+    except Exception:
+        return 0.0, 0.0, 0.5, 0.0

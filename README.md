@@ -127,6 +127,11 @@ running state ([B-126](docs/BOOK_OF_BUGS.md)). A separate **Commissioner** decid
 admission lane may open at all. The humans set the standard; the bot flips the switches.
 
 **Currently on trial (900+ setups):**
+- **The ORB slate (2026-08-15)** — session opening-range breakouts and fades on the six
+  majors, translated from the open-source Máximo NQ/MNQ scalping toolkit. The honest
+  prior is WEAK: FX session opens are softer than an equity cash open, and the wiring
+  says so — zero authority, standard bar, the range gate fail-closes while the first
+  15 minutes are still forming.
 - **The replay shadow book** — 10 pairs the book never traded (CAD, CHF, NZD crosses +
   GBP/JPY), resurrected from this account's own March/April 2026 tapes where session-extreme
   fades and trend-pullback entries kept winning. The standing prior: cross spread toll kills
