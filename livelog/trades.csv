@@ -208,3 +208,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-17T18:59:59Z,AUD_USD,short,4491,-9.61,parent
 2026-08-17T19:10:54Z,EUR_USD,short,4125,-3.38,parent
 2026-08-17T20:10:36Z,GBP_USD,short,1411,-1.13,parent
+2026-08-17T20:25:23Z,AUD_USD,short,4414,1.02,popper
+2026-08-17T20:25:28Z,EUR_USD,short,4065,0.37,popper
