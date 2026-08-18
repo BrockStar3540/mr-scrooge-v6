@@ -64,6 +64,9 @@ class ExitParams:
     entry_cutoff_utc: float = 0.0         # no new entries at/after this UTC hour (0=off)
     engage_pips:      float = 0.0         # two-phase ratchet: early engage peak (0=off)
     engage_lock_pips: float = 0.0         # two-phase ratchet: lock at early engage
+    trail_mult:       float = 0.0         # ratchet: ATR-scaled trail (0=fixed)
+    trail_min:        float = 0.0
+    trail_max:        float = 0.0
 
 
 def migrate_stale_gear(ep: "ExitParams") -> "ExitParams":
@@ -92,9 +95,6 @@ def migrate_stale_gear(ep: "ExitParams") -> "ExitParams":
         return ep
     except Exception:
         return ep
-    trail_mult:       float = 0.0         # ratchet: ATR-scaled trail (0=fixed)
-    trail_min:        float = 0.0
-    trail_max:        float = 0.0
 
 
 @dataclass
