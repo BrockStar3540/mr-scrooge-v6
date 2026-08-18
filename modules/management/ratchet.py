@@ -158,6 +158,8 @@ class RatchetManager(TradeManager):
             cfg['initial_sl_pips']   = float(_ep.sl_pips)
             cfg['step_trigger_pips'] = float(_ep.trigger_pips)
             cfg['step_trail_pips']   = float(_ep.trail_pips)
+            cfg['step_engage_pips'] = float(getattr(_ep, 'engage_pips', 0.0) or 0.0)
+            cfg['step_engage_lock_pips'] = float(getattr(_ep, 'engage_lock_pips', 0.0) or 0.0)
 
         elapsed_total   = (current_time - self.position.entry_time).total_seconds() / 60
         elapsed_check   = (current_time - self.last_check_time).total_seconds() / 60
@@ -193,12 +195,21 @@ class RatchetManager(TradeManager):
         trigger = cfg["step_trigger_pips"]
         step    = cfg["step_size_pips"]
         trail   = cfg["step_trail_pips"]
+        # Two-phase (v6.30.0): optional early engage lock ahead of the step
+        # machine. MUST stay formula-identical to core.shadow_execution
+        # ._ratchet_lock — the scorer replays exactly this.
+        engage      = float(cfg.get("step_engage_pips", 0.0) or 0.0)
+        engage_lock = float(cfg.get("step_engage_lock_pips", 0.0) or 0.0)
 
-        if peak_pips < trigger:
-            return None
-
-        level = math.floor((peak_pips - trigger) / step) * step + trigger
-        return level - trail
+        best = None
+        if engage > 0 and engage_lock > 0 and peak_pips >= engage:
+            best = engage_lock
+        if peak_pips >= trigger:
+            level = math.floor((peak_pips - trigger) / step) * step + trigger
+            cand = level - trail
+            if best is None or cand > best:
+                best = cand
+        return best
 
     # ── Helpers ───────────────────────────────────────────────────────────────
 

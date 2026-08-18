@@ -2,8 +2,8 @@
   "enabled": true,
   "step_pips": 15.0,
   "sl_pips": 60.0,
-  "trigger_pips": 8.5,
-  "trail_pips": 2.5,
+  "trigger_pips": 9.0,
+  "trail_pips": 2.0,
   "max_levels": 8,
   "max_total_trades": 8,
   "max_margin_pct_total": 0.9,
@@ -30,5 +30,7 @@
     "GBP_USD|london|classic_box_break_short": false,
     "GBP_USD|ny|mr2_bb_reversion_short": false,
     "EUR_USD|ny|rg1_range_scalp_short": false
-  }
+  },
+  "engage_pips": 7.5,
+  "engage_lock_pips": 6.0
 }

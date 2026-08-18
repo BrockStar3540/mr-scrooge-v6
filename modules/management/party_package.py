@@ -127,6 +127,8 @@ def _popper_exit_params(cfg: dict):
     return ExitParams(sl_pips=float(cfg["sl_pips"]),
                       trigger_pips=float(cfg["trigger_pips"]),
                       trail_pips=float(cfg["trail_pips"]),
+                      engage_pips=float(cfg.get("engage_pips", 0.0) or 0.0),
+                      engage_lock_pips=float(cfg.get("engage_lock_pips", 0.0) or 0.0),
                       mode="ratchet")
 
 
@@ -432,7 +434,9 @@ class PartyPackage:
                              vol_regime="pp", expected_pips=0.0,
                              timestamp=entry_time, reads={})
         from modules.cells.cell import ExitParams
-        ep = ExitParams(sl_pips=float(d.get("sl", cfg["sl_pips"])),
+        ep = ExitParams(engage_pips=float(cfg.get("engage_pips", 0.0) or 0.0),
+                        engage_lock_pips=float(cfg.get("engage_lock_pips", 0.0) or 0.0),
+                        sl_pips=float(d.get("sl", cfg["sl_pips"])),
                         trigger_pips=float(d.get("tr", cfg["trigger_pips"])),
                         trail_pips=float(d.get("tp", cfg["trail_pips"])), mode="ratchet")
         oanda_sl = (trade.get("stopLossOrder") or {}).get("price")

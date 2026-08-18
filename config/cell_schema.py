@@ -177,9 +177,12 @@ def _validate_exit(exit_block: Any, ctx: str, errs: ValidationErrors) -> None:
     _require_number(exit_block, "trail_pips", ctx + ".exit", errs)
     # Full live exit vocabulary (engine ExitParams, 2026-07-27 sync): ratchet
     # mode + ATR-scaled-trail bounds + display class + optional bracket fields.
+    # v6.30.0 (operator 2026-08-18): two-phase ratchet — early engage lock
+    # ahead of the step machine (engage 7.5 -> lock 6.0; step 9/2/2).
     allowed = {"sl_pips", "trigger_pips", "trail_pips",
                "mode", "trail_mult", "trail_min", "trail_max",
-               "entry_cutoff_utc", "tp_pips", "timeout_min", "_class"}
+               "entry_cutoff_utc", "tp_pips", "timeout_min", "_class",
+               "engage_pips", "engage_lock_pips"}
     _no_unknown_fields(exit_block, allowed, ctx + ".exit", errs)
     mode = exit_block.get("mode")
     if mode is not None and mode not in ("ratchet", "bracket"):

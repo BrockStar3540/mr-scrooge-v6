@@ -62,6 +62,8 @@ class ExitParams:
     tp_pips:          float = 0.0         # bracket: server-side limit TP
     timeout_min:      float = 0.0         # bracket: flat after N min (0=off)
     entry_cutoff_utc: float = 0.0         # no new entries at/after this UTC hour (0=off)
+    engage_pips:      float = 0.0         # two-phase ratchet: early engage peak (0=off)
+    engage_lock_pips: float = 0.0         # two-phase ratchet: lock at early engage
     trail_mult:       float = 0.0         # ratchet: ATR-scaled trail (0=fixed)
     trail_min:        float = 0.0
     trail_max:        float = 0.0
@@ -307,6 +309,8 @@ class CellModule:
                 timeout_min      = float(exit_cfg.get("timeout_min", 0.0) or 0.0),
                 entry_cutoff_utc = _cutoff,
                 trail_mult       = float(exit_cfg.get("trail_mult", 0.0) or 0.0),
+                engage_pips      = float(exit_cfg.get("engage_pips", 0.0) or 0.0),
+                engage_lock_pips = float(exit_cfg.get("engage_lock_pips", 0.0) or 0.0),
                 trail_min        = float(exit_cfg.get("trail_min", 0.0) or 0.0),
                 trail_max        = float(exit_cfg.get("trail_max", 0.0) or 0.0),
             )

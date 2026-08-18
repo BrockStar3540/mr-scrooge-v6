@@ -104,23 +104,32 @@ def test_engage_lock_and_tighten_only_long():
     cfg = _load_config("EUR_USD")
     trig, trail = cfg["step_trigger_pips"], cfg["step_trail_pips"]
 
-    # Below trigger: no lock yet.
-    m.update(_price("long", trig - 1), BASE_T + timedelta(minutes=1))
+    engage = float(cfg.get("step_engage_pips", 0.0) or 0.0)
+    engage_lock = float(cfg.get("step_engage_lock_pips", 0.0) or 0.0)
+
+    # Below the early-engage point: no lock yet (v6.30.0 two-phase gear).
+    below = (engage - 0.5) if engage > 0 else (trig - 1)
+    m.update(_price("long", below), BASE_T + timedelta(minutes=1))
     assert m.sl_locked_pips is None
 
-    # Reach the trigger: first lock engages at trigger - trail, above breakeven.
-    m.update(_price("long", trig), BASE_T + timedelta(minutes=2))
+    if engage > 0:
+        # Early engage: locks engage_lock before the step machine triggers.
+        m.update(_price("long", engage), BASE_T + timedelta(minutes=2))
+        assert m.sl_locked_pips == pytest.approx(engage_lock)
+
+    # Reach the step trigger: lock advances to trigger - trail.
+    m.update(_price("long", trig), BASE_T + timedelta(minutes=3))
     first = m.sl_locked_pips
     assert first == pytest.approx(trig - trail)
     assert first > 0.0                       # B-090: engaged stop above breakeven
 
     # Push much higher: lock advances.
-    m.update(_price("long", trig + 10), BASE_T + timedelta(minutes=3))
+    m.update(_price("long", trig + 10), BASE_T + timedelta(minutes=4))
     assert m.sl_locked_pips > first
 
     # Pull back (peak unchanged): lock must NOT move backward.
     high = m.sl_locked_pips
-    m.update(_price("long", trig + 3), BASE_T + timedelta(minutes=4))
+    m.update(_price("long", trig + 3), BASE_T + timedelta(minutes=5))
     assert m.sl_locked_pips == pytest.approx(high)
 
 

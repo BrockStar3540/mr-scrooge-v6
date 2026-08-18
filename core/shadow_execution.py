@@ -69,12 +69,26 @@ def _fav(px: float, entry: float, side: str, pip: float) -> float:
 
 
 def _ratchet_lock(peak_pips: float, trigger: float, step: float,
-                  trail: float) -> Optional[float]:
-    """Live ratchet's floor-step lock, in profit-direction pips from entry."""
-    if peak_pips < trigger:
-        return None
-    level = math.floor((peak_pips - trigger) / step) * step + trigger
-    return level - trail
+                  trail: float, engage: float = 0.0,
+                  engage_lock: float = 0.0) -> Optional[float]:
+    """Live ratchet's lock, in profit-direction pips from entry.
+
+    Two-phase (v6.30.0, operator 2026-08-18): an optional EARLY ENGAGE lock
+    (peak >= `engage` locks `engage_lock`) ahead of the floor-step machine
+    (peak >= `trigger` locks level - `trail`, level stepping by `step` from
+    `trigger`). Operator gear: engage 7.5 -> lock 6.0; trigger 9.0 / step 2.0 /
+    trail 2.0 -> 9->7, 11->9, 13->11. With engage=0 behaviour is byte-identical
+    to the old single-phase formula. MUST stay formula-identical to
+    modules/management/ratchet.RatchetManager._compute_step_sl."""
+    best = None
+    if engage > 0 and engage_lock > 0 and peak_pips >= engage:
+        best = engage_lock
+    if peak_pips >= trigger:
+        level = math.floor((peak_pips - trigger) / step) * step + trigger
+        cand = level - trail
+        if best is None or cand > best:
+            best = cand
+    return best
 
 
 def simulate_shadow_exit(stamp: dict, candles: Sequence[dict],
@@ -123,6 +137,8 @@ def _simulate_ratchet(bars, entry, side, cfg, pip) -> ShadowOutcome:
     trigger = float(cfg.get("trigger_pips", 8.5) or 8.5)
     trail = float(cfg.get("trail_pips", 2.5) or 2.5)
     step = float(cfg.get("step_size_pips", DEFAULT_STEP_SIZE_PIPS) or DEFAULT_STEP_SIZE_PIPS)
+    engage = float(cfg.get("engage_pips", 0.0) or 0.0)
+    engage_lock = float(cfg.get("engage_lock_pips", 0.0) or 0.0)
     cadence_min = float(cfg.get("step_cadence_min", DEFAULT_CADENCE_MIN)
                         or DEFAULT_CADENCE_MIN)
     # M5 bars are the floor of what the sim can resolve — the live 0.5-min
@@ -159,7 +175,7 @@ def _simulate_ratchet(bars, entry, side, cfg, pip) -> ShadowOutcome:
         peak = max(peak, fav)
         # cadence-gated lock evaluation (per the stamped/live cadence)
         if (i + 1) % cadence_bars == 0:
-            new_lock = _ratchet_lock(peak, trigger, step, trail)
+            new_lock = _ratchet_lock(peak, trigger, step, trail, engage, engage_lock)
             if new_lock is not None and (lock is None or new_lock > lock):
                 lock = new_lock
 

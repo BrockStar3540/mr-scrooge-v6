@@ -344,6 +344,8 @@ _CELL_EXIT_FIELDS = {
     "sl_pips":      {"min": 5.0,  "max": 200.0, "label": "Range-sized initial SL (pips)"},
     "trigger_pips": {"min": 0.0,  "max": 50.0,  "label": "Ratchet engage / peak trigger (pips)"},
     "trail_pips":   {"min": 0.0,  "max": 30.0,  "label": "Trail behind peak (pips)"},
+    "engage_pips":  {"min": 0.0,  "max": 30.0,  "label": "Two-phase early engage peak (pips, 0=off)"},
+    "engage_lock_pips": {"min": 0.0, "max": 30.0, "label": "Lock at early engage (pips)"},
     "trail_mult":   {"min": 0.0,  "max": 3.0,   "label": "ATR-scaled trail multiplier (0=fixed)"},
 }
 

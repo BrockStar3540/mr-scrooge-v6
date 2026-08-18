@@ -4,8 +4,8 @@
     "initial_sl_pips": 20.0,
     "step_engage_min": 0.0,
     "step_cadence_min": 0.5,
-    "step_trigger_pips": 8.5,
-    "step_trail_pips": 2.5,
+    "step_trigger_pips": 9.0,
+    "step_trail_pips": 2.0,
     "step_size_pips": 2.0,
     "tp1_enabled": false,
     "tp1_at_pips": 12.0,
@@ -13,7 +13,9 @@
     "tp1_lock_pips": 6.0,
     "tp2_enabled": false,
     "tp2_at_pips": 20.0,
-    "tp2_close_pct": 0.25
+    "tp2_close_pct": 0.25,
+    "step_engage_pips": 7.5,
+    "step_engage_lock_pips": 6.0
   },
   "per_pair": {},
   "_note": "Nested schema v2. Edited via dashboard TUNE tab. Per-pair fields override defaults for that pair only."

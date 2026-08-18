@@ -31,7 +31,7 @@ SVG = LIVELOG / "equity.svg"
 # same book, gearing 15%/trade · 6 max for the smaller stake. The practice
 # record is archived at forward-test-100/.
 ANCHOR_TS = "2026-07-29T11:00:00Z"
-ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · engage +8.5 → lock +6 → trail 2.5 fixed + Party Package popper grids · 15%/trade · 6 max"
+ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +7.5 → lock +6, steps +9/+11/… → lock −2 + Party Package popper grids · 15%/trade · 6 max"
 ANCHOR_HUMAN = "2026-07-29"
 
 def secrets():

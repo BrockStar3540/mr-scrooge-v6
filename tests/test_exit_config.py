@@ -27,10 +27,14 @@ def test_exit_config_exists():
 
 
 def test_deployed_engage_and_trail_values():
-    """Currently deployed: engage (step_trigger_pips) 8.5, trail (step_trail_pips) 2.5 (Brock 2026-07-19)."""
+    """Deployed gear (Brock 2026-08-18, v6.30.0 two-phase): early engage 7.5
+    locking 6.0, then step machine 9.0/2.0/2.0 (9->7, 11->9, ...).
+    Previous era: 8.5/2.5 single-phase (Brock 2026-07-19)."""
     _, d = _defaults()
-    assert d["step_trigger_pips"] == pytest.approx(8.5)
-    assert d["step_trail_pips"] == pytest.approx(2.5)
+    assert d["step_trigger_pips"] == pytest.approx(9.0)
+    assert d["step_trail_pips"] == pytest.approx(2.0)
+    assert d["step_engage_pips"] == pytest.approx(7.5)
+    assert d["step_engage_lock_pips"] == pytest.approx(6.0)
 
 
 def test_defaults_all_present_and_numeric():
