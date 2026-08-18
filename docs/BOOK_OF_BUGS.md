@@ -932,6 +932,16 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-131 — the machine that executed itself: a sanctioned expansion, a stale pin, and a lying log line
+
+- **Discovered:** 2026-08-18, from the operator's "the git repo livelog does not seem to be updating very often" — local main was 16 commits ahead of origin with every push blocked.
+- **Area:** `tests/test_review_r4.py` (absolute `cheater_max_seats == 1` pin) · `ops/commissioner.py` decommission path (no config restore) · `ops/livelog_update.py` (push result unreported).
+- **Symptom / chain:** (1) the Commissioner, exercising its sanctioned authority ("health permits evaluation, evidence permits one PROBE, **broker validation permits expansion**"), expanded the cheater lane to 2 seats and wrote `cheater_max_seats: 2`. (2) The review-round-4 test pinned that key at exactly 1 — the suite went red. (3) The pre-push hook (suite gate) blocked EVERY push: livelog, state commits, all of it. (4) The Commissioner's own health battery runs the suite — seeing red, it declared guard failure and **decommissioned itself**, resetting to VALIDATING but leaving the orphaned `2` in config, so the suite stayed red and pushes stayed blocked. (5) livelog printed "pushed" unconditionally, so the outage was invisible until a human noticed GitHub was stale.
+- **Fix (v6.29.5):** config value restored to 1 (matching the decommissioned state); the test now pins the ROOF (`in (1, 2)`) with the doctrine documented, so a sanctioned expansion can never again redden the suite; livelog reports push failures as failures with the hook's stderr. Not changed (V7 note): the decommission path should restore pre-expansion config itself, and the Commissioner's suite-health guard arguably should not be able to fire on a failure its own sanctioned action caused.
+- **Lesson:** a test that pins a value the machine is AUTHORIZED to change is a doctrine conflict wearing a green checkmark — it will detonate precisely when the machine does its job. Pin invariants (roofs, fail-closed defaults), never live knobs. And every automated "success" line must be conditioned on the thing actually succeeding — the second silent-success bug this month (B-131 joins B-126's stranded commits).
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

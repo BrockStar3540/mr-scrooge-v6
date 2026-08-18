@@ -21,7 +21,7 @@
   "family_defend_pips": 60.0,
   "cheater_promotion_enabled": false,
   "cheater_metric_version": "family-cycle-v4",
-  "cheater_max_seats": 2,
+  "cheater_max_seats": 1,
   "cheater_replay_days": 8.0,
   "cheater_min_paired_cycles": 3,
   "cheater_min_grid_lift_lcb": 0.0,

@@ -302,7 +302,13 @@ def test_commissioning_config_is_locked_to_one_seat():
     # default staying fail-closed for a fresh install.
     assert DEFAULT_CFG["cheater_promotion_enabled"] is False
     assert cfg["cheater_metric_version"] == "family-cycle-v4"
-    assert cfg["cheater_max_seats"] == 1
+    # B-131 (2026-08-18): the Commissioner holds EXPANSION authority ("broker
+    # validation permits expansion") and may legitimately raise this to 2 while
+    # COMMISSIONED. The absolute ==1 pin turned a sanctioned expansion into a
+    # red suite, which blocked every push AND triggered the Commissioner's own
+    # suite-health guard — it decommissioned itself over the disagreement.
+    # Pin the ROOF (blast radius), not the exact value.
+    assert cfg["cheater_max_seats"] in (1, 2)
     assert cfg["cheater_replay_days"] >= 8.0
     assert cfg["truth_check_gate"] is True
 

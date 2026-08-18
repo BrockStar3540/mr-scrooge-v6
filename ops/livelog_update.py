@@ -313,7 +313,14 @@ if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode != 0:
     msg = f"livelog: current config {rsign}${abs(realized):,.2f} realized / {n_tr} trades ({rec}), NAV ${nav:,.2f} @ {now.strftime('%Y-%m-%dT%H:%MZ')}"
     subprocess.run(["git", "commit", "-q", "-m", msg,
                     "-m", "Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"], check=False)
-    subprocess.run(["git", "push", "-q"], check=False)
-    print(f"livelog: pushed — {n_tr} trades, {rsign}${abs(realized):,.2f} realized, NAV ${nav:,.2f}")
+    _push = subprocess.run(["git", "push", "-q"], check=False,
+                           capture_output=True, text=True)
+    if _push.returncode == 0:
+        print(f"livelog: pushed — {n_tr} trades, {rsign}${abs(realized):,.2f} realized, NAV ${nav:,.2f}")
+    else:
+        # B-131: a blocked push used to print as success — 16 commits piled up
+        # behind a red pre-push hook while this log said "pushed".
+        print(f"livelog: COMMITTED but PUSH FAILED (rc={_push.returncode}): "
+              f"{(_push.stderr or '').strip()[-300:]}", file=sys.stderr)
 else:
     print("livelog: no change")
