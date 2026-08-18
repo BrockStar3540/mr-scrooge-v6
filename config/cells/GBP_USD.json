@@ -1281,6 +1281,51 @@
           "sizing": {
             "risk_pct": 0.2
           }
+        },
+        {
+          "id": "es_breakout_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pdh_dist",
+              "min": 0.0,
+              "note": "above the previous day high (breakout leg)"
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "expansion regime"
+            },
+            {
+              "feature": "rsi14",
+              "min": 50.0,
+              "note": "momentum side of 50"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: es_breakout_long (long) ran 9 eps @ -3.83p/ep with medMFE/MAE 4.5/21.1 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of es_breakout_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."

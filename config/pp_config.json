@@ -28,6 +28,7 @@
     "GBP_USD|ny|control_rvol_60_t20s": false,
     "GBP_USD|london|liq_sweep_fade_long": false,
     "GBP_USD|london|classic_box_break_short": false,
-    "GBP_USD|ny|mr2_bb_reversion_short": false
+    "GBP_USD|ny|mr2_bb_reversion_short": false,
+    "EUR_USD|ny|rg1_range_scalp_short": false
   }
 }
