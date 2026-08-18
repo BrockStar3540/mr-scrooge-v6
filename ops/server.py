@@ -714,6 +714,8 @@ def _state(engine: "Engine") -> dict:
         else:
             if _ep is not None:
                 _eng, _trl, _tm = float(getattr(_ep, "trigger_pips", 0) or 0), float(getattr(_ep, "trail_pips", 0) or 0), _tmult
+                _ee = float(getattr(_ep, "engage_pips", 0.0) or 0.0)
+                _el = float(getattr(_ep, "engage_lock_pips", 0.0) or 0.0)
             else:
                 # recovered position: no per-cell exit_params -> runs exit_config.json effective gear
                 _ec = _read_exit_config()
@@ -721,10 +723,17 @@ def _state(engine: "Engine") -> dict:
                 _pp = (_ec.get("per_pair") or {}).get(pair) or {}
                 _dfl = {**_base, **_pp}
                 _eng, _trl, _tm = float(_dfl.get("step_trigger_pips", 7.5)), float(_dfl.get("step_trail_pips", 2.5)), 0.0
+                _ee = float(_dfl.get("step_engage_pips", 0.0) or 0.0)
+                _el = float(_dfl.get("step_engage_lock_pips", 0.0) or 0.0)
             _exit_info.update({
                 "engage_pips": round(_eng, 2),
                 "trail_pips":  round(_trl, 2),
                 "trail_mult":  _tm or None,
+                # v6.30.3: two-phase gear made visible — engage_pips above is
+                # the STEP TRIGGER (legacy name kept for the panel); these two
+                # are the early-engage phase (0 = single-phase gear).
+                "early_engage_pips": round(_ee, 2) or None,
+                "early_lock_pips": round(_el, 2) or None,
             })
 
         open_positions.append({
@@ -766,6 +775,8 @@ def _state(engine: "Engine") -> dict:
                 "engage_pips":   round(float(getattr(_pep, "trigger_pips", 0) or 0), 2),
                 "trail_pips":    round(float(getattr(_pep, "trail_pips", 0) or 0), 2),
                 "trail_mult":    None,
+                "early_engage_pips": round(float(getattr(_pep, "engage_pips", 0.0) or 0.0), 2) or None,
+                "early_lock_pips": round(float(getattr(_pep, "engage_lock_pips", 0.0) or 0.0), 2) or None,
                 "pair":          _ppair,
                 "direction":     _pmgr.direction,
                 "entry":         round(_pmgr.position.entry_price, 5),

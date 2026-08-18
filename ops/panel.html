@@ -2060,9 +2060,14 @@ function renderPositions(){
       const tleft=p.timeout_left_min!=null?`⏱ ${p.timeout_left_min}m left`:'⏱ —';
       mgmt=`TP @ ${p.tp_price??'—'} (+${p.tp_pips??'?'}p) · ${tleft} · no trail`;
     }else{
-      const eng=p.engage_pips!=null?`engage ${p.engage_pips}p`:'engage —';
-      const tr=p.trail_pips!=null?`trail ${p.trail_pips}p${p.trail_mult?' ('+p.trail_mult+'×ATR)':''}`:'trail —';
-      mgmt=`${p.sl_price!=null?'SL @ '+p.sl_price+' · ':''}${eng} · ${tr}`;
+      // v6.30.3: two-phase gear reads truthfully — early engage→lock, then
+      // the step machine (trigger, −trail per step). Single-phase keeps the
+      // old label.
+      const tr=p.trail_pips!=null?`${p.trail_pips}p${p.trail_mult?' ('+p.trail_mult+'×ATR)':''}`:'—';
+      const eng=(p.early_engage_pips&&p.early_lock_pips)
+        ?`engage ${p.early_engage_pips}p→lock ${p.early_lock_pips}p · steps ${p.engage_pips}p (−${tr})`
+        :`engage ${p.engage_pips!=null?p.engage_pips+'p':'—'} · trail ${tr}`;
+      mgmt=`${p.sl_price!=null?'SL @ '+p.sl_price+' · ':''}${eng}`;
     }
     return `<tr>
       <td><b>${p.pair.replace('_','/')}</b></td>
