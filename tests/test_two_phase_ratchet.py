@@ -61,3 +61,38 @@ def test_old_gear_unchanged_without_engage_keys():
 def test_engage_never_loosens_the_step_lock():
     # at peak 13 the step lock (11.0) must win over the engage lock (6.0)
     assert RatchetManager._compute_step_sl(13.0, GEAR) == 11.0
+
+
+# ── v6.30.1: gear migration on adoption ──────────────────────────────────────
+
+def _ep(trigger, trail, mode="ratchet", engage=0.0):
+    from modules.cells.cell import ExitParams
+    return ExitParams(sl_pips=60.0, trigger_pips=trigger, trail_pips=trail,
+                      mode=mode, engage_pips=engage)
+
+
+def test_stale_standard_gear_migrates_on_adoption():
+    """A recovered trade stamped with the superseded 8.5/2.5 standard manages
+    under the CURRENT deployed gear — the operator's 'from now on' includes
+    trades that were already open (2026-08-18)."""
+    from modules.cells.cell import migrate_stale_gear
+    ep = migrate_stale_gear(_ep(8.5, 2.5))
+    assert ep.trigger_pips == 9.0 and ep.trail_pips == 2.0
+    assert ep.engage_pips == 7.5 and ep.engage_lock_pips == 6.0
+    assert ep.sl_pips == 60.0            # the placed server stop is a fact
+
+
+def test_custom_gear_never_migrated():
+    from modules.cells.cell import migrate_stale_gear
+    t20 = migrate_stale_gear(_ep(20.0, 2.5))
+    assert t20.trigger_pips == 20.0 and t20.engage_pips == 0.0
+    tuned = migrate_stale_gear(_ep(12.0, 3.0))
+    assert tuned.trigger_pips == 12.0
+    br = migrate_stale_gear(_ep(8.5, 2.5, mode="bracket"))
+    assert br.trigger_pips == 8.5        # brackets have no ratchet to migrate
+
+
+def test_already_two_phase_untouched():
+    from modules.cells.cell import migrate_stale_gear
+    ep = migrate_stale_gear(_ep(9.0, 2.0, engage=7.5))
+    assert ep.trigger_pips == 9.0 and ep.engage_pips == 7.5

@@ -64,6 +64,34 @@ class ExitParams:
     entry_cutoff_utc: float = 0.0         # no new entries at/after this UTC hour (0=off)
     engage_pips:      float = 0.0         # two-phase ratchet: early engage peak (0=off)
     engage_lock_pips: float = 0.0         # two-phase ratchet: lock at early engage
+
+
+def migrate_stale_gear(ep: "ExitParams") -> "ExitParams":
+    """v6.30.1: recovered/adopted trades carry ENTRY-TIME gear in their broker
+    comment (B-112 design). When the operator changes the deployed standard
+    gear, pre-existing open trades would keep managing under the superseded
+    knobs forever. Rule: iff the recovered RATCHET knobs are exactly the
+    superseded standard (trigger 8.5 / trail 2.5, no engage), swap in the
+    CURRENT deployed defaults from config/exit_config.json for management.
+    Custom gear (t20s trials, per-setup tuning) passes through untouched, and
+    sl_pips is NEVER touched — the server stop that was actually placed is a
+    fact, not a knob."""
+    try:
+        if (ep.mode != "ratchet" or ep.trigger_pips != 8.5
+                or ep.trail_pips != 2.5 or ep.engage_pips):
+            return ep
+        import json as _json
+        from pathlib import Path as _P
+        _cfg = _json.loads((_P(__file__).resolve().parents[2] / "config"
+                            / "exit_config.json").read_text())
+        d = _cfg.get("defaults", {})
+        ep.trigger_pips = float(d.get("step_trigger_pips", ep.trigger_pips))
+        ep.trail_pips = float(d.get("step_trail_pips", ep.trail_pips))
+        ep.engage_pips = float(d.get("step_engage_pips", 0.0) or 0.0)
+        ep.engage_lock_pips = float(d.get("step_engage_lock_pips", 0.0) or 0.0)
+        return ep
+    except Exception:
+        return ep
     trail_mult:       float = 0.0         # ratchet: ATR-scaled trail (0=fixed)
     trail_min:        float = 0.0
     trail_max:        float = 0.0

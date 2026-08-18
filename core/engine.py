@@ -103,7 +103,8 @@ def _decode_exit_ext(trade: dict):
             trail_mult=float(d.get("tm", 0.0)), trail_min=float(d.get("tmin", 0.0)),
             trail_max=float(d.get("tmax", 0.0)),
         )
-        return ep, str(d.get("su", "persisted"))
+        from modules.cells.cell import migrate_stale_gear
+        return migrate_stale_gear(ep), str(d.get("su", "persisted"))
     except (KeyError, ValueError, TypeError, json.JSONDecodeError):
         # B-112 lenient fallback: the live trades endpoint truncates comments,
         # breaking json.loads. Regex-extract whatever gear fields survived;
@@ -123,7 +124,8 @@ def _decode_exit_ext(trade: dict):
                 sl_pips=_f("sl") or 40.0, trigger_pips=_f("tr") or 8.5,
                 trail_pips=_f("tp") or 2.5,
                 mode=(mode_m.group(1) if mode_m else "ratchet"))
-            return ep, (m_su.group(1) if m_su else "persisted-truncated")
+            from modules.cells.cell import migrate_stale_gear
+            return migrate_stale_gear(ep), (m_su.group(1) if m_su else "persisted-truncated")
         except Exception:
             return None
 

@@ -434,11 +434,13 @@ class PartyPackage:
                              vol_regime="pp", expected_pips=0.0,
                              timestamp=entry_time, reads={})
         from modules.cells.cell import ExitParams
-        ep = ExitParams(engage_pips=float(cfg.get("engage_pips", 0.0) or 0.0),
-                        engage_lock_pips=float(cfg.get("engage_lock_pips", 0.0) or 0.0),
+        from modules.cells.cell import migrate_stale_gear
+        ep = ExitParams(engage_pips=0.0,
+                        engage_lock_pips=0.0,
                         sl_pips=float(d.get("sl", cfg["sl_pips"])),
                         trigger_pips=float(d.get("tr", cfg["trigger_pips"])),
                         trail_pips=float(d.get("tp", cfg["trail_pips"])), mode="ratchet")
+        ep = migrate_stale_gear(ep)
         oanda_sl = (trade.get("stopLossOrder") or {}).get("price")
         pos = Position(ticket=ticket, entry_price=entry_price, entry_time=entry_time,
                        units=abs(units_signed), oanda_trade_id=trade_id,
