@@ -950,6 +950,27 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 - **Fix (v6.30.5):** pp-gear changes are ledgered as `FAM-GEAR-CHANGE` and never touch the stamp era. Era clocks restored from the 20:03Z backup tarball via merge: 53 wrongly-wiped eras reverted, the 21 seats whose own mechanics legitimately changed kept their resets (cfg-hash diff between backup and live decided which was which). 858 era-scored episodes back on the board.
 - **Lesson:** "void the evidence" must name WHICH evidence — an era-identity that includes inputs a metric never consumes turns unrelated maintenance into data loss. Second cousin of B-131 in the same week: invariants and identities must be scoped to what actually depends on them, or the machine's own hygiene rules become its biggest source of damage. And the backup cadence earned its keep — the restore was a tarball away.
 
+### B-133 — shadowboard refresh latch: one hung worker froze the board forever, silently
+
+- **Discovered:** 2026-08-19, operator: "i dont see any shark badges" — minutes after the 🦈
+  eater slate hot-wired, /api/shadowboard still served the 06:53Z board (1,056 rows) while the
+  live book had 1,141 setups and sharks were already stamping.
+- **Area:** `ops/shadowboard.py` `get_board()` / `_refresh_worker()` cache latch.
+- **Symptom / chain:** the refresh runs in a daemon thread behind a boolean latch
+  (`_REFRESHING["on"]`). Some time after ~07:00Z the worker stopped completing inside the live
+  process (cause not pinned; the identical pipeline finishes in under a minute standalone), so
+  the latch stayed True — and `get_board()` therefore never started another refresh. One hang
+  became permanent staleness. Meanwhile the worker's `except Exception: pass` had been
+  swallowing any failure since the line was written, so nothing ever reached the journal:
+  the dashboard lied by omission with no trace.
+- **Fix (v6.30.6):** the latch carries a lease (`since` timestamp): if it has been held past
+  `_LATCH_TIMEOUT_S` (600s) at a stale read, `get_board()` logs the takeover and starts a
+  fresh worker. Worker crashes now print full tracebacks to the journal. Latch-recovery
+  covered by `tests/test_shadowboard_latch.py`.
+- **Lesson:** a latch without a lease converts one hang into permanent silence, and
+  `except: pass` on a data pipeline is how a board lies. Same class as the v6.30.4 stale-tab
+  guard: every cache needs an honesty deadline after which it must either refresh or confess.
+
 ---
 
 # Records not recovered

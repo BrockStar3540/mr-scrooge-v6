@@ -40,6 +40,7 @@ _STORE = _ROOT / "data" / "shadowboard.json"
 _LOCK  = threading.Lock()
 _CACHE: dict = {"ts": 0.0, "data": None}
 _REFRESH_S = 900          # rebuild aggregates at most every 15 min
+_LATCH_TIMEOUT_S = 600    # B-133: presume a refresh thread dead after this lease
 _EP_GAP_S  = 1800         # stamps >30 min apart = new episode
 _MATURE_S  = 245 * 60     # episode scoreable once 240m+5m old
 _SINCE     = "2026-07-04 08:00"   # journal query lower bound (cell-era cutover)
@@ -800,7 +801,7 @@ def _row_key(r):
     return (tier, score if tier == 0 else -score,
             -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
 
-_REFRESHING = {"on": False}
+_REFRESHING = {"on": False, "since": 0.0}
 
 def _refresh_worker():
     """Runs in a daemon thread — never inside a dashboard request."""
@@ -840,7 +841,11 @@ def _refresh_worker():
         with _LOCK:
             _CACHE.update(ts=time.time(), data=data)
     except Exception:
-        pass
+        # B-133: a bare pass here hid every failure while the board silently
+        # served stale rows. Crashes now land in the journal.
+        import sys as _s, traceback as _tb
+        print("[shadowboard] refresh worker crashed:\n" + _tb.format_exc(),
+              file=_s.stderr, flush=True)
     finally:
         _REFRESHING["on"] = False
 
@@ -901,9 +906,20 @@ def get_board():
     with _LOCK:
         stale = _CACHE["data"] is None or time.time() - _CACHE["ts"] >= _REFRESH_S
         data = _CACHE["data"]
-    if stale and not _REFRESHING["on"]:
-        _REFRESHING["on"] = True
-        threading.Thread(target=_refresh_worker, daemon=True, name="shadowboard-refresh").start()
+    if stale:
+        _now = time.time()
+        _hung = (_REFRESHING["on"] and _REFRESHING["since"]
+                 and _now - _REFRESHING["since"] > _LATCH_TIMEOUT_S)
+        if not _REFRESHING["on"] or _hung:
+            if _hung:
+                import sys as _s
+                print(f"[shadowboard] B-133: refresh latch held past its "
+                      f"{_LATCH_TIMEOUT_S}s lease - presuming the worker "
+                      "dead/hung and starting a new one",
+                      file=_s.stderr, flush=True)
+            _REFRESHING["on"] = True
+            _REFRESHING["since"] = _now
+            threading.Thread(target=_refresh_worker, daemon=True, name="shadowboard-refresh").start()
     if data is None:
         return {"rows": [], "active_median": None, "pending": None,
                 "generated": None, "building": True}

@@ -19,7 +19,7 @@
   "family_min_trades": 5,
   "family_demote_pips": -60.0,
   "family_defend_pips": 60.0,
-  "cheater_promotion_enabled": false,
+  "cheater_promotion_enabled": true,
   "cheater_metric_version": "family-cycle-v4",
   "cheater_max_seats": 1,
   "cheater_replay_days": 8.0,
