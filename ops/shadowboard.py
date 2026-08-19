@@ -409,6 +409,11 @@ def broker_truth():
     # an empty result just means the first daemon refresh hasn't landed yet.
     full = _FAM_CACHE.get("full") or {}
     st_map = _config_status()
+    try:  # permanent strike record (three-strikes rule, v6.17.0)
+        _strk = json.loads((_ROOT / "data" / "governor_state.json")
+                           .read_text()).get("demotion_counts", {})
+    except Exception:
+        _strk = {}
     out = []
     for f in full.get("families", []):
         cyc = f.get("cycles") or []
@@ -419,6 +424,9 @@ def broker_truth():
         out.append({
             "cell": f'{f["instrument"]}/{f.get("session", "?")}',
             "watch": (stt[3] if stt and len(stt) > 3 else None),
+            "strikes": int(_strk.get("|".join((f["instrument"],
+                                               f.get("session", "?"),
+                                               f["setup"])), 0)),
             "setup": f["setup"],
             "status": stt[0] if stt else "RETIRED",
             "legs": f.get("n", 0),

@@ -1264,13 +1264,15 @@ function renderBrokerTruth(d){
   const t=d.totals||{};
   // cohort badges (2026-08-19): prefer the server field; fall back to a lookup
   // from the shadowboard rows already in memory (covers pre-restart payloads)
-  const wmap={};
-  ((SBOARD&&SBOARD.rows)||[]).forEach(x=>{if(x.watch)wmap[x.cell+'|'+x.setup]=x.watch});
+  const wmap={},smap={};
+  ((SBOARD&&SBOARD.rows)||[]).forEach(x=>{if(x.watch)wmap[x.cell+'|'+x.setup]=x.watch;if(x.strikes)smap[x.cell+'|'+x.setup]=x.strikes});
   body.innerHTML=rows.map(r=>{
     const w=r.watch||wmap[r.cell+'|'+r.setup]||'';
+    const stk=r.strikes!=null?r.strikes:(smap[r.cell+'|'+r.setup]||0);
+    const stkHtml=stk>0?` <span title="demoted ${stk} time${stk>1?'s':''} — permanent strike record (3rd strike disables the cell)" style="font-size:9px;letter-spacing:-2px">${'\u{1F53B}'.repeat(Math.min(stk,3))}</span>`:'';
     const stcls=r.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':(r.status==='PROBE'?'style="color:#4aa3ff;font-weight:700"':(r.status==='RETIRED'?'class="muted"':'style="color:#f4c542"'));
     return `<tr>
-      <td>${r.cell}</td><td class="mono" style="font-size:11px">${w?`<span title="cohort badge — see legend above">${w}</span> `:''}${r.setup}</td>
+      <td>${r.cell}</td><td class="mono" style="font-size:11px">${w?`<span title="cohort badge — see legend above">${w}</span> `:''}${r.setup}${stkHtml}</td>
       <td ${stcls}>${r.status}</td>
       <td title="${r.parents} parents + ${r.poppers} poppers, ${r.leg_greens} green">${r.legs} <span class="muted" style="font-size:9px">(${r.leg_greens}g)</span></td>
       <td>${r.cycles}</td>
