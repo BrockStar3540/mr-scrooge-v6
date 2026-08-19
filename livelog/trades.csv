@@ -236,3 +236,8 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-19T08:18:52Z,GBP_USD,long,4354,4.79,parent
 2026-08-19T09:16:33Z,USD_CAD,short,4879,2.44,parent
 2026-08-19T09:55:34Z,USD_CHF,short,3119,2.25,parent
+2026-08-19T12:27:17Z,GBP_USD,long,1444,1.59,popper
+2026-08-19T12:34:56Z,GBP_USD,long,1439,1.57,parent
+2026-08-19T12:35:14Z,GBP_USD,long,1440,2.72,popper
+2026-08-19T12:39:45Z,USD_CAD,short,4891,2.41,parent
+2026-08-19T12:50:17Z,GBP_USD,long,1444,1.59,parent
