@@ -6,7 +6,7 @@
 
 *Every strategy and entry/exit indicator runs as a **shadow** first — stamped on live markets, scored against forward broker-verified movement, and **promoted to live capital only when it clears an evidence bar**. Setups that degrade get demoted by the same evidence — **autonomously, daily, by a published standard**. The book is whatever survives.*
 
-*Six versions · 8 years of data · **18 pairs scanning · 900+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
+*Six versions · 8 years of data · **18 pairs scanning · 1,000+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
 **you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
 
 *An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
@@ -126,7 +126,7 @@ machine-written config flips with a per-setup summary, so the repo never drifts 
 running state ([B-126](docs/BOOK_OF_BUGS.md)). A separate **Commissioner** decides when a second, family-evidence
 admission lane may open at all. The humans set the standard; the bot flips the switches.
 
-**Currently on trial (900+ setups):**
+**Currently on trial (1,045 setups):**
 - **The ER / FVG / weekly-level slate (2026-08-16)** — three concepts mined from the
   August TradingView feed: a Kaufman efficiency-ratio chop gate laid over the live
   mean-reversion families (judged against their own parents), three-candle fair value
@@ -171,7 +171,9 @@ flowchart LR
     style G fill:#1f6feb,stroke:#58a6ff,color:#fff
 ```
 
-*Book today: 18 pairs · 54 cells · 900+ setups stamping (regime-map gap fill 2026-08-07) (8 ACTIVE cells holding seats, everything else stamping as shadows). Exit gear book-wide: engage +8.5 → lock +6 → trail 2.5. Nothing is DISABLED — under the governor, nothing is beyond the reach of evidence.*
+*Book today (2026-08-19): 18 pairs · **1,045 setups stamping** · 6 ACTIVE + 20 PROBE seats (audition ceiling 20), everything else earning evidence as shadows · an 80-cell docket past the counting gates. Live exit gear (seats + poppers, operator 2026-08-18): **two-phase ratchet — engage +7.5 → lock +6.0, then steps at +9/+11/+13… locking peak−2** (t20 trial twins keep their own gear; shadows adopt at promotion). Nothing is DISABLED — under the governor, nothing is beyond the reach of evidence.*
+
+**The current standouts, broker-verified:** the **USD_JPY/ny atr5m complex** (parent 7-0 cycles, +$30 era; its wider-engage t20s twin graduated the same test the [t20 ledger](docs/BOOK_OF_BUGS.md) pre-registered in July) · **USD_CHF/asia echo_box_fade_short** — a cell found by honestly backfilling a session block that had sat disabled (+11.1p avg, 32-0 on reconstruction, now auditioning) · **GBP_USD/ny impulse_ob_long** — the market-structure order-block setup, the strongest candidate the docket has produced (LCB +18.9, q≈0) · and the 🎭 MAE-flip cohort, which keeps turning demoted cells' funerals into seats (14 of 15 early flips green).*
 
 ## The dashboard
 
