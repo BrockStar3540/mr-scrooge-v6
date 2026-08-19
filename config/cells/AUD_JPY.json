@@ -1814,7 +1814,7 @@
           "id": "timing_lean_30_short",
           "side": "short",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 30,
           "conditions": [
             {
@@ -1851,7 +1851,7 @@
             "source": "side-audit 2026-07-08: loud-vol ny window drift -2.95p/240m (n=389, 60d); NY fade consistent with regime_short_240 sibling",
             "drift": "STABLE"
           },
-          "notes": "LIVE FLIP 2026-07-08 from timing_lean_30 long. FAST bracket retained. Tripwire fast last_n=20 min_ev=-0.5. | DIAL-IN 2026-07-08: atr window [6.618,7.947] -> drift +4.61.",
+          "notes": "LIVE FLIP 2026-07-08 from timing_lean_30 long. FAST bracket retained. Tripwire fast last_n=20 min_ev=-0.5. | DIAL-IN 2026-07-08: atr window [6.618,7.947] -> drift +4.61. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-13"
         },
         {
@@ -2519,7 +2519,7 @@
           "id": "timing_lean_30_counter_long",
           "side": "long",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 30,
           "conditions": [
             {
@@ -2557,14 +2557,14 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of timing_lean_30_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "notes": "Counterpart of timing_lean_30_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-13"
         },
         {
           "id": "regime_short_240_counter_long",
           "side": "long",
           "class": "LEAN",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2620,7 +2620,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of regime_short_240 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "notes": "Counterpart of regime_short_240 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-05"
         },
         {

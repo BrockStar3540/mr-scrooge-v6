@@ -18,7 +18,7 @@
           "id": "box_pdl_short_t20s",
           "side": "short",
           "class": "box",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -52,7 +52,7 @@
             "source": "box-screen 2026-07-09: drift +10.73p/240m YTD n=2465, positive ALL slices (May +58.6)",
             "drift": "PERSISTENT"
           },
-          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades",
           "wired": "2026-07-16"
         },
@@ -60,7 +60,7 @@
           "id": "box_pdl_short",
           "side": "short",
           "class": "box",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -94,14 +94,14 @@
             "source": "box-screen 2026-07-09: drift +10.73p/240m YTD n=2465, positive ALL slices (May +58.6)",
             "drift": "PERSISTENT"
           },
-          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20.",
+          "notes": "RESURRECTION DOCKET item 3: V1 box theory re-expressed. SHADOW \u2014 earns ACTIVE via stamp-forward scoreboard n>=20. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-10"
         },
         {
           "id": "box_pdl_counter_long",
           "side": "long",
           "class": "box",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -136,7 +136,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of box_pdl_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "notes": "Counterpart of box_pdl_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-29",
           "watch": "\ud83c\udfad"
         },

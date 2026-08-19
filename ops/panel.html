@@ -909,6 +909,8 @@ body.has-ticker{padding-bottom:32px}
   <div class="card" style="margin:14px">
     <div class="card-title">Shadowboard — cumulative stamp-forward scoreboard <span class="pill pill-warn" style="font-size:9px" title="Everything in this table is SIMULATED paper-stamp data (current era, executable-v2, costed). It feeds the promotion bar. Real money lives in BROKER TRUTH above.">SIM</span>
       <span id="sb-meta" class="muted" style="font-size:10px;margin-left:8px"></span>
+      <span id="sb-chips" style="margin-left:10px;font-size:11px"></span>
+      <div id="sb-movers" class="muted" style="padding:3px 0 0;font-size:11px"></div>
     </div>
     <div class="muted" style="font-size:10.5px;padding:0 12px 6px;display:flex;gap:14px;flex-wrap:wrap">
       <span><b>❌</b> = TRUTH CHECK FAILED — this cell's virtual family sim contradicts its own REAL broker fills; the column is proven wrong here, trust BROKER TRUTH (promotion is gated: PROMOTE-GATED-TRUTH / TRUTH BLOCKED)</span>
@@ -1285,6 +1287,8 @@ function renderBrokerTruth(d){
 
 /* ── Shadowboard ───────────────────────────────────────────────────────── */
 let SBOARD=null;
+let SB_COHORT=localStorage.getItem('sb_cohort')||'';
+function sbSetCohort(w){SB_COHORT=w;localStorage.setItem('sb_cohort',w);pollShadowboard();}
 async function pollShadowboard(){
   try{
     const r=await fetch('/api/shadowboard'); if(!r.ok)return;
@@ -1301,7 +1305,21 @@ async function pollShadowboard(){
       `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${_ageTxt} (${(d.generated||'').slice(11,16)}Z)`;
     const TIER_ICON={0:'🔻',1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',7:'🪦'};
     let lastTier=null;
-    document.getElementById('sb-body').innerHTML=(d.rows||[]).map(x=>{
+    // cohort filter chips (audit enhancement 2026-08-19)
+    const _hist={};
+    (d.rows||[]).forEach(r=>{const w=r.watch||'∅';_hist[w]=(_hist[w]||0)+1});
+    const _mk=(w,lbl,n)=>`<span onclick="sbSetCohort('${w}')" style="cursor:pointer;margin-right:6px;padding:1px 7px;border-radius:9px;border:1px solid ${SB_COHORT===w?'var(--fg2,#ccc)':'rgba(128,128,128,.35)'};${SB_COHORT===w?'font-weight:700':''}">${lbl}${n!=null?` <span class=muted>${n}</span>`:''}</span>`;
+    document.getElementById('sb-chips').innerHTML =
+      _mk('','ALL',(d.rows||[]).length) +
+      Object.keys(_hist).sort().map(w=>_mk(w, w==='∅'?'no-badge':w, _hist[w])).join('');
+    const _mv=d.movers||[];
+    document.getElementById('sb-movers').innerHTML = _mv.length
+      ? `↕ movers since ${_mv&&d.movers_since?d.movers_since.slice(5,16).replace('T',' '):'baseline'}Z: ` +
+        _mv.slice(0,14).map(m=>`<span style="margin-right:10px">${m.to<m.from?'🔼':'🔽'} ${m.cell}/${m.setup} t${m.from}→t${m.to}</span>`).join('') +
+        (_mv.length>14?` <span class=muted>+${_mv.length-14} more</span>`:'')
+      : (d.movers_since===null?'↕ movers: baseline reset — populates as tiers change':'↕ no tier changes in the last 24h');
+    const _sbRows=(d.rows||[]).filter(x=>!SB_COHORT||( (x.watch||'∅')===SB_COHORT ));
+    document.getElementById('sb-body').innerHTML=_sbRows.map(x=>{
       const tier=x.gov?x.gov.tier:7;
       let hdr='';
       if(tier!==lastTier){

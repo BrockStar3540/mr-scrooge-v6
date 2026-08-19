@@ -64,7 +64,7 @@
           "id": "ps_ceil_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -103,7 +103,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments.",
+          "notes": "April-replay: txns 458/476/485/514 faded session ceilings (psPos 0.82-1.00, rsi 60+) and won on 4 instruments. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {
@@ -380,7 +380,7 @@
           "id": "rg1_range_scalp_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -429,7 +429,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44"
         },
@@ -630,7 +630,7 @@
           "id": "ps_ceil_fade_counter_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -669,7 +669,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44\ud83c\udfad"
         }

@@ -1025,7 +1025,7 @@
           "id": "alpha_extended_fade_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1075,7 +1075,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {
@@ -1284,7 +1284,7 @@
           "id": "rg1_range_scalp_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1327,7 +1327,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds.",
+          "notes": "Book RG1 upper-rail range scalp, verbatim thresholds. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {
@@ -1447,7 +1447,7 @@
           "id": "rg1_range_scalp_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1496,7 +1496,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate",
+          "notes": "align-cube gated variant of rg1_range_scalp_short (RG1_range_bound_scalp_short al4 BB3); align<=2 drops the trend_4h context per slate | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-31"
         },
         {
@@ -1554,7 +1554,7 @@
           "id": "echo_box_fade_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1600,7 +1600,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "notes": "align-cube gated variant of echo_box_fade_short (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-31"
         },
         {
@@ -1711,7 +1711,7 @@
           "id": "tc_vwapbb_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
@@ -1745,7 +1745,7 @@
             "ev_seq": 0.0,
             "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
           },
-          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "sizing": {
             "risk_pct": 0.2
           }
@@ -2634,7 +2634,7 @@
           "id": "alpha_extended_fade_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2684,7 +2684,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce.",
+          "notes": "Book #1 strategy: cube align4 EV +2.7..+4.5 (upper bound). Fade the overextended bounce. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {
@@ -3112,7 +3112,7 @@
           "id": "echo_box_fade_long_g_bb3",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3156,7 +3156,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate",
+          "notes": "align-cube gated variant of echo_box_fade_long (echo_box_fade_v2 al4 BB3); align<=2 drops the trend_4h context per slate | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-31"
         },
         {
@@ -3320,7 +3320,7 @@
           "id": "tc_vwapbb_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
@@ -3354,7 +3354,7 @@
             "ev_seq": 0.0,
             "source": "external-repo trial 2026-07-31: TradeClaw VWAP-EMA-BB pullback (MIT). Source's own costed test was NEGATIVE - zero prior, must earn the seat via family cycles"
           },
-          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence",
+          "notes": "zero-authority external-strategy trial; promotion only via family-cycle evidence | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "sizing": {
             "risk_pct": 0.2
           }

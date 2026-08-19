@@ -753,7 +753,7 @@
           "id": "trend_pullback_long",
           "side": "long",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -798,7 +798,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k.",
+          "notes": "Discovery-engine trend-pullback (2026-06-14), march txn 280 +$4.2k. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {

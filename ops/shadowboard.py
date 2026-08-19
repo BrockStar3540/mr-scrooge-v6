@@ -832,7 +832,34 @@ def _refresh_worker():
                  "open_floor_usd": round(_floor, 2),
                  "heat_age_s": (round(_heat_age_s) if _heat_age_s is not None
                                 else None)}
+        # 24h MOVERS (audit enhancement 2026-08-19): tier changes vs a rolling
+        # baseline so promotions/demotions/at-the-gates motion reads at a
+        # glance. Baseline resets when older than 24h.
+        movers, movers_since = [], None
+        try:
+            _bl_path = _ROOT / "data" / "board_tier_baseline.json"
+            _cur = {f"{r['cell']}|{r['setup']}": (r.get("gov") or {}).get("tier", 7)
+                    for r in rows}
+            _bl = json.loads(_bl_path.read_text()) if _bl_path.exists() else None
+            if _bl and time.time() - _bl.get("ts", 0) <= 86400:
+                movers_since = _bl.get("iso")
+                for _k, _tn in _cur.items():
+                    _to = _bl.get("tiers", {}).get(_k)
+                    if _to is not None and _to != _tn:
+                        _cell, _setup = _k.split("|", 1)
+                        movers.append({"cell": _cell, "setup": _setup,
+                                       "from": _to, "to": _tn})
+                movers.sort(key=lambda m: (m["to"] - m["from"]))
+            else:
+                _bl_path.write_text(json.dumps(
+                    {"ts": time.time(),
+                     "iso": datetime.now(timezone.utc).isoformat(),
+                     "tiers": _cur}))
+                movers_since = None
+        except Exception:
+            pass
         data = {"rows": rows,
+                "movers": movers, "movers_since": movers_since,
                 "meta": _meta,
                 "tiers": TIER_LABELS,
                 "active_median": round(sorted(active)[len(active)//2], 2) if active else None,

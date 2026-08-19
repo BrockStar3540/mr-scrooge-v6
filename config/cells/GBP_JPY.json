@@ -753,7 +753,7 @@
           "id": "trend_pullback_long",
           "side": "long",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -795,14 +795,14 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k.",
+          "notes": "Discovery-engine entry (2026-06-14); march 280 +$4.2k. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {
           "id": "trend_pullback_counter_short",
           "side": "short",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -844,7 +844,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of trend_pullback_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "notes": "Counterpart of trend_pullback_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27",
           "watch": "\ud83c\udfad"
         },

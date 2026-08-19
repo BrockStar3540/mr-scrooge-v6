@@ -380,7 +380,7 @@
           "id": "rg1_range_scalp_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -429,7 +429,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44"
         },
@@ -737,7 +737,7 @@
           "id": "trend_pullback_long",
           "side": "long",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -782,7 +782,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup.",
+          "notes": "March-replay: txn 280 AUD_USD long (t4h up, h1r4 +32, willr -94.6) won +$4.2k \u2014 the discovery engine's one robust entry shape (2026-06-14), first time wired as a setup. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-27"
         },
         {

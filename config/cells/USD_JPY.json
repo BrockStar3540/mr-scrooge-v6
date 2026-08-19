@@ -1047,7 +1047,7 @@
           "id": "kc_breakout_counter_short",
           "side": "short",
           "class": "LEAN",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 60,
           "conditions": [
             {
@@ -1092,7 +1092,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "fresh era \u2014 activation bar governs promotion"
           },
-          "notes": "Counterpart of kc_breakout_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "notes": "Counterpart of kc_breakout_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-05"
         },
         {
@@ -1247,7 +1247,7 @@
           "id": "timing_lean_30_t20s",
           "side": "long",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 30,
           "conditions": [
             {
@@ -1297,7 +1297,7 @@
             "source": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m; cell-calibration-2026-07/direction_lean",
             "n_floor_status": "shadow-only-awaiting-live-stamps"
           },
-          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean atr_h1_relative sign=negative (corr=-0.1276, AUC=0.4723). Lean confirmer: atr_h1_relative >= p75 (rolling-percentile form). atr_5m boundary p75=6.521932 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | SIDE OVERRIDE: short -> long per Brock direction-persistence order 2026-07-04 (lock-era 4W/0L +24.9p, config/locked_cells.json); the atr conditions stay as vol-energy gates; revisit at n>=20 same-engine trades. | DEMOTED 2026-07-08: window drift -12.92p/240m long; lean evidence was sign=negative all along (long side = lock-era override).",
+          "notes": "SHADOW TIMING setup: 30m atr_5m band. Side from persistent lean atr_h1_relative sign=negative (corr=-0.1276, AUC=0.4723). Lean confirmer: atr_h1_relative >= p75 (rolling-percentile form). atr_5m boundary p75=6.521932 (plateau_ok). Awaiting live CELLSHADOW stamps before promotion consideration. | SIDE OVERRIDE: short -> long per Brock direction-persistence order 2026-07-04 (lock-era 4W/0L +24.9p, config/locked_cells.json); the atr conditions stay as vol-energy gates; revisit at n>=20 same-engine trades. | DEMOTED 2026-07-08: window drift -12.92p/240m long; lean evidence was sign=negative all along (long side = lock-era override). | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "_note": "forward shadow of the 2026-07-16 wider-engage result (registered 3-cell book) \u2014 V6 only, additive, never trades",
           "wired": "2026-07-16"
         },
@@ -1362,7 +1362,7 @@
           "id": "timing_lean_30_short",
           "side": "short",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 30,
           "conditions": [
             {
@@ -1411,7 +1411,7 @@
             "source": "batch-dialin 2026-07-08: short drift +12.92/240m +7.37/60m (n=173/60d), medMFE 36p; consistent with original lean sign=negative",
             "drift": "PERSISTENT"
           },
-          "notes": "LIVE FLIP 2026-07-08. Violent window: SL25 (winners MAE p75 34.5), engage 10, trail 1.0xATR[5,12]. Highest-variance setup in the book \u2014 tripwire fast last_n=20.",
+          "notes": "LIVE FLIP 2026-07-08. Violent window: SL25 (winners MAE p75 34.5), engage 10, trail 1.0xATR[5,12]. Highest-variance setup in the book \u2014 tripwire fast last_n=20. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-07-13"
         },
         {
@@ -1641,7 +1641,7 @@
           "id": "rg1_range_scalp_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "DISABLED",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1690,7 +1690,7 @@
             "drift": "UNKNOWN",
             "n_floor_status": "no current-era sample \u2014 activation bar governs promotion"
           },
-          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
+          "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44"
         },
