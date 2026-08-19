@@ -942,6 +942,16 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-132 — the gear change that erased the library: popper hash wiped every stamp era
+
+- **Discovered:** 2026-08-19, operator: "why are all of these empty, no data" — every shadowboard row showed 0 era episodes; the promotion bar's entire sample was gone.
+- **Area:** `ops/governor.py` pp-hash era policy (charter 2026-07-31) · consequence of the v6.30.0 operator ratchet-gear change.
+- **Symptom / chain:** the operator changed the deployed ratchet gear; the scope decision explicitly protected shadow evidence (only live seats + poppers flipped). But the charter's pp-hash rule — "a FAMILY's evidence is void when its popper machinery changes" — reset `eras[k]` for EVERY cell in the book at the next tick (2026-08-19T00:35Z): 1,000+ stamp-era clocks, the whole docket, wiped overnight. The over-breadth: v2 stamp scores replay the PARENT's own exit geometry only — popper gear cannot affect a single one of them — yet the stamp era (the promotion bar's sample) was the thing being reset. Family/vc metrics, the ones popper gear actually touches, re-replay themselves under current gear on the 6h cron anyway.
+- **Fix (v6.30.5):** pp-gear changes are ledgered as `FAM-GEAR-CHANGE` and never touch the stamp era. Era clocks restored from the 20:03Z backup tarball via merge: 53 wrongly-wiped eras reverted, the 21 seats whose own mechanics legitimately changed kept their resets (cfg-hash diff between backup and live decided which was which). 858 era-scored episodes back on the board.
+- **Lesson:** "void the evidence" must name WHICH evidence — an era-identity that includes inputs a metric never consumes turns unrelated maintenance into data loss. Second cousin of B-131 in the same week: invariants and identities must be scoped to what actually depends on them, or the machine's own hygiene rules become its biggest source of damage. And the backup cadence earned its keep — the restore was a tarball away.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

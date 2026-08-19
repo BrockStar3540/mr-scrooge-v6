@@ -671,16 +671,22 @@ def main():
                                       sort_keys=True).encode()).hexdigest()[:12]
             old_h = pp_hashes.get(k)
             if old_h is not None and old_h != h:
-                eras[k] = now_iso
+                # B-132 (2026-08-19): popper gear cannot touch parent-stamp
+                # scores (the promotion bar's sample) — the old eras[k] wipe
+                # here erased the whole book's evidence on the 2026-08-18
+                # operator gear change. Flag family evidence; never reset
+                # the stamp era.
                 pp_resets.append(k)
             pp_hashes[k] = h
         if pp_resets:
             with open(LEDGER, "a") as led:
                 for k in pp_resets:
-                    led.write(json.dumps({"t": now_iso, "action": "ERA-RESET",
-                                          "key": k, "why": "popper config changed",
+                    led.write(json.dumps({"t": now_iso, "action": "FAM-GEAR-CHANGE",
+                                          "key": k, "why": "popper gear/switch changed — family "
+                                          "evidence flagged; stamp era NOT reset (B-132)",
                                           "dry_run": args.dry_run}) + "\n")
-            print(f"governor: era clocks reset for {len(pp_resets)} setup(s) — popper config changed")
+            print(f"governor: popper gear changed for {len(pp_resets)} setup(s) — "
+                  "family evidence flagged (stamp eras untouched, B-132)")
     except Exception as _ppe:
         print(f"governor: pp-hash check skipped ({_ppe})", file=sys.stderr)
     if not args.dry_run:
