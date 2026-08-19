@@ -1034,6 +1034,7 @@ def _state(engine: "Engine") -> dict:
         "last_cycle_time": engine.last_cycle_time.isoformat() if engine.last_cycle_time else None,
         "dry_run":         engine.dry_run,
         "server_time":     now.isoformat(),
+        "ui_rev":          int(_PANEL.stat().st_mtime) if _PANEL.exists() else 0,
         "governance":      governance,
         "engine":          engine_info,
         "lock_guard":      lock_guard_status,
@@ -1640,7 +1641,12 @@ class _Handler(http.server.BaseHTTPRequestHandler):
         try:
             if self.path in ("/", ""):
                 if _PANEL.exists():
-                    body = _PANEL.read_bytes()
+                    # v6.30.4: bake the panel's build rev (file mtime) into the
+                    # page so a long-lived tab can detect it is stale — twice
+                    # now (2026-07-23, 2026-08-18) an open dashboard rendered
+                    # new API data through old JS and read gear/keys wrong.
+                    body = _PANEL.read_bytes().replace(
+                        b"__UI_REV__", str(int(_PANEL.stat().st_mtime)).encode())
                     ctype = "text/html; charset=utf-8"
                 else:
                     body = b"<h1>Panel not found</h1>"

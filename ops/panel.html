@@ -1516,10 +1516,19 @@ function spark(values, opts={}){
  * ═════════════════════════════════════════════════════════════════════════ */
 let STATE=null, SYSINFO=null, DAILY_PL=null;
 
+const UI_REV='__UI_REV__';
 async function fetchState(){
   try{
     document.getElementById('spin').classList.add('spin-active');
     const r=await fetch('/api/state'); STATE=await r.json();
+    // v6.30.4 stale-tab guard: this page bakes its build rev at serve time;
+    // when the server's panel file changes, reload so new API data is never
+    // rendered through old JS (bit twice: 2026-07-23 grid keys, 2026-08-18
+    // two-phase gear labels). Skips the reload while the operator is typing.
+    if(STATE.ui_rev && UI_REV!=='__UI'+'_REV__' && String(STATE.ui_rev)!==UI_REV){
+      const tag=document.activeElement&&document.activeElement.tagName;
+      if(tag!=='INPUT'&&tag!=='TEXTAREA'&&tag!=='SELECT'){location.reload();return}
+    }
     document.getElementById('ts').textContent='upd '+new Date().toLocaleTimeString();
     renderAll();
   }catch(e){console.error(e)}
