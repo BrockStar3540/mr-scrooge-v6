@@ -418,6 +418,7 @@ def broker_truth():
         stt = st_map.get((f["instrument"], f.get("session", "?"), f["setup"]))
         out.append({
             "cell": f'{f["instrument"]}/{f.get("session", "?")}',
+            "watch": (stt[3] if stt and len(stt) > 3 else None),
             "setup": f["setup"],
             "status": stt[0] if stt else "RETIRED",
             "legs": f.get("n", 0),
