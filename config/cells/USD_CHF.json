@@ -834,6 +834,94 @@
             "risk_pct": 0.2
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "shark_fade_mid_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "max": 0.1,
+              "note": "at prev-session floor"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_fade_mid_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "min": 0.9,
+              "note": "at prev-session ceiling"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=None ev_gross_short=None. Source: config/cell_calibration.json metadata.killed_note."
@@ -2116,6 +2204,239 @@
             "risk_pct": 0.2
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "liq_sweep_fade_long_m_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0
+            },
+            {
+              "feature": "willr_m5",
+              "max": -80.0,
+              "note": "EXHAUSTION confirmation: Williams %R (M5/14, range -100..0) must be stretched INTO the swept side \u2014 near 0 for a high sweep, near -100 for a low sweep. Mechanically coherent with the fade thesis: the stop run should leave price at a range extreme."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: liq_sweep_fade_long_m (long) ran 8 eps @ -7.25p/ep with medMFE/MAE 8.1/12.9 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of liq_sweep_fade_long_m (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "shark_momo_run_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.3,
+              "note": "max heat: non-fade P3a Q5 was best (+4.0p)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.5,
+              "max": 2.0,
+              "note": "day is moving; adr dial positive 7-8/8 pairs"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h direction agreement"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 1.0,
+              "note": "M5 impulse aligned"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_momo_run_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.3,
+              "note": "max heat: non-fade P3a Q5 was best (+4.0p)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.5,
+              "max": 2.0,
+              "note": "day is moving; adr dial positive 7-8/8 pairs"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "4h direction agreement"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -1.0,
+              "note": "M5 impulse aligned"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_fade_mid_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "max": 0.1,
+              "note": "at prev-session floor"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_fade_mid_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "min": 0.9,
+              "note": "at prev-session ceiling"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
@@ -3030,6 +3351,326 @@
             "risk_pct": 0.2
           },
           "watch": "\u26bd"
+        },
+        {
+          "id": "echo_box_fade_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_long (long) ran 5 eps @ -2.9p/ep with medMFE/MAE 7.3/11.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
+        },
+        {
+          "id": "shark_momo_run_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.3,
+              "note": "max heat: non-fade P3a Q5 was best (+4.0p)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.5,
+              "max": 2.0,
+              "note": "day is moving; adr dial positive 7-8/8 pairs"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h direction agreement"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 1.0,
+              "note": "M5 impulse aligned"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_momo_run_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.3,
+              "note": "max heat: non-fade P3a Q5 was best (+4.0p)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.5,
+              "max": 2.0,
+              "note": "day is moving; adr dial positive 7-8/8 pairs"
+            },
+            {
+              "feature": "trend_4h",
+              "max": -0.5,
+              "note": "4h direction agreement"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -1.0,
+              "note": "M5 impulse aligned"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_fade_mid_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "max": 0.1,
+              "note": "at prev-session floor"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_fade_mid_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.3,
+              "note": "MID heat band: fades die in dead vol AND under max heat (P3a)"
+            },
+            {
+              "feature": "adr_consumed",
+              "min": 0.25,
+              "note": "not a dead day"
+            },
+            {
+              "feature": "ps_pos",
+              "min": 0.9,
+              "note": "at prev-session ceiling"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_adr_late_long",
+          "side": "long",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adr_consumed",
+              "min": 0.9,
+              "max": 2.5,
+              "note": "day mostly consumed: a day that moved keeps moving (P2.1/P3a)"
+            },
+            {
+              "feature": "d_ret",
+              "min": 5.0,
+              "note": "continue the day's direction"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "note": "dead-vol filter: P3a Q1 (quiet H1 vol) was the only negative quintile"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "shark_adr_late_short",
+          "side": "short",
+          "class": "control",
+          "status": "SHADOW",
+          "wired": "2026-08-19",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adr_consumed",
+              "min": 0.9,
+              "max": 2.5,
+              "note": "day mostly consumed: a day that moved keeps moving (P2.1/P3a)"
+            },
+            {
+              "feature": "d_ret",
+              "max": -5.0,
+              "note": "continue the day's direction"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "note": "dead-vol filter: P3a Q1 (quiet H1 vol) was the only negative quintile"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "EATER slate 2026-08-19: churn-map session (P2.1 corpus walk-forward + P3a on 9,114 live episodes). Amplitude is predictable, count is not; dead-vol Q1 drags; fades peak mid-heat, momentum peaks max-heat; adr_consumed>0.9 continuation beat the exhaustion-fade heuristic. Correlational only, overlapping episodes, one era \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd88"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"

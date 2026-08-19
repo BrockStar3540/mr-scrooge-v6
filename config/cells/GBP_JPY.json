@@ -2293,6 +2293,63 @@
           "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact.",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "rg1_range_scalp_short_g_bb3_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 62.0,
+              "max": 80.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "bb_width",
+              "min": 25.0,
+              "note": "gate BB3: bands >= 2.5x the 10p cube stop \u2014 wide-range regime (slate score 9277, n=5309, exp 1.748)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: rg1_range_scalp_short_g_bb3 (short) ran 5 eps @ -14.5p/ep with medMFE/MAE 6.3/27.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of rg1_range_scalp_short_g_bb3 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "april16-replay shadow cell"
