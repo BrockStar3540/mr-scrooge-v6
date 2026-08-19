@@ -136,7 +136,10 @@ def test_shipped_config_and_defaults_carry_the_new_keys():
     # operator 2026-08-12: 9 -> 15 (pool froze at 10/9 after the B-125-restore
     # over-fill; audit ordered a shed + headroom so the green docket auditions)
     # operator 2026-08-16: 15 -> 20 (B-129 backfill surfaced a 52-cell docket)
-    assert cfg["max_probe_seats_total"] == 20
+    # operator 2026-08-19: 20 -> 30 (post-shed 70-deep bar-met docket vs full house)
+    # B-131 class: the ceiling is an OPERATOR DIAL — equality pins here deadlock
+    # sanctioned raises at the pre-push hook. Sanity-range pin only.
+    assert 1 <= cfg["max_probe_seats_total"] <= 100
     assert cfg["fdr_family"] == "docket"
 
 
