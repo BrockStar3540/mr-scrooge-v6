@@ -151,7 +151,7 @@
           "id": "es_trend_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
@@ -1548,6 +1548,116 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "liq_sweep_fade_short_v_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_high",
+              "min": 1.0,
+              "note": "same sweep trigger as the baseline"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.15,
+              "note": "VOLUME-CONFIRMED sweep. FX tick volume is a COUNT, not size, so this is not an institutional-footprint claim \u2014 but a stop cascade is many orders firing, which tick count does capture. Tests whether requiring elevated activity separates real stop runs from drift."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: liq_sweep_fade_short_v (short) ran 14 eps @ -6.5p/ep with medMFE/MAE 3.1/7.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of liq_sweep_fade_short_v (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 1.0,
+              "max": 1.5,
+              "note": "gate SPR1 per-pair band [1.0,1.5] = tight-spread regime for EUR_USD (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: mr2_bb_reversion_short_g_spr1 (short) ran 5 eps @ -28.1p/ep with medMFE/MAE 0.5/15.1 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of mr2_bb_reversion_short_g_spr1 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."

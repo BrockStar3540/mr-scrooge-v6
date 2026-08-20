@@ -2606,6 +2606,49 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "orb_fade_counter_short",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_pos",
+              "min": -0.5,
+              "max": 0.05,
+              "note": "at/just under ORB low, revert prior"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: orb_fade_long (long) ran 5 eps @ -35.8p/ep with medMFE/MAE 3.2/99.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of orb_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "3 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -4032,6 +4075,52 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "echo_box_fade_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_long (long) ran 5 eps @ -4.9p/ep with medMFE/MAE 2.8/16.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "3 ACTIVE, 1 PROBE, 20 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."

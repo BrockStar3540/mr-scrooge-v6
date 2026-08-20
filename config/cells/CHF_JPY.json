@@ -672,6 +672,68 @@
           "notes": "Regime-map gap fill: cloned from family template; see slate rationale on the map artifact. | SHED 2026-08-19 dormant-audit (operator); DISABLED, manual re-enable only",
           "wired": "2026-08-07",
           "watch": "\ud83c\udf44\ud83c\udfad"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 2.6,
+              "max": 4.1,
+              "note": "gate SPR1 per-pair band [2.6,4.1] = tight-spread regime for CHF_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: mr2_bb_reversion_short_g_spr1 (short) ran 7 eps @ -17.07p/ep with medMFE/MAE 0.8/29.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of mr2_bb_reversion_short_g_spr1 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "april-replay shadow cell"
@@ -2229,6 +2291,68 @@
           },
           "notes": "Counterpart of trend_pullback_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-07-27"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_spr1_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.2,
+              "note": "book: z>=1.2"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.78
+            },
+            {
+              "feature": "rsi14",
+              "min": 58.0
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "min": 2.6,
+              "max": 4.1,
+              "note": "gate SPR1 per-pair band [2.6,4.1] = tight-spread regime for CHF_JPY (p10/p40-capped from 14d stamps; absolute 1-2p band cannot fire on crosses)",
+              "lineage": "align-cube slate 2026-07-31 (Brock) \u2014 8yr factor-cube, pre-H1-leak upper bounds; gate bands translated at the cube 10p-stop context"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: mr2_bb_reversion_short_g_spr1 (short) ran 6 eps @ -0.17p/ep with medMFE/MAE 4.8/21.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of mr2_bb_reversion_short_g_spr1 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "april-replay shadow cell"

@@ -2437,6 +2437,100 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "liq_sweep_fade_long_v_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0,
+              "note": "same sweep trigger as the baseline"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.15,
+              "note": "VOLUME-CONFIRMED sweep. FX tick volume is a COUNT, not size, so this is not an institutional-footprint claim \u2014 but a stop cascade is many orders firing, which tick count does capture. Tests whether requiring elevated activity separates real stop runs from drift."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: liq_sweep_fade_long_v (long) ran 11 eps @ -2.86p/ep with medMFE/MAE 7.7/20.0 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of liq_sweep_fade_long_v (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "echo_box_fade_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "max": 0.03
+            },
+            {
+              "feature": "ret_5m",
+              "min": 0.0
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_long (long) ran 6 eps @ -13.17p/ep with medMFE/MAE 5.8/21.0 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-07",
+          "watch": "\ud83c\udf44"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
@@ -3671,6 +3765,48 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "fvg_fill_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: fvg_fill_long (long) ran 7 eps @ -3.36p/ep with medMFE/MAE 0.3/16.1 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of fvg_fill_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
