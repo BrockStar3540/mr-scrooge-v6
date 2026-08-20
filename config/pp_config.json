@@ -6,7 +6,7 @@
   "trail_pips": 2.0,
   "max_levels": 8,
   "max_total_trades": 8,
-  "max_margin_pct_total": 0.9,
+  "max_margin_pct_total": 1.2,
   "grid_max_age_days": 7.0,
   "marker_pips": [
     10.0,
