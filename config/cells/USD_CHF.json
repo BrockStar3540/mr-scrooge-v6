@@ -1263,7 +1263,7 @@
           "id": "liq_sweep_fade_short_t",
           "side": "short",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
