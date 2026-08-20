@@ -3231,7 +3231,7 @@
           "id": "echo_box_fade_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4159,7 +4159,7 @@
           "wired": "2026-08-07"
         }
       ],
-      "notes": "6 PROBE, 42 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "7 PROBE, 41 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
