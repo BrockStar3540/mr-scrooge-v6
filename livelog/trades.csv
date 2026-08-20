@@ -243,3 +243,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-19T12:50:17Z,GBP_USD,long,1444,1.59,parent
 2026-08-19T17:39:42Z,GBP_USD,short,1445,1.30,popper
 2026-08-19T17:42:07Z,GBP_USD,short,1444,1.88,popper
+2026-08-20T01:30:26Z,AUD_USD,short,4605,2.76,parent
+2026-08-20T01:45:46Z,CAD_JPY,long,1969,0.86,parent
