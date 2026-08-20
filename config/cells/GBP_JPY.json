@@ -1848,7 +1848,7 @@
           "id": "mr2_bb_reversion_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
