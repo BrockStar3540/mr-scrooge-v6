@@ -3315,6 +3315,48 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "fvg_fill_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bear_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just below an UNTOUCHED bearish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: fvg_fill_short (short) ran 8 eps @ -15.0p/ep with medMFE/MAE 2.9/14.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 8.5,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of fvg_fill_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "29 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
@@ -5170,6 +5212,49 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd88"
+        },
+        {
+          "id": "fvg_fill_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": -2.0,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed)"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: fvg_fill_long (long) ran 6 eps @ -1.83p/ep with medMFE/MAE 5.6/8.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 20.0,
+            "trail_pips": 2.5,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of fvg_fill_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "3 PROBE, 20 SHADOW setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
