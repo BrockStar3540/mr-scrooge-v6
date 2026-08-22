@@ -60,7 +60,10 @@ def test_tc_vwapbb_cells_carry_the_h1_trend_filter():
         feats = {c.get("feature") for c in s.get("conditions", [])}
         assert "ema20_1h_dist" in feats, f"{fname}/{sess}/{s['id']} missing H1 trend filter"
         assert "ema20_dist_pct" not in feats, f"{fname}/{sess}/{s['id']} still has the M5 contradiction"
-    assert seen == 24, f"expected 24 tc_vwapbb cells, found {seen}"
+    # B-131 class: slate counts GROW when the MAE-flip machinery wires counterparts
+    # (2026-08-20: 6 orb_fade_counter_* twins took 60 -> 66 and deadlocked every
+    # push for two days). Floor pins only — the invariant is the gate, not the count.
+    assert seen >= 24, f"expected >=24 tc_vwapbb cells, found {seen}"
 
 
 def test_every_orb_setup_carries_the_formation_gate():
@@ -77,7 +80,7 @@ def test_every_orb_setup_carries_the_formation_gate():
                  if c.get("feature") == "orb_range_pips"
                  and c.get("min") is not None and float(c["min"]) > 0]
         assert gates, f"{fname}/{sess}/{s.get('id')} lacks the orb_range_pips formation gate"
-    assert seen == 60, f"expected 60 ORB cells, found {seen}"
+    assert seen >= 60, f"expected >=60 ORB cells, found {seen}"   # floor pin (B-131 class)
 
 
 def test_playmaker_disabled_cells_stays_empty():
