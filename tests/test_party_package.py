@@ -67,6 +67,12 @@ def pp(tmp_path, monkeypatch):
     # tests must not read the LIVE runtime pause switch (config/runtime.json)
     # — the 2026-07-29 cutover freeze turned every fire test red until this.
     monkeypatch.setattr(ppm, "trading_enabled", lambda: True)
+    # Operator sizing dials (config/playmaker_config.json margin_pct_per_trade)
+    # must never swing popper-LOGIC tests: these ladder scenarios were written
+    # against 0.15, and the 2026-08-24 turbo raise to 0.20 flipped the margin
+    # gate mid-ladder through the live config read. Pin it. (B-131 cousin:
+    # tests coupled to operator dials deadlock sanctioned changes.)
+    monkeypatch.setattr(ppm, "pm_margin_pct", lambda: 0.15)
     return ppm.PartyPackage(FakeBroker(), dry_run=False)
 
 
