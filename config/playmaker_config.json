@@ -2,9 +2,9 @@
   "schema": "v1",
   "account": {
     "max_concurrent_trades": 8,
-    "margin_pct_per_trade": 0.15,
+    "margin_pct_per_trade": 0.2,
     "max_per_currency_direction": 4,
-    "probe_sizing_mult": 0.33
+    "probe_sizing_mult": 0.5
   },
   "defaults": {
     "enabled": true,
