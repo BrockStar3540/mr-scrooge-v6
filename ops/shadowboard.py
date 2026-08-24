@@ -841,6 +841,26 @@ def _refresh_worker():
                  "open_floor_usd": round(_floor, 2),
                  "heat_age_s": (round(_heat_age_s) if _heat_age_s is not None
                                 else None)}
+        # THE CHAMBER (operator 2026-08-24): distill per-cell stamp form for
+        # the ranked selector. Atomic write; selector fails open to {} if absent.
+        try:
+            _forms = {}
+            for _r in rows:
+                _pk, _sk = str(_r.get("cell", "")).split("/", 1) if "/" in str(_r.get("cell", "")) else ("", "")
+                _key = "|".join((_pk, _sk, str(_r.get("setup", ""))))
+                _forms[_key] = {"form7": _r.get("last7_avg"),
+                                "n7": _r.get("last7_n") or 0,
+                                "era_avg": _r.get("avg_net240"),
+                                "era_n": _r.get("episodes") or 0}
+            _cf = _ROOT / "data" / "chamber_scores.json"
+            _tmp = _cf.with_suffix(".json.tmp")
+            _tmp.write_text(json.dumps(
+                {"t": datetime.now(timezone.utc).isoformat(), "forms": _forms}))
+            _tmp.replace(_cf)
+        except Exception:
+            import sys as _s, traceback as _tb
+            print("[shadowboard] chamber write failed:\n" + _tb.format_exc(),
+                  file=_s.stderr, flush=True)
         # 24h MOVERS (audit enhancement 2026-08-19): tier changes vs a rolling
         # baseline so promotions/demotions/at-the-gates motion reads at a
         # glance. Baseline resets when older than 24h.

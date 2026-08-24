@@ -430,14 +430,18 @@ class CellModule:
         if len(_candidates) == 1:
             return _candidates[0]
         try:
-            from core.execution_score import load_heat_scores, relative_heat
+            from core.execution_score import (load_heat_scores, relative_heat,
+                                              load_chamber_form, stamp_form)
             from modules.playmaker.playmaker import pm_adaptive_selector
             _scores = load_heat_scores()
+            _forms = load_chamber_form()
             def _rank(it):
                 k = f"{it.pair}|{it.session}|{it.setup_id}"
                 trusted = bool((_scores.get(k) or {}).get("trusted")
                                and not (_scores.get(k) or {}).get("decaying"))
-                return relative_heat(k, it.side, _scores) + (0.25 if trusted else 0.0)
+                return (relative_heat(k, it.side, _scores)
+                        + (0.25 if trusted else 0.0)
+                        + stamp_form(k, _forms))
             _ranked = sorted(_candidates, key=_rank, reverse=True)
             _live = pm_adaptive_selector()
             _pick = _ranked[0] if _live else _candidates[0]
