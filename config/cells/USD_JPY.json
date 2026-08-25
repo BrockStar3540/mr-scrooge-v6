@@ -1366,6 +1366,269 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.6,
+              "note": "book: z>=1.2 | dial 2026-08-25"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "note": "added by dial slate | dial 2026-08-25",
+              "max": 1.8
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.91,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "max": 80.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "min": -0.4,
+              "note": "dial 2026-08-25"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag | dial 2026-08-25",
+              "max": 0.95
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "book: extreme upper band tag | dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "ps_ceil_fade_short_g_appr",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.91,
+              "max": 0.974,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "3 SHADOW setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
@@ -2887,6 +3150,370 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of fvg_fill_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "timing_lean_30_g_hot",
+          "side": "long",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.521932,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.521932) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m USD_JPY/london/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "pct_window_days": 90,
+              "pct_lo": 75.0,
+              "pct_hi": 100.0,
+              "resolved": [
+                1.107572,
+                3.374999
+              ],
+              "resolved_at": "2026-07-04",
+              "note": "Direction lean confirmer (rolling-percentile form): atr_h1_relative >= p75 \u2014 lean evidence 'atr_h1_relative HIGH' sign=negative drift=PERSISTENT. resolved lo = p75 of 2026 london-session bars (n=10870); resolved hi = observed 2026 max Monthly refit re-resolves; engine reads 'resolved'. | dial 2026-08-25",
+              "lineage": "cell-calibration-2026-07/direction_lean (atr_h1_relative HIGH, PERSISTENT); regime-edges-2026-07; resolved 2026-07-04 from Mini qtl-discovery-8yr/features/USD_JPY_features.parquet",
+              "min": 1.4
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.6,
+              "note": "book: z>=1.2 | dial 2026-08-25"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "note": "added by dial slate | dial 2026-08-25",
+              "max": 1.8
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.91,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "max": 80.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "min": -0.4,
+              "note": "dial 2026-08-25"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag | dial 2026-08-25",
+              "max": 0.95
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "book: extreme upper band tag | dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "ps_ceil_fade_short_g_appr",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.91,
+              "max": 0.974,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "fvg_fill_long_g_dial",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-25",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": 1.8,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed) | dial 2026-08-25"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83c\udfaf",
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars"
         }
       ],
       "notes": "3 SHADOW setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -4502,6 +5129,311 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.6,
+              "note": "book: z>=1.2 | dial 2026-08-25"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "note": "added by dial slate | dial 2026-08-25",
+              "max": 1.8
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "rg1_range_scalp_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.91,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "max": 80.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "min": -0.4,
+              "note": "dial 2026-08-25"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_short_g_dial",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag | dial 2026-08-25",
+              "max": 0.95
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_counter_long_g_dial",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "book: extreme upper band tag | dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "ps_ceil_fade_short_g_appr",
+          "side": "short",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.91,
+              "max": 0.974,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "fvg_fill_long_g_dial",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-25",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "fvg_bull_dist_pips",
+              "min": 1.8,
+              "max": 3.0,
+              "note": "at/just above an UNTOUCHED bullish 3-candle gap (500 sentinel = no gap, fail-closed) | dial 2026-08-25"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "H1 trend agreement"
+            }
+          ],
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "DIAL slate 2026-08-25: dial-in farm (4,250 eps w/ stamped gate values) + struck-cell autopsy (359 eps, reconstructed features). Sub-range structure was material and consistent; bands widened from raw terciles to blunt overfit. Zero prior authority; parents' strike records untouched."
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83c\udfaf",
+          "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars"
         }
       ],
       "notes": "3 ACTIVE, 1 PROBE, 20 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
