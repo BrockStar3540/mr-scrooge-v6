@@ -29,7 +29,10 @@
     "GBP_USD|london|liq_sweep_fade_long": false,
     "GBP_USD|london|classic_box_break_short": false,
     "GBP_USD|ny|mr2_bb_reversion_short": false,
-    "EUR_USD|ny|rg1_range_scalp_short": false
+    "EUR_USD|ny|rg1_range_scalp_short": false,
+    "GBP_USD|london|rg1_range_scalp_short": false,
+    "EUR_USD|ny|mr2_bb_reversion_short_g_spr1": false,
+    "GBP_USD|ny|impulse_ob_long_nt": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0
