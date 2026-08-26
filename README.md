@@ -79,9 +79,9 @@ tapes, or contributed — walks the same ladder:
    bar conditions they already pass), queued ⏳ rows, and demote-due at the bottom. Each
    row's **verdict** (DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING / DEMOTE
    DUE) is computed by the governor's own code, so the board can never disagree with the
-   06:35Z run — the whole docket is visible, waiting is a state, not an absence.
+   :35Z run — the whole docket is visible, waiting is a state, not an absence.
 3. **Promotion — an audition, not a seat.** The **[Bar Governor](docs/GOVERNOR.md)**
-   (`ops/governor.py`, every 6h) admits a shadow when its **current-era** evidence clears
+   (`ops/governor.py`, **hourly at :35Z** since 2026-08-26) admits a shadow when its **current-era** evidence clears
    the whole predicate: **n ≥ 10 executable-exit episodes over ≥ 5 independent day/session
    blocks, ≥ +2.0 net pips/episode, a positive day-block bootstrap lower bound, a
    non-negative last-7-days, and Benjamini–Hochberg q ≤ 0.10** across the candidate
@@ -120,7 +120,7 @@ tapes, or contributed — walks the same ladder:
 
 **The autonomous day:** `06:30Z` the [counterpart audit](research/tools/counterpart_audit.py)
 wires opposite-direction twins for any MAE-heavy loser → the governor promotes and demotes by
-the bar every 6h (`00:35/06:35/12:35/18:35Z`) → `06:45Z` a change-gated, twice-verified backup
+the bar **hourly** (`:35Z`) → `06:45Z` a change-gated, twice-verified backup
 snapshots the result, and hourly at `:20` a [state committer](ops/state_commit.py) commits any
 machine-written config flips with a per-setup summary, so the repo never drifts from the
 running state ([B-126](docs/BOOK_OF_BUGS.md)). A separate **Commissioner** decides when a second, family-evidence
