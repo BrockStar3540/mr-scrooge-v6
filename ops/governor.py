@@ -825,7 +825,12 @@ def main():
             if args.cheater_diagnostic:
                 cheater_diagnostic_error = f"candidacy scan failed: {_cde}"
     cheater_diagnostics = []
-    if cheater_cands and (seats_free > 0 or args.cheater_diagnostic):
+    # Evaluation is DELIBERATELY not gated on seats_free (operator,
+    # 2026-08-27): gating look-on-seat froze the sweep for 9 days while
+    # the single seat was held — no ranked bench, tickets weeks stale.
+    # Looking costs 6 replays/run and risks nothing; only SEATING
+    # (cheater_promos[:seats_free] below) spends a seat.
+    if cheater_cands:
         try:
             from research.tools.family_cycle_replay import (score_cell,
                                                             episode_records)
@@ -871,6 +876,30 @@ def main():
             if args.cheater_diagnostic:
                 cheater_diagnostic_error = f"evaluation failed: {exc}"
         cheater_promos.sort(key=lambda x: -x[2]["cs"])
+        # _t20s twins qualify but never SEAT from this lane without an
+        # operator nod — a t20s seat also puts the wide-engage experimental
+        # gear live, which is a gear decision, not a promotion decision
+        # (operator caveat, 2026-08-27). Held qualifiers are ledgered.
+        _t20_held = [i for i in cheater_promos if i[0][2].endswith("_t20s")]
+        cheater_promos = [i for i in cheater_promos
+                          if not i[0][2].endswith("_t20s")]
+        for _item in _t20_held:
+            _pair, _sess, _sid = _item[0]
+            print(f"governor: cheater-v4 QUALIFIED {_pair}/{_sess}/{_sid} "
+                  "HELD — t20s twin seats only on operator nod (gear decision)")
+            with open(LEDGER, "a") as led:
+                led.write(json.dumps({
+                    "t": now, "action": "CHEATER-HELD-T20S",
+                    "pair": _pair, "session": _sess, "setup": _sid,
+                    "why": "qualified on the covered ticket; t20s gear goes "
+                           "live only on operator nod",
+                    "cs": _item[2]["cs"],
+                    "dry_run": bool(args.dry_run)}) + "\n")
+        for _item in cheater_promos[seats_free:]:
+            _pair, _sess, _sid = _item[0]
+            print(f"governor: cheater-v4 QUALIFIED {_pair}/{_sess}/{_sid} "
+                  f"benched — no free lane seat "
+                  f"({cheater_used}/{int(c.get('cheater_max_seats', 1))} used)")
         cheater_promos = cheater_promos[:seats_free]
         if args.cheater_diagnostic:
             qualified = sum(1 for _, verdict, _ in cheater_diagnostics
