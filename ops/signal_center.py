@@ -25,6 +25,10 @@ Scoring (per pair, shown verbatim in the page legend):
                       Renormalized over available parts; 0 when no sample.
                       Real broker cycles outrank the simulator (truth layers).
   contribution      = status_weight × 0.6^strikes × evidence_pips
+                      × (1 + 0.5·tilt·sign(evidence)), tilt = (MFE−MAE)/
+                      (MFE+MAE) era-median path shape: own-side pushes are
+                      boosted by MFE-heavy paths, CONTRA pushes by MAE-heavy
+                      paths (the MAE-flip doctrine), neutral under 5 episodes
                       (ACTIVE 1.0 / PROBE 0.6 / SHADOW 0.25 / SUSPENDED 0.10;
                       each governor strike permanently discounts the setup's
                       say until redemption — mirrors three-strikes doctrine)
@@ -74,6 +78,8 @@ BROKER_W, ERA_W, FORM_W = 0.5, 0.3, 0.2
 BROKER_SHRINK_N = 4       # broker cycles are scarce: shrink by n/(n+4)
 R_PIPS = 60.0             # governor cycle-R proxy → pips (the family stop)
 STRIKE_DISCOUNT = 0.6     # per governor strike: weight × 0.6^strikes
+EXC_TILT_W = 0.5          # excursion-tilt multiplier width (0.5 → ×0.5..×1.5)
+EXC_MIN_N = 5             # episodes of path data before the tilt speaks
 _REFRESH_S = 45           # cache TTL
 _LATCH_TIMEOUT_S = 300    # presume a refresh thread dead after this lease
 
@@ -152,10 +158,13 @@ def live_signals(reg: dict, now: datetime) -> dict:
 
 
 def hold_stats(store: Path = _SHADOW_STORE) -> dict:
-    """'PAIR|sess|setup' -> {hold_med_min, hold_n} from scored, non-censored
-    v2 episodes (exit_bar × 5). mtime-cached — the store is ~15MB and rewritten
-    every 15 min; parse at most once per rewrite, and only ever from the
-    refresh thread."""
+    """'PAIR|sess|setup' -> {hold_med_min, hold_n, mfe_med, mae_med, exc_n}
+    from the v2 episode store, mtime-cached (~15MB, rewritten every 15 min;
+    parse at most once per rewrite, only ever from the refresh thread).
+    Hold = exit_bar × 5 over resolved (non-censored, non-horizon) episodes.
+    MFE/MAE medians use EVERY scored v2 episode incl. censored — the path up
+    to the horizon is observed either way, and excursion is exactly the stat
+    censoring can't bias the way it biased net (B-129)."""
     try:
         m = os.path.getmtime(store)
     except OSError:
@@ -166,26 +175,59 @@ def hold_stats(store: Path = _SHADOW_STORE) -> dict:
     try:
         eps = json.loads(store.read_text()).get("episodes", {})
         bars: dict = {}
+        excs: dict = {}
         for ep in eps.values():
             if not isinstance(ep, dict) or ep.get("mv") != 2:
                 continue
             sc = ep.get("scores") or {}
+            if not sc:
+                continue
+            key = "%s|%s" % ((ep.get("cell") or "?/?").replace("/", "|"),
+                             ep.get("setup"))
+            mfe = sc.get("mfe240") if sc.get("mfe240") is not None else sc.get("mfe60")
+            mae = sc.get("mae240") if sc.get("mae240") is not None else sc.get("mae60")
+            if isinstance(mfe, (int, float)) and isinstance(mae, (int, float)):
+                excs.setdefault(key, []).append((float(mfe), float(mae)))
             if sc.get("censored") or sc.get("exit_reason") in (None, "horizon"):
                 continue
             xb = sc.get("exit_bar")
             if not isinstance(xb, (int, float)) or xb <= 0:
                 continue
-            key = "%s|%s" % ((ep.get("cell") or "?/?").replace("/", "|"),
-                             ep.get("setup"))
             bars.setdefault(key, []).append(float(xb) * 5.0)
-        for key, mins in bars.items():
-            holds[key] = {"hold_med_min": round(statistics.median(mins), 1),
-                          "hold_n": len(mins)}
+        for key in set(bars) | set(excs):
+            rec = {}
+            if key in bars:
+                rec["hold_med_min"] = round(statistics.median(bars[key]), 1)
+                rec["hold_n"] = len(bars[key])
+            if key in excs:
+                rec["mfe_med"] = round(statistics.median(v[0] for v in excs[key]), 1)
+                rec["mae_med"] = round(statistics.median(v[1] for v in excs[key]), 1)
+                rec["exc_n"] = len(excs[key])
+            holds[key] = rec
     except (OSError, ValueError, MemoryError):
         return _HOLD_CACHE["holds"] or {}
     _HOLD_CACHE["mtime"] = m
     _HOLD_CACHE["holds"] = holds
     return holds
+
+
+def excursion_mult(ev: float, path: dict):
+    """(multiplier, tilt) — path-quality scaling of a signal's contribution.
+    tilt = (MFE−MAE)/(MFE+MAE) ∈ [−1,1] from era-median excursions. The
+    multiplier 1 + EXC_TILT_W·tilt·sign(ev) boosts a contribution whose
+    excursion profile AGREES with the direction it pushes: an own-side push
+    (ev>0) wants MFE-heavy paths; a CONTRA push (ev<0) wants MAE-heavy paths
+    — losing cell + MAE ≫ MFE = right signal, wrong wiring, so the flip gets
+    STRONGER, never weaker (MAE-flip doctrine). Neutral (1.0) below
+    EXC_MIN_N episodes of path data."""
+    mfe, mae = path.get("mfe_med"), path.get("mae_med")
+    n = path.get("exc_n", 0) or 0
+    if (n < EXC_MIN_N or mfe is None or mae is None
+            or (mfe + mae) <= 0 or not ev):
+        return 1.0, None
+    tilt = (float(mfe) - float(mae)) / (float(mfe) + float(mae))
+    sign = 1.0 if ev > 0 else -1.0
+    return 1.0 + EXC_TILT_W * tilt * sign, round(tilt, 3)
 
 
 def _strikes() -> dict:
@@ -206,6 +248,7 @@ def formula_hash() -> str:
             "blend": [BROKER_W, ERA_W, FORM_W],
             "broker_shrink_n": BROKER_SHRINK_N, "r_pips": R_PIPS,
             "strike_discount": STRIKE_DISCOUNT,
+            "exc": [EXC_TILT_W, EXC_MIN_N],
             "live_s": LIVE_S}
     return hashlib.sha256(
         json.dumps(core, sort_keys=True).encode()).hexdigest()[:12]
@@ -263,9 +306,10 @@ def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
         ev = evidence_pips(form, ht)
         n_strikes = int(strikes.get(fkey, 0) or 0)
         w = W_STATUS.get(rec.get("status"), 0.10) * (STRIKE_DISCOUNT ** n_strikes)
-        c = w * ev
-        signed = c if side == "long" else -c
         hold = holds.get(fkey) or {}
+        exc_mult, tilt = excursion_mult(ev, hold)
+        c = w * ev * exc_mult
+        signed = c if side == "long" else -c
         by_pair.setdefault(pair, []).append({
             "setup_id": setup,
             "session": sess,
@@ -283,6 +327,11 @@ def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
             "trust": ht.get("trust"),
             "hold_med_min": hold.get("hold_med_min"),
             "hold_n": hold.get("hold_n", 0),
+            "mfe_med": hold.get("mfe_med"),
+            "mae_med": hold.get("mae_med"),
+            "exc_n": hold.get("exc_n", 0),
+            "exc_mult": round(exc_mult, 2),
+            "tilt": tilt,
             "horizon_min": rec.get("horizon_min"),
             "trigger_pips": rec.get("trigger_pips"),
             "sl_pips": rec.get("sl_pips"),
@@ -303,6 +352,14 @@ def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
         wsum = sum(abs(s["contribution"]) for s in aligned)
         distance = (sum(abs(s["contribution"]) * abs(s["evidence_pips"])
                         for s in aligned) / wsum) if wsum > 0 else 0.0
+        exc = [(abs(s["contribution"]),
+                s["mfe_med"] if s["evidence_pips"] > 0 else s["mae_med"],
+                s["mae_med"] if s["evidence_pips"] > 0 else s["mfe_med"])
+               for s in aligned
+               if s["mfe_med"] is not None and s["mae_med"] is not None]
+        xw = sum(w for w, _, _ in exc)
+        target = (sum(w * f for w, f, _ in exc) / xw) if xw > 0 else None
+        heat_px = (sum(w * a for w, _, a in exc) / xw) if xw > 0 else None
         held = [(abs(s["contribution"]),
                  s["hold_med_min"] if s["hold_med_min"] is not None
                  else s["horizon_min"])
@@ -325,6 +382,8 @@ def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
             "gross": round(gross, 2),
             "agreement": round(agreement, 2),
             "distance_pips": round(distance, 1),
+            "target_pips": round(target, 1) if target is not None else None,
+            "heat_pips": round(heat_px, 1) if heat_px is not None else None,
             "hold_min": round(hold_min, 1) if hold_min is not None else None,
             "hold_label": _fmt_hold(hold_min),
             "on_air_min": on_air,
@@ -359,7 +418,8 @@ def build_center(now: Optional[datetime] = None,
         "weights": {"status": W_STATUS, "shrink_n": SHRINK_N,
                     "conf_scale": CONF_SCALE,
                     "blend": {"broker": BROKER_W, "era": ERA_W, "form7": FORM_W},
-                    "strike_discount": STRIKE_DISCOUNT},
+                    "strike_discount": STRIKE_DISCOUNT,
+                    "exc_tilt_w": EXC_TILT_W, "exc_min_n": EXC_MIN_N},
         "pairs": pairs,
     }
 

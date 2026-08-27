@@ -54,7 +54,13 @@ permanently discount a setup's say, mirroring three-strikes). Evidence
 (v6.36.0) = 0.5*broker truth + 0.3*era avg + 0.2*7-day form, renormalized
 over available parts: broker truth is the governor's 21-day trust score of
 REAL completed family cycles (decayed mean R x 60p, shrunk n/(n+4)) — banked
-fills outrank the simulator; sim parts are sample-size shrunk `x*n/(n+8)`. A firing setup with **negative** evidence
+fills outrank the simulator; sim parts are sample-size shrunk `x*n/(n+8)`.
+v6.37.0 adds path shape: contributions scale by 1 + 0.5*tilt*sign(evidence),
+tilt = (MFE-MAE)/(MFE+MAE) from era-median excursions (neutral under 5
+episodes) — own-side pushes want MFE-heavy paths, CONTRA pushes want
+MAE-heavy paths (the MAE-flip doctrine, wired in literally). Cards gain
+tgt/heat: contribution-weighted typical favorable/adverse excursion of the
+aligned signals, excursions swapped for contra contributors. A firing setup with **negative** evidence
 pushes the **opposite** direction (the MAE-flip doctrine) and is tagged CONTRA.
 Per pair: `confidence = 100*tanh(|net|/8)*(0.5+0.5*agreement)`, expected
 distance = contribution-weighted pips of net-aligned signals, and **est. time

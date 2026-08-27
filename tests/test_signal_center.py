@@ -300,3 +300,80 @@ def test_broker_backed_seat_outranks_perfect_thin_shadow():
                       heats=heats)[0]
     by2 = {s["setup_id"]: s["contribution"] for s in p2["signals"]}
     assert abs(by2["lucky"]) == pytest.approx(abs(by["lucky"]) * 0.6, abs=0.01)
+
+
+# ── MAE/MFE path quality (v6.37.0) ───────────────────────────────────────────
+
+def test_excursion_mult_boosts_agreeing_paths():
+    runner = {"mfe_med": 12.0, "mae_med": 4.0, "exc_n": 10}   # tilt +0.5
+    m, tilt = sc.excursion_mult(+5.0, runner)
+    assert (m, tilt) == (pytest.approx(1.25), 0.5)
+    # same MFE-heavy path WEAKENS a contra push
+    m, _ = sc.excursion_mult(-5.0, runner)
+    assert m == pytest.approx(0.75)
+
+
+def test_excursion_mult_mae_heavy_strengthens_the_flip():
+    bleeder = {"mfe_med": 4.0, "mae_med": 12.0, "exc_n": 10}  # tilt −0.5
+    m, tilt = sc.excursion_mult(-5.0, bleeder)                # contra push
+    assert (m, tilt) == (pytest.approx(1.25), -0.5)           # flip STRONGER
+    m, _ = sc.excursion_mult(+5.0, bleeder)                   # own-side push
+    assert m == pytest.approx(0.75)
+
+
+def test_excursion_mult_neutral_gates():
+    assert sc.excursion_mult(5.0, {"mfe_med": 12.0, "mae_med": 4.0,
+                                   "exc_n": 4}) == (1.0, None)   # thin sample
+    assert sc.excursion_mult(0.0, {"mfe_med": 12.0, "mae_med": 4.0,
+                                   "exc_n": 10}) == (1.0, None)  # no evidence
+    assert sc.excursion_mult(5.0, {}) == (1.0, None)
+
+
+def test_hold_stats_collects_excursions_incl_censored(tmp_path):
+    eps = {}
+    for i, (mfe, mae, censored) in enumerate([(10.0, 2.0, False),
+                                              (12.0, 4.0, True),
+                                              (8.0, 6.0, False)]):
+        eps["k%d" % i] = {"cell": "GBP_USD/ny", "setup": "a1", "mv": 2,
+                          "scores": {"mfe240": mfe, "mae240": mae,
+                                     "censored": censored,
+                                     "exit_reason": "horizon" if censored
+                                     else "trail",
+                                     "exit_bar": 12}}
+    store = tmp_path / "sb.json"
+    store.write_text(json.dumps({"episodes": eps}))
+    sc._HOLD_CACHE.update({"mtime": None, "holds": {}})
+    h = sc.hold_stats(store)["GBP_USD|ny|a1"]
+    assert h["mfe_med"] == 10.0 and h["mae_med"] == 4.0
+    assert h["exc_n"] == 3                    # censored episode's path counts
+    assert h["hold_n"] == 2                   # but not its hold time
+
+
+def test_aggregate_applies_path_mult_and_target_heat():
+    live = {}
+    live.update(_live("USD_JPY", "ny", "runner_long", "long", "ACTIVE"))
+    live.update(_live("USD_JPY", "ny", "bleeder_long", "long", "ACTIVE"))
+    forms = {"USD_JPY|ny|runner_long": {"era_avg": 10.0, "era_n": 8},   # +5.0
+             "USD_JPY|ny|bleeder_long": {"era_avg": -10.0, "era_n": 8}} # −5.0
+    holds = {"USD_JPY|ny|runner_long":
+             {"mfe_med": 12.0, "mae_med": 4.0, "exc_n": 10},
+             "USD_JPY|ny|bleeder_long":
+             {"mfe_med": 4.0, "mae_med": 12.0, "exc_n": 10}}
+    p = sc.aggregate(live, forms, holds, {}, NOW)[0]
+    by = {s["setup_id"]: s for s in p["signals"]}
+    # runner: 1.0·5.0·1.25 = +6.25 long; bleeder: 1.0·(−5.0)·1.25 = −6.25 short
+    assert by["runner_long"]["contribution"] == pytest.approx(6.25)
+    assert by["bleeder_long"]["contribution"] == pytest.approx(-6.25)
+    assert p["direction"] == "FLAT" and p["net"] == pytest.approx(0.0)
+    # single-sided: target/heat use MFE/MAE (own-side) vs swapped (contra)
+    p2 = sc.aggregate(
+        {k: v for k, v in live.items() if "runner" in k[2]},
+        forms, holds, {}, NOW)[0]
+    assert p2["target_pips"] == pytest.approx(12.0)
+    assert p2["heat_pips"] == pytest.approx(4.0)
+    p3 = sc.aggregate(
+        {k: v for k, v in live.items() if "bleeder" in k[2]},
+        forms, holds, {}, NOW)[0]
+    assert p3["direction"] == "SHORT"
+    assert p3["target_pips"] == pytest.approx(12.0)   # its MAE = the flip move
+    assert p3["heat_pips"] == pytest.approx(4.0)

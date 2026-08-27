@@ -127,7 +127,12 @@ tr:last-child td{border-bottom:none}
     renormalized over available parts. Broker truth = the governor's 21-day trust score of
     REAL completed cycles (decayed mean R × 60p, shrunk <code>n/(n+4)</code>) — actual
     banked fills outrank any simulator record; 🏦 marks broker-backed rows. Sim parts
-    shrunk <code>x·n/(n+8)</code> — unproven setups say ~nothing. A firing setup with
+    shrunk <code>x·n/(n+8)</code> — unproven setups say ~nothing. Contributions are then
+    scaled by <b>path shape</b>: ×(1 + 0.5·tilt·sign(evidence)) with tilt =
+    (MFE−MAE)/(MFE+MAE) from era-median excursions — own-side pushes strengthen on
+    MFE-heavy paths, CONTRA pushes strengthen on MAE-heavy paths (the MAE-flip rule);
+    neutral under 5 episodes. Card <b>tgt/heat</b> = contribution-weighted typical
+    favorable / adverse excursion of the aligned signals (swapped for contra rows). A firing setup with
     <b>negative</b> evidence pushes the <b>opposite</b> direction (MAE-flip doctrine)
     and is tagged CONTRA.</p>
     <p><code>confidence = 100·tanh(|net|/8)·(0.5+0.5·agreement)</code> where
@@ -164,7 +169,8 @@ function evTip(s){
         :`hold med ${fmtAge(s.hold_med_min)} ×${s.hold_n}`;
   const b=s.n_cycles?` · broker ${s.n_cycles} cycle(s) trust ${s.trust}`:'';
   const k=s.strikes?` · ${s.strikes} strike(s) ⇒ weight ×${Math.pow(0.6,s.strikes).toFixed(2)}`:'';
-  return `${e} · ${f}${b}${k} · ${h} · trig ${s.trigger_pips}p / SL ${s.sl_pips}p · spread ${s.spread}p`;}
+  const x=(s.mfe_med!=null&&s.mae_med!=null)?` · MFE ${s.mfe_med}p / MAE ${s.mae_med}p ×${s.exc_n} ⇒ path ×${s.exc_mult}`:'';
+  return `${e} · ${f}${b}${k}${x} · ${h} · trig ${s.trigger_pips}p / SL ${s.sl_pips}p · spread ${s.spread}p`;}
 function sigRow(s,net){
   const c=s.contribution, cls=c>0?'c-pos':(c<0?'c-neg':'c-zero');
   const contra=(net!==0&&c!==0&&((c>0)!==(net>0)))||
@@ -224,6 +230,8 @@ function card(p){
     <div class="conf-bar"><i style="width:${p.confidence}%"></i></div>
     <div class="meta">
       <span>dist <b>${p.distance_pips>0?'±':''}${p.distance_pips}p</b></span>
+      <span title="typical favorable excursion of aligned signals (era-median MFE; MAE for contra)">tgt <b>${p.target_pips!=null?'±'+p.target_pips+'p':'—'}</b></span>
+      <span title="typical adverse excursion en route (era-median MAE; MFE for contra)">heat <b>${p.heat_pips!=null?'±'+p.heat_pips+'p':'—'}</b></span>
       <span>in trade <b>${p.hold_label||'—'}</b></span>
       <span>net <b>${p.net>0?'+':''}${p.net}</b> / gross <b>${p.gross}</b></span>
       <span>agree <b>${Math.round(p.agreement*100)}%</b></span>
