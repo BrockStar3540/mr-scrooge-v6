@@ -4598,7 +4598,7 @@
           "id": "alpha_extended_fade_short_g_a10",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -6432,7 +6432,7 @@
           "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars"
         }
       ],
-      "notes": "4 PROBE, 38 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "5 PROBE, 37 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }
