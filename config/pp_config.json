@@ -36,7 +36,8 @@
     "GBP_USD|ny|control_rvol_60_counter_long": false,
     "USD_CAD|ny|echo_box_fade_short": false,
     "USD_CAD|london|echo_box_fade_short": false,
-    "GBP_USD|ny|echo_box_fade_counter_long": false
+    "GBP_USD|ny|echo_box_fade_counter_long": false,
+    "AUD_CAD|asia|ps_ceil_fade_counter_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0

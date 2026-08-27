@@ -2990,7 +2990,7 @@
           "id": "es_trend_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
