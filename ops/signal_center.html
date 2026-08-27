@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mr. Scrooge V6 · Signal Command Center</title>
+<style>
+:root{
+  --bg0:#070a0f; --bg1:#0d1117; --bg2:#161b22; --bg3:#21262d; --bg4:#2d333b;
+  --fg0:#f0f6fc; --fg1:#e6edf3; --fg2:#8b949e; --fg3:#6e7681;
+  --border:#21262d; --border-2:#30363d;
+  --long:#22d3ee; --short:#f472b6; --block:#6b7280;
+  --pass:#22c55e; --fail:#ef4444; --warn:#f59e0b; --info:#3b82f6;
+  --shadow:#64748b; --probe:#3b82f6;
+  --glow-cyan:0 0 0 1px rgba(34,211,238,.4),0 0 12px -2px rgba(34,211,238,.3);
+  --glow-pink:0 0 0 1px rgba(244,114,182,.4),0 0 12px -2px rgba(244,114,182,.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg0);color:var(--fg1);min-height:100vh}
+body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+     background:radial-gradient(ellipse at top,#0e1620 0%,var(--bg0) 50%) fixed;}
+.mono{font-family:"JetBrains Mono","SF Mono",Menlo,Monaco,Consolas,monospace}
+.muted{color:var(--fg2)} .dim{color:var(--fg3)}
+
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:12px;
+     padding:0 18px;background:rgba(13,17,23,.85);backdrop-filter:blur(12px);
+     border-bottom:1px solid var(--border);min-height:46px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;padding-right:16px;margin-right:4px;
+       border-right:1px solid var(--border);white-space:nowrap}
+.brand a{color:var(--fg2);text-decoration:none;font-size:12px}
+.brand a:hover{color:var(--fg0)}
+.brand-name{font-weight:700;font-size:14px;letter-spacing:.02em}
+.brand-zap{color:var(--warn);font-size:15px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px;
+           font-size:11.5px;color:var(--fg2)}
+#utc-clock{font-family:"JetBrains Mono",Menlo,monospace;font-size:12px;color:var(--fg1)}
+#refresh-dot{width:8px;height:8px;border-radius:50%;background:var(--pass);
+             display:inline-block;margin-right:4px;
+             box-shadow:0 0 8px rgba(34,197,94,.5)}
+#refresh-dot.stale{background:var(--fail);box-shadow:0 0 8px rgba(239,68,68,.5)}
+
+.wrap{max-width:1180px;margin:0 auto;padding:16px 18px 60px}
+.legend{background:var(--bg1);border:1px solid var(--border);border-radius:10px;
+        padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--fg2)}
+.legend summary{cursor:pointer;color:var(--fg1);font-weight:600;font-size:12px}
+.legend code{color:var(--fg1);background:var(--bg2);padding:0 4px;border-radius:4px;
+             font-family:"JetBrains Mono",Menlo,monospace;font-size:10.5px}
+.legend p{margin:6px 0 0}
+
+.totals{display:flex;gap:18px;margin-bottom:14px;font-size:11.5px;color:var(--fg2);
+        flex-wrap:wrap;align-items:center}
+.totals b{color:var(--fg0);font-size:13px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(540px,1fr));gap:14px}
+@media(max-width:600px){.grid{grid-template-columns:1fr}}
+.card{background:var(--bg1);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden}
+.card.long{box-shadow:var(--glow-cyan)}
+.card.short{box-shadow:var(--glow-pink)}
+.card-h{display:flex;align-items:center;gap:12px;padding:12px 14px;
+        border-bottom:1px solid var(--border);background:var(--bg2)}
+.pair-name{font-weight:800;font-size:16px;letter-spacing:.02em;
+           font-family:"JetBrains Mono",Menlo,monospace}
+.dir-badge{font-weight:800;font-size:12px;padding:3px 10px;border-radius:12px;
+           letter-spacing:.06em}
+.dir-badge.LONG{color:#06171b;background:var(--long)}
+.dir-badge.SHORT{color:#1d0713;background:var(--short)}
+.dir-badge.FLAT{color:var(--fg1);background:var(--bg4)}
+.conf-num{margin-left:auto;text-align:right}
+.conf-num .n{font-size:22px;font-weight:800;font-family:"JetBrains Mono",Menlo,monospace}
+.conf-num .l{font-size:9.5px;color:var(--fg3);letter-spacing:.08em}
+.conf-bar{height:5px;background:var(--bg3)}
+.conf-bar i{display:block;height:100%;transition:width .5s}
+.card.long .conf-bar i{background:linear-gradient(90deg,#0e7490,var(--long))}
+.card.short .conf-bar i{background:linear-gradient(90deg,#9d2463,var(--short))}
+.card.flat .conf-bar i{background:var(--block)}
+.meta{display:flex;gap:16px;padding:9px 14px;border-bottom:1px solid var(--border);
+      font-size:11.5px;color:var(--fg2);flex-wrap:wrap}
+.meta b{color:var(--fg0);font-family:"JetBrains Mono",Menlo,monospace;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{color:var(--fg3);text-align:left;font-weight:600;padding:6px 8px;
+   border-bottom:1px solid var(--border);font-size:9.5px;letter-spacing:.06em}
+td{padding:5px 8px;border-bottom:1px solid rgba(33,38,45,.6);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.setup{font-family:"JetBrains Mono",Menlo,monospace;font-size:10.5px;color:var(--fg1);
+       max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip{font-size:9px;font-weight:700;padding:1.5px 6px;border-radius:8px;letter-spacing:.04em}
+.chip.long{color:var(--long);background:rgba(34,211,238,.12)}
+.chip.short{color:var(--short);background:rgba(244,114,182,.12)}
+.st{font-size:9px;font-weight:700;padding:1.5px 6px;border-radius:8px}
+.st.ACTIVE{color:var(--pass);background:rgba(34,197,94,.12)}
+.st.PROBE{color:var(--probe);background:rgba(59,130,246,.14)}
+.st.SHADOW{color:var(--shadow);background:rgba(100,116,139,.15)}
+.st.SUSPENDED{color:var(--warn);background:rgba(245,158,11,.12)}
+.c-pos{color:var(--long);font-family:"JetBrains Mono",Menlo,monospace}
+.c-neg{color:var(--short);font-family:"JetBrains Mono",Menlo,monospace}
+.c-zero{color:var(--fg3);font-family:"JetBrains Mono",Menlo,monospace}
+.contra{font-size:8.5px;font-weight:800;color:var(--warn);letter-spacing:.05em}
+.quiet{text-align:center;padding:60px 20px;color:var(--fg3);font-size:13px}
+.quiet .z{font-size:34px;display:block;margin-bottom:10px;opacity:.5}
+.err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);
+     color:var(--fail);border-radius:10px;padding:10px 14px;margin-bottom:14px;
+     font-size:12px;display:none}
+</style></head><body>
+<nav class="nav">
+  <div class="brand"><span class="brand-zap">⚡</span>
+    <span class="brand-name">SIGNAL COMMAND CENTER</span>
+    <a href="/">← control panel</a></div>
+  <div class="nav-right">
+    <span><span id="refresh-dot"></span><span id="totals-line" class="mono">—</span></span>
+    <span id="gen-at" class="dim"></span>
+    <span id="utc-clock">--:--:--</span>
+  </div>
+</nav>
+<div class="wrap">
+  <div class="err" id="err"></div>
+  <details class="legend"><summary>How the score works (manual-trading aid — reads the book, never trades)</summary>
+    <p>Every setup — ACTIVE, PROBE and SHADOW — stamps once per 5-min scan while its
+    entry conditions hold. A signal <b>drops off ~7.5 min after its trigger window
+    closes</b> (conditions fail, session ends, or entry cutoff).</p>
+    <p>Each firing signal contributes <code>status_weight × evidence</code> pips toward its
+    side. <code>status_weight</code>: ACTIVE 1.0 · PROBE 0.6 · SHADOW 0.25.
+    <code>evidence</code> = 0.6·era avg + 0.4·7-day form, each shrunk by sample size
+    (<code>x·n/(n+8)</code>) — unproven setups say ~nothing. A firing setup with
+    <b>negative</b> evidence pushes the <b>opposite</b> direction (MAE-flip doctrine)
+    and is tagged CONTRA.</p>
+    <p><code>confidence = 100·tanh(|net|/8)·(0.5+0.5·agreement)</code> where
+    <code>agreement=|net|/gross</code>. <b>Distance</b> = contribution-weighted expected
+    pips of net-aligned signals. <b>Est. time in trade</b> = contribution-weighted
+    median realized hold from the shadow-sim episode store (exit_bar×5m, censored
+    excluded; horizon fallback). Evidence stores refresh every 15 min; this page
+    every 30 s.</p>
+  </details>
+  <div class="totals" id="totals"></div>
+  <div class="grid" id="grid"></div>
+  <div class="quiet" id="quiet" style="display:none"><span class="z">…</span>
+    No live signals — all trigger windows closed.</div>
+</div>
+<script>
+const UI_REV='__UI_REV__';
+const PAGE_LOADED=Date.now();
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,
+  c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtAge(m){if(m==null)return'—';if(m<90)return Math.round(m)+'m';
+  return (m/60).toFixed(1)+'h';}
+function evTip(s){
+  const e=(s.era_avg==null)?'era —':`era ${s.era_avg>0?'+':''}${s.era_avg}p ×${s.era_n}`;
+  const f=(s.form7==null)?'form7 —':`form7 ${s.form7>0?'+':''}${s.form7}p ×${s.n7}`;
+  const h=(s.hold_med_min==null)?`hold: horizon ${s.horizon_min||'—'}m`
+        :`hold med ${fmtAge(s.hold_med_min)} ×${s.hold_n}`;
+  return `${e} · ${f} · ${h} · trig ${s.trigger_pips}p / SL ${s.sl_pips}p · spread ${s.spread}p`;}
+function sigRow(s,net){
+  const c=s.contribution, cls=c>0?'c-pos':(c<0?'c-neg':'c-zero');
+  const contra=(net!==0&&c!==0&&((c>0)!==(net>0)))||
+               (c!==0&&((s.side==='long')!==(c>0)));
+  const evs=(s.evidence_pips>0?'+':'')+s.evidence_pips.toFixed(1);
+  return `<tr title="${esc(evTip(s))}">
+    <td class="setup">${esc(s.setup_id)}</td>
+    <td class="dim">${esc(s.session)}</td>
+    <td><span class="chip ${esc(s.side)}">${esc(s.side.toUpperCase())}</span></td>
+    <td><span class="st ${esc(s.status)}">${esc(s.status)}</span>${
+      s.strikes?` <span title="governor strikes">${'🔻'.repeat(Math.min(s.strikes,3))}</span>`:''}</td>
+    <td class="${cls}">${c>0?'+':''}${c.toFixed(2)}${
+      contra?' <span class="contra">CONTRA</span>':''}</td>
+    <td class="mono dim">${evs}p</td>
+    <td class="mono dim">${s.hold_med_min!=null?fmtAge(s.hold_med_min)
+        :(s.horizon_min?fmtAge(s.horizon_min)+'*':'—')}</td>
+    <td class="mono dim" title="on air / stamps this run">${fmtAge(s.on_air_min)}·${s.n_run}×</td>
+  </tr>`;}
+function card(p){
+  const dcls=p.direction==='LONG'?'long':(p.direction==='SHORT'?'short':'flat');
+  const cnt=Object.entries(p.counts).map(([k,v])=>`${v} ${k}`).join(' · ');
+  return `<div class="card ${dcls}">
+    <div class="card-h">
+      <span class="pair-name">${esc(p.pair.replace('_','/'))}</span>
+      <span class="dir-badge ${esc(p.direction)}">${p.direction==='LONG'?'▲ LONG'
+        :(p.direction==='SHORT'?'▼ SHORT':'◆ FLAT')}</span>
+      <div class="conf-num"><div class="n">${p.confidence}</div>
+        <div class="l">CONFIDENCE</div></div>
+    </div>
+    <div class="conf-bar"><i style="width:${p.confidence}%"></i></div>
+    <div class="meta">
+      <span>dist <b>${p.distance_pips>0?'±':''}${p.distance_pips}p</b></span>
+      <span>in trade <b>${p.hold_label||'—'}</b></span>
+      <span>net <b>${p.net>0?'+':''}${p.net}</b> / gross <b>${p.gross}</b></span>
+      <span>agree <b>${Math.round(p.agreement*100)}%</b></span>
+      <span>on air <b>${fmtAge(p.on_air_min)}</b></span>
+      <span class="dim">${cnt}</span>
+    </div>
+    <div style="overflow-x:auto"><table><thead><tr>
+      <th>SETUP</th><th>SESS</th><th>SIDE</th><th>STATUS</th>
+      <th>CONTRIB</th><th>EV</th><th>HOLD</th><th>ON AIR</th>
+    </tr></thead><tbody>${p.signals.map(s=>sigRow(s,p.net)).join('')}</tbody></table></div>
+  </div>`;}
+async function refresh(){
+  try{
+    const r=await fetch('/api/signal_center',{cache:'no-store'});
+    const d=await r.json();
+    document.getElementById('err').style.display='none';
+    document.getElementById('refresh-dot').classList.remove('stale');
+    const t=d.totals||{};
+    document.getElementById('totals-line').textContent=
+      `${t.live_signals||0} live · ${t.pairs_live||0} pairs`;
+    document.getElementById('gen-at').textContent=d.building?'building…'
+      :('as of '+String(d.generated_at||'').slice(11,19)+'Z');
+    const pairs=d.pairs||[];
+    document.getElementById('grid').innerHTML=pairs.map(card).join('');
+    document.getElementById('quiet').style.display=
+      (!d.building&&pairs.length===0)?'block':'none';
+    document.getElementById('totals').innerHTML=d.building
+      ?'<span class="dim">first build in progress — data in ~30s</span>'
+      :`<span>tracking <b>${t.tracked_48h||0}</b> setups stamped in 48h · live window
+        <b>${Math.round((d.live_window_s||450)/60)}m</b> · scan <b>5m</b></span>`;
+    if(d.building)setTimeout(refresh,5000);
+  }catch(e){
+    document.getElementById('refresh-dot').classList.add('stale');
+    const el=document.getElementById('err');
+    el.textContent='feed error: '+e; el.style.display='block';
+  }
+}
+function tick(){
+  const d=new Date();
+  document.getElementById('utc-clock').textContent=
+    d.toISOString().slice(11,19)+'Z';
+}
+setInterval(tick,1000);tick();
+refresh();setInterval(refresh,30000);
+// stale-tab hard reload: a command-center tab left open for days must not
+// render new API data through old JS (v6.30.4 lesson).
+setInterval(()=>{if(Date.now()-PAGE_LOADED>30*60*1000)location.reload();},60000);
+</script>
+</body></html>

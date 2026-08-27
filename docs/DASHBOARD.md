@@ -39,3 +39,25 @@ below 5 joined outcomes per arm; an empty report today is the correct report.
 New feed features for these trials: `vwap_dist_pips` (session-anchored VWAP distance),
 `adx14` (H1 Wilder ADX). All 42 enter as SHADOW at ev_seq 0.0 and earn any seat
 exclusively through family-cycle evidence — the same door as everyone else.
+
+## The Signal Command Center (`/signals`, v6.34.0)
+
+A read-only watch page for **manual trading**, linked from the nav (⚡ SIGNALS).
+Every qualifying setup — ACTIVE, PROBE and SHADOW — stamps once per 5-min scan
+while its entry conditions hold, so the page shows exactly which signals are
+firing *right now*, grouped by pair and direction; a signal drops off ~7.5 min
+after its trigger window closes (conditions fail, session ends, entry cutoff).
+
+Each firing signal contributes `status_weight x evidence` pips toward its side
+(ACTIVE 1.0 / PROBE 0.6 / SHADOW 0.25; evidence = 0.6*era avg + 0.4*7-day form,
+sample-size shrunk by `x*n/(n+8)`). A firing setup with **negative** evidence
+pushes the **opposite** direction (the MAE-flip doctrine) and is tagged CONTRA.
+Per pair: `confidence = 100*tanh(|net|/8)*(0.5+0.5*agreement)`, expected
+distance = contribution-weighted pips of net-aligned signals, and **est. time
+in trade** = contribution-weighted median realized hold from the shadow-sim
+episode store (`exit_bar x 5m`, censored episodes excluded; horizon fallback).
+
+Data layer: `ops/signal_center.py` (`GET /api/signal_center`, 45s cache,
+leased-latch background refresh — journal parse + the 15MB episode store never
+run inline in the single-threaded request handler). Strictly observational:
+it reads the journal and existing evidence stores, never the trading path.

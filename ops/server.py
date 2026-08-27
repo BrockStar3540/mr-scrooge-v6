@@ -8,6 +8,8 @@ Routes:
   GET /api/cells           → cell book: config/cells/*.json + live condition values (fresh each call)
   GET /api/cellshadow?n=200→ recent CELLSHADOW journal stamps, newest first (cached 30s)
   GET /api/cellscore       → cell_setup_score.py --json scoreboard (cached 300s)
+  GET /signals             → ops/signal_center.html (Signal Command Center — manual-trading watch page)
+  GET /api/signal_center   → live firing signals grouped by pair/direction + confidence (cache 45s, bg refresh)
   GET /api/config/exit     → exit-tuning config + field schema
   GET /api/config/playmaker→ playmaker config + field schema
   GET /api/credentials     → credential status (masked last4 + mode; NEVER values)
@@ -46,6 +48,7 @@ if TYPE_CHECKING:
 log = logging.getLogger("v6.dashboard")
 
 _PANEL = Path(__file__).resolve().parent / "panel.html"
+_SIGNALS_PAGE = Path(__file__).resolve().parent / "signal_center.html"
 
 # Repo root derived from THIS file's location (ops/server.py → repo root), so the
 # dashboard always reads its OWN config/journal — never a sibling checkout. Mirrors
@@ -1652,8 +1655,27 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                     body = b"<h1>Panel not found</h1>"
                     ctype = "text/html"
                 code = 200
+            elif self.path.split("?", 1)[0] == "/signals":
+                # Signal Command Center — same __UI_REV__ bake as the panel so
+                # a long-lived tab can hard-reload itself (v6.30.4 lesson).
+                if _SIGNALS_PAGE.exists():
+                    body = _SIGNALS_PAGE.read_bytes().replace(
+                        b"__UI_REV__",
+                        str(int(_SIGNALS_PAGE.stat().st_mtime)).encode())
+                    ctype = "text/html; charset=utf-8"
+                else:
+                    body = b"<h1>signal_center.html not found</h1>"
+                    ctype = "text/html"
+                code = 200
             elif self.path.startswith("/api/state"):
                 body = _j.dumps(_state(self._engine), default=str).encode()
+                ctype = "application/json"
+                code = 200
+            elif self.path.startswith("/api/signal_center"):
+                # Cache-only accessor (leased-latch bg refresh) — never builds
+                # inline in this single-threaded handler.
+                from ops import signal_center as _sigc
+                body = _j.dumps(_sigc.get_center(), default=str).encode()
                 ctype = "application/json"
                 code = 200
             elif self.path.startswith("/api/shadowboard"):
