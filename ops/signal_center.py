@@ -185,6 +185,18 @@ def _strikes() -> dict:
         return {}
 
 
+def formula_hash() -> str:
+    """12-hex version stamp of the scoring formula. Consensus-accuracy samples
+    are segmented by this hash — changing any weight starts a fresh sample
+    (era discipline: never blend evidence across a formula change)."""
+    import hashlib
+    core = {"w_status": W_STATUS, "shrink_n": SHRINK_N,
+            "conf_scale": CONF_SCALE, "era_w": 0.6, "form7_w": 0.4,
+            "live_s": LIVE_S}
+    return hashlib.sha256(
+        json.dumps(core, sort_keys=True).encode()).hexdigest()[:12]
+
+
 def _shrink(x, n) -> Optional[float]:
     if x is None or not n:
         return None
@@ -314,6 +326,7 @@ def build_center(now: Optional[datetime] = None,
             "pairs_live": len(pairs),
             "tracked_48h": len(reg),
         },
+        "formula_hash": formula_hash(),
         "weights": {"status": W_STATUS, "shrink_n": SHRINK_N,
                     "conf_scale": CONF_SCALE, "era_w": 0.6, "form7_w": 0.4},
         "pairs": pairs,

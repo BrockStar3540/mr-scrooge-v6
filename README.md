@@ -177,7 +177,7 @@ flowchart LR
 
 ## The dashboard
 
-A self-contained local control panel (`127.0.0.1:8084` — [bind elsewhere](docs/DASHBOARD.md) with `DASHBOARD_HOST`): live account + open trades, per-pair signal cards, the cell book, live exit tuning, popper switches, credentials, and the trading pause — plus `/signals`, the **Signal Command Center**: a manual-trading watch page where every firing setup (ACTIVE, PROBE and SHADOW alike) appears grouped by pair + direction while its trigger window is open, each contributing evidence-weighted pips to a per-pair confidence score with expected distance and a realized median time-in-trade estimate. Two tabs worth showing:
+A self-contained local control panel (`127.0.0.1:8084` — [bind elsewhere](docs/DASHBOARD.md) with `DASHBOARD_HOST`): live account + open trades, per-pair signal cards, the cell book, live exit tuning, popper switches, credentials, and the trading pause — plus `/signals`, the **Signal Command Center**: a manual-trading watch page where every firing setup (ACTIVE, PROBE and SHADOW alike) appears grouped by pair + direction while its trigger window is open, each contributing evidence-weighted pips to a per-pair confidence score with expected distance and a realized median time-in-trade estimate — and a self-grading track record: every consensus call is snapshotted and scored against forward executable price at +30m to +8h, so the page shows its own hit-rate and calibration per confidence band. Two tabs worth showing:
 
 **SHADOW — the trial courtroom.** The Bar Governor card states the full standard — the
 promotion bar, the family rule, judge-when-flat — above a Shadowboard sorted exactly as the

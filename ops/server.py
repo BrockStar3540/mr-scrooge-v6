@@ -10,6 +10,7 @@ Routes:
   GET /api/cellscore       → cell_setup_score.py --json scoreboard (cached 300s)
   GET /signals             → ops/signal_center.html (Signal Command Center — manual-trading watch page)
   GET /api/signal_center   → live firing signals grouped by pair/direction + confidence (cache 45s, bg refresh)
+  GET /api/signal_accuracy → consensus-call track record (aggregates only; scored by ops/signal_accuracy.py cron)
   GET /api/config/exit     → exit-tuning config + field schema
   GET /api/config/playmaker→ playmaker config + field schema
   GET /api/credentials     → credential status (masked last4 + mode; NEVER values)
@@ -1347,6 +1348,28 @@ def _cellshadow(n: int = 200) -> dict:
             "generated_at": data["generated_at"]}
 
 
+_SIGACC_STORE = Path(__file__).resolve().parent.parent / "data" / "signal_accuracy.json"
+_SIGACC_CACHE: dict = {"mtime": None, "data": None}
+
+def _signal_accuracy() -> dict:
+    """Aggregates block of the consensus-accuracy store, mtime-cached. The
+    store also holds every scored episode — the board only needs aggregates,
+    so the episode bulk never crosses the wire."""
+    try:
+        m = _SIGACC_STORE.stat().st_mtime
+    except OSError:
+        return {"aggregates": None}
+    if _SIGACC_CACHE["mtime"] != m:
+        try:
+            d = _j.loads(_SIGACC_STORE.read_text())
+            _SIGACC_CACHE["data"] = {k: d.get(k) for k in
+                ("generated_at", "formula_hash", "checkpoints", "aggregates")}
+            _SIGACC_CACHE["mtime"] = m
+        except (OSError, ValueError):
+            return _SIGACC_CACHE["data"] or {"aggregates": None}
+    return _SIGACC_CACHE["data"]
+
+
 # ── Dashboard security (external review round 2) ─────────────────────────────
 import secrets as _secrets_mod
 
@@ -1676,6 +1699,10 @@ class _Handler(http.server.BaseHTTPRequestHandler):
                 # inline in this single-threaded handler.
                 from ops import signal_center as _sigc
                 body = _j.dumps(_sigc.get_center(), default=str).encode()
+                ctype = "application/json"
+                code = 200
+            elif self.path.startswith("/api/signal_accuracy"):
+                body = _j.dumps(_signal_accuracy(), default=str).encode()
                 ctype = "application/json"
                 code = 200
             elif self.path.startswith("/api/shadowboard"):

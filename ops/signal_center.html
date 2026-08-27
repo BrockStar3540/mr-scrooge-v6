@@ -95,6 +95,9 @@ tr:last-child td{border-bottom:none}
 .c-neg{color:var(--short);font-family:"JetBrains Mono",Menlo,monospace}
 .c-zero{color:var(--fg3);font-family:"JetBrains Mono",Menlo,monospace}
 .contra{font-size:8.5px;font-weight:800;color:var(--warn);letter-spacing:.05em}
+.accpanel{background:var(--bg1);border:1px solid var(--border);border-radius:10px;
+          padding:10px 14px;margin-bottom:14px;font-size:11.5px;color:var(--fg2)}
+.accpanel table{max-width:680px}
 .quiet{text-align:center;padding:60px 20px;color:var(--fg3);font-size:13px}
 .quiet .z{font-size:34px;display:block;margin-bottom:10px;opacity:.5}
 .err{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.35);
@@ -129,14 +132,22 @@ tr:last-child td{border-bottom:none}
     median realized hold from the shadow-sim episode store (exit_bar×5m, censored
     excluded; horizon fallback). Evidence stores refresh every 15 min; this page
     every 30 s.</p>
+    <p><b>Track record</b>: every 5 min a cron snapshots each pair's consensus; the first
+    snapshot of a run is a CALL, graded on forward <b>executable</b> price (ask-entry
+    long / bid-entry short, opposite-side exits) at +30m/+1h/+2h/+4h/+8h. The strip above
+    the cards shows hit-rate and avg pips overall and per confidence band; each card's
+    <code>hist</code> shows this pair+direction's own record. Samples reset when the
+    formula changes.</p>
   </details>
   <div class="totals" id="totals"></div>
+  <div class="accpanel" id="acc" style="display:none"></div>
   <div class="grid" id="grid"></div>
   <div class="quiet" id="quiet" style="display:none"><span class="z">…</span>
     No live signals — all trigger windows closed.</div>
 </div>
 <script>
 const UI_REV='__UI_REV__';
+let ACC=null;
 const PAGE_LOADED=Date.now();
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,
   c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -166,6 +177,33 @@ function sigRow(s,net){
         :(s.horizon_min?fmtAge(s.horizon_min)+'*':'—')}</td>
     <td class="mono dim" title="on air / stamps this run">${fmtAge(s.on_air_min)}·${s.n_run}×</td>
   </tr>`;}
+function accCell(c){return c&&c.n?`<b>${Math.round(c.hit*100)}%</b> ${c.avg>0?'+':''}${c.avg}p <span class="dim">n${c.n}</span>`:'<span class="dim">—</span>';}
+function histBadge(p){
+  const ag=ACC&&ACC.aggregates, pr=ag&&ag.pairs&&ag.pairs[p.pair];
+  const dd=pr&&pr.dirs&&pr.dirs[p.direction];
+  if(!dd||!dd.n_calls)return '<b class="dim">—</b>';
+  if(dd.n_calls<5)return `<b class="dim">n=${dd.n_calls}&lt;5</b>`;
+  const f=(c)=>c&&c.n?`${Math.round(c.hit*100)}%/${c.avg>0?'+':''}${c.avg}p`:'—';
+  return `<b>@1h ${f(dd.p60)} · @4h ${f(dd.p240)}</b> <span class="dim">n${dd.n_calls}</span>`;}
+function renderAcc(){
+  const el=document.getElementById('acc'), ag=ACC&&ACC.aggregates;
+  el.style.display='block';
+  if(!ag||!ag.n_calls){
+    el.innerHTML='<span class="dim">CONSENSUS TRACK RECORD — no scored calls yet: '+
+      'calls snapshot every 5m and grade from +30m to +8h after they appear.</span>';
+    return;}
+  const ck=ag.checkpoints;
+  let html=`<div style="margin-bottom:6px"><b style="color:var(--fg0)">CONSENSUS TRACK RECORD</b>
+    <span class="dim">· hit-rate / avg pips per call at fixed checkpoints · current formula only · ${ag.n_calls} calls</span><br>
+    @30m ${accCell(ck.p30)} &nbsp;@1h ${accCell(ck.p60)} &nbsp;@2h ${accCell(ck.p120)}
+    &nbsp;@4h ${accCell(ck.p240)} &nbsp;@8h ${accCell(ck.p480)}</div>`;
+  html+='<div style="overflow-x:auto"><table><thead><tr><th>CONF BAND</th><th>CALLS</th><th>@1H</th><th>@4H</th><th>@8H</th></tr></thead><tbody>';
+  for(const b of ['75-100','50-75','25-50','0-25']){
+    const r=(ag.bands||{})[b]||{};
+    html+=`<tr><td class="mono">${b}</td><td class="mono dim">${r.n_calls||0}</td>
+      <td>${accCell(r.p60)}</td><td>${accCell(r.p240)}</td><td>${accCell(r.p480)}</td></tr>`;}
+  html+='</tbody></table></div>';
+  el.innerHTML=html;}
 function card(p){
   const dcls=p.direction==='LONG'?'long':(p.direction==='SHORT'?'short':'flat');
   const cnt=Object.entries(p.counts).map(([k,v])=>`${v} ${k}`).join(' · ');
@@ -184,6 +222,7 @@ function card(p){
       <span>net <b>${p.net>0?'+':''}${p.net}</b> / gross <b>${p.gross}</b></span>
       <span>agree <b>${Math.round(p.agreement*100)}%</b></span>
       <span>on air <b>${fmtAge(p.on_air_min)}</b></span>
+      <span>hist ${histBadge(p)}</span>
       <span class="dim">${cnt}</span>
     </div>
     <div style="overflow-x:auto"><table><thead><tr>
@@ -196,6 +235,9 @@ async function refresh(){
     const r=await fetch('/api/signal_center',{cache:'no-store'});
     const d=await r.json();
     document.getElementById('err').style.display='none';
+    try{ACC=await (await fetch('/api/signal_accuracy',{cache:'no-store'})).json();}
+    catch(_e){ACC=null;}
+    renderAcc();
     document.getElementById('refresh-dot').classList.remove('stale');
     const t=d.totals||{};
     document.getElementById('totals-line').textContent=

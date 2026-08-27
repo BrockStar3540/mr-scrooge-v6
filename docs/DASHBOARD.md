@@ -61,3 +61,21 @@ Data layer: `ops/signal_center.py` (`GET /api/signal_center`, 45s cache,
 leased-latch background refresh — journal parse + the 15MB episode store never
 run inline in the single-threaded request handler). Strictly observational:
 it reads the journal and existing evidence stores, never the trading path.
+
+### Consensus track record (v6.35.0)
+
+The command center grades itself. `ops/signal_snapshots.py` (cron `*/5`)
+appends each pair's live consensus (direction, confidence, formula hash) to
+`data/signal_calls.jsonl` — cron-driven, not pull-driven, so the record has no
+viewer-shaped holes. `ops/signal_accuracy.py` (cron hourly) assembles
+consecutive same-direction rows (gap <= 15m) into consensus episodes, scores
+the FIRST snapshot of each run — the call — against forward executable M5
+price (ask-entry long / bid-entry short, opposite-side exits, spread honestly
+paid) at +30m/+1h/+2h/+4h/+8h checkpoints, and rebuilds aggregates into
+`data/signal_accuracy.json`: overall, per confidence band (the calibration
+table — does conf 70 actually beat conf 30?), and per pair x direction (each
+card's `hist` badge). Checkpoints index trading bars, so weekend gaps do not
+distort; unscoreable checkpoints wait rather than being discarded (the B-129
+censoring lesson). Samples are segmented by the scoring-formula hash — any
+weight change starts a fresh sample, never blending eras. Served by
+`GET /api/signal_accuracy` (aggregates only; episode bulk stays on disk).
