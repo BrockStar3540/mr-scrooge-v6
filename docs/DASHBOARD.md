@@ -48,9 +48,13 @@ while its entry conditions hold, so the page shows exactly which signals are
 firing *right now*, grouped by pair and direction; a signal drops off ~7.5 min
 after its trigger window closes (conditions fail, session ends, entry cutoff).
 
-Each firing signal contributes `status_weight x evidence` pips toward its side
-(ACTIVE 1.0 / PROBE 0.6 / SHADOW 0.25; evidence = 0.6*era avg + 0.4*7-day form,
-sample-size shrunk by `x*n/(n+8)`). A firing setup with **negative** evidence
+Each firing signal contributes `status_weight x 0.6^strikes x evidence` pips
+toward its side (ACTIVE 1.0 / PROBE 0.6 / SHADOW 0.25; governor strikes
+permanently discount a setup's say, mirroring three-strikes). Evidence
+(v6.36.0) = 0.5*broker truth + 0.3*era avg + 0.2*7-day form, renormalized
+over available parts: broker truth is the governor's 21-day trust score of
+REAL completed family cycles (decayed mean R x 60p, shrunk n/(n+4)) — banked
+fills outrank the simulator; sim parts are sample-size shrunk `x*n/(n+8)`. A firing setup with **negative** evidence
 pushes the **opposite** direction (the MAE-flip doctrine) and is tagged CONTRA.
 Per pair: `confidence = 100*tanh(|net|/8)*(0.5+0.5*agreement)`, expected
 distance = contribution-weighted pips of net-aligned signals, and **est. time

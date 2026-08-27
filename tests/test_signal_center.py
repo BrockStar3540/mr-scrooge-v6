@@ -239,3 +239,64 @@ def test_get_center_first_call_returns_building_placeholder(monkeypatch):
                                                     lambda self: calls.append(1)})())
     out = sc.get_center()
     assert out.get("building") is True and calls == [1]
+
+
+# ── Broker-truth evidence + strike discount (v6.36.0) ────────────────────────
+
+def test_evidence_broker_term_leads():
+    form = {"era_avg": 2.0, "era_n": 8}              # shrunk sim part = 1.0
+    broker = {"trust": 0.25, "n_cycles": 4}          # 0.25·60·(4/8) = 7.5
+    # (0.5·7.5 + 0.3·1.0) / 0.8 = 5.0625 — banked cycles dominate the sim
+    assert sc.evidence_pips(form, broker) == pytest.approx(5.0625)
+    assert sc.evidence_pips({}, broker) == pytest.approx(7.5)
+
+
+def test_evidence_broker_needs_cycles_and_trust():
+    assert sc.evidence_pips({}, {"trust": None, "n_cycles": 3}) == 0.0
+    assert sc.evidence_pips({}, {"trust": 0.5, "n_cycles": 0}) == 0.0
+    assert sc.evidence_pips({}, None) == 0.0
+
+
+def test_evidence_negative_broker_counts_against():
+    broker = {"trust": -0.2, "n_cycles": 4}          # −0.2·60·0.5 = −6.0
+    assert sc.evidence_pips({}, broker) == pytest.approx(-6.0)
+
+
+def test_strike_discount_applies_per_strike():
+    live = _live("EUR_JPY", "ny", "tl30", "short", "PROBE")
+    forms = {"EUR_JPY|ny|tl30": {"era_avg": 10.0, "era_n": 8}}   # ev 5.0
+    c0 = sc.aggregate(live, forms, {}, {}, NOW)[0]["signals"][0]["contribution"]
+    c2 = sc.aggregate(live, forms, {},
+                      {"EUR_JPY|ny|tl30": 2}, NOW)[0]["signals"][0]["contribution"]
+    assert c0 == pytest.approx(-3.0)                 # 0.6 · 5.0, short side
+    assert c2 == pytest.approx(c0 * sc.STRIKE_DISCOUNT ** 2)
+
+
+def test_broker_cycles_in_signal_payload_and_weighting():
+    live = _live("USD_JPY", "ny", "atr5", "long", "ACTIVE")
+    heats = {"USD_JPY|ny|atr5": {"trust": 0.3, "n_cycles": 5, "heat": 0.2}}
+    p = sc.aggregate(live, {}, {}, {}, NOW, heats=heats)[0]
+    s = p["signals"][0]
+    assert s["n_cycles"] == 5 and s["trust"] == 0.3
+    # broker-only evidence: 0.3·60·(5/9) = 10.0; ACTIVE weight 1.0
+    assert s["evidence_pips"] == pytest.approx(10.0, abs=0.01)
+    assert p["net"] == pytest.approx(10.0, abs=0.01)
+
+
+def test_broker_backed_seat_outranks_perfect_thin_shadow():
+    """The Brock case: a real-money winner must out-say a 100%-WR shadow on a
+    thin sample, and a struck shadow must say less than a clean one."""
+    live = {}
+    live.update(_live("USD_JPY", "ny", "atr5", "long", "ACTIVE"))
+    live.update(_live("USD_JPY", "ny", "lucky", "short", "SHADOW"))
+    forms = {"USD_JPY|ny|lucky": {"era_avg": 12.0, "era_n": 3}}   # 100% WR, n=3
+    heats = {"USD_JPY|ny|atr5": {"trust": 0.3, "n_cycles": 5}}
+    p = sc.aggregate(live, forms, {}, {}, NOW, heats=heats)[0]
+    by = {s["setup_id"]: s["contribution"] for s in p["signals"]}
+    assert by["atr5"] > abs(by["lucky"])             # +10.0 vs −0.82
+    assert p["direction"] == "LONG"
+    # same thin shadow with a strike says even less
+    p2 = sc.aggregate(live, forms, {}, {"USD_JPY|ny|lucky": 1}, NOW,
+                      heats=heats)[0]
+    by2 = {s["setup_id"]: s["contribution"] for s in p2["signals"]}
+    assert abs(by2["lucky"]) == pytest.approx(abs(by["lucky"]) * 0.6, abs=0.01)

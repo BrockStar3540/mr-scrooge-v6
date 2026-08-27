@@ -121,9 +121,13 @@ tr:last-child td{border-bottom:none}
     entry conditions hold. A signal <b>drops off ~7.5 min after its trigger window
     closes</b> (conditions fail, session ends, or entry cutoff).</p>
     <p>Each firing signal contributes <code>status_weight × evidence</code> pips toward its
-    side. <code>status_weight</code>: ACTIVE 1.0 · PROBE 0.6 · SHADOW 0.25.
-    <code>evidence</code> = 0.6·era avg + 0.4·7-day form, each shrunk by sample size
-    (<code>x·n/(n+8)</code>) — unproven setups say ~nothing. A firing setup with
+    side. <code>status_weight</code>: ACTIVE 1.0 · PROBE 0.6 · SHADOW 0.25 — then discounted
+    ×0.6 per governor strike 🔻 (a struck record keeps costing until redemption).
+    <code>evidence</code> = 0.5·<b>broker truth</b> + 0.3·era avg + 0.2·7-day form,
+    renormalized over available parts. Broker truth = the governor's 21-day trust score of
+    REAL completed cycles (decayed mean R × 60p, shrunk <code>n/(n+4)</code>) — actual
+    banked fills outrank any simulator record; 🏦 marks broker-backed rows. Sim parts
+    shrunk <code>x·n/(n+8)</code> — unproven setups say ~nothing. A firing setup with
     <b>negative</b> evidence pushes the <b>opposite</b> direction (MAE-flip doctrine)
     and is tagged CONTRA.</p>
     <p><code>confidence = 100·tanh(|net|/8)·(0.5+0.5·agreement)</code> where
@@ -158,7 +162,9 @@ function evTip(s){
   const f=(s.form7==null)?'form7 —':`form7 ${s.form7>0?'+':''}${s.form7}p ×${s.n7}`;
   const h=(s.hold_med_min==null)?`hold: horizon ${s.horizon_min||'—'}m`
         :`hold med ${fmtAge(s.hold_med_min)} ×${s.hold_n}`;
-  return `${e} · ${f} · ${h} · trig ${s.trigger_pips}p / SL ${s.sl_pips}p · spread ${s.spread}p`;}
+  const b=s.n_cycles?` · broker ${s.n_cycles} cycle(s) trust ${s.trust}`:'';
+  const k=s.strikes?` · ${s.strikes} strike(s) ⇒ weight ×${Math.pow(0.6,s.strikes).toFixed(2)}`:'';
+  return `${e} · ${f}${b}${k} · ${h} · trig ${s.trigger_pips}p / SL ${s.sl_pips}p · spread ${s.spread}p`;}
 function sigRow(s,net){
   const c=s.contribution, cls=c>0?'c-pos':(c<0?'c-neg':'c-zero');
   const contra=(net!==0&&c!==0&&((c>0)!==(net>0)))||
@@ -172,7 +178,7 @@ function sigRow(s,net){
       s.strikes?` <span title="governor strikes">${'🔻'.repeat(Math.min(s.strikes,3))}</span>`:''}</td>
     <td class="${cls}">${c>0?'+':''}${c.toFixed(2)}${
       contra?' <span class="contra">CONTRA</span>':''}</td>
-    <td class="mono dim">${evs}p</td>
+    <td class="mono dim">${evs}p${s.n_cycles?'<span title="'+s.n_cycles+' completed broker cycle(s) this era">🏦</span>':''}</td>
     <td class="mono dim">${s.hold_med_min!=null?fmtAge(s.hold_med_min)
         :(s.horizon_min?fmtAge(s.horizon_min)+'*':'—')}</td>
     <td class="mono dim" title="on air / stamps this run">${fmtAge(s.on_air_min)}·${s.n_run}×</td>

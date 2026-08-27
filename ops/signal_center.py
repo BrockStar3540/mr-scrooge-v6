@@ -18,10 +18,16 @@ Evidence joined per firing signal:
 
 Scoring (per pair, shown verbatim in the page legend):
   shrink(x, n)      = x · n/(n+SHRINK_N)          — small samples say little
-  evidence_pips     = 0.6·shrink(era_avg, era_n) + 0.4·shrink(form7, n7)
-                      (renormalized when a part is missing; 0 when no sample)
-  contribution      = status_weight × evidence_pips  (ACTIVE 1.0 / PROBE 0.6 /
-                      SHADOW 0.25 / SUSPENDED 0.10)
+  evidence_pips     = 0.5·broker + 0.3·shrink(era_avg) + 0.4·… see below
+                      broker = governor trust (21d decayed mean cycle R, real
+                      fills) × 60p, shrunk n_cycles/(n_cycles+4); sim parts =
+                      0.3·shrink(era_avg, era_n) + 0.2·shrink(form7, n7).
+                      Renormalized over available parts; 0 when no sample.
+                      Real broker cycles outrank the simulator (truth layers).
+  contribution      = status_weight × 0.6^strikes × evidence_pips
+                      (ACTIVE 1.0 / PROBE 0.6 / SHADOW 0.25 / SUSPENDED 0.10;
+                      each governor strike permanently discounts the setup's
+                      say until redemption — mirrors three-strikes doctrine)
   signed            = +contribution for longs, −contribution for shorts, so a
                       firing setup with NEGATIVE evidence pushes the OPPOSITE
                       side (the MAE-flip doctrine: right signal, wrong wiring)
@@ -63,6 +69,11 @@ RUN_GAP_S = 900           # stamp gap that splits an on-air run (>2 missed scans
 SHRINK_N = 8              # sample-size shrinkage constant
 CONF_SCALE = 8.0          # shrunk-pips at which confidence saturates (~76)
 W_STATUS = {"ACTIVE": 1.0, "PROBE": 0.6, "SHADOW": 0.25, "SUSPENDED": 0.10}
+# Evidence blend (renormalized over available parts) — broker truth leads
+BROKER_W, ERA_W, FORM_W = 0.5, 0.3, 0.2
+BROKER_SHRINK_N = 4       # broker cycles are scarce: shrink by n/(n+4)
+R_PIPS = 60.0             # governor cycle-R proxy → pips (the family stop)
+STRIKE_DISCOUNT = 0.6     # per governor strike: weight × 0.6^strikes
 _REFRESH_S = 45           # cache TTL
 _LATCH_TIMEOUT_S = 300    # presume a refresh thread dead after this lease
 
@@ -191,7 +202,10 @@ def formula_hash() -> str:
     (era discipline: never blend evidence across a formula change)."""
     import hashlib
     core = {"w_status": W_STATUS, "shrink_n": SHRINK_N,
-            "conf_scale": CONF_SCALE, "era_w": 0.6, "form7_w": 0.4,
+            "conf_scale": CONF_SCALE,
+            "blend": [BROKER_W, ERA_W, FORM_W],
+            "broker_shrink_n": BROKER_SHRINK_N, "r_pips": R_PIPS,
+            "strike_discount": STRIKE_DISCOUNT,
             "live_s": LIVE_S}
     return hashlib.sha256(
         json.dumps(core, sort_keys=True).encode()).hexdigest()[:12]
@@ -203,16 +217,25 @@ def _shrink(x, n) -> Optional[float]:
     return float(x) * float(n) / (float(n) + SHRINK_N)
 
 
-def evidence_pips(form: dict) -> float:
-    """Blend of shrunk era mean (0.6) and shrunk 7d form (0.4), renormalized
-    over whichever parts exist. 0.0 when the setup has no sample at all."""
+def evidence_pips(form: dict, broker: Optional[dict] = None) -> float:
+    """Blend of broker truth (0.5), shrunk era mean (0.3) and shrunk 7d form
+    (0.2), renormalized over whichever parts exist; 0.0 with no sample.
+    Broker truth = the governor's 21d trust score — a decayed mean of REAL
+    completed family cycles in R — × 60p, shrunk by cycle count. Real fills
+    outrank the simulator (truth-layers doctrine), so a seat that has
+    actually banked cycles (USD_JPY atr5m class) out-scores any sim-only
+    record; era-clocked like everything else (fresh gear = fresh cycles)."""
     parts = []
+    if broker and broker.get("n_cycles") and broker.get("trust") is not None:
+        n = float(broker["n_cycles"])
+        parts.append((BROKER_W, float(broker["trust"]) * R_PIPS
+                      * n / (n + BROKER_SHRINK_N)))
     e = _shrink(form.get("era_avg"), form.get("era_n"))
     if e is not None:
-        parts.append((0.6, e))
+        parts.append((ERA_W, e))
     f = _shrink(form.get("form7"), form.get("n7"))
     if f is not None:
-        parts.append((0.4, f))
+        parts.append((FORM_W, f))
     if not parts:
         return 0.0
     wsum = sum(w for w, _ in parts)
@@ -229,14 +252,17 @@ def _fmt_hold(minutes) -> Optional[str]:
 
 
 def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
-              now: datetime) -> list:
+              now: datetime, heats: Optional[dict] = None) -> list:
     """Per-pair groups, sorted by confidence desc then pair."""
+    heats = heats or {}
     by_pair: dict = {}
     for (pair, sess, setup, side), rec in live.items():
         fkey = "%s|%s|%s" % (pair, sess, setup)
         form = forms.get(fkey) or {}
-        ev = evidence_pips(form)
-        w = W_STATUS.get(rec.get("status"), 0.10)
+        ht = heats.get(fkey) or {}
+        ev = evidence_pips(form, ht)
+        n_strikes = int(strikes.get(fkey, 0) or 0)
+        w = W_STATUS.get(rec.get("status"), 0.10) * (STRIKE_DISCOUNT ** n_strikes)
         c = w * ev
         signed = c if side == "long" else -c
         hold = holds.get(fkey) or {}
@@ -252,7 +278,9 @@ def aggregate(live: dict, forms: dict, holds: dict, strikes: dict,
             "contribution": round(signed, 2),
             "era_avg": form.get("era_avg"), "era_n": form.get("era_n"),
             "form7": form.get("form7"), "n7": form.get("n7"),
-            "strikes": strikes.get(fkey, 0),
+            "strikes": n_strikes,
+            "n_cycles": ht.get("n_cycles", 0),
+            "trust": ht.get("trust"),
             "hold_med_min": hold.get("hold_med_min"),
             "hold_n": hold.get("hold_n", 0),
             "horizon_min": rec.get("horizon_min"),
@@ -314,8 +342,9 @@ def build_center(now: Optional[datetime] = None,
     lines = _read_journal_lines() if lines is None else lines
     reg = build_registry(lines)
     live = live_signals(reg, now)
-    from core.execution_score import load_chamber_form
-    pairs = aggregate(live, load_chamber_form(), hold_stats(), _strikes(), now)
+    from core.execution_score import load_chamber_form, load_heat_scores
+    pairs = aggregate(live, load_chamber_form(), hold_stats(), _strikes(), now,
+                      heats=load_heat_scores())
     return {
         "generated_at": now.isoformat(),
         "journal_hours": JOURNAL_HOURS,
@@ -328,7 +357,9 @@ def build_center(now: Optional[datetime] = None,
         },
         "formula_hash": formula_hash(),
         "weights": {"status": W_STATUS, "shrink_n": SHRINK_N,
-                    "conf_scale": CONF_SCALE, "era_w": 0.6, "form7_w": 0.4},
+                    "conf_scale": CONF_SCALE,
+                    "blend": {"broker": BROKER_W, "era": ERA_W, "form7": FORM_W},
+                    "strike_discount": STRIKE_DISCOUNT},
         "pairs": pairs,
     }
 
