@@ -320,3 +320,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-26T16:35:10Z,USD_CAD,short,10388,9.56,popper
 2026-08-26T17:51:52Z,CAD_JPY,long,4155,1.81,popper
 2026-08-26T20:45:00Z,USD_JPY,short,8270,4.37,parent
+2026-08-26T23:57:27Z,AUD_USD,long,9610,8.55,parent
