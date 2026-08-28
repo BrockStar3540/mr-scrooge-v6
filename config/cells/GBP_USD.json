@@ -3759,7 +3759,7 @@
           "id": "ps_ceil_fade_counter_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5233,7 +5233,7 @@
           "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars"
         }
       ],
-      "notes": "8 PROBE, 52 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "9 PROBE, 51 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
