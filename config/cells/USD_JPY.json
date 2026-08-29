@@ -3533,7 +3533,7 @@
           "id": "control_atr5m_60_t20s",
           "side": "long",
           "class": "FORMULA",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -5436,7 +5436,7 @@
           "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars"
         }
       ],
-      "notes": "3 ACTIVE, 1 PROBE, 20 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "2 ACTIVE, 1 PROBE, 36 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
