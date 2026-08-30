@@ -1,0 +1,67 @@
+{
+  "generated": "2026-08-30T05:36:42.582991+00:00",
+  "source": "8 majors, 1119 M5 views each, london+ny only",
+  "global": {
+    "coil_lo": 0.8,
+    "coil_hi": 1.15,
+    "rvol_expand": 1.35,
+    "rvol_dry": 1.0,
+    "amp_min": 1.25,
+    "stab_max": 0.95,
+    "eff_trend": 0.45,
+    "eff_chop": 0.27,
+    "ceil_pos": 0.9,
+    "floor_pos": 0.1,
+    "level_near": 6.0
+  },
+  "per_pair": {
+    "EUR_USD": {
+      "n_views": 1119,
+      "ema_trend_t": 3.0,
+      "pole_t": 7.4,
+      "pull_t": 1.8
+    },
+    "GBP_USD": {
+      "n_views": 1119,
+      "ema_trend_t": 3.74,
+      "pole_t": 10.0,
+      "pull_t": 2.4
+    },
+    "AUD_USD": {
+      "n_views": 1119,
+      "ema_trend_t": 2.64,
+      "pole_t": 6.0,
+      "pull_t": 1.4
+    },
+    "USD_CHF": {
+      "n_views": 1119,
+      "ema_trend_t": 3.41,
+      "pole_t": 8.4,
+      "pull_t": 1.9
+    },
+    "USD_CAD": {
+      "n_views": 1119,
+      "ema_trend_t": 3.8,
+      "pole_t": 9.3,
+      "pull_t": 2.1
+    },
+    "USD_JPY": {
+      "n_views": 1119,
+      "ema_trend_t": 5.6,
+      "pole_t": 13.4,
+      "pull_t": 2.8
+    },
+    "EUR_JPY": {
+      "n_views": 1119,
+      "ema_trend_t": 4.3,
+      "pole_t": 11.4,
+      "pull_t": 2.5
+    },
+    "AUD_JPY": {
+      "n_views": 1119,
+      "ema_trend_t": 3.73,
+      "pole_t": 9.4,
+      "pull_t": 1.9
+    }
+  }
+}

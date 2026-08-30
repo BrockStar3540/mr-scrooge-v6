@@ -3248,6 +3248,414 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "ninja_stack_break_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.15,
+              "note": "compression: coiled vs its own norm, but not dead vol"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.35,
+              "note": "volume expansion p90 (percentile translation of 1.5-3x; FX tick volume is not participation)"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "note": "at/through the prior-session ceiling"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_flag_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "ret_1h",
+              "min": 8.4,
+              "note": "the flag pole: 1h move >= this pair's p85"
+            },
+            {
+              "feature": "ret_5m",
+              "min": -3.8,
+              "max": 0.95,
+              "note": "tight orderly pullback \u2014 pausing, not surging or collapsing"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.0,
+              "note": "volume dries up during the flag consolidation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_amp_break_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.25,
+              "note": "amplifying regime (p90) \u2014 the negative-gamma ANALOGUE: moves get extended, breaks carry"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling (identical location to ninja_stab_fade_short \u2014 the controlled pair)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stab_fade_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session floor \u2014 fade back up"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stack_break_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.15,
+              "note": "compression: coiled vs its own norm, but not dead vol"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.35,
+              "note": "volume expansion p90 (percentile translation of 1.5-3x; FX tick volume is not participation)"
+            },
+            {
+              "feature": "ps_low_dist",
+              "max": 6.0,
+              "note": "at/through the prior-session floor"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_flag_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "ret_1h",
+              "max": -8.4,
+              "note": "the flag pole: 1h move >= this pair's p85"
+            },
+            {
+              "feature": "ret_5m",
+              "min": -0.95,
+              "max": 3.8,
+              "note": "tight orderly pullback \u2014 pausing, not surging or collapsing"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.0,
+              "note": "volume dries up during the flag consolidation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_amp_break_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.25,
+              "note": "amplifying regime (p90) \u2014 the negative-gamma ANALOGUE: moves get extended, breaks carry"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session floor (identical location to ninja_stab_fade_long \u2014 the controlled pair)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stab_fade_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling \u2014 fade back down"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-2.046 ev_gross_short=-2.384. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
@@ -4971,6 +5379,414 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "ninja_stack_break_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.15,
+              "note": "compression: coiled vs its own norm, but not dead vol"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.35,
+              "note": "volume expansion p90 (percentile translation of 1.5-3x; FX tick volume is not participation)"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "note": "at/through the prior-session ceiling"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_flag_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "ret_1h",
+              "min": 8.4,
+              "note": "the flag pole: 1h move >= this pair's p85"
+            },
+            {
+              "feature": "ret_5m",
+              "min": -3.8,
+              "max": 0.95,
+              "note": "tight orderly pullback \u2014 pausing, not surging or collapsing"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.0,
+              "note": "volume dries up during the flag consolidation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_amp_break_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.25,
+              "note": "amplifying regime (p90) \u2014 the negative-gamma ANALOGUE: moves get extended, breaks carry"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling (identical location to ninja_stab_fade_short \u2014 the controlled pair)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stab_fade_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session floor \u2014 fade back up"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stack_break_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 0.8,
+              "max": 1.15,
+              "note": "compression: coiled vs its own norm, but not dead vol"
+            },
+            {
+              "feature": "rvol_5bar",
+              "min": 1.35,
+              "note": "volume expansion p90 (percentile translation of 1.5-3x; FX tick volume is not participation)"
+            },
+            {
+              "feature": "ps_low_dist",
+              "max": 6.0,
+              "note": "at/through the prior-session floor"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_flag_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "ret_1h",
+              "max": -8.4,
+              "note": "the flag pole: 1h move >= this pair's p85"
+            },
+            {
+              "feature": "ret_5m",
+              "min": -0.95,
+              "max": 3.8,
+              "note": "tight orderly pullback \u2014 pausing, not surging or collapsing"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.0,
+              "note": "volume dries up during the flag consolidation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_amp_break_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.25,
+              "note": "amplifying regime (p90) \u2014 the negative-gamma ANALOGUE: moves get extended, breaks carry"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -3.41,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session floor (identical location to ninja_stab_fade_long \u2014 the controlled pair)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ninja_stab_fade_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling \u2014 fade back down"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": 0.0,
+            "source": "NINJA slate 2026-08-30: ninjagex.com 'Ninja GEX System' + A+ checklist (Brock-supplied PDFs), translated to FX. GEX dealer-gamma levels DO NOT EXIST in spot FX \u2014 the PDF's own claimed differentiator is the one part not replicated; level := prior-session ceiling/floor (price structure, not positioning) and gamma regime := volatility regime (behavioural analogue only). FX tick volume is a tick count, not participation, so the volume gate is a p90 percentile translation, not the PDF's 1.5-3x. Per-pair pip thresholds measured on 1,119 london+ny views/pair through the live feed's own _compute_features (research/ninja_thresholds_2026-08-30.json). Arms tuned to comparable fire rates (0.6-2.1%). C1/C2 are a controlled 2x2 at an identical location testing regime-flips-the-action. Arm A carries a NEGATIVE prior from the 2026-08-19 confirmation-depth sweep. One 3-week regime, quantiles will drift \u2014 zero prior, earns via family cycles or dies in shadow."
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
