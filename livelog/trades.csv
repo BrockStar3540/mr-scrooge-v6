@@ -373,3 +373,10 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-31T13:32:48Z,USD_CAD,short,10196,2.84,popper
 2026-08-31T14:01:33Z,GBP_USD,long,3251,-13.13,popper
 2026-08-31T14:07:37Z,EUR_USD,long,9567,-15.21,popper
+2026-08-31T14:23:33Z,USD_CAD,short,10899,8.56,popper
+2026-08-31T14:28:10Z,USD_CAD,short,10145,6.45,popper
+2026-08-31T14:39:11Z,USD_JPY,long,8115,3.52,popper
+2026-08-31T14:48:24Z,EUR_USD,long,8769,7.72,popper
+2026-08-31T14:53:58Z,GBP_USD,long,2997,2.10,popper
+2026-08-31T14:54:50Z,USD_CHF,short,6744,4.88,parent
+2026-08-31T14:56:55Z,EUR_USD,long,9382,-6.19,popper
