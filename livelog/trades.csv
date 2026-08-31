@@ -380,3 +380,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-08-31T14:53:58Z,GBP_USD,long,2997,2.10,popper
 2026-08-31T14:54:50Z,USD_CHF,short,6744,4.88,parent
 2026-08-31T14:56:55Z,EUR_USD,long,9382,-6.19,popper
+2026-08-31T17:24:33Z,USD_CAD,short,10069,5.04,popper
