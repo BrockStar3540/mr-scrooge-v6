@@ -9256,6 +9256,108 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "impulse_ob_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "ob_bull_dist_pips",
+              "min": -3.0,
+              "max": 3.0,
+              "note": "price at/inside the nearest UNMITIGATED impulse-origin zone (500.0 sentinel = no fresh zone, excluded by this band)"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5,
+              "note": "regime must agree \u2014 continuation setup, never counter-trend"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0,
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: impulse_ob_long (long) ran 16 eps @ -0.94p/ep with medMFE/MAE 3.8/7.5 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of impulse_ob_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-06",
+          "watch": "\ud83c\udf40"
+        },
+        {
+          "id": "echo_box_fade_counter_long_g_dial_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "book: extreme upper band tag | dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_counter_long_g_dial (long) ran 5 eps @ -32.7p/ep with medMFE/MAE 7.3/12.4 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_counter_long_g_dial (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "4 PROBE, 50 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."

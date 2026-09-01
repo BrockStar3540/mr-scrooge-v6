@@ -4883,6 +4883,57 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "ps_ceil_fade_short_g_appr_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ps_pos",
+              "min": 0.91,
+              "max": 0.974,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ps_high_dist",
+              "max": 0.0,
+              "note": "at prev session ceiling, unbroken -> fade (copied from GBP_USD/ny)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ps_ceil_fade_short_g_appr (short) ran 8 eps @ -17.38p/ep with medMFE/MAE 3.1/9.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of ps_ceil_fade_short_g_appr (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "4 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."

@@ -1221,6 +1221,57 @@
           "notes": "\ud83c\udfaf dial variant: narrowed gates from same-day range harvests; earns via ordinary bars",
           "wired": "2026-08-25",
           "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "echo_box_fade_short_g_dial_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.87,
+              "note": "book: extreme upper band tag | dial 2026-08-25",
+              "max": 0.95
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0,
+              "note": "book: rejection"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: echo_box_fade_short_g_dial (short) ran 6 eps @ -20.83p/ep with medMFE/MAE 1.1/12.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of echo_box_fade_short_g_dial (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=None ev_gross_short=None. Source: config/cell_calibration.json metadata.killed_note."
@@ -5787,6 +5838,51 @@
             "risk_pct": 0.2
           },
           "watch": "\ud83e\udd77"
+        },
+        {
+          "id": "orb_break_counter_long",
+          "side": "long",
+          "class": "session_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-15",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "orb_lo_dist",
+              "min": -10.0,
+              "max": -1.0,
+              "note": "fresh close 1-10p below ORB low (no late chase)"
+            },
+            {
+              "feature": "orb_range_pips",
+              "min": 5.0,
+              "max": 40.0,
+              "note": "formed, tradable range (0.0 while forming = fail-closed)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: orb_break_short (short) ran 6 eps @ -13.67p/ep with medMFE/MAE 3.4/12.7 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of orb_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "USD_CHF killed 2026-07-01 \u2014 pair-level disable; calibration data retained for reference only. ev_gross_long=-5.072 ev_gross_short=-6.686. Source: config/cell_calibration.json metadata.killed_note. | session enabled 2026-07-27 (Brock: all DISABLED->watchable) so the april-replay ceil-fade can stamp"
