@@ -2039,7 +2039,7 @@
           "id": "classic_box_fade_long",
           "side": "long",
           "class": "classic",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5641,7 +5641,7 @@
           "watch": "\ud83e\udd77"
         }
       ],
-      "notes": "9 PROBE, 51 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "8 PROBE, 60 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
