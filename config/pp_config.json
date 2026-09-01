@@ -42,7 +42,8 @@
     "USD_JPY|ny|control_atr5m_60_t20s": false,
     "USD_CHF|asia|echo_box_fade_short": false,
     "EUR_USD|ny|echo_box_fade_counter_long": false,
-    "GBP_JPY|ny|mr2_bb_reversion_counter_long": false
+    "GBP_JPY|ny|mr2_bb_reversion_counter_long": false,
+    "USD_CAD|asia|echo_box_fade_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0
