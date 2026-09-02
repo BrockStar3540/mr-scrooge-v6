@@ -7041,7 +7041,7 @@
           "id": "impulse_ob_long",
           "side": "long",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -9505,7 +9505,7 @@
           "notes": "Counterpart of shark_fade_mid_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "4 PROBE, 50 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "3 PROBE, 64 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
