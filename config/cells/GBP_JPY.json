@@ -1277,7 +1277,7 @@
           "id": "echo_box_fade_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
