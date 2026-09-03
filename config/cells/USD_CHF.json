@@ -4621,7 +4621,7 @@
           "id": "fvg_fill_short",
           "side": "short",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
