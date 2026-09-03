@@ -3808,7 +3808,7 @@
           "id": "impulse_ob_counter_long",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4674,7 +4674,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "29 SHADOW setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "1 PROBE, 59 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
