@@ -46,7 +46,8 @@
     "USD_CAD|asia|echo_box_fade_short": false,
     "GBP_USD|london|classic_box_fade_long": false,
     "AUD_JPY|asia|mr2_bb_reversion_counter_long": false,
-    "GBP_USD|ny|impulse_ob_long": false
+    "GBP_USD|ny|impulse_ob_long": false,
+    "AUD_JPY|london|rg1_range_scalp_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0

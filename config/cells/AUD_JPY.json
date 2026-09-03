@@ -1410,7 +1410,7 @@
           "id": "rg1_range_scalp_short",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
