@@ -1693,7 +1693,7 @@
           "id": "trend_pullback_long",
           "side": "long",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
