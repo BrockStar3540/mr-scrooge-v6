@@ -7500,6 +7500,54 @@
           "notes": "Counterpart of ps_ceil_fade_short_g_appr (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-08-25",
           "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "control_atrconc_60_g_core_counter_long",
+          "side": "long",
+          "class": "FORMULA",
+          "status": "SHADOW",
+          "horizon_min": 60,
+          "conditions": [
+            {
+              "feature": "atr_conc",
+              "min": 0.215,
+              "max": 0.24,
+              "note": "Absolute 2026 bounds \u2014 CONTROL formula, not rolling. Source: formula_shadow.py REGISTRY entry. | dial 2026-08-25",
+              "lineage": "formula-shadow-registry-2026-07-04/modules/signals/formula_shadow.py; formula-history-2026-07-04 (verdict_table.csv, Mini)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0,
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: control_atrconc_60_g_core (short) ran 5 eps @ -2.3p/ep with medMFE/MAE 0.5/3.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of control_atrconc_60_g_core (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "6 PROBE, 36 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
