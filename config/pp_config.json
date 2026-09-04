@@ -49,7 +49,8 @@
     "GBP_USD|ny|impulse_ob_long": false,
     "AUD_JPY|london|rg1_range_scalp_short": false,
     "EUR_USD|asia|es_trend_long": false,
-    "USD_CHF|ny|fvg_fill_short": false
+    "USD_CHF|ny|fvg_fill_short": false,
+    "GBP_USD|london|rvol_low_240_t20s": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0

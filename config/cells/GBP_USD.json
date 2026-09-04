@@ -1868,7 +1868,7 @@
           "id": "rvol_low_240_t20s",
           "side": "long",
           "class": "FORMULA",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5734,7 +5734,7 @@
           "notes": "Counterpart of fvg_fill_long_g_dial (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "8 PROBE, 60 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "7 PROBE, 63 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
