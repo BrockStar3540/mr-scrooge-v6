@@ -54,7 +54,8 @@
     "GBP_USD|ny|impulse_ob_long_adx": false,
     "EUR_USD|asia|echo_box_fade_counter_long": false,
     "USD_CHF|asia|mr2_bb_reversion_short_g_spr1": false,
-    "USD_CHF|asia|mr2_bb_reversion_short": false
+    "USD_CHF|asia|mr2_bb_reversion_short": false,
+    "GBP_USD|london|echo_box_fade_counter_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0

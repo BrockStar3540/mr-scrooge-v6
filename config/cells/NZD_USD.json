@@ -1518,7 +1518,7 @@
           "id": "ps_floor_fade_counter_short",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {

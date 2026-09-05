@@ -4762,7 +4762,7 @@
           "id": "mr2_bb_reversion_short_g_spr1",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
