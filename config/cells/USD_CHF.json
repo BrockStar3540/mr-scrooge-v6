@@ -3217,7 +3217,7 @@
           "id": "fvg_fill_long_g_dial",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-25",
           "horizon_min": 240,
           "conditions": [
