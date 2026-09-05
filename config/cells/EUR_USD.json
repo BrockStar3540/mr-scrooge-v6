@@ -2279,6 +2279,55 @@
           "notes": "Counterpart of liq_sweep_fade_long_m (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "watch": "\ud83c\udf40",
           "wired": "2026-08-07"
+        },
+        {
+          "id": "liq_sweep_fade_long_t_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "liq_sweep_low",
+              "min": 1.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5,
+              "note": "TREND-AGREEING fade: only fade a swept pool when the M5 EMA14-EMA40 regime already leans the same way. NOTE the prior evidence is AGAINST this \u2014 the 2026-08-06 gate test on 836 episodes gave a trimmed gap of only +1.28p with a bootstrap CI straddling zero, and it narrows a reversal setup into a continuation one. Wired at operator request to settle it on forward evidence rather than argument."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: liq_sweep_fade_long_t (long) ran 20 eps @ -0.3p/ep with medMFE/MAE 4.5/9.3 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of liq_sweep_fade_long_t (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
         }
       ],
       "notes": "NO-SIDE: tier-3 structural (ev_gross_long=-5.489 ev_gross_short=-4.507, both < -3.0 \u2014 lose-even-gross set, unharvestable at current geometry). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
