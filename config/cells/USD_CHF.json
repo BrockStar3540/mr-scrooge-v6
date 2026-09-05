@@ -18,7 +18,7 @@
           "id": "mr2_bb_reversion_short",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -75,7 +75,7 @@
           "id": "mr2_bb_reversion_short_g_spr1",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
