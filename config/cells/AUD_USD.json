@@ -2060,7 +2060,7 @@
           "id": "alpha_extended_fade_long_g_a10",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4674,7 +4674,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "2 PROBE, 58 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "3 PROBE, 57 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
