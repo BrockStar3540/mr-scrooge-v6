@@ -7335,7 +7335,7 @@
           "id": "impulse_ob_long_adx",
           "side": "long",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -9609,7 +9609,7 @@
           "wired": "2026-07-31"
         }
       ],
-      "notes": "3 PROBE, 64 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "2 PROBE, 66 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
