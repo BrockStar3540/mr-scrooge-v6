@@ -51,7 +51,8 @@
     "EUR_USD|asia|es_trend_long": false,
     "USD_CHF|ny|fvg_fill_short": false,
     "GBP_USD|london|rvol_low_240_t20s": false,
-    "GBP_USD|ny|impulse_ob_long_adx": false
+    "GBP_USD|ny|impulse_ob_long_adx": false,
+    "EUR_USD|asia|echo_box_fade_counter_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0
