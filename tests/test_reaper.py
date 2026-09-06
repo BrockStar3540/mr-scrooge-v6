@@ -2,9 +2,14 @@
 
 Covers config/runtime.py (reaper_config fail-closed parsing, set_reaper
 round-trip preserving other keys, reap_due pure decision) and the server
-POST /api/reaper handler (validation + LIVE confirm friction). The engine /
-party-package close paths reuse the audited B-119 close discipline verbatim;
-their decision input is reap_due, covered here.
+POST /api/reaper handler (validation + LIVE confirm friction). The decision
+input for both close sites is reap_due, covered here.
+
+B-134 correction: this file used to claim the engine and party-package close
+paths "reuse the audited B-119 close discipline verbatim". They did not — the
+engine sites got the keep-the-manager half without the retry timer, and the
+claim is why nobody looked. The close paths themselves are covered by
+tests/test_close_backoff.py (engine) and tests/test_party_package.py (PP).
 """
 import json
 from datetime import datetime, timedelta, timezone

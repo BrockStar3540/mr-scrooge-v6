@@ -142,6 +142,12 @@ class Engine:
         self.managers: dict[str, RatchetManager] = {}
         # pair -> datetime of last losing exit (portfolio cooldown)
         self._sl_history: dict[str, datetime] = {}
+        # trade_id -> retry-after epoch (B-134). B-119 gave the engine close
+        # paths the keep-the-manager half of the discipline but not the timer,
+        # so a reap that the broker refuses re-submitted every cycle. Keyed by
+        # trade id, never pair: a fresh trade on the same pair must not inherit
+        # a dead trade's backoff.
+        self._close_backoff: dict[str, float] = {}
         # cell_opens: "<pair>|<session>|<traded_dir>|<session_instance_key>" -> int
         # In-memory only — resets on restart (per-session bookkeeping)
         self._cell_opens: dict[str, int] = {}
@@ -381,31 +387,46 @@ class Engine:
             if _rcfg["enabled"]:
                 _rnet = mgr.net_pips(mid)
                 if reap_due(mgr.position.entry_time, now, _rnet, _rcfg):
+                    _tid = mgr.position.oanda_trade_id
+                    # B-134: gate BEFORE the log line, not just before the
+                    # order — an un-backed-off reap spammed the journal and
+                    # the broker in lockstep.
+                    if self._close_backoff.get(_tid, 0) > now.timestamp():
+                        continue
                     log.info("EXIT (reaper: red > %.0fh) %s | trade_id=%s | net=%.2fp",
-                             _rcfg["hours"], pair, mgr.position.oanda_trade_id, _rnet)
+                             _rcfg["hours"], pair, _tid, _rnet)
                     if not self.dry_run:
                         try:
-                            self.broker.close_position(mgr.position.oanda_trade_id)
+                            self.broker.close_position(_tid)
                         except CloseRejected as cr:
                             log.warning("reaper close rejected %s (%s) — manager "
-                                        "kept, will retry", pair, cr.reason)
+                                        "kept, retry after backoff", pair, cr.reason)
+                            self._close_backoff[_tid] = now.timestamp() + 1800
                             continue
                         except Exception as exc:
                             _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
                             if not _gone:
                                 log.warning("reaper close_position %s failed (%s) "
                                             "— manager kept", pair, exc)
+                                self._close_backoff[_tid] = now.timestamp() + 300
                                 continue
                             log.info("reaper close %s: already gone at broker", pair)
                     self.recent_events.append(
                         f"{now.strftime('%H:%M:%S')} REAP {pair} red>{_rcfg['hours']:.0f}h {_rnet:.1f}p")
                     self._sl_history[pair] = now   # reaped = a loss; cooldown applies
+                    self._close_backoff.pop(_tid, None)
                     del self.managers[pair]
                     continue
 
             # Tick ratchet -- may call broker.move_stop() if the floor tightens
             signal = mgr.update(mid, now)
             if signal:
+                _tid = mgr.position.oanda_trade_id
+                # B-134: same gate as the reaper. recent_events is a 40-slot
+                # deque the dashboard reads — a refused close re-announcing
+                # itself every cycle wiped the whole event feed.
+                if self._close_backoff.get(_tid, 0) > now.timestamp():
+                    continue
                 log.info("EXIT (local detect) %s | %s | net=%.2fp",
                          pair, signal.reason, signal.net_pips)
                 self.recent_events.append(
@@ -413,23 +434,28 @@ class Engine:
                 )
                 if not self.dry_run:
                     try:
-                        self.broker.close_position(mgr.position.oanda_trade_id)
+                        self.broker.close_position(_tid)
                     except CloseRejected as cr:
                         # B-119: the broker KEPT the trade (MARKET_HALTED /
                         # FIFO). Deleting the manager here would orphan a
                         # live position on a phantom exit — keep managing.
+                        # B-134: and back off, or "keep managing" means
+                        # re-asking a halted broker every five seconds.
                         log.warning("parent close rejected %s (%s) — manager "
-                                    "kept, will retry", pair, cr.reason)
+                                    "kept, retry after backoff", pair, cr.reason)
+                        self._close_backoff[_tid] = now.timestamp() + 1800
                         continue
                     except Exception as exc:
                         _gone = "404" in str(exc) or "does not exist" in str(exc).lower()
                         if not _gone:
                             log.warning("parent close_position %s failed (%s) "
                                         "— manager kept", pair, exc)
+                            self._close_backoff[_tid] = now.timestamp() + 300
                             continue
                         log.info("parent close %s: already gone at broker", pair)
                 if signal.net_pips < 0:
                     self._sl_history[pair] = now
+                self._close_backoff.pop(_tid, None)
                 del self.managers[pair]
 
         # ── Party Package tick (V6.1): popper exits, ratchets, re-arm + fire ──

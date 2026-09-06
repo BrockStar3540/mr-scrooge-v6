@@ -4,6 +4,40 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.30.7] — 2026-09-06 — B-134: engine close paths finally back off
+
+> Versions 6.28–6.30.6 shipped without CHANGELOG entries; they are recorded in
+> [docs/BOOK_OF_BUGS.md](docs/BOOK_OF_BUGS.md) and the git log.
+
+### Fixed
+- **A close the broker refuses is no longer re-submitted every manage tick.**
+  B-119 gave the party-package poppers both halves of the close discipline —
+  keep the trade tracked *and* set a retry timer. The two engine close paths
+  (stale-red reaper, parent local-detect) shipped with only the first half, so
+  "keep managing" meant re-asking a halted broker every ~5 seconds, forever.
+  The 6.27.0 notes below claim the reaper reused B-119 "verbatim" at both close
+  sites; that claim was wrong, and it is why the gap survived three minor
+  versions. `Engine._close_backoff` now mirrors `PartyPackage._close_backoff`:
+  1800s after a `CloseRejected`, 300s after a generic failure, keyed by trade
+  id so a fresh trade on the same pair never inherits a dead trade's timer.
+  The gate sits *before* the log line and the `recent_events` append, so a
+  refused close no longer floods the journal or flushes the 40-slot dashboard
+  event feed either.
+- **Live cost that surfaced it:** AUD_USD trade 10908 crossed the 72h reaper
+  cap at 2026-09-05 13:33Z with the weekend market shut. 9,820 `MARKET_HALTED`
+  order cancels in 15h — one every 5.5s, ~20k projected before Sunday's open —
+  against a real-money account, and a third of that account's entire
+  30,885-transaction history. No money lost; sustained order-submission abuse
+  against the broker and a permanently polluted transaction log.
+
+### Tests
+- `tests/test_close_backoff.py` (7 new): drives `Engine._manage` with fakes over
+  180 ticks at the live 5s cadence and asserts **one** close attempt, not 180;
+  covers both engine paths, trade-id keying, the 300s generic-failure path, and
+  the B-119 behaviour the timer must not break (confirmed close books the exit,
+  already-gone trade books the exit, rejected close announces nothing).
+  Verified to fail against the pre-fix engine. Suite 579 → 586.
+
 ## [6.27.1] — 2026-08-10 — B-125: every status flip is signed and ledgered
 
 An unattributed dashboard POST silently reversed a governor promotion on

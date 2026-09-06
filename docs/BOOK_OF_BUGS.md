@@ -973,6 +973,40 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-134 — half a fix, copied confidently: the reaper hammered a halted broker 9,820 times
+
+- **Discovered:** 2026-09-06, during a routine live review — not by an alert. The account's
+  transaction history was 30,885 entries where ~10k were expected; 10,260 of them were
+  `MARKET_HALTED` order cancels, 9,820 of those from the previous 15 hours.
+- **Area:** `core/engine.py` stale-red reaper + parent local-detect close paths.
+- **Symptom / chain:** AUD_USD trade 10908 crossed the 72h reaper cap at 2026-09-05 13:33Z,
+  on a Saturday, with the market shut since Friday 21:00Z. The reaper submitted a FOK
+  REDUCE_ONLY close; OANDA cancelled it `MARKET_HALTED`; B-119 correctly kept the manager and
+  `continue`d — straight into the next manage tick, five seconds later, forever. One refused
+  close became 9,820 real orders against a real-money account (~20k projected before Sunday's
+  open), each one a `MARKET_ORDER` + `ORDER_CANCEL` pair in the permanent transaction log. The
+  `EXIT (reaper: …)` line fired on every attempt too, so the journal carried the same claim
+  9,820 times without one of them being true.
+- **Root cause:** B-119 was implemented twice — properly in `party_package.py` (keep the
+  popper tracked AND `_close_backoff[tid] = now + 1800`), and half-way in `engine.py` (keep
+  the manager, no timer). The v6.27.0 CHANGELOG and the `tests/test_reaper.py` docstring both
+  asserted the engine "reuses the audited B-119 discipline verbatim", so the sites were never
+  diffed. The tests covered `reap_due` — the *decision* — and nothing covered the *retry*.
+- **Fix (v6.30.7):** `Engine._close_backoff`, keyed by trade id (never pair — a fresh trade
+  must not inherit a dead one's timer), 1800s on `CloseRejected` and 300s on generic failure,
+  gated *before* the log line and the `recent_events` append rather than just before the
+  order. Cleared on a booked exit. Both false documentation claims corrected in place.
+  `tests/test_close_backoff.py` drives 180 ticks at the live 5s cadence and asserts one
+  attempt; verified to fail against the pre-fix engine.
+- **Lesson:** "reuses X verbatim" in a comment is a claim about code that no longer has to be
+  true — the second copy drifts and the sentence keeps vouching for it. Diff the sites, or
+  make there be one site. And a retry that the tests never exercise is not a retry, it is a
+  loop: B-119's own tests covered the phantom-exit half thoroughly and the timer half not at
+  all, because the timer only misbehaves on the *second* iteration. Any handler that answers a
+  failure with `continue` needs a test that ticks it more than once.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
