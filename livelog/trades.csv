@@ -433,3 +433,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-04T13:23:16Z,NZD_USD,long,11586,10.43,popper
 2026-09-04T13:32:11Z,NZD_USD,long,11585,17.38,popper
 2026-09-04T15:53:28Z,NZD_USD,long,11374,6.71,parent
+2026-09-06T21:10:47Z,AUD_USD,short,8995,-21.32,popper
