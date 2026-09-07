@@ -448,3 +448,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-07T13:32:17Z,AUD_USD,short,9558,-13.00,popper
 2026-09-07T16:29:18Z,NZD_USD,long,11734,-15.25,parent
 2026-09-07T17:00:24Z,GBP_USD,long,2940,1.76,parent
+2026-09-07T22:30:30Z,USD_JPY,short,3897,3.23,parent
