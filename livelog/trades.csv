@@ -440,3 +440,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-06T23:24:52Z,USD_JPY,short,3901,2.18,popper
 2026-09-07T00:24:03Z,USD_JPY,short,3906,2.68,popper
 2026-09-07T00:31:49Z,USD_JPY,short,4097,4.94,parent
+2026-09-07T07:57:26Z,NZD_USD,long,11134,7.68,popper
