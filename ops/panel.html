@@ -836,8 +836,8 @@ body.has-ticker{padding-bottom:32px}
         <span class="tag">every number below is a broker transaction: realized $, completed grid-family cycles, cycle win rate. No simulator content anywhere in this table.</span></div>
       <div id="btruth-recon" class="muted" style="font-size:11px;margin:2px 0 8px"></div>
       <div class="muted" style="font-size:10.5px;margin:0 0 6px">
-        ranked <b>best first</b> by realized $ shrunk on completed cycles
-        (<span title="score = realized $ x cycles/(cycles+3). One lucky cycle keeps 25% of its dollars, three keep 50%, eleven keep 79% — so a cell that has repeated outranks a cell that got lucky once. Cells with no completed cycle score 0.">edge score</span>)
+        ranked <b>best first</b> by <b>net pips</b> shrunk on completed cycles
+        (<span title="score = net PIPS x cycles/(cycles+3). Ranked on pips, not dollars: the $ value of a pip moves with seat size (probes run 0.50x, ACTIVE runs full, the 2026-08-24 turbo changed nominal) and with the pair (a JPY-cross pip is not a EUR/USD pip), so dollars score the SIZING, not the signal. Pips are the invariant — and the unit the promotion bar, era avg/LCB and cycle WR already use. The shrink: one lucky cycle keeps 25% of its pips, three keep 50%, eleven keep 79%, so a repeater outranks a one-off. No completed cycle scores 0.">edge score</span>)
         · click any header to re-sort
       </div>
       <div style="overflow-x:auto"><table class="table" style="width:100%">
@@ -850,8 +850,8 @@ body.has-ticker{padding-bottom:32px}
           <th onclick="elSort('btruth','usd')" title="realized broker P/L, trade P/L only">realized $<span id="bts-usd"></span></th>
           <th onclick="elSort('btruth','pips')">pips<span id="bts-pips"></span></th>
           <th onclick="elSort('btruth','cycle_wr')" title="share of completed cycles that closed net-positive">cycle WR<span id="bts-cycle_wr"></span></th>
-          <th onclick="elSort('btruth','avg_cycle_usd')" title="mean realized $ per completed cycle">avg cyc $<span id="bts-avg_cycle_usd"></span></th>
-          <th title="worst / best completed cycle, realized $">worst / best</th>
+          <th onclick="elSort('btruth','avg_cycle_pips')" title="mean net PIPS per completed cycle — the size-invariant read; the $ twin is in the tooltip on each cell">avg cyc<span id="bts-avg_cycle_pips"></span></th>
+          <th title="worst / best completed cycle, net pips ($ in tooltip)">worst / best</th>
           <th title="open legs right now: (unrealized $) and ⏳ realized-so-far inside the current uncompleted cycle — cycle columns book only COMPLETED cycles (judge-when-flat), so a mid-cycle loss shows here and in realized $ before it ever becomes a cycle stat">open</th>
           <th title="last broker fill (hover shows when the last completed cycle ended)">last fill</th>
         </tr></thead>
@@ -1413,6 +1413,8 @@ function renderBrokerTruth(d){
   const body=document.getElementById('btruth-body'); if(!body)return;
   const rows=d.rows||[];
   const money=v=>v==null?'—':`<span class="${v>0?'pos':(v<0?'neg':'muted')}">${v>0?'+':''}$${Math.abs(v)<100?v.toFixed(2):Math.round(v)}${v<0?'':''}</span>`;
+  const money2=v=>v==null?'—':`${v>0?'+':''}$${v}`;                      // plain, for tooltips
+  const pipc=v=>v==null?'—':`<span class="${v>0?'pos':(v<0?'neg':'muted')}">${v>0?'+':''}${v}p</span>`;
   const rec=document.getElementById('btruth-recon');
   if(rec&&d.account){
     const a=d.account;
@@ -1420,7 +1422,7 @@ function renderBrokerTruth(d){
       +(Math.abs(a.unattributed_usd)>0.01?' <span class="neg">⚠ unattributed fills — attribution gap</span>':' <span class="pos">✓ every close attributed</span>');
   }
   if(!rows.length){body.innerHTML='<tr><td colspan="12" class="muted">no broker fills in window yet (or first cache refresh pending)</td></tr>';return;}
-  ['cell','setup','status','legs','cycles','usd','pips','cycle_wr','avg_cycle_usd']
+  ['cell','setup','status','legs','cycles','usd','pips','cycle_wr','avg_cycle_pips']
     .forEach(k=>{const el=document.getElementById('bts-'+k); if(el)el.textContent=elArrow('btruth',k);});
   const t=d.totals||{};
   // cohort badges (2026-08-19): prefer the server field; fall back to a lookup
@@ -1442,8 +1444,8 @@ function renderBrokerTruth(d){
       <td class="mono">${money(r.usd)}</td>
       <td class="mono ${r.pips>0?'pos':(r.pips<0?'neg':'muted')}">${r.pips==null?'—':(r.pips>0?'+':'')+r.pips}</td>
       <td>${r.cycle_wr==null?'—':Math.round(r.cycle_wr*100)+'%'}</td>
-      <td class="mono">${money(r.avg_cycle_usd)}</td>
-      <td class="mono" style="font-size:11px">${money(r.worst_cycle_usd)} / ${money(r.best_cycle_usd)}</td>
+      <td class="mono ${r.avg_cycle_pips>0?'pos':(r.avg_cycle_pips<0?'neg':'muted')}" title="${r.avg_cycle_usd==null?'':'mean realized $ per cycle: '+(r.avg_cycle_usd>0?'+':'')+'$'+r.avg_cycle_usd}">${r.avg_cycle_pips==null?'—':(r.avg_cycle_pips>0?'+':'')+r.avg_cycle_pips+'p'}</td>
+      <td class="mono" style="font-size:11px" title="in dollars: ${money2(r.worst_cycle_usd)} / ${money2(r.best_cycle_usd)}">${pipc(r.worst_cycle_pips)} / ${pipc(r.best_cycle_pips)}</td>
       <td style="white-space:nowrap">${r.n_open?`${r.n_open} <span class="mono ${r.open_upl<0?'neg':'muted'}" style="font-size:10px" title="unrealized on the ${r.n_open} open leg(s) · stop floor ${r.open_floor_usd!=null?'$'+r.open_floor_usd:'—'}">(${r.open_upl>0?'+':''}$${r.open_upl})</span>${r.open_cycle_usd?` <span class="mono ${r.open_cycle_usd<0?'neg':'pos'}" style="font-size:10px" title="⏳ CYCLE IN PROGRESS: already realized inside the current (uncompleted) cycle — NOT yet in the cycle columns, which book only completed cycles (judge-when-flat). It IS in the realized $ total.">⏳${r.open_cycle_usd>0?'+':''}$${r.open_cycle_usd}</span>`:''}`:'—'}</td>
       <td class="muted" style="font-size:10px" title="last broker fill${r.last_close?' · last COMPLETED cycle ended '+String(r.last_close).replace('T',' '):''}">${r.last_fill?String(r.last_fill).replace('T',' '):(r.last_close?String(r.last_close).replace('T',' '):'—')}</td>
     </tr>`;

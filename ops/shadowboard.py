@@ -420,6 +420,8 @@ def broker_truth():
         cw = [c for c in cyc if (c.get("pips") or 0) > 0]
         by_usd = sorted((c for c in cyc if c.get("usd") is not None),
                         key=lambda c: c["usd"])
+        by_pips = sorted((c for c in cyc if c.get("pips") is not None),
+                         key=lambda c: c["pips"])
         stt = st_map.get((f["instrument"], f.get("session", "?"), f["setup"]))
         out.append({
             "cell": f'{f["instrument"]}/{f.get("session", "?")}',
@@ -441,6 +443,11 @@ def broker_truth():
                               if cyc else None),
             "worst_cycle_usd": by_usd[0]["usd"] if by_usd else None,
             "best_cycle_usd": by_usd[-1]["usd"] if by_usd else None,
+            # pip twins of the cycle stats — the ranked, size-invariant view
+            "avg_cycle_pips": (round(sum(c["pips"] for c in cyc) / len(cyc), 1)
+                               if cyc else None),
+            "worst_cycle_pips": by_pips[0]["pips"] if by_pips else None,
+            "best_cycle_pips": by_pips[-1]["pips"] if by_pips else None,
             "avg_cycle_bps": f.get("cycle_bps"),
             "n_open": f.get("n_open", 0),
             "open_upl": f.get("open_upl"),
@@ -460,8 +467,8 @@ def broker_truth():
         _r["edge_score"] = _btruth_score(_r)
     # BEST FIRST (operator, 2026-09-08): this table ranked worst-first, so the
     # account's strongest cell sat at the BOTTOM of the page and the biggest
-    # loser led. Ranked on a cycle-shrunk score, not raw dollars, so one lucky
-    # cycle cannot outrank a cell that has repeated.
+    # loser led. Ranked on cycle-shrunk PIPS — dollars score the seat size, not
+    # the signal — so neither one lucky cycle nor a fat seat can lead the board.
     out.sort(key=lambda r: -r["edge_score"])
     tot = {"usd": round(sum(r["usd"] or 0 for r in out), 2),
            "pips": round(sum(r["pips"] or 0 for r in out), 1),
@@ -476,21 +483,27 @@ def broker_truth():
 def _btruth_score(r):
     """Sample-aware display rank for the broker-truth board.
 
-    Realized dollars shrunk toward zero by completed-cycle count, so a cell
-    that won once cannot outrank one that has won repeatedly: with k=3, one
-    cycle keeps 25% of its dollars, 3 keep 50%, 11 keep 79%. Concretely this
-    is what stops EUR_USD/asia|es_trend_long (+$64.99 on a SINGLE cycle) from
-    leading USD_JPY/ny|control_atr5m_60 (+$67.39 over ELEVEN).
+    RANKED ON PIPS, NOT DOLLARS (operator, 2026-09-08): "the $ size of pips can
+    change, but not the amount". A dollar figure scores the SIZING, not the
+    signal — probes run 0.50x while ACTIVE seats run full, the 2026-08-24 turbo
+    moved nominal per trade, and a JPY-cross pip is not worth a EUR/USD pip. Two
+    cells with identical pip performance can differ 2x in dollars purely by seat
+    class. Pips are the invariant, and they are the unit the rest of the board
+    already speaks: the promotion bar, era avg/LCB and cycle WR are all pips.
+
+    Pips are then shrunk toward zero by completed-cycle count so a cell that won
+    once cannot outrank one that has won repeatedly: with k=3, one cycle keeps
+    25% of its pips, 3 keep 50%, 11 keep 79%.
 
     Cells with no completed cycle score 0 — neither credited nor condemned,
     which is the same judge-when-flat rule the governor books cycles under.
     Display order only; nothing here feeds a trading decision.
     """
-    usd = r.get("usd")
+    pips = r.get("pips")
     cyc = r.get("cycles") or 0
-    if usd is None or not cyc:
+    if pips is None or not cyc:
         return 0.0
-    return usd * (cyc / (cyc + 3.0))
+    return pips * (cyc / (cyc + 3.0))
 
 
 # Governor-ordered tiers — the board sorts EXACTLY the way capital moves,
