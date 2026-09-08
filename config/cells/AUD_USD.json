@@ -5431,7 +5431,7 @@
           "id": "mr2_bb_reversion_short_g_spr1",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -7645,7 +7645,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "5 PROBE, 49 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "4 PROBE, 50 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }
