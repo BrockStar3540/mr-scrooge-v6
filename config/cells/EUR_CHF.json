@@ -404,7 +404,7 @@
           "id": "rg1_range_scalp_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1424,7 +1424,7 @@
           "id": "ps_floor_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {

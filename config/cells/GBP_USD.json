@@ -3174,7 +3174,7 @@
           "id": "liq_sweep_fade_long",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3600,7 +3600,7 @@
           "id": "mr2_bb_reversion_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -6201,7 +6201,7 @@
           "id": "echo_box_fade_long",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -6406,7 +6406,7 @@
           "id": "mr2_bb_reversion_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -7930,7 +7930,7 @@
           "id": "fvg_fill_long",
           "side": "long",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
@@ -9749,7 +9749,7 @@
           "notes": "Counterpart of fvg_fill_long_g_dial (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "2 PROBE, 66 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "1 PROBE, 69 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
