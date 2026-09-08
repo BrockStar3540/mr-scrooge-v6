@@ -456,7 +456,13 @@ def broker_truth():
             "last_fill": max((t.get("ct") or "" for t in f.get("trades") or []),
                              default=None) or None,
         })
-    out.sort(key=lambda r: r["usd"] if r["usd"] is not None else 0)
+    for _r in out:
+        _r["edge_score"] = _btruth_score(_r)
+    # BEST FIRST (operator, 2026-09-08): this table ranked worst-first, so the
+    # account's strongest cell sat at the BOTTOM of the page and the biggest
+    # loser led. Ranked on a cycle-shrunk score, not raw dollars, so one lucky
+    # cycle cannot outrank a cell that has repeated.
+    out.sort(key=lambda r: -r["edge_score"])
     tot = {"usd": round(sum(r["usd"] or 0 for r in out), 2),
            "pips": round(sum(r["pips"] or 0 for r in out), 1),
            "legs": sum(r["legs"] for r in out),
@@ -467,6 +473,26 @@ def broker_truth():
             "excluded_pre_era_closes": full.get("excluded_pre_era_closes")}
 
 
+def _btruth_score(r):
+    """Sample-aware display rank for the broker-truth board.
+
+    Realized dollars shrunk toward zero by completed-cycle count, so a cell
+    that won once cannot outrank one that has won repeatedly: with k=3, one
+    cycle keeps 25% of its dollars, 3 keep 50%, 11 keep 79%. Concretely this
+    is what stops EUR_USD/asia|es_trend_long (+$64.99 on a SINGLE cycle) from
+    leading USD_JPY/ny|control_atr5m_60 (+$67.39 over ELEVEN).
+
+    Cells with no completed cycle score 0 — neither credited nor condemned,
+    which is the same judge-when-flat rule the governor books cycles under.
+    Display order only; nothing here feeds a trading decision.
+    """
+    usd = r.get("usd")
+    cyc = r.get("cycles") or 0
+    if usd is None or not cyc:
+        return 0.0
+    return usd * (cyc / (cyc + 3.0))
+
+
 # Governor-ordered tiers — the board sorts EXACTLY the way capital moves,
 # with the most ACTIONABLE tier first (Brock, 2026-07-29): demote-due leads,
 # then the best seats, then the promotion pipeline.
@@ -475,10 +501,19 @@ TIER_LABELS = {
     1: "DEFENDED — broker family green, seat safe",
     2: "ACTIVE — holding (or episode open, verdict deferred)",
     3: "PROMOTE READY — passes the full bar at the next 06:35Z run",
+    6: "CHEATER LANE — BAR BYPASSED: qualified on cumulative pips (hot hand), "
+       "NOT on the statistical bar. These rows have not passed n/days/LCB/FDR. "
+       "Read the fails: column before acting on one.",
     4: "BUILDING EVIDENCE — shadows accruing the era-v2 sample",
     5: "AWAITING V2 / QUEUED — no era-v2 evidence yet (legacy v1 history never counts toward the bar; the era sample restarted 2026-07-28)",
     7: "RETIRED / EX-SIDE — history kept as the autopsy",
 }
+
+
+# Display rank for each tier id. Tier ids are STABLE (the movers baseline and
+# the panel icon map key off them); this map is what the board sorts on, so a
+# new lane can be slotted anywhere without renumbering the existing tiers.
+_TIER_ORDER = {0: 0, 1: 1, 2: 2, 3: 3, 6: 4, 4: 5, 5: 6, 7: 7}
 
 
 def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
@@ -508,9 +543,19 @@ def _gov_verdict(status, era_dict, e_obj, f, gc, min_raw, lifetime_eps=0):
             (era_dict.get("avg") or 0) * era_dict["n"]
             >= float(gc.get("cheater_cum_pips", 100.0))):
         cum = (era_dict.get("avg") or 0) * era_dict["n"]
-        return 3, "PROMOTE READY", (
+        # B-135: this row did NOT pass the bar, so it must not wear the
+        # PROMOTE-READY label or share that tier. It also must not be ranked on
+        # CUMULATIVE pips: cum is unbounded and grows with volume, so scoring
+        # it against the genuine lane's LCB (single digits) floated every
+        # bar-bypassed row above every qualified one. Rank on the same lower
+        # bound as everyone else; cum stays in the reason string.
+        _codes = ",".join(era_dict.get("codes") or []) or "none"
+        return 6, "CHEATER — BAR BYPASSED", (
             f"CHEATER rule: era cum {cum:+.1f}p >= "
-            f"+{gc.get('cheater_cum_pips', 100.0):.0f}p — hot hand, bar bypassed"), cum
+            f"+{gc.get('cheater_cum_pips', 100.0):.0f}p — hot hand, bar bypassed "
+            f"(n={era_dict.get('n')}/{era_dict.get('req_n')} "
+            f"days={era_dict.get('days')}/{era_dict.get('req_days')} "
+            f"fails: {_codes})"), (era_dict.get("lcb") or 0)
     if era_dict:
         passed = 6 - len(era_dict.get("codes") or [])
         return 4, "BUILDING", "needs " + ",".join(era_dict.get("codes") or []), \
@@ -807,7 +852,7 @@ def _row_key(r):
     score = g["score"] if g else (r["lcb"] if r["lcb"] is not None else -1e9)
     # tier 0 (demote due): WORST first — urgency order; every other tier:
     # best first.
-    return (tier, score if tier == 0 else -score,
+    return (_TIER_ORDER.get(tier, tier), score if tier == 0 else -score,
             -(r["avg_net240"] if r["avg_net240"] is not None else 1e9))
 
 _REFRESHING = {"on": False, "since": 0.0}

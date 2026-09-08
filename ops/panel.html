@@ -103,6 +103,8 @@ body{font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-se
 .card-title .tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;
                  background:var(--bg3);color:var(--fg2);text-transform:none;letter-spacing:0}
 
+.el-sortable th{cursor:pointer;user-select:none}
+.el-sortable th:hover{color:var(--fg,#fff);text-decoration:underline dotted}
 /* ── EDGE LAB identity (2026-08-01): purple/cyan ───────────────────────── */
 :root{--edge1:#a78bfa; --edge2:#22d3ee}
 .tab-edge{color:var(--edge1)!important;font-weight:700}
@@ -833,15 +835,22 @@ body.has-ticker{padding-bottom:32px}
       <div class="card-title">💰 BROKER TRUTH — real OANDA fills only
         <span class="tag">every number below is a broker transaction: realized $, completed grid-family cycles, cycle win rate. No simulator content anywhere in this table.</span></div>
       <div id="btruth-recon" class="muted" style="font-size:11px;margin:2px 0 8px"></div>
+      <div class="muted" style="font-size:10.5px;margin:0 0 6px">
+        ranked <b>best first</b> by realized $ shrunk on completed cycles
+        (<span title="score = realized $ x cycles/(cycles+3). One lucky cycle keeps 25% of its dollars, three keep 50%, eleven keep 79% — so a cell that has repeated outranks a cell that got lucky once. Cells with no completed cycle score 0.">edge score</span>)
+        · click any header to re-sort
+      </div>
       <div style="overflow-x:auto"><table class="table" style="width:100%">
-        <thead><tr>
-          <th>family cell</th><th>setup</th><th>status</th>
-          <th title="closed legs: parents + poppers (green legs)">legs</th>
-          <th title="completed grid-family cycles — the independent evidence unit; a cycle ends when the family goes flat">cycles</th>
-          <th title="realized broker P/L, trade P/L only">realized $</th>
-          <th>pips</th>
-          <th title="share of completed cycles that closed net-positive">cycle WR</th>
-          <th title="mean realized $ per completed cycle">avg cyc $</th>
+        <thead><tr class="el-sortable">
+          <th onclick="elSort('btruth','cell')">family cell<span id="bts-cell"></span></th>
+          <th onclick="elSort('btruth','setup')">setup<span id="bts-setup"></span></th>
+          <th onclick="elSort('btruth','status')">status<span id="bts-status"></span></th>
+          <th onclick="elSort('btruth','legs')" title="closed legs: parents + poppers (green legs)">legs<span id="bts-legs"></span></th>
+          <th onclick="elSort('btruth','cycles')" title="completed grid-family cycles — the independent evidence unit; a cycle ends when the family goes flat">cycles<span id="bts-cycles"></span></th>
+          <th onclick="elSort('btruth','usd')" title="realized broker P/L, trade P/L only">realized $<span id="bts-usd"></span></th>
+          <th onclick="elSort('btruth','pips')">pips<span id="bts-pips"></span></th>
+          <th onclick="elSort('btruth','cycle_wr')" title="share of completed cycles that closed net-positive">cycle WR<span id="bts-cycle_wr"></span></th>
+          <th onclick="elSort('btruth','avg_cycle_usd')" title="mean realized $ per completed cycle">avg cyc $<span id="bts-avg_cycle_usd"></span></th>
           <th title="worst / best completed cycle, realized $">worst / best</th>
           <th title="open legs right now: (unrealized $) and ⏳ realized-so-far inside the current uncompleted cycle — cycle columns book only COMPLETED cycles (judge-when-flat), so a mid-cycle loss shows here and in realized $ before it ever becomes a cycle stat">open</th>
           <th title="last broker fill (hover shows when the last completed cycle ended)">last fill</th>
@@ -953,13 +962,13 @@ body.has-ticker{padding-bottom:32px}
     </div>
     </details>
     <table id="sb-tbl" style="width:100%">
-      <thead><tr>
-        <th>setup</th><th>cell</th><th>side</th><th>status</th>
+      <thead><tr class="el-sortable">
+        <th onclick="elSort('sb','setup')">setup<span id="sbs-setup"></span></th><th onclick="elSort('sb','cell')">cell<span id="sbs-cell"></span></th><th onclick="elSort('sb','side')">side<span id="sbs-side"></span></th><th onclick="elSort('sb','status')">status<span id="sbs-status"></span></th>
         <th title="The governor's own call for this row, today: DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING (with the bar conditions still failing) / QUEUED / DEMOTE DUE">verdict</th>
         <th title="Broker family: parent + its poppers, one unit — era net pips (n trades) · ⏳k = k trades open, verdict deferred until flat">family (broker)</th>
-        <th>eps</th>
+        <th onclick="elSort('sb','episodes')">eps<span id="sbs-episodes"></span></th>
         <th title="⚠️ PARENT-ONLY ENTRY-SIGNAL METRIC — simulates the parent trade alone under its exit gear; it cannot see the popper grid (measured broker sign agreement: 3/10 families — use V-CYC and BROKER TRUTH for economics). It is the ordinary admission lane's statistical bar (ON since 2026-08-03: n/days/avg/LCB/FDR at the operator bar 10/5, redemption 20/10 for struck cells), and promotion additionally requires the TRUTH-CHECK GATE to pass. ACTIVE/PROBE rows are governed by completed broker family cycles.">era v2 bar</th>
-        <th title="VIRTUAL FAMILY CYCLES — ⚠️ OPTIMISTIC, AUDITED 2026-08-06: across the 11 families with real fills this metric overstates cycle win-rate by +17pts on average, and the overstatement sits ENTIRELY on the losers (USD_JPY/london/timing_lean_30: 100% virtual vs 25% broker, -$81). Every profitable family matched exactly; every money-loser was flattered. Treat a high score as NO evidence of quality — it has essentially no negative predictive value. 88% of all cells score positive here and 84% never show a losing cycle, which is the grid signature (many small wins, rare large loss), not skill. Use BROKER TRUTH for anything that has traded. Detail: parent+popper grid replayed over real M5 bid/ask, parent + popper grid replayed over real M5 bid/ask candles from every era stamp (core/family_cycle.py, same mechanics the live book trades; refreshed 6h). Format: net pips per completed cycle × cycles (cycle WR). The old parent/horizon sim agreed with broker sign on only 3/10 families; this is the metric that sees the grid. ACTIVE cells: this scores ALL firings — the live seat's selected subset lives in BROKER TRUTH.">V-CYC family</th><th title="CURRENT ERA · executable-exit-v2 · mechanics-matched · net of spread+slippage — the EXACT sample the governor promotes on. Lifetime blends (legacy-v1 metric + dead config eras) put the WRONG SIGN on 15 of 174 rows and now live only in the eps-column tooltip.">avg net/ep</th><th title="current era · v2 · net-of-cost cumulative">cum net</th><th title="current era · v2 · share of resolved episodes net-positive after costs">WR</th><th title="ratchet-ENGAGE rate: share of episodes whose MFE reached this setup&#39;s trigger + 0.5p mid buffer (per-setup: two-phase seats engage 7.5p, standard shadows 8.5p, t20s 20.5p). An engaged trade locks +6 and cannot lose. Replaced hit≥6p (the lock level), which flattered almost-winners that pop 6p and never engage.">hit≥trig</th><th title="DEATH rate: share of episodes whose MAE reached this setup&#39;s config SL − 0.5p (mid understates adverse excursion — the executable side hits the stop first; stops are range-sized 40/50/60). At lock 6 / SL 60, ONE death costs TEN engages — read this column against hit≥trig: the ratio must stay near 10:1 just to break even on the extremes.">hitSL</th><th>medMFE/MAE</th><th>7d avg (n)</th><th>since</th>
+        <th title="VIRTUAL FAMILY CYCLES — ⚠️ OPTIMISTIC, AUDITED 2026-08-06: across the 11 families with real fills this metric overstates cycle win-rate by +17pts on average, and the overstatement sits ENTIRELY on the losers (USD_JPY/london/timing_lean_30: 100% virtual vs 25% broker, -$81). Every profitable family matched exactly; every money-loser was flattered. Treat a high score as NO evidence of quality — it has essentially no negative predictive value. 88% of all cells score positive here and 84% never show a losing cycle, which is the grid signature (many small wins, rare large loss), not skill. Use BROKER TRUTH for anything that has traded. Detail: parent+popper grid replayed over real M5 bid/ask, parent + popper grid replayed over real M5 bid/ask candles from every era stamp (core/family_cycle.py, same mechanics the live book trades; refreshed 6h). Format: net pips per completed cycle × cycles (cycle WR). The old parent/horizon sim agreed with broker sign on only 3/10 families; this is the metric that sees the grid. ACTIVE cells: this scores ALL firings — the live seat's selected subset lives in BROKER TRUTH.">V-CYC family</th><th title="CURRENT ERA · executable-exit-v2 · mechanics-matched · net of spread+slippage — the EXACT sample the governor promotes on. Lifetime blends (legacy-v1 metric + dead config eras) put the WRONG SIGN on 15 of 174 rows and now live only in the eps-column tooltip." onclick="elSort('sb','avg_net240')">avg net/ep<span id="sbs-avg_net240"></span></th><th title="current era · v2 · net-of-cost cumulative" onclick="elSort('sb','cum_net240')">cum net<span id="sbs-cum_net240"></span></th><th title="current era · v2 · share of resolved episodes net-positive after costs" onclick="elSort('sb','wr')">WR<span id="sbs-wr"></span></th><th title="ratchet-ENGAGE rate: share of episodes whose MFE reached this setup&#39;s trigger + 0.5p mid buffer (per-setup: two-phase seats engage 7.5p, standard shadows 8.5p, t20s 20.5p). An engaged trade locks +6 and cannot lose. Replaced hit≥6p (the lock level), which flattered almost-winners that pop 6p and never engage.">hit≥trig</th><th title="DEATH rate: share of episodes whose MAE reached this setup&#39;s config SL − 0.5p (mid understates adverse excursion — the executable side hits the stop first; stops are range-sized 40/50/60). At lock 6 / SL 60, ONE death costs TEN engages — read this column against hit≥trig: the ratio must stay near 10:1 just to break even on the extremes.">hitSL</th><th>medMFE/MAE</th><th onclick="elSort('sb','last7_avg')">7d avg (n)<span id="sbs-last7_avg"></span></th><th>since</th>
         <th title="Promote a good shadow to ACTIVE, or DISABLE it — writes config/cells">set status</th>
       </tr></thead>
       <tbody id="sb-body"></tbody>
@@ -1251,84 +1260,27 @@ window.fetch = async function(url, options = {}){
   return r;
 };
 
-/* ── BROKER TRUTH — real fills only ────────────────────────────────────── */
-function renderBrokerTruth(d){
-  const body=document.getElementById('btruth-body'); if(!body)return;
-  const rows=d.rows||[];
-  const money=v=>v==null?'—':`<span class="${v>0?'pos':(v<0?'neg':'muted')}">${v>0?'+':''}$${Math.abs(v)<100?v.toFixed(2):Math.round(v)}${v<0?'':''}</span>`;
-  const rec=document.getElementById('btruth-recon');
-  if(rec&&d.account){
-    const a=d.account;
-    rec.innerHTML=`window since ${String(d.since||'').slice(0,10)} · account realized $${a.window_realized_usd} = attributed $${a.attributed_usd} + pre-era $${a.pre_era_usd} + unattributed $${a.unattributed_usd}`
-      +(Math.abs(a.unattributed_usd)>0.01?' <span class="neg">⚠ unattributed fills — attribution gap</span>':' <span class="pos">✓ every close attributed</span>');
-  }
-  if(!rows.length){body.innerHTML='<tr><td colspan="12" class="muted">no broker fills in window yet (or first cache refresh pending)</td></tr>';return;}
-  const t=d.totals||{};
-  // cohort badges (2026-08-19): prefer the server field; fall back to a lookup
-  // from the shadowboard rows already in memory (covers pre-restart payloads)
-  const wmap={},smap={};
-  ((SBOARD&&SBOARD.rows)||[]).forEach(x=>{if(x.watch)wmap[x.cell+'|'+x.setup]=x.watch;if(x.strikes)smap[x.cell+'|'+x.setup]=x.strikes});
-  body.innerHTML=rows.map(r=>{
-    const w=r.watch||wmap[r.cell+'|'+r.setup]||'';
-    const stk=r.strikes!=null?r.strikes:(smap[r.cell+'|'+r.setup]||0);
-    const stkHtml=stk>0?` <span title="demoted ${stk} time${stk>1?'s':''} — permanent strike record (3rd strike disables the cell)" style="font-size:9px;letter-spacing:-2px">${'\u{1F53B}'.repeat(Math.min(stk,3))}</span>`:'';
-    const stcls=r.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':(r.status==='PROBE'?'style="color:#4aa3ff;font-weight:700"':(r.status==='RETIRED'?'class="muted"':'style="color:#f4c542"'));
-    return `<tr>
-      <td>${r.cell}</td><td class="mono" style="font-size:11px">${w?`<span title="cohort badge — see legend above">${w}</span> `:''}${r.setup}${stkHtml}</td>
-      <td ${stcls}>${r.status}</td>
-      <td title="${r.parents} parents + ${r.poppers} poppers, ${r.leg_greens} green">${r.legs} <span class="muted" style="font-size:9px">(${r.leg_greens}g)</span></td>
-      <td>${r.cycles}</td>
-      <td class="mono">${money(r.usd)}</td>
-      <td class="mono ${r.pips>0?'pos':(r.pips<0?'neg':'muted')}">${r.pips==null?'—':(r.pips>0?'+':'')+r.pips}</td>
-      <td>${r.cycle_wr==null?'—':Math.round(r.cycle_wr*100)+'%'}</td>
-      <td class="mono">${money(r.avg_cycle_usd)}</td>
-      <td class="mono" style="font-size:11px">${money(r.worst_cycle_usd)} / ${money(r.best_cycle_usd)}</td>
-      <td style="white-space:nowrap">${r.n_open?`${r.n_open} <span class="mono ${r.open_upl<0?'neg':'muted'}" style="font-size:10px" title="unrealized on the ${r.n_open} open leg(s) · stop floor ${r.open_floor_usd!=null?'$'+r.open_floor_usd:'—'}">(${r.open_upl>0?'+':''}$${r.open_upl})</span>${r.open_cycle_usd?` <span class="mono ${r.open_cycle_usd<0?'neg':'pos'}" style="font-size:10px" title="⏳ CYCLE IN PROGRESS: already realized inside the current (uncompleted) cycle — NOT yet in the cycle columns, which book only completed cycles (judge-when-flat). It IS in the realized $ total.">⏳${r.open_cycle_usd>0?'+':''}$${r.open_cycle_usd}</span>`:''}`:'—'}</td>
-      <td class="muted" style="font-size:10px" title="last broker fill${r.last_close?' · last COMPLETED cycle ended '+String(r.last_close).replace('T',' '):''}">${r.last_fill?String(r.last_fill).replace('T',' '):(r.last_close?String(r.last_close).replace('T',' '):'—')}</td>
-    </tr>`;
-  }).join('')+`<tr style="border-top:2px solid rgba(255,255,255,.15);font-weight:700">
-      <td colspan="3">TOTAL</td><td>${t.legs??''}</td><td>${t.cycles??''}</td>
-      <td class="mono">${money(t.usd)}</td>
-      <td class="mono ${t.pips>0?'pos':'neg'}">${t.pips>0?'+':''}${t.pips??''}</td>
-      <td colspan="4" class="muted" style="font-size:10px">open legs: ${t.open??0} · pre-era closes excluded: ${d.excluded_pre_era_closes??0}</td>
-    </tr>`;
-}
 
-/* ── Shadowboard ───────────────────────────────────────────────────────── */
-let SBOARD=null;
-let SB_COHORT=localStorage.getItem('sb_cohort')||'';
-function sbSetCohort(w){SB_COHORT=w;localStorage.setItem('sb_cohort',w);pollShadowboard();}
-async function pollShadowboard(){
-  try{
-    const r=await fetch('/api/shadowboard'); if(!r.ok)return;
-    const d=await r.json();
-    SBOARD=d;
-    try{const bt=await fetch('/api/broker/truth');
-        if(bt.ok)renderBrokerTruth(await bt.json());}catch(e){}
-    renderEvidenceChips();
-    renderEdgeCommand();
-    loadGovLedger();
-    const _genMs=Date.parse(d.generated||0), _ageMin=(Date.now()-_genMs)/60000;
-    const _ageTxt=isFinite(_ageMin)?(_ageMin>20?`⚠️ board STALE ${Math.round(_ageMin)}m`:`board ${Math.round(_ageMin)}m old`):'board age —';
-    document.getElementById('sb-meta').textContent=
-      `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${_ageTxt} (${(d.generated||'').slice(11,16)}Z)`;
-    const TIER_ICON={0:'🔻',1:'🛡',2:'⚖️',3:'🏆',4:'🔬',5:'⏳',7:'🪦'};
-    let lastTier=null;
-    // cohort filter chips (audit enhancement 2026-08-19)
-    const _hist={};
-    (d.rows||[]).forEach(r=>{const w=r.watch||'∅';_hist[w]=(_hist[w]||0)+1});
-    const _mk=(w,lbl,n)=>`<span onclick="sbSetCohort('${w}')" style="cursor:pointer;margin-right:6px;padding:1px 7px;border-radius:9px;border:1px solid ${SB_COHORT===w?'var(--fg2,#ccc)':'rgba(128,128,128,.35)'};${SB_COHORT===w?'font-weight:700':''}">${lbl}${n!=null?` <span class=muted>${n}</span>`:''}</span>`;
-    document.getElementById('sb-chips').innerHTML =
-      _mk('','ALL',(d.rows||[]).length) +
-      Object.keys(_hist).sort().map(w=>_mk(w, w==='∅'?'no-badge':w, _hist[w])).join('');
-    const _mv=d.movers||[];
-    document.getElementById('sb-movers').innerHTML = _mv.length
-      ? `↕ movers since ${_mv&&d.movers_since?d.movers_since.slice(5,16).replace('T',' '):'baseline'}Z: ` +
-        _mv.slice(0,14).map(m=>`<span style="margin-right:10px">${m.to<m.from?'🔼':'🔽'} ${m.cell}/${m.setup} t${m.from}→t${m.to}</span>`).join('') +
-        (_mv.length>14?` <span class=muted>+${_mv.length-14} more</span>`:'')
-      : (d.movers_since===null?'↕ movers: baseline reset — populates as tiers change':'↕ no tier changes in the last 24h');
-    const _sbRows=(d.rows||[]).filter(x=>!SB_COHORT||( (x.watch||'∅')===SB_COHORT ));
-    document.getElementById('sb-body').innerHTML=_sbRows.map(x=>{
+/* ── Shadowboard row render (extracted 2026-09-08 so a header click can
+   re-rank without refetching). Tier GROUPING is preserved on every sort: rows
+   are ordered by tier first, then by the clicked key inside the tier, so the
+   section headers stay meaningful and DEFENDED never sorts below QUEUED. */
+function renderShadowRows(){
+  const d=SBOARD; if(!d)return;
+  const TIER_ICON={0:'\u{1F53B}',1:'\u{1F6E1}',2:'\u2696\uFE0F',3:'\u{1F3C6}',
+                   6:'\u{1F3B2}',4:'\u{1F52C}',5:'\u23F3',7:'\u{1FAA6}'};
+  const TORD={0:0,1:1,2:2,3:3,6:4,4:5,5:6,7:7};
+  let lastTier=null;
+  let _sbRows=(d.rows||[]).filter(x=>!SB_COHORT||((x.watch||'\u2205')===SB_COHORT));
+  if(EL_SORT.sb.key){
+    _sbRows=[..._sbRows].sort((a,b)=>{
+      const ta=TORD[(a.gov&&a.gov.tier)??7]??7, tb=TORD[(b.gov&&b.gov.tier)??7]??7;
+      return (ta-tb) || elCmp('sb',a,b);
+    });
+  }
+  ['setup','cell','side','status','episodes','avg_net240','cum_net240','wr','last7_avg']
+    .forEach(k=>{const el=document.getElementById('sbs-'+k); if(el)el.textContent=elArrow('sb',k);});
+  document.getElementById('sb-body').innerHTML=_sbRows.map(x=>{
       const tier=x.gov?x.gov.tier:7;
       let hdr='';
       if(tier!==lastTier){
@@ -1360,6 +1312,7 @@ async function pollShadowboard(){
       // the governor's verdict + the broker family cell (v6.8.0)
       const g=x.gov;
       const VCLS={'DEFENDED':'pill-pass','PROMOTE READY':'pill-pass','HOLDING':'pill-info',
+                  'CHEATER — BAR BYPASSED':'pill-warn',
                   'DEFERRED':'pill-warn','BUILDING':'pill-block','QUEUED':'pill-block',
                   'AWAITING V2':'pill-warn','DEMOTE DUE':'pill-fail','TRUTH BLOCKED':'pill-fail'};
       const vcell=g?`<span class="pill ${VCLS[g.verdict]||'pill-block'}" title="${g.reason||''}"
@@ -1418,6 +1371,124 @@ async function pollShadowboard(){
         <td style="white-space:nowrap">${ctrl}</td>
       </tr>`;
     }).join('');
+}
+
+/* ── Edge Lab click-to-sort (operator, 2026-09-08) ──────────────────────
+   Every Edge Lab table ranks BEST FIRST by default and re-ranks on each poll
+   as the underlying numbers move. Clicking a header overrides the default;
+   clicking the same header again flips direction. Sort state is per-table and
+   survives the 15s refresh, so a chosen order does not get yanked away
+   mid-read. Display only — nothing here touches a trading decision. */
+const EL_SORT={btruth:{key:null,dir:-1}, sb:{key:null,dir:-1}};
+function elSort(tbl,key){
+  const st=EL_SORT[tbl];
+  st.dir = (st.key===key) ? -st.dir : -1;
+  st.key = key;
+  if(tbl==='btruth'&&BT_LAST) renderBrokerTruth(BT_LAST);
+  if(tbl==='sb'&&SBOARD) renderShadowRows();
+}
+function elArrow(tbl,key){
+  const st=EL_SORT[tbl];
+  return st.key===key ? (st.dir<0?' ▼':' ▲') : '';
+}
+/* numeric-aware, null-last comparator */
+function elCmp(tbl,a,b){
+  const st=EL_SORT[tbl]; if(!st.key) return 0;
+  const pick=(r)=>{
+    const v=st.key.split('.').reduce((o,k)=>(o==null?null:o[k]), r);
+    return (v===''||v===undefined)?null:v;
+  };
+  let x=pick(a), y=pick(b);
+  if(x==null&&y==null) return 0;
+  if(x==null) return 1;            // nulls always sink, both directions
+  if(y==null) return -1;
+  if(typeof x==='number'&&typeof y==='number') return (x-y)*st.dir;
+  return String(x).localeCompare(String(y))*st.dir;
+}
+
+/* ── BROKER TRUTH — real fills only ────────────────────────────────────── */
+let BT_LAST=null;
+function renderBrokerTruth(d){
+  BT_LAST=d;
+  const body=document.getElementById('btruth-body'); if(!body)return;
+  const rows=d.rows||[];
+  const money=v=>v==null?'—':`<span class="${v>0?'pos':(v<0?'neg':'muted')}">${v>0?'+':''}$${Math.abs(v)<100?v.toFixed(2):Math.round(v)}${v<0?'':''}</span>`;
+  const rec=document.getElementById('btruth-recon');
+  if(rec&&d.account){
+    const a=d.account;
+    rec.innerHTML=`window since ${String(d.since||'').slice(0,10)} · account realized $${a.window_realized_usd} = attributed $${a.attributed_usd} + pre-era $${a.pre_era_usd} + unattributed $${a.unattributed_usd}`
+      +(Math.abs(a.unattributed_usd)>0.01?' <span class="neg">⚠ unattributed fills — attribution gap</span>':' <span class="pos">✓ every close attributed</span>');
+  }
+  if(!rows.length){body.innerHTML='<tr><td colspan="12" class="muted">no broker fills in window yet (or first cache refresh pending)</td></tr>';return;}
+  ['cell','setup','status','legs','cycles','usd','pips','cycle_wr','avg_cycle_usd']
+    .forEach(k=>{const el=document.getElementById('bts-'+k); if(el)el.textContent=elArrow('btruth',k);});
+  const t=d.totals||{};
+  // cohort badges (2026-08-19): prefer the server field; fall back to a lookup
+  // from the shadowboard rows already in memory (covers pre-restart payloads)
+  const wmap={},smap={};
+  ((SBOARD&&SBOARD.rows)||[]).forEach(x=>{if(x.watch)wmap[x.cell+'|'+x.setup]=x.watch;if(x.strikes)smap[x.cell+'|'+x.setup]=x.strikes});
+  // server already ranks best-first on edge_score; a clicked header overrides
+  const _rows = EL_SORT.btruth.key ? [...rows].sort((a,b)=>elCmp('btruth',a,b)) : rows;
+  body.innerHTML=_rows.map(r=>{
+    const w=r.watch||wmap[r.cell+'|'+r.setup]||'';
+    const stk=r.strikes!=null?r.strikes:(smap[r.cell+'|'+r.setup]||0);
+    const stkHtml=stk>0?` <span title="demoted ${stk} time${stk>1?'s':''} — permanent strike record (3rd strike disables the cell)" style="font-size:9px;letter-spacing:-2px">${'\u{1F53B}'.repeat(Math.min(stk,3))}</span>`:'';
+    const stcls=r.status==='ACTIVE'?'style="color:#2ecc71;font-weight:700"':(r.status==='PROBE'?'style="color:#4aa3ff;font-weight:700"':(r.status==='RETIRED'?'class="muted"':'style="color:#f4c542"'));
+    return `<tr>
+      <td>${r.cell}</td><td class="mono" style="font-size:11px">${w?`<span title="cohort badge — see legend above">${w}</span> `:''}${r.setup}${stkHtml}</td>
+      <td ${stcls}>${r.status}</td>
+      <td title="${r.parents} parents + ${r.poppers} poppers, ${r.leg_greens} green">${r.legs} <span class="muted" style="font-size:9px">(${r.leg_greens}g)</span></td>
+      <td>${r.cycles}</td>
+      <td class="mono">${money(r.usd)}</td>
+      <td class="mono ${r.pips>0?'pos':(r.pips<0?'neg':'muted')}">${r.pips==null?'—':(r.pips>0?'+':'')+r.pips}</td>
+      <td>${r.cycle_wr==null?'—':Math.round(r.cycle_wr*100)+'%'}</td>
+      <td class="mono">${money(r.avg_cycle_usd)}</td>
+      <td class="mono" style="font-size:11px">${money(r.worst_cycle_usd)} / ${money(r.best_cycle_usd)}</td>
+      <td style="white-space:nowrap">${r.n_open?`${r.n_open} <span class="mono ${r.open_upl<0?'neg':'muted'}" style="font-size:10px" title="unrealized on the ${r.n_open} open leg(s) · stop floor ${r.open_floor_usd!=null?'$'+r.open_floor_usd:'—'}">(${r.open_upl>0?'+':''}$${r.open_upl})</span>${r.open_cycle_usd?` <span class="mono ${r.open_cycle_usd<0?'neg':'pos'}" style="font-size:10px" title="⏳ CYCLE IN PROGRESS: already realized inside the current (uncompleted) cycle — NOT yet in the cycle columns, which book only completed cycles (judge-when-flat). It IS in the realized $ total.">⏳${r.open_cycle_usd>0?'+':''}$${r.open_cycle_usd}</span>`:''}`:'—'}</td>
+      <td class="muted" style="font-size:10px" title="last broker fill${r.last_close?' · last COMPLETED cycle ended '+String(r.last_close).replace('T',' '):''}">${r.last_fill?String(r.last_fill).replace('T',' '):(r.last_close?String(r.last_close).replace('T',' '):'—')}</td>
+    </tr>`;
+  }).join('')+`<tr style="border-top:2px solid rgba(255,255,255,.15);font-weight:700">
+      <td colspan="3">TOTAL</td><td>${t.legs??''}</td><td>${t.cycles??''}</td>
+      <td class="mono">${money(t.usd)}</td>
+      <td class="mono ${t.pips>0?'pos':'neg'}">${t.pips>0?'+':''}${t.pips??''}</td>
+      <td colspan="4" class="muted" style="font-size:10px">open legs: ${t.open??0} · pre-era closes excluded: ${d.excluded_pre_era_closes??0}</td>
+    </tr>`;
+}
+
+/* ── Shadowboard ───────────────────────────────────────────────────────── */
+let SBOARD=null;
+let SB_COHORT=localStorage.getItem('sb_cohort')||'';
+function sbSetCohort(w){SB_COHORT=w;localStorage.setItem('sb_cohort',w);pollShadowboard();}
+async function pollShadowboard(){
+  try{
+    const r=await fetch('/api/shadowboard'); if(!r.ok)return;
+    const d=await r.json();
+    SBOARD=d;
+    try{const bt=await fetch('/api/broker/truth');
+        if(bt.ok)renderBrokerTruth(await bt.json());}catch(e){}
+    renderEvidenceChips();
+    renderEdgeCommand();
+    loadGovLedger();
+    const _genMs=Date.parse(d.generated||0), _ageMin=(Date.now()-_genMs)/60000;
+    const _ageTxt=isFinite(_ageMin)?(_ageMin>20?`⚠️ board STALE ${Math.round(_ageMin)}m`:`board ${Math.round(_ageMin)}m old`):'board age —';
+    document.getElementById('sb-meta').textContent=
+      `active median ${d.active_median??'—'}p/ep · ${d.pending||0} episodes maturing · ${_ageTxt} (${(d.generated||'').slice(11,16)}Z)`;
+    const TIER_ICON={0:'🔻',1:'🛡',2:'⚖️',3:'🏆',6:'🎲',4:'🔬',5:'⏳',7:'🪦'};
+    let lastTier=null;
+    // cohort filter chips (audit enhancement 2026-08-19)
+    const _hist={};
+    (d.rows||[]).forEach(r=>{const w=r.watch||'∅';_hist[w]=(_hist[w]||0)+1});
+    const _mk=(w,lbl,n)=>`<span onclick="sbSetCohort('${w}')" style="cursor:pointer;margin-right:6px;padding:1px 7px;border-radius:9px;border:1px solid ${SB_COHORT===w?'var(--fg2,#ccc)':'rgba(128,128,128,.35)'};${SB_COHORT===w?'font-weight:700':''}">${lbl}${n!=null?` <span class=muted>${n}</span>`:''}</span>`;
+    document.getElementById('sb-chips').innerHTML =
+      _mk('','ALL',(d.rows||[]).length) +
+      Object.keys(_hist).sort().map(w=>_mk(w, w==='∅'?'no-badge':w, _hist[w])).join('');
+    const _mv=d.movers||[];
+    document.getElementById('sb-movers').innerHTML = _mv.length
+      ? `↕ movers since ${_mv&&d.movers_since?d.movers_since.slice(5,16).replace('T',' '):'baseline'}Z: ` +
+        _mv.slice(0,14).map(m=>`<span style="margin-right:10px">${m.to<m.from?'🔼':'🔽'} ${m.cell}/${m.setup} t${m.from}→t${m.to}</span>`).join('') +
+        (_mv.length>14?` <span class=muted>+${_mv.length-14} more</span>`:'')
+      : (d.movers_since===null?'↕ movers: baseline reset — populates as tiers change':'↕ no tier changes in the last 24h');
+    renderShadowRows();
   }catch(e){}
 }
 setInterval(pollShadowboard,60000); pollShadowboard();
