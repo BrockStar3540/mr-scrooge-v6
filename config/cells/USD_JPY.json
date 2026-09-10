@@ -5380,7 +5380,7 @@
           "id": "fvg_fill_short",
           "side": "short",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
@@ -6759,7 +6759,7 @@
           "wired": "2026-07-05"
         }
       ],
-      "notes": "2 ACTIVE, 4 PROBE, 43 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "2 ACTIVE, 3 PROBE, 45 SHADOW setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
