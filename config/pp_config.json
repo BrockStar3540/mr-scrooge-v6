@@ -9,12 +9,10 @@
   "max_margin_pct_total": 1.6,
   "grid_max_age_days": 7.0,
   "marker_pips": [
-    10.0,
-    15.0,
-    20.0,
-    30.0,
-    40.0,
-    60.0
+    25.0,
+    35.0,
+    45.0,
+    55.0
   ],
   "per_cell": {
     "USD_JPY|london|timing_lean_30": false,
@@ -63,5 +61,6 @@
     "GBP_USD|london|rvol_low_240": false
   },
   "engage_pips": 7.5,
-  "engage_lock_pips": 6.0
+  "engage_lock_pips": 6.0,
+  "_ladder_note": "LADDER 2026-09-10 (operator): [10,15,20,30,40,60] -> [25,35,45,55]. Broker truth, real money since 07-29, in pips: shallow poppers LOST (-10p: -135.5p exp -1.40; -15p: -338.8p exp -5.55, WR 73.8%) while deep ones WON (-30p: +270.2p exp +5.10 WR 88.7%; -40p: +205.0p exp +4.66). Shallow levels were also 48% of all poppers fired, so they were the biggest seat consumers AND the worst performers. The new rungs sit on the curve's peak (30-40) and shoulders; 25/35/45/55 themselves are UNTESTED interpolations. Open poppers at removed levels are kept by the prune guard (trade_id) until they close; new rungs on an underwater grid arm False (B-096) so nothing insta-fires. Gear hash change writes FAM-GEAR-CHANGE only \u2014 stamp eras and DEFENDED untouched (B-132)."
 }
