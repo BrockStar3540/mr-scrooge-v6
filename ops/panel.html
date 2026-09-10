@@ -2863,7 +2863,7 @@ function renderReaperSwitch(){
   const r=STATE?STATE.reaper:undefined;
   if(!r||r.enabled===undefined){el.className='trading-switch unknown';el.textContent='🪓 REAPER: —';return}
   el.className='trading-switch '+(r.enabled?'on':'unknown');
-  el.textContent=r.enabled?('🪓 REAPER: ON ('+Math.round(r.hours)+'h)'):'🪓 REAPER: OFF';
+  el.textContent=r.enabled?('🪓 REAPER: ON ('+Math.round(r.hours)+'h, ≤−'+Math.round(r.min_loss_pips??0)+'p)'):'🪓 REAPER: OFF';
 }
 async function toggleReaper(){
   const r=STATE?STATE.reaper:undefined;
@@ -2872,7 +2872,7 @@ async function toggleReaper(){
   const payload={enabled:next};
   if(next){
     const live=(CRED&&CRED.mode==='live');
-    const msg='Enable the STALE-RED REAPER? Any position that is RED and older than '+Math.round(r.hours)+'h will be CLOSED AT MARKET on the next manage tick.';
+    const msg='Enable the STALE-RED REAPER? Any position at least '+Math.round(r.min_loss_pips??0)+'p RED and older than '+Math.round(r.hours)+'h will be CLOSED AT MARKET on the next manage tick.';
     if(live){
       const c=prompt(msg+'\nLIVE mode (real money): type REAP to confirm:');
       if(c===null)return;

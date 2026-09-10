@@ -114,10 +114,23 @@ def set_trading_enabled(enabled: bool) -> dict:
 
 _REAPER_DEFAULT_HOURS = 72.0
 
+# DEPTH FLOOR (operator, 2026-09-10): reap only positions carrying at least this
+# many pips of loss. Counterfactual over all 26 reaps since go-live (what price
+# did AFTER each cut): reaps at <= -30p — 6 trades, all 6 went on to the stop,
+# net +116.0p for the reaper; reaps shallower than -30p — 20 trades, only 3
+# reached the stop, 17 recovered to breakeven, net -114.8p. The two cancelled
+# to +1.2p. A position 30p+ underwater at the age cap is dying; one 5-25p under
+# is merely slow. Same distance pattern as the popper ladder.
+_REAPER_DEFAULT_MIN_LOSS = 30.0
+
 
 def reaper_config() -> dict:
-    """{'enabled': bool, 'hours': float>=1}. Absent/malformed -> disabled."""
-    disabled = {"enabled": False, "hours": _REAPER_DEFAULT_HOURS}
+    """{'enabled': bool, 'hours': float>=1, 'min_loss_pips': float>=0}.
+    Absent/malformed -> disabled. An ABSENT min_loss_pips takes the default
+    floor; a PRESENT but malformed one disables the reaper (fail-closed, same
+    rule as hours — a corrupt floor must never widen what gets liquidated)."""
+    disabled = {"enabled": False, "hours": _REAPER_DEFAULT_HOURS,
+                "min_loss_pips": _REAPER_DEFAULT_MIN_LOSS}
     try:
         r = load_runtime()
         d = r.get("data") if (r.get("_ok") and isinstance(r.get("data"), dict)) else None
@@ -130,12 +143,15 @@ def reaper_config() -> dict:
         hrs = float(raw.get("hours", _REAPER_DEFAULT_HOURS))
         if not (hrs >= 1.0):        # also rejects NaN
             return disabled
-        return {"enabled": en, "hours": hrs}
+        ml = float(raw.get("min_loss_pips", _REAPER_DEFAULT_MIN_LOSS))
+        if not (ml >= 0.0):         # also rejects NaN
+            return disabled
+        return {"enabled": en, "hours": hrs, "min_loss_pips": ml}
     except Exception:
         return disabled
 
 
-def set_reaper(enabled: bool, hours=None) -> dict:
+def set_reaper(enabled: bool, hours=None, min_loss_pips=None) -> dict:
     """Atomically persist the reaper block (preserving other runtime keys)."""
     r = load_runtime()
     d = r["data"] if r["_ok"] and isinstance(r.get("data"), dict) else {}
@@ -146,7 +162,14 @@ def set_reaper(enabled: bool, hours=None) -> dict:
         hrs = _REAPER_DEFAULT_HOURS
     if not (hrs >= 1.0):
         hrs = _REAPER_DEFAULT_HOURS
-    d["reaper"] = {"enabled": bool(enabled), "hours": hrs}
+    try:
+        ml = (float(min_loss_pips) if min_loss_pips is not None
+              else float(cur.get("min_loss_pips", _REAPER_DEFAULT_MIN_LOSS)))
+    except (TypeError, ValueError):
+        ml = _REAPER_DEFAULT_MIN_LOSS
+    if not (ml >= 0.0):
+        ml = _REAPER_DEFAULT_MIN_LOSS
+    d["reaper"] = {"enabled": bool(enabled), "hours": hrs, "min_loss_pips": ml}
     RUNTIME_PATH.parent.mkdir(parents=True, exist_ok=True)
     tmp = RUNTIME_PATH.with_suffix(".tmp")
     tmp.write_text(json.dumps(d, indent=2))
@@ -155,13 +178,18 @@ def set_reaper(enabled: bool, hours=None) -> dict:
 
 
 def reap_due(entry_time, now, net_pips, cfg) -> bool:
-    """Pure decision: reaper on AND position red AND older than cfg hours.
+    """Pure decision: reaper on AND position at least cfg min_loss_pips red AND
+    older than cfg hours. A cfg without min_loss_pips keeps the original
+    any-red rule (floor 0) so direct callers are unaffected; reaper_config()
+    always supplies the operator floor in production.
     Defensive: any error (naive/aware datetime mix, bad types) -> False."""
     try:
         if not cfg or not cfg.get("enabled"):
             return False
         if net_pips is None or net_pips >= 0.0:
             return False
+        if net_pips > -float(cfg.get("min_loss_pips", 0.0)):
+            return False            # red, but not deep enough to be dying
         return (now - entry_time).total_seconds() >= float(cfg["hours"]) * 3600.0
     except Exception:
         return False

@@ -623,7 +623,7 @@ def _set_trading(payload: dict) -> tuple[int, dict]:
 
 
 def _set_reaper(payload) -> tuple:
-    """POST /api/reaper {enabled: bool, hours?: number>=1, confirm?}.
+    """POST /api/reaper {enabled: bool, hours?: number>=1, min_loss_pips?: number>=0, confirm?}.
 
     The STALE-RED REAPER auto-closes positions that are RED and older than
     `hours` (default 72). Disabling is unconfirmed (the safe direction).
@@ -641,6 +641,14 @@ def _set_reaper(payload) -> tuple:
             return 400, {"ok": False, "error": "hours must be a number >= 1"}
         if not (hours >= 1.0):
             return 400, {"ok": False, "error": "hours must be a number >= 1"}
+    min_loss = payload.get("min_loss_pips")
+    if min_loss is not None:
+        try:
+            min_loss = float(min_loss)
+        except (TypeError, ValueError):
+            return 400, {"ok": False, "error": "min_loss_pips must be a number >= 0"}
+        if not (min_loss >= 0.0):
+            return 400, {"ok": False, "error": "min_loss_pips must be a number >= 0"}
     if enabled:
         try:
             from config import credentials as _cred
@@ -649,9 +657,9 @@ def _set_reaper(payload) -> tuple:
             mode = "practice"
         if mode == "live" and payload.get("confirm") != "REAP":
             return 400, {"ok": False, "error": 'enabling the reaper in LIVE mode requires confirm="REAP"'}
-    cfg = _rt.set_reaper(enabled, hours)
-    log.warning("REAPER %s via dashboard — red positions older than %.0fh %s",
-                "ENABLED" if enabled else "DISABLED", cfg["hours"],
+    cfg = _rt.set_reaper(enabled, hours, min_loss)
+    log.warning("REAPER %s via dashboard — positions >= %.0fp red and older than %.0fh %s",
+                "ENABLED" if enabled else "DISABLED", cfg["min_loss_pips"], cfg["hours"],
                 "will be closed on the manage tick" if enabled else "will stay open")
     return 200, {"ok": True, "reaper": cfg}
 
