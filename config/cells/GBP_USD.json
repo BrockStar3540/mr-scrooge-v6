@@ -2025,7 +2025,7 @@
           "id": "rvol_low_240",
           "side": "long",
           "class": "FORMULA",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5879,7 +5879,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "6 PROBE, 64 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "5 PROBE, 66 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
