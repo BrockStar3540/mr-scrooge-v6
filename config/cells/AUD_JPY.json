@@ -5549,6 +5549,65 @@
           },
           "watch": "\ud83e\udd77",
           "notes": "Counterpart of ninja_amp_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "ninja_flag_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ema_trend_pips",
+              "min": 3.73,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "min": 0.0,
+              "note": "higher-timeframe agreement \u2014 conflicting timeframes sit out"
+            },
+            {
+              "feature": "ret_1h",
+              "min": 9.4,
+              "note": "the flag pole: 1h move >= this pair's p85"
+            },
+            {
+              "feature": "ret_5m",
+              "min": -3.8,
+              "max": 0.95,
+              "note": "tight orderly pullback \u2014 pausing, not surging or collapsing"
+            },
+            {
+              "feature": "rvol_5bar",
+              "max": 1.0,
+              "note": "volume dries up during the flag consolidation"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ninja_flag_long (long) ran 5 eps @ -15.9p/ep with medMFE/MAE 6.6/13.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77",
+          "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "4 SHADOW setups. Tier=2 ev_gross_long=None ev_gross_short=None."

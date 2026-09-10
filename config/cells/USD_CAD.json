@@ -4286,6 +4286,55 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_break_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "ninja_stab_fade_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling \u2014 fade back down"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ninja_stab_fade_short (short) ran 6 eps @ -22.0p/ep with medMFE/MAE 4.0/20.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77",
+          "notes": "Counterpart of ninja_stab_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
