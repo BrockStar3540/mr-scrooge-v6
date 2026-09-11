@@ -26,3 +26,22 @@ def test_transform_keys_and_cycle_wr():
 
 def test_transform_empty():
     assert transform({})["rows"] == {}
+
+
+def test_main_writes_doc_and_counts_its_rows(tmp_path, monkeypatch, capsys):
+    """main() once counted `rows`, a name local to transform(): the file was
+    written, then a NameError made every cron run exit 1 (2026-08-04 -> 09-11)."""
+    import json
+    import subprocess
+    from ops import virtual_scores as vs
+    rows = [{"cell": "USD_JPY/asia", "setup": "box_pdl_short", "side": "short"},
+            {"cell": "USD_JPY/asia", "setup": "box_pdl_short", "side": "long"},
+            {"cell": "EUR_USD/london", "setup": "orb_long", "side": "long"}]
+    stdout = "FAMILY-CYCLE-v3 replay banner\n" + json.dumps(
+        {"since": "2026-07-28", "rows": rows}) + "\n"
+    monkeypatch.setattr(subprocess, "run", lambda *a, **k: subprocess.CompletedProcess(
+        a, 0, stdout=stdout, stderr=""))
+    monkeypatch.setattr(vs, "OUT", tmp_path / "virtual_cycles.json")
+    vs.main()
+    assert len(json.loads(vs.OUT.read_text())["rows"]) == 3
+    assert capsys.readouterr().out == "virtual_cycles.json: 3 cells scored\n"

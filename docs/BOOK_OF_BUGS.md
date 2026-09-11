@@ -1036,6 +1036,33 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-136 — the work landed, then the job died: virtual_scores exited 1 on every run for 38 days
+
+- **Discovered:** 2026-09-11, when the ops health dashboard stopped printing a hardcoded 🟢 for
+  cron rows and began judging each job from its own log. This job went 🔴 on the first honest
+  reading.
+- **Area:** `ops/virtual_scores.py`, the 6h cron that writes `data/virtual_cycles.json` for the
+  shadowboard and the governor.
+- **Symptom / chain:** every run replayed the family cycles, wrote `virtual_cycles.json`
+  atomically, then raised `NameError: name 'rows' is not defined` on its closing print and
+  exited 1. The file was always fresh, so the board's 13h stale flag never tripped and the
+  governor read good data. Nothing downstream looked wrong. The cron log held 152 tracebacks
+  (2026-08-04 → 2026-09-11) and not one clean line.
+- **Root cause:** the closing print counted `len(rows)`, but `rows` is a local of
+  `transform()`; `main()` only holds the `doc` it returns. It shipped that way in v6.20.0.
+  `tests/test_virtual_scores.py` pinned `transform()` and never called `main()`.
+- **Fix (v6.30.11):** count `len(doc['rows'])`, the keyed `cell|setup|side` rows that
+  `transform()` builds and the shadowboard looks up. The replay tool emits one row per
+  (pair/session, setup, side), so no two rows collapse into one key. A new test drives
+  `main()` with a stubbed replay subprocess and asserts the written doc and the printed count;
+  it fails with the NameError on the old code. Verified by one manual run of the cron command
+  on the live box: exit 0, `virtual_cycles.json: 1525 cells scored`.
+- **Lesson:** "the file is fresh" and "the job succeeded" are different claims, and only the
+  exit status makes the second one. A test of the pure function says nothing about the entry
+  point that calls it; the last line of `main()` is code too.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

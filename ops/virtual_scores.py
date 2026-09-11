@@ -60,7 +60,7 @@ def main():
     with os.fdopen(fd, "w") as f:
         json.dump(doc, f)
     os.replace(tmp, OUT)
-    print(f"virtual_cycles.json: {len(rows)} cells scored")
+    print(f"virtual_cycles.json: {len(doc['rows'])} cells scored")
 
 
 if __name__ == "__main__":
