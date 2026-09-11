@@ -1063,6 +1063,27 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-137 — the gate that leaves no trace: a blocked parent returns `None` with no log line (OPEN)
+
+- **Discovered:** 2026-09-10, during the live review written up in the ops-vault session note
+  `note_session_2026-09-10-scrooge-poppers-ladder-reaper-floor` (§2). The journal held 69,965
+  popper skips and **zero** parent blocks, while 92.9% of live signals never became trades.
+- **Area:** `core/engine.py:629` (line number as of 2026-09-10), the parent-entry gate.
+- **Symptom / chain:** a parent is refused when `parents + poppers >= max_concurrent`, and a
+  pair with a live grid cannot open a second parent. The refusal returns `None` and writes
+  nothing, so the journal cannot tell "blocked by the gate" apart from "never signalled". In
+  the same review, signals from cells that got a trade averaged −2.25p (n=210), and signals from
+  cells that got none averaged +2.93p (n=199). That was matched at cell level, not per signal.
+- **Root cause:** a silent early return on a capacity check. Same class as B-134: a failure
+  path that leaves no trace.
+- **Fix:** none yet. **OPEN.** It is item 3 on Brock's 2026-09-10 list ("log the silent gate").
+  Until the gate is instrumented, its share of the 92.9% cannot be sized. Also tracked as a
+  task in the ops cockpit.
+- **Lesson:** a refusal with no log line looks exactly like "no signal". Every refusal path
+  needs one line.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
