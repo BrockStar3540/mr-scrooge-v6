@@ -2372,7 +2372,7 @@
           "id": "trend_pullback_counter_short",
           "side": "short",
           "class": "trend_pullback",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
