@@ -499,3 +499,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-10T20:45:01Z,NZD_USD,long,11343,-64.66,popper
 2026-09-11T00:02:44Z,USD_JPY,short,3198,1.44,popper
 2026-09-11T01:11:07Z,USD_JPY,short,3195,1.35,popper
+2026-09-11T03:17:47Z,USD_JPY,short,3198,1.78,popper
