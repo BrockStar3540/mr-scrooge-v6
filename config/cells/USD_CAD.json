@@ -5465,7 +5465,7 @@
           "id": "orb_break_long",
           "side": "long",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [

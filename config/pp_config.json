@@ -58,7 +58,8 @@
     "AUD_USD|ny|mr2_bb_reversion_short": false,
     "AUD_USD|ny|mr2_bb_reversion_short_g_spr1": false,
     "USD_JPY|ny|fvg_fill_short": false,
-    "GBP_USD|london|rvol_low_240": false
+    "GBP_USD|london|rvol_low_240": false,
+    "USD_CAD|ny|orb_break_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
