@@ -1007,6 +1007,35 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-135 — the leaderboard read upside down: Edge Lab sorted worst-first and crowned bar-bypassed rows
+
+- **Discovered:** by 2026-09-08, the date of the fix; how it surfaced was not recorded. The id
+  was assigned in the v6.30.8 commit but the entry never reached this book; recorded
+  2026-09-11 from that commit's own account.
+- **Area:** `ops/shadowboard.py` Edge Lab ranking and `ops/panel.html`. Display only:
+  `ops/governor.py` does not import the shadowboard, so no trading decision was touched.
+- **Symptom / chain:** (1) BROKER TRUTH sorted worst-first. The account's strongest cell,
+  USD_JPY/ny|control_atr5m_60 at +$67.39 over 11 completed cycles, sat at the bottom of the
+  page while control_atrconc_60 at −$220 led. (2) The CHEATER hot-hand lane returned tier 3 /
+  "PROMOTE READY" for rows that had bypassed the bar, under a header saying they passed the
+  full bar at the next run. 90 of the 168 rows in that section were bar-bypassed, 13 of them
+  failing the era minimums outright, and because cheater rows scored on cumulative pips while
+  the genuine lane scored on LCB, all 90 sorted above all 78 qualified rows. Every row read
+  off the top of that section was a cheater row.
+- **Root cause:** `sort(key=usd)`, ascending. And two lanes ranked on incomparable metrics
+  inside one tier: cumulative pips grow with volume, the LCB does not.
+- **Fix (v6.30.8):** Broker Truth ranks best-first on a cycle-shrunk score,
+  `usd * cycles/(cycles+3)`, so a single lucky cycle cannot outrank a repeater; cells with no
+  completed cycle score 0. Cheater rows moved to their own tier 6, labelled BAR BYPASSED,
+  ranked on the same LCB as everyone else, with n/req, days/req and the failing codes in the
+  reason string. The panel gained click-to-sort with tier grouping preserved.
+  `tests/test_edge_rank.py` (11 tests) pins the shrink, the ordering and the bypassed-row
+  demotion. Verified live in the browser.
+- **Lesson:** neither defect touched a trade, yet both decided what the operator looked at
+  first, which is the same thing. Rows that share a table have to be ranked on the same metric.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable
