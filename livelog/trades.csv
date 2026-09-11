@@ -511,3 +511,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-11T12:38:02Z,USD_CAD,short,7850,7.29,popper
 2026-09-11T12:48:11Z,USD_CHF,short,5250,5.74,popper
 2026-09-11T12:54:19Z,AUD_USD,long,7731,8.50,popper
+2026-09-11T13:40:57Z,EUR_USD,long,6882,3.44,parent
