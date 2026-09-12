@@ -4347,7 +4347,7 @@
           "id": "control_atr5m_60",
           "side": "long",
           "class": "FORMULA",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -6759,7 +6759,7 @@
           "wired": "2026-07-05"
         }
       ],
-      "notes": "2 ACTIVE, 3 PROBE, 44 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "1 ACTIVE, 3 PROBE, 45 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
