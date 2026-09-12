@@ -14,33 +14,69 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 
-# CI PARITY (2026-08-07). CI runs the suite TWICE — once with order fixed and
-# once RANDOMISED (pytest-randomly, requirements-dev.txt). This hook used to
-# run neither variant explicitly and, on a box without the plugin installed,
-# silently tested a weaker property than CI: order-dependent breakage passed
-# the guard and went red on GitHub. Both variants now run here.
-#
-# PY picks a venv created with --system-site-packages, so the test plugins are
-# present WITHOUT installing anything into the system interpreter the live
-# trader runs on. Create it with:
-#     python3 -m venv --system-site-packages .venv-test
-#     .venv-test/bin/pip install -r requirements-dev.txt
-PY="python3"
-if [ -x ".venv-test/bin/python" ]; then
-    PY=".venv-test/bin/python"
-fi
-if ! "$PY" -c 'import pytest_randomly' 2>/dev/null; then
-    echo "pre-push: ❌ pytest-randomly missing — this guard would test LESS than CI." >&2
-    echo "pre-push:    python3 -m venv --system-site-packages .venv-test && \\" >&2
-    echo "pre-push:    .venv-test/bin/pip install -r requirements-dev.txt" >&2
-    exit 1
-fi
+# git hands this hook its ref lines ONCE, on stdin. The data-only check and the
+# secrets sweep both need them, so they are read up front.
+REFS=$(cat)
+ZERO=0000000000000000000000000000000000000000
 
-echo "pre-push: running suite, fixed order (unpiped — the exit code IS the verdict)…"
-"$PY" -m pytest -q -x -p no:randomly
-echo "pre-push: running suite, RANDOMISED order (matches CI step 2)…"
-"$PY" -m pytest -q -x
-echo "pre-push: suite green (both orders)."
+# DATA-ONLY PUSHES SKIP THE SUITE (2026-09-12, Brock). The hourly livelog cron
+# and the :20 state commit push from the live box, and every one of those pushes
+# ran the whole suite twice there: 20–50 s of CPU an hour on the machine that
+# trades, to re-test code nobody changed. A push is data-only when EVERY file in
+# EVERY pushed range is under livelog/ or is README.md, which no test reads (CI
+# already ignores both). Anything else runs both unpiped suites exactly as
+# before: code, config/ (state commits: ~14 test files read it), a new branch,
+# an unknown base, a rename, empty input. So the B-118 promise still holds for
+# every push that can change behaviour, and the secrets sweep below still runs
+# on every push, data-only or not.
+data_only_push() {
+    local lref lsha rref rsha f files seen=0
+    while read -r lref lsha rref rsha; do
+        [ -n "$lref" ] || continue
+        [ "$lsha" = "$ZERO" ] && continue                        # deletion: nothing new to test
+        [ "$rsha" = "$ZERO" ] && return 1                        # new ref: full suite
+        git cat-file -e "${rsha}^{commit}" 2>/dev/null || return 1   # base unknown here: full suite
+        files=$(git diff --no-renames --name-only "$rsha" "$lsha") || return 1
+        while IFS= read -r f; do
+            [ -n "$f" ] || continue
+            seen=1
+            case "$f" in livelog/*|README.md) ;; *) return 1 ;; esac
+        done <<< "$files"
+    done <<< "$REFS"
+    [ "$seen" -eq 1 ]
+}
+
+if data_only_push; then
+    echo "pre-push: data-only push (livelog/ and README.md only): suite skipped; the secrets sweep still runs."
+else
+    # CI PARITY (2026-08-07). CI runs the suite TWICE — once with order fixed and
+    # once RANDOMISED (pytest-randomly, requirements-dev.txt). This hook used to
+    # run neither variant explicitly and, on a box without the plugin installed,
+    # silently tested a weaker property than CI: order-dependent breakage passed
+    # the guard and went red on GitHub. Both variants now run here.
+    #
+    # PY picks a venv created with --system-site-packages, so the test plugins are
+    # present WITHOUT installing anything into the system interpreter the live
+    # trader runs on. Create it with:
+    #     python3 -m venv --system-site-packages .venv-test
+    #     .venv-test/bin/pip install -r requirements-dev.txt
+    PY="python3"
+    if [ -x ".venv-test/bin/python" ]; then
+        PY=".venv-test/bin/python"
+    fi
+    if ! "$PY" -c 'import pytest_randomly' 2>/dev/null; then
+        echo "pre-push: ❌ pytest-randomly missing — this guard would test LESS than CI." >&2
+        echo "pre-push:    python3 -m venv --system-site-packages .venv-test && \\" >&2
+        echo "pre-push:    .venv-test/bin/pip install -r requirements-dev.txt" >&2
+        exit 1
+    fi
+
+    echo "pre-push: running suite, fixed order (unpiped — the exit code IS the verdict)…"
+    "$PY" -m pytest -q -x -p no:randomly
+    echo "pre-push: running suite, RANDOMISED order (matches CI step 2)…"
+    "$PY" -m pytest -q -x
+    echo "pre-push: suite green (both orders)."
+fi
 
 # ── secrets sweep over exactly the commits being pushed ──────────────────────
 # VALUE-shaped patterns (split literals so the sweep can't match its own
@@ -50,6 +86,7 @@ PATTERN="OANDA_API""_TOKEN=[A-Za-z0-9_-]{20,}|ghp""_[A-Za-z0-9]{20,}|github_""pa
 PLACEHOLDERS="your-oanda-token|00000000|1234567|xxxxxxx|<[a-z-]*token"
 EMPTY_TREE=$(git hash-object -t tree /dev/null)
 while read -r local_ref local_sha _remote_ref remote_sha; do
+    [ -n "$local_ref" ] || continue
     [ "$local_sha" = "0000000000000000000000000000000000000000" ] && continue  # deletion
     case "$local_ref" in refs/tags/*)
         continue ;;   # a tag points at commits already swept on their branch push
@@ -65,5 +102,5 @@ while read -r local_ref local_sha _remote_ref remote_sha; do
         echo "pre-push: ❌ SECRETS SWEEP HIT in the outgoing diff — push blocked." >&2
         exit 1
     fi
-done
+done <<< "$REFS"
 echo "pre-push: secrets sweep clean. Push allowed."

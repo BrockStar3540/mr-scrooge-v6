@@ -319,7 +319,10 @@ python3 -m venv --system-site-packages .venv-test
 
 Every `git push` then runs the full suite **twice — fixed order and randomised, matching
 CI** (unpiped: the exit code is the verdict) plus a secrets sweep over the outgoing diff,
-and blocks the push on any failure. The venv exists so the test plugins never enter the
+and blocks the push on any failure. The one exception: a push whose every changed file is
+under `livelog/` or is `README.md` (the hourly live-balance commits), which no test reads,
+skips the suite; the secrets sweep still runs on it. A new branch, an unknown base or any
+other path gets the full suite. The venv exists so the test plugins never enter the
 interpreter the live trader runs on; without it the hook refuses to run rather than test a
 weaker property than CI ([B-123](docs/BOOK_OF_BUGS.md)). History: B-111 documented that `pytest | tail -1` reports tail's
 exit code; B-118 proved the documented lesson gets recommitted without
