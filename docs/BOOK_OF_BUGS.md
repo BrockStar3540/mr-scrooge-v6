@@ -1084,6 +1084,72 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-138 — the ladder ate the seats: poppers skip the ranking, and a dead parent's grid kept feeding
+
+- **Discovered:** 2026-09-14, from a broker-tape + journal audit after the owner flagged that
+  "the top ones aren't getting the trade seat; the less-known, worse ones are". Ops-vault note
+  `note_session_2026-09-14-scrooge-seat-priority`.
+- **Area:** `modules/management/party_package.py` (`tick()` fire gates and grid retirement,
+  `busy_pairs()`), `config/pp_config.json` (`max_total_trades`), mirrored in
+  `core/family_cycle.py` (the virtual replay).
+- **Symptom / chain:** over the four journal days 2026-09-10 → 09-14, live-book setups fired in
+  ~1,490 setup-cycles. 1,384 (93%) met a full book (8/8, usually six of the eight seats held by
+  poppers), 90 met a busy pair, 14 opened. ExecutionScore — the ranking v6.33.0 made the
+  entry selector — decided **twice**. Of 42 freed seats, 28 went to poppers, often 1–2 s after
+  the seat freed (12:37:46.074 an AUD_USD popper stopped; 12:37:46.430 a USD_CHF popper filled
+  the seat). Since 2026-09-01, families with a losing broker record held **72% of slot-hours**
+  (−1,263p booked); winning families 28% (+424p). Setups with the best broker records sat idle
+  11–27 days while still in the book (`USD_CHF/ny ps_ceil_fade_short` fired 224 cycles, all
+  blocked).
+- **Root cause:** three compounding rules. (1) Poppers never pass through `select_intent`:
+  they fire on a price cross, gated only by trade/margin caps, and poll every ~5 s while
+  parents are evaluated once per M5 bar — so a freed seat goes to the ladder before any ranked
+  parent is looked at. (2) A grid outlived its parent: it retired only when price came back
+  above its first marker or it reached `grid_max_age_days` (7), and kept re-arming and firing
+  meanwhile — adding legs to a trade whose parent was already stopped out — while
+  `busy_pairs()` locked the pair against every other setup. (3) Judge-when-flat means a family
+  with any open leg is immune from demotion, so the longest-running losers held seats longest.
+- **Fix (v6.30.12, operator-approved):** (a) `pp_config.json max_total_trades` 8 → 4 (config,
+  hot-reloaded 2026-09-14 13:26Z): poppers fire only while the book holds fewer than 4 trades,
+  so seats 5–8 are parent-only. (b) `orphan_grid_stops` (default on): once the parent closes,
+  its grid manages the legs it holds, fires nothing new, and retires the moment its last leg
+  closes, freeing the pair. The pair stays locked while orphan legs are open — the live account
+  cannot hedge, so an opposite-side parent would net against them. (c) The family-cycle replay
+  mirrors (b): a marker fires on the parent's death bar only if it sits shallower than the
+  parent's exit level (a knife still fires −25…−55 before the −60 stop; a +6 lock exit orphans
+  the grid first). 13 new/updated tests; 8 fail on the old code.
+- **Lesson:** a ranking only ranks what reaches it. Measure who actually holds the seats —
+  slot-hours by family — not what the selector would have picked.
+
+---
+
+### B-139 — the simulator benched the broker's winners: bar_lost ignored green families below the +60p defense
+
+- **Discovered:** 2026-09-14, same audit as B-138. The owner pasted the BROKER TRUTH board:
+  most of its top rows wore 🔻.
+- **Area:** `ops/governor.py` `active_verdict()`.
+- **Symptom / chain:** 8 of the top 13 broker-truth families (by net pips) had been demoted to
+  SHADOW with a strike, each on the stamp simulator's `bar_lost` while the demotion line itself
+  printed a green broker family, e.g. `USD_CAD/ny orb_break_long` (13/14 legs green, +51.5p):
+  `DEMOTE … net_avg=-1.20p … family n=14 net=+51.5p ($+35.62) [broker]`. Others: USD_JPY/ny
+  `control_atr5m_60` (16/16, +151p), `control_atr5m_60_t20s` (30/32, +152p), USD_CAD/ny
+  `echo_box_fade_short` (12/12, +133p), CAD_JPY/ny `ps_ceil_fade_counter_long` (14/15, +96p),
+  EUR_USD/asia `es_trend_long` (10/11, +86p).
+- **Root cause:** the family rule says broker net pips outrank the simulator "in BOTH
+  directions", but only a formal DEFENSE (≥3 completed cycles AND ≥+60p, era-clocked) could
+  stop `bar_lost`. Seats starved by B-138 rarely reach three cycles, so a family could be
+  winning every real trade and still be benched on simulated stamps.
+- **Fix (v6.30.12, operator-approved):** `broker_green_blocks_bar_lost` (default on): the
+  simulator alone cannot demote a family with ≥1 completed cycle and era net > 0 (verdict
+  `broker_green`). Broker-red demotions (`family_red`, the PROBE fast leash, the catastrophic
+  single cycle) are unchanged. The wrongly benched winners were re-seated as PROBE by the
+  operator the same day, strikes cleared.
+- **Lesson:** a defense threshold is not the same as a truth gate. If the doctrine says the
+  broker outranks the simulator, the simulator must not be able to act against a green broker
+  record at any sample size.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

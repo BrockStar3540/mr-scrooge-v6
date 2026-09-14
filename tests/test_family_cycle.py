@@ -117,21 +117,63 @@ def test_grid_lift_positive_on_wave_path():
 
 def test_trade_cap_limits_concurrency_not_total():
     # cap=2 counts OPEN trades (party_package): the dead parent frees a slot
-    # on the knife bar (2 poppers fire), and the -10 popper dying on bar 2
-    # frees another (the armed -20 marker fires) — 3 total, never >2 open.
-    # Gap-fill era: the -20 popper fills at bar 2's gapped OPEN (~-69p from
-    # anchor, as live would fill at market), so its own -60 stop sits far
-    # deeper — the third bar's plunge closes it.
+    # on the knife bar (2 poppers fire — -10/-15 were crossed before the
+    # parent's -60 stop, so it was alive when they fired). The -10 popper
+    # dying on bar 2 frees another slot, but the parent died on bar 1: under
+    # B-138 an orphan grid fires nothing, so the armed -20 marker stays unfired.
     knife = [bar(1.1000, 1.1000, 1.0930, 1.0931),
              bar(1.0931, 1.0931, 1.0905, 1.0910),
              bar(1.0910, 1.0910, 1.0865, 1.0868)]
     r = replay_family_cycle(knife + flat_bars(1.0868, 3), "long", PIP, GEAR, PP,
                             max_total_trades=2)
     assert not r.censored
-    assert r.n_poppers == 3
+    assert r.n_poppers == 2
     r8 = replay_family_cycle(knife + flat_bars(1.0868, 3), "long", PIP, GEAR, PP,
                              max_total_trades=8)
     assert r8.n_poppers == 3
+    # switch off = the pre-B-138 harvest: the -20 fires on bar 2 at its gapped
+    # OPEN (~-69p from anchor, as live would fill at market); its own -60
+    # stop sits far deeper, and the third bar's plunge closes it
+    old = dict(PP, orphan_grid_stops=False)
+    r_old = replay_family_cycle(knife + flat_bars(1.0868, 3), "long", PIP, GEAR, old,
+                                max_total_trades=2)
+    assert not r_old.censored
+    assert r_old.n_poppers == 3
+
+
+# ── B-138 parity: a dead parent's grid fires nothing new ─────────────────────
+
+def _lock_then_plunge():
+    # long from 1.1000: +15p rally ratchets the parent to a positive lock,
+    # then one bar plunges through every marker — the parent's lock exit is
+    # reached FIRST on the way down, so live would orphan the grid before any
+    # marker is crossed
+    up = [bar(1.1000 + i * 3 * PIP, 1.1002 + i * 3 * PIP,
+              1.0999 + i * 3 * PIP, 1.1002 + i * 3 * PIP) for i in range(6)]
+    plunge = [bar(1.1015, 1.1015, 1.0978, 1.0980)]
+    return up + plunge + flat_bars(1.0980, 3)
+
+
+def test_b138_lock_exit_orphans_grid_before_markers():
+    r = replay_family_cycle(_lock_then_plunge(), "long", PIP, GEAR, PP)
+    assert r is not None and not r.censored
+    assert r.parent_net > 0                       # exited on its lock
+    assert r.n_poppers == 0                       # nothing fired into the plunge
+
+
+def test_b138_switch_off_fires_into_the_plunge():
+    old = dict(PP, orphan_grid_stops=False)
+    r = replay_family_cycle(_lock_then_plunge(), "long", PIP, GEAR, old)
+    assert r.n_poppers == 3                       # the pre-B-138 behaviour
+
+
+def test_b138_knife_still_fires_markers_crossed_before_the_stop():
+    # a knife through -60 crosses -10/-15/-20 first: the parent was alive when
+    # they fired, so their losses stay in the family (no optimistic erasure)
+    knife = [bar(1.1000, 1.1000, 1.0930, 1.0931),
+             bar(1.0931, 1.0931, 1.0905, 1.0910)]
+    r = replay_family_cycle(knife + flat_bars(1.0910, 3), "long", PIP, GEAR, PP)
+    assert r.n_poppers == 3 and r.harvest < 0
 
 
 # ── Geometry v3: the Cell Edge LCB ───────────────────────────────────────────

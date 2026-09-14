@@ -197,6 +197,54 @@ def test_per_cell_switch_blocks_grid_and_fires(pp, tmp_path, monkeypatch):
     assert pp.open_popper_count() == 2                            # -10 and -15
 
 
+# ── B-138: a grid whose parent has closed fires nothing and retires ──────────
+
+def test_b138_orphan_grid_fires_nothing(pp):
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), set(), _pricing(1.09845))                # parent gone, -15.5p
+    assert pp.open_popper_count() == 0
+    assert pp.broker.orders == []
+
+
+def test_b138_orphan_without_legs_retires_and_frees_pair(pp):
+    pp.on_parent_open(_parent(), "setup_x")
+    assert "EUR_USD" in pp.busy_pairs()
+    # parent stopped out below every marker, minutes old: the old rule kept
+    # this grid (not back in zone, not 7 days old) and locked the pair
+    pp.tick(NOW, set(), set(), _pricing(1.09300))
+    assert "EUR_USD" not in pp.grids
+    assert "EUR_USD" not in pp.busy_pairs()
+
+
+def test_b138_orphan_manages_open_legs_then_retires(pp):
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09895))          # parent alive: -10 fires
+    assert pp.open_popper_count() == 1
+    tid = next(iter(pp.poppers))
+    # parent closes; the -10 popper is still open at the broker; price falls
+    # through -15 and -20 — the orphan fires neither
+    pp.tick(NOW, {tid}, set(), _pricing(1.09790))
+    assert pp.open_popper_count() == 1 and len(pp.broker.orders) == 1
+    assert "EUR_USD" in pp.busy_pairs()                          # leg held: pair still locked
+    pp.tick(NOW, set(), set(), _pricing(1.09790))                # leg closes server-side
+    assert tid not in pp.poppers
+    assert "EUR_USD" not in pp.grids                             # retired on last close
+
+
+def test_b138_live_parent_keeps_firing(pp):
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), {"EUR_USD"}, _pricing(1.09845))
+    assert pp.open_popper_count() == 2                            # unchanged for live parents
+
+
+def test_b138_switch_off_restores_parentless_harvest(pp, tmp_path, monkeypatch):
+    monkeypatch.setattr(ppm, "_CONFIG_PATH", _cfg(tmp_path, orphan_grid_stops=False))
+    pp.on_parent_open(_parent(), "setup_x")
+    pp.tick(NOW, set(), set(), _pricing(1.09845))
+    assert pp.open_popper_count() == 2                            # pre-B-138: -10 and -15
+    assert "EUR_USD" in pp.grids
+
+
 def test_pp_cell_enabled_hierarchy():
     cfg = {"per_cell": {"EUR_USD": False, "EUR_USD|london": True,
                         "EUR_USD|london|bad_setup": False}}

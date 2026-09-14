@@ -247,14 +247,48 @@ def test_one_catastrophic_cycle_benches():
 
 
 def test_defend_needs_more_cycles_than_convict():
-    # +103p over only 2 completed cycles: NOT enough to defend (needs 3)...
+    # +103p over only 2 completed cycles: NOT a formal defense (needs 3)...
     f2 = _fam(10, 103.0, n_cycles=2)
+    assert gov.active_verdict(None, f2, _CFG, 20) == (False, "hold")
+    # ...yet since B-139 the simulator alone can't bench a broker winner
     demote, why = gov.active_verdict(_ev(25, -3.0), f2, _CFG, 20)
-    assert demote and why == "bar_lost"      # family can't defend; bar convicts
-    # ...but 2 cycles ARE enough to convict at −103p
+    assert not demote and why == "broker_green"
+    # ...and 2 cycles ARE enough to convict at −103p
     fr = _fam(10, -103.0, n_cycles=2)
     demote, why = gov.active_verdict(_ev(25, 5.0), fr, _CFG, 20)
     assert demote and why == "family_red"
+
+
+# ── B-139: the simulator alone never benches a broker winner ─────────────────
+
+def test_b139_broker_green_blocks_bar_lost():
+    # the USD_CAD/ny orb_break_long shape (2026-09-11): 13/14 legs green,
+    # +51.5p broker (< the +60 defense), sim avg −1.2p -> held, not demoted
+    demote, why = gov.active_verdict(_ev(25, -1.2), _fam(14, 51.5, n_cycles=2), _CFG, 20)
+    assert not demote and why == "broker_green"
+
+
+def test_b139_one_green_cycle_is_enough():
+    demote, why = gov.active_verdict(_ev(25, -5.0), _fam(3, 12.0, n_cycles=1), _CFG, 20)
+    assert not demote and why == "broker_green"
+
+
+def test_b139_flat_or_red_family_still_bar_lost():
+    for net in (0.0, -20.0):
+        f = _fam(4, net, n_cycles=1, cycle_nets=[net])
+        demote, why = gov.active_verdict(_ev(25, 1.0), f, _CFG, 20)
+        assert demote and why == "bar_lost"
+
+
+def test_b139_no_completed_cycle_means_no_broker_verdict():
+    demote, why = gov.active_verdict(_ev(25, 1.0), _fam(2, 15.0, n_cycles=0), _CFG, 20)
+    assert demote and why == "bar_lost"
+
+
+def test_b139_switch_off_restores_old_rule():
+    c = dict(_CFG, broker_green_blocks_bar_lost=False)
+    demote, why = gov.active_verdict(_ev(25, -1.2), _fam(14, 51.5, n_cycles=2), c, 20)
+    assert demote and why == "bar_lost"
 
 
 def test_family_red_demotes_regardless_of_stamps():

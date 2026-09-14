@@ -19,7 +19,11 @@ behind the dashboard trophy — and counts executable-exit-v2 episodes only):
                               poppers are switched off with it. A family
                               net pips >= +60 DEFENDS its seat: real broker
                               green outranks the worst-case stamp simulator,
-                              so bar_lost cannot demote it. JUDGE-WHEN-FLAT:
+                              so bar_lost cannot demote it — and since
+                              B-139 (2026-09-14) neither can it demote ANY
+                              family whose era net is green (>=1 cycle):
+                              the simulator alone never benches a broker
+                              winner. JUDGE-WHEN-FLAT:
                               while any family trade is open, no verdict —
                               the episode is scored when it completes. Only
                               unfamilied actives fall back to bar_lost (era
@@ -128,6 +132,9 @@ DEFAULT_CFG = {
     "family_catastrophic_pips": -90.0,  # ONE completed cycle this bad benches
     "family_demote_pips": -60.0,
     "family_defend_pips": 60.0,
+    # B-139: sim-only bar_lost cannot demote a broker-green family (>=1
+    # completed cycle, era net > 0). False restores the pre-2026-09-14 rule.
+    "broker_green_blocks_bar_lost": True,
     "max_promotions": 2, "max_demotions": 4,
     # per_test_z survives for the board's legacy-display LCB only; the
     # PROMOTION denominator is the day/session block bootstrap + BH-FDR (D-7).
@@ -356,7 +363,8 @@ def active_verdict(e, f, c: dict, min_raw: int, ht: dict = None) -> tuple:
     f = era-clocked family view {n, net_pips, net_usd, n_open} or None; e =
     stamp evidence (SetupEvidence) or None. Broker family net pips outranks
     the stamp simulator in BOTH directions: deep red convicts, solid green
-    defends; bar_lost applies only when the family doesn't defend.
+    defends; bar_lost applies only when the family doesn't defend AND is not
+    broker-green at all (B-139: any completed cycle, era net > 0).
 
     JUDGE-WHEN-FLAT (Brock, 2026-07-28): while ANY family trade is open, NO
     verdict at all — a parent can stop −60 while its poppers ride toward +30;
@@ -378,8 +386,16 @@ def active_verdict(e, f, c: dict, min_raw: int, ht: dict = None) -> tuple:
         or (n_cyc >= 1 and cyc_nets and min(cyc_nets) <= cata)))
     family_green = bool(f and n_cyc >= def_cyc
                         and f["net_pips"] >= float(c["family_defend_pips"]))
-    bar_lost = bool((not family_green) and e and e.raw_n >= min_raw and (
+    # B-139 (operator 2026-09-14): the simulator alone may not demote a family
+    # its own broker fills have it WINNING. The +60p/3-cycle bar above is a
+    # formal seat DEFENSE; starved seats never reach it, so bar_lost benched
+    # 8 of the top 13 broker earners (e.g. `family n=14 net=+51.5p [broker]`
+    # printed beside DEMOTE). Broker red still convicts via family_red.
+    broker_green = bool(c.get("broker_green_blocks_bar_lost", True)
+                        and f and n_cyc >= 1 and f["net_pips"] > 0)
+    sim_lost = bool(e and e.raw_n >= min_raw and (
         e.net_avg is None or e.net_avg < float(c["bar_avg"])))
+    bar_lost = (not family_green) and (not broker_green) and sim_lost
     if family_red:
         # TRUSTED inertia (charter): a trusted seat is not churned on the
         # first red patch — demotion requires the decay CONFIRMED by Heat
@@ -391,7 +407,9 @@ def active_verdict(e, f, c: dict, min_raw: int, ht: dict = None) -> tuple:
         return True, "family_red"
     if bar_lost:
         return True, "bar_lost"
-    return False, "family_green" if family_green else "hold"
+    if family_green:
+        return False, "family_green"
+    return False, "broker_green" if (sim_lost and broker_green) else "hold"
 
 
 def family_era_view(fam: dict, era_start: str) -> dict:

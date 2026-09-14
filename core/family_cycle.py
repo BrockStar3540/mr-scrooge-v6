@@ -14,7 +14,8 @@ Mechanics mirrored from the live modules (rule sources cited inline):
     mid re-crosses to the favorable side (tick() crossed_back); one popper
     per marker while open
   * fire gate: max_total_trades cap (book-wide margin caps are out of scope
-    for a single-family replay)
+    for a single-family replay); and a LIVE parent — once the parent leg is
+    done the grid fires nothing new (B-138, orphan_grid_stops)
   * cycle boundary: first family-flat instant, matching broker interval-chain
     evidence; a later parentless grid re-fire is a new broker cycle
   * executable prices: long manages/exits at BID, short at ASK; entries pay
@@ -169,6 +170,7 @@ def replay_family_cycle(bars: list, side: str, pip: float,
     pp_step = _f(pp_cfg.get("step_size_pips", step) or step)
     n_refires = 0
     peak_liab = 0.0
+    parent_exit_bar = len(bars)          # B-138: bar index the parent closed on
 
     def liability() -> float:
         return sum(max(0.0, -(u.lock if u.lock is not None else -u.sl_pips))
@@ -219,10 +221,20 @@ def replay_family_cycle(bars: list, side: str, pip: float,
             if worst <= stop_level:
                 u.net, u.done = round(stop_level, 2), True
                 u.exit_reason = "stop" if u.lock is not None else "initial_stop"
+                if u is parent:
+                    parent_exit_bar = i
                 for m, leg in open_at.items():
                     if leg is u:
                         open_at[m] = None
         # 2) marker machinery (mid-based, from the anchor)
+        # B-138 parity: once the parent has closed, the live grid fires
+        # nothing new (party_package orphan_grid_stops). Live ticks every ~5s,
+        # so on the bar the parent dies a marker still fires iff price crossed
+        # it BEFORE reaching the parent's exit (marker shallower than the exit
+        # level: a knife fires -25..-55 then stops the parent at -60; a +6 lock
+        # exit orphans the grid before any marker). Dead on an earlier bar =
+        # no fires at all.
+        orphan_rule = bool(pp_cfg.get("orphan_grid_stops", True))
         for m in markers:
             px = marker_px[m]
             if open_at[m] is not None:
@@ -234,6 +246,9 @@ def replay_family_cycle(bars: list, side: str, pip: float,
                     armed[m] = True
                 continue
             if not crossed_into:
+                continue
+            if orphan_rule and parent.done and (parent_exit_bar < i
+                                                or -m <= parent.net):
                 continue
             if sum(1 for u in legs if not u.done) >= max_total_trades:
                 continue

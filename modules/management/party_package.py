@@ -21,7 +21,9 @@ Safety posture:
   - Additive module: parents' entry/exit logic untouched.
   - Fires are gated on: pp enabled flag, engine not dry_run, trading pause,
     rollover freeze (20:55-22:05Z), spread fail-closed, total-trade cap and
-    total-margin cap (poppers + parents both count).
+    total-margin cap (poppers + parents both count), and — B-138, 2026-09-14
+    — a LIVE parent: a grid whose parent has closed only manages the legs it
+    holds and retires when the last one closes.
   - All state persists to data/pp_state.json; open poppers are re-adopted on
     restart from their pp_v1 client extensions (grid rebuilt if state lost).
   - Kill switch: config/pp_config.json {"enabled": false} — hot-reloaded; open
@@ -63,6 +65,11 @@ _DEFAULTS: dict = {
     "max_total_trades":     8,      # parents + poppers, book-wide
     "max_margin_pct_total": 0.8,    # parents + poppers, fraction of balance
     "grid_max_age_days":    7.0,    # retire a grid this long after parent entry
+    # B-138 (operator 2026-09-14): once its parent has closed, a grid is an
+    # ORPHAN — it manages the legs it already holds, fires nothing new, and
+    # retires the moment its last leg closes (freeing the pair). False
+    # restores the old re-arming harvest on a parentless grid.
+    "orphan_grid_stops":    True,
     "per_cell":             {},     # "PAIR|session|setup" (or "PAIR|session" or "PAIR") -> bool
 }
 
@@ -260,6 +267,7 @@ class PartyPackage:
         self.poppers: dict[str, RatchetManager] = {}  # trade_id -> manager
         self._popper_grid: dict[str, tuple[str, int]] = {}  # trade_id -> (pair, level_idx)
         self._close_backoff: dict = {}   # tid -> retry-after epoch (B-119)
+        self._orphan_logged: set = set()  # pairs whose orphan grid was logged (B-138)
         self._load_state()
 
     # ── lifecycle hooks ──────────────────────────────────────────────────────
@@ -557,6 +565,7 @@ class PartyPackage:
         # marker is a level definition (like the mid-based view features that
         # define entries), not a liquidation decision. The fill itself is
         # truth-adopted in _fire; management above uses executable prices.
+        orphan_logged = self.__dict__.setdefault("_orphan_logged", set())
         for pair in list(self.grids.keys()):
             g = self.grids[pair]
             try:
@@ -573,14 +582,28 @@ class PartyPackage:
             age_days = (now - g.created).total_seconds() / 86400.0
             first_lvl = g.level_price(min(cfg["marker_pips"]))
             back_in_zone = mid > first_lvl if g.side == "long" else mid < first_lvl
+            # B-138: a parentless grid's pair lock (busy_pairs) and its re-arming
+            # fires held the book for up to grid_max_age_days after the parent
+            # died — 72% of slot-hours 2026-09-01..14 went to losing families.
+            # An orphan retires as soon as it holds no legs.
+            orphan = pair not in parent_pairs and bool(cfg.get("orphan_grid_stops", True))
             if (pair not in parent_pairs and not busy
-                    and (back_in_zone or age_days > cfg["grid_max_age_days"])):
+                    and (orphan or back_in_zone or age_days > cfg["grid_max_age_days"])):
                 log.info("PP GRID retired %s | age=%.1fd fired=%d greens=%d knives=%d "
-                         "net=%+.1fp | engine=pp_v1", pair, age_days, g.fired_total,
-                         g.greens, g.knives, g.green_pips + g.knife_pips)
+                         "net=%+.1fp%s | engine=pp_v1", pair, age_days, g.fired_total,
+                         g.greens, g.knives, g.green_pips + g.knife_pips,
+                         " (orphan: parent closed)" if orphan else "")
                 del self.grids[pair]
+                orphan_logged.discard(pair)
                 self._save_state()
                 continue
+            if orphan and pair not in orphan_logged:
+                orphan_logged.add(pair)
+                log.info("PP GRID orphaned %s — parent closed; managing %d open leg(s), "
+                         "no new fires, retires on last close | engine=pp_v1",
+                         pair, sum(1 for v in g.levels.values() if v["trade_id"]))
+            elif not orphan:
+                orphan_logged.discard(pair)
 
             # prune inert slots that left the config ladder (no open popper)
             _cfg_keys = {_okey(o) for o in cfg["marker_pips"]}
@@ -620,6 +643,8 @@ class PartyPackage:
                     continue
                 if g.quiesced:
                     continue     # manage existing legs; governance forbids fires
+                if orphan:
+                    continue     # B-138: parent closed — manage legs, fire nothing
                 if g.cell_key:
                     _p, _s, _su = (g.cell_key.split("|") + ["?", "?"])[:3]
                     if not pp_cell_enabled(cfg, _p, _s, _su):
