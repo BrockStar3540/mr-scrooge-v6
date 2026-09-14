@@ -518,3 +518,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-14T03:26:25Z,USD_CHF,short,5413,-33.41,parent
 2026-09-14T06:17:37Z,NZD_USD,long,9248,-48.46,popper
 2026-09-14T09:10:05Z,USD_CAD,short,8120,-28.86,popper
+2026-09-14T09:31:36Z,USD_CHF,short,5141,5.61,popper
+2026-09-14T09:32:40Z,USD_CHF,short,4979,5.43,popper
