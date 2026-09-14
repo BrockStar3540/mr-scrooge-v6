@@ -4528,7 +4528,7 @@
           "id": "echo_box_fade_short",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5524,7 +5524,7 @@
           "id": "orb_break_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
