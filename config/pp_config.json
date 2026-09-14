@@ -60,7 +60,8 @@
     "USD_JPY|ny|fvg_fill_short": false,
     "GBP_USD|london|rvol_low_240": false,
     "USD_CAD|ny|orb_break_long": false,
-    "USD_JPY|ny|control_atr5m_60": false
+    "USD_JPY|ny|control_atr5m_60": false,
+    "NZD_USD|ny|trend_pullback_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
