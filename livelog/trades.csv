@@ -526,3 +526,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-14T14:18:06Z,GBP_USD,long,2064,1.86,popper
 2026-09-14T14:40:23Z,USD_JPY,short,2784,1.07,parent
 2026-09-14T14:55:01Z,EUR_JPY,short,2415,1.70,parent
+2026-09-14T16:31:04Z,USD_CHF,short,4713,5.14,popper
+2026-09-14T16:58:54Z,GBP_USD,long,2161,2.16,parent
+2026-09-14T17:01:12Z,EUR_USD,long,6392,7.67,parent
+2026-09-14T17:02:54Z,USD_CHF,short,4920,5.37,popper
