@@ -538,3 +538,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-15T08:21:25Z,USD_CHF,short,4745,3.45,parent
 2026-09-15T09:55:16Z,EUR_CHF,long,4125,3.00,parent
 2026-09-15T11:35:49Z,GBP_USD,long,2128,1.28,parent
+2026-09-15T12:28:36Z,USD_CHF,long,4771,3.46,parent
+2026-09-15T12:49:36Z,AUD_CAD,long,6623,2.78,parent
