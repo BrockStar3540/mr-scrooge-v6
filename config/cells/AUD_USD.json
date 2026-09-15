@@ -4855,6 +4855,53 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "tc_vwapbb_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "bb_pos",
+              "min": 0.92,
+              "note": "upper-band excursion"
+            },
+            {
+              "feature": "vwap_dist_pips",
+              "max": 0.0,
+              "note": "below session VWAP"
+            },
+            {
+              "feature": "ema20_1h_dist",
+              "max": 0.0,
+              "note": "H1 EMA20 downtrend agreement (B-128 rewire 2026-08-14: was M5 ema20_dist_pct, structurally contradictory with the same-TF bb_pos excursion -- 24 cells mute 08-01..08-14)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: tc_vwapbb_short (short) ran 5 eps @ -4.3p/ep with medMFE/MAE 1.2/13.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of tc_vwapbb_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "3 PROBE, 57 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
