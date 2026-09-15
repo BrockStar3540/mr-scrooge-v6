@@ -540,3 +540,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-15T11:35:49Z,GBP_USD,long,2128,1.28,parent
 2026-09-15T12:28:36Z,USD_CHF,long,4771,3.46,parent
 2026-09-15T12:49:36Z,AUD_CAD,long,6623,2.78,parent
+2026-09-15T13:58:06Z,USD_JPY,short,2884,0.76,parent
