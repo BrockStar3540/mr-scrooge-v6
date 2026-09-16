@@ -63,7 +63,10 @@
     "USD_JPY|ny|control_atr5m_60": false,
     "NZD_USD|ny|trend_pullback_long": false,
     "GBP_USD|london|ps_ceil_fade_counter_long": false,
-    "GBP_USD|london|es_trend_long": false
+    "GBP_USD|london|es_trend_long": false,
+    "USD_CAD|ny|mr2_bb_reversion_short": false,
+    "AUD_USD|london|impulse_ob_counter_long": false,
+    "USD_CHF|ny|ps_ceil_fade_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
