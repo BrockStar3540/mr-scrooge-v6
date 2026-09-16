@@ -5297,7 +5297,7 @@
           "id": "orb_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "ACTIVE",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
@@ -6759,7 +6759,7 @@
           "wired": "2026-07-05"
         }
       ],
-      "notes": "1 ACTIVE, 5 PROBE, 43 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "2 ACTIVE, 4 PROBE, 43 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
