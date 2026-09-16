@@ -543,3 +543,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-15T13:58:06Z,USD_JPY,short,2884,0.76,parent
 2026-09-15T14:27:13Z,USD_JPY,short,2885,1.29,parent
 2026-09-16T07:25:00Z,USD_JPY,short,2888,1.29,parent
+2026-09-16T17:12:01Z,GBP_USD,long,2129,-10.67,parent
