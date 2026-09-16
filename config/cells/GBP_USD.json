@@ -3084,7 +3084,7 @@
           "id": "es_trend_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
@@ -5879,7 +5879,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "5 PROBE, 66 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "4 PROBE, 67 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
