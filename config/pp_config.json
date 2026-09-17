@@ -67,7 +67,8 @@
     "USD_CAD|ny|mr2_bb_reversion_short": false,
     "AUD_USD|london|impulse_ob_counter_long": false,
     "USD_CHF|ny|ps_ceil_fade_short": false,
-    "USD_JPY|ny|shark_fade_mid_short": false
+    "USD_JPY|ny|shark_fade_mid_short": false,
+    "GBP_USD|london|orb_break_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
