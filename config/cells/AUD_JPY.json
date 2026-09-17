@@ -308,7 +308,7 @@
           "id": "rg1_range_scalp_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
