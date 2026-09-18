@@ -597,3 +597,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-18T14:51:11Z,NZD_JPY,long,4604,-12.28,parent
 2026-09-18T15:04:04Z,EUR_JPY,short,2239,0.51,parent
 2026-09-18T15:07:21Z,CAD_JPY,short,2567,0.74,parent
+2026-09-18T16:22:02Z,GBP_USD,long,1965,1.38,parent
