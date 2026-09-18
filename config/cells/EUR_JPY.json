@@ -4463,7 +4463,7 @@
           "id": "shark_fade_mid_short",
           "side": "short",
           "class": "control",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -5700,7 +5700,7 @@
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "2 PROBE, 38 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+      "notes": "1 PROBE, 42 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
     }
   }
 }
