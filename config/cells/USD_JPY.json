@@ -348,7 +348,7 @@
           "id": "rg1_range_scalp_short",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1781,7 +1781,7 @@
           "notes": "Counterpart of shark_fade_mid_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "1 PROBE, 30 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "34 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
     },
     "london": {
       "enabled": true,
