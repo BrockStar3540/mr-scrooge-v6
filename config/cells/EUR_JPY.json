@@ -5698,6 +5698,108 @@
           },
           "watch": "\ud83e\udd77",
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "timing_lean_30_g_hot_counter_long",
+          "side": "long",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.787983,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.787983) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m EUR_JPY/ny/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.4,
+              "note": "dial 2026-08-25"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 60.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0,
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: timing_lean_30_g_hot (short) ran 6 eps @ -1.5p/ep with medMFE/MAE 9.9/18.2 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of timing_lean_30_g_hot (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
+        },
+        {
+          "id": "ninja_amp_break_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "min": 1.25,
+              "note": "amplifying regime (p90) \u2014 the negative-gamma ANALOGUE: moves get extended, breaks carry"
+            },
+            {
+              "feature": "ema_trend_pips",
+              "max": -4.3,
+              "note": "9/21/50 stack proxy: M5 EMA14-EMA40 aligned AND spaced (|x| >= this pair's p75); near zero = tangled = no trade"
+            },
+            {
+              "feature": "ps_low_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session floor (identical location to ninja_stab_fade_long \u2014 the controlled pair)"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 9.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 7.5,
+            "engage_lock_pips": 6.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ninja_amp_break_short (short) ran 5 eps @ -4.5p/ep with medMFE/MAE 9.5/21.7 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77",
+          "notes": "Counterpart of ninja_amp_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "1 PROBE, 42 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
