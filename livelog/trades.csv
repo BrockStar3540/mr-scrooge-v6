@@ -605,3 +605,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-21T04:28:02Z,AUD_USD,long,6066,3.64,parent
 2026-09-21T04:32:23Z,USD_CAD,short,6529,-14.12,popper
 2026-09-21T06:04:19Z,USD_CAD,short,6361,-14.12,popper
+2026-09-21T07:59:59Z,GBP_USD,long,1903,1.14,parent
+2026-09-21T08:08:15Z,NZD_JPY,long,4452,1.68,parent
