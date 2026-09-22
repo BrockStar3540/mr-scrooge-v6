@@ -72,7 +72,8 @@
     "EUR_JPY|ny|shark_fade_mid_short": false,
     "CAD_JPY|ny|trend_pullback_counter_short": false,
     "USD_JPY|asia|rg1_range_scalp_short": false,
-    "USD_CAD|ny|rg1_range_scalp_short": false
+    "USD_CAD|ny|rg1_range_scalp_short": false,
+    "EUR_CHF|london|ps_floor_fade_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
