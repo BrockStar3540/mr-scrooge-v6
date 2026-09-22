@@ -622,3 +622,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-22T08:45:09Z,CAD_JPY,long,2565,-9.93,parent
 2026-09-22T09:56:29Z,USD_CHF,long,4246,-26.31,parent
 2026-09-22T13:41:38Z,AUD_CAD,long,6072,2.57,parent
+2026-09-22T15:28:20Z,USD_JPY,long,2489,0.94,parent
+2026-09-22T15:57:33Z,USD_JPY,long,2496,0.93,parent
