@@ -5178,7 +5178,7 @@
           "id": "echo_box_fade_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -8042,7 +8042,7 @@
           "notes": "Counterpart of shark_momo_run_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "4 PROBE, 50 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "3 PROBE, 55 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }

@@ -4974,7 +4974,7 @@
           "id": "ps_ceil_fade_short_g_appr",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5851,7 +5851,7 @@
           "notes": "Counterpart of ninja_amp_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "1 PROBE, 42 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+      "notes": "2 PROBE, 43 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
     }
   }
 }
