@@ -4833,7 +4833,7 @@
           "id": "alpha_extended_fade_short_g_a10",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
