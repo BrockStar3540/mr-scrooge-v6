@@ -77,7 +77,8 @@
     "USD_CAD|ny|alpha_extended_fade_short_g_a10": false,
     "AUD_CAD|asia|echo_box_fade_long": false,
     "USD_CHF|asia|ps_ceil_fade_short_g_appr": false,
-    "USD_JPY|london|mr2_bb_reversion_short_g_dial": false
+    "USD_JPY|london|mr2_bb_reversion_short_g_dial": false,
+    "USD_CHF|london|rg1_range_scalp_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,

@@ -9104,7 +9104,7 @@
           "id": "orb_break_counter_short",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
