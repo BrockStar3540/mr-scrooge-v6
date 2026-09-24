@@ -648,3 +648,6 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-24T06:15:10Z,EUR_USD,long,10046,7.03,parent
 2026-09-24T06:15:16Z,AUD_USD,long,5390,2.80,parent
 2026-09-24T06:43:37Z,USD_JPY,long,2246,1.25,parent
+2026-09-24T07:47:52Z,USD_CHF,short,3915,-23.90,parent
+2026-09-24T07:53:04Z,GBP_USD,long,3486,3.14,parent
+2026-09-24T08:08:48Z,EUR_USD,long,5066,2.94,parent
