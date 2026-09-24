@@ -654,3 +654,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-24T08:17:16Z,GBP_USD,short,1710,1.20,parent
 2026-09-24T10:03:32Z,NZD_JPY,long,4065,1.52,parent
 2026-09-24T13:03:38Z,AUD_USD,long,5404,3.24,parent
+2026-09-24T13:33:48Z,USD_CAD,short,5873,-20.98,parent
+2026-09-24T14:08:11Z,USD_CHF,short,3807,3.10,parent
