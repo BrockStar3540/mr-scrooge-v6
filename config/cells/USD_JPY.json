@@ -4347,7 +4347,7 @@
           "id": "control_atr5m_60",
           "side": "long",
           "class": "FORMULA",
-          "status": "PROBE",
+          "status": "ACTIVE",
           "horizon_min": 60,
           "conditions": [
             {
@@ -6813,7 +6813,7 @@
           "notes": "Counterpart of shark_momo_run_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "3 ACTIVE, 4 PROBE, 43 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "4 ACTIVE, 3 PROBE, 43 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }

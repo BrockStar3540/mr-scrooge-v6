@@ -59,7 +59,6 @@
     "USD_JPY|ny|fvg_fill_short": false,
     "GBP_USD|london|rvol_low_240": false,
     "USD_CAD|ny|orb_break_long": false,
-    "USD_JPY|ny|control_atr5m_60": false,
     "NZD_USD|ny|trend_pullback_long": false,
     "GBP_USD|london|ps_ceil_fade_counter_long": false,
     "GBP_USD|london|es_trend_long": false,
