@@ -665,3 +665,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-25T01:59:47Z,USD_JPY,short,2277,0.85,parent
 2026-09-25T02:07:52Z,NZD_JPY,long,4018,-10.25,parent
 2026-09-25T06:09:29Z,AUD_USD,long,5400,3.78,parent
+2026-09-25T06:48:10Z,EUR_CHF,long,3304,5.13,parent
