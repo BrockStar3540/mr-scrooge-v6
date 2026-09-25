@@ -676,3 +676,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-25T14:53:49Z,USD_JPY,short,4606,2.03,parent
 2026-09-25T16:01:37Z,USD_JPY,short,4615,9.02,parent
 2026-09-25T16:04:19Z,USD_CHF,short,3827,5.04,parent
+2026-09-25T16:25:29Z,EUR_CAD,short,5121,2.15,parent
+2026-09-25T16:26:41Z,AUD_USD,short,5529,3.32,parent
