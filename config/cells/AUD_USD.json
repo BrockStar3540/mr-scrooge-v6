@@ -3765,7 +3765,7 @@
           "id": "shark_fade_mid_long",
           "side": "long",
           "class": "control",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -5055,7 +5055,7 @@
           "notes": "Counterpart of orb_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "2 PROBE, 62 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "1 PROBE, 65 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
