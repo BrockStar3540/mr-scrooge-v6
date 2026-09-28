@@ -2611,7 +2611,7 @@
           "id": "ps_floor_fade_counter_short",
           "side": "short",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4285,7 +4285,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "46 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
+      "notes": "1 PROBE, 45 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
     },
     "ny": {
       "enabled": true,
