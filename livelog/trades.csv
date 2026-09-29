@@ -711,3 +711,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-09-29T05:00:51Z,GBP_USD,short,1749,1.22,parent
 2026-09-29T05:20:19Z,AUD_USD,long,5589,3.35,parent
 2026-09-29T05:36:11Z,NZD_USD,short,6858,4.73,parent
+2026-09-29T06:15:11Z,EUR_USD,long,10394,6.24,parent
