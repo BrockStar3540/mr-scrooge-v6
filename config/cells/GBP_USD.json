@@ -1904,7 +1904,7 @@
           "id": "orb_fade_counter_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
@@ -2000,7 +2000,7 @@
           "wired": "2026-07-10"
         }
       ],
-      "notes": "2 ACTIVE, 8 SHADOW setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+      "notes": "2 ACTIVE, 1 PROBE, 33 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
     },
     "london": {
       "enabled": true,

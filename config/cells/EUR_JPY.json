@@ -5634,7 +5634,7 @@
           "id": "shark_fade_mid_counter_short",
           "side": "short",
           "class": "control",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -5950,7 +5950,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "1 PROBE, 45 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+      "notes": "2 PROBE, 44 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
     }
   }
 }
