@@ -778,3 +778,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-01T15:38:40Z,USD_JPY,short,915,0.52,parent
 2026-10-01T17:55:11Z,USD_JPY,short,912,-2.94,parent
 2026-10-01T18:54:14Z,USD_CAD,short,6227,-3.67,parent
+2026-10-01T19:33:13Z,USD_JPY,short,4536,1.71,parent
