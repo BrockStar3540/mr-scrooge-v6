@@ -4,6 +4,27 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.30.13] — 2026-10-01 — B-140: graduation prices in one full stop; PROBE 0.20×; reaper 24h
+
+### Changed (operator)
+- **PROBE seats size 0.50× → 0.20×** (`config/playmaker_config.json probe_sizing_mult`, commit
+  `2395922`). Since the 09-14 fix the governor benched every losing family promptly (28 demotions,
+  no legs opened after a demotion), but each paid a full stop first: demoted families −977p / −$343
+  vs seated ACTIVE + PROBE +808p / +$278.
+- **Stale-red reaper 72h / −30p → 24h / any red** (`config/runtime.json`, gitignored; set through
+  `/api/reaper`). Last 30 days of broker fills: trades open > 12h lost −2,379p; closing red trades
+  at 24h would have added +685p (positive in both halves of the month, +113p without the three
+  worst news days). Green trades at 24h stay with the ratchet. Still counts weekend hours.
+
+### Fixed
+- **B-140 — graduation needs the record to survive one phantom full stop.** An all-green record's
+  edge LCB equals its mean, so any six-cycle winning streak graduated to full size; with ~+9p wins
+  against 40–60p stops that streak is common for a no-edge entry. See
+  [docs/BOOK_OF_BUGS.md](docs/BOOK_OF_BUGS.md).
+
+### Tests
+- `tests/test_b140_phantom_stop.py` (8 new). Suite 626 → 634.
+
 ## [6.30.7] — 2026-09-06 — B-134: engine close paths finally back off
 
 > Versions 6.28–6.30.6 shipped without CHANGELOG entries; they are recorded in

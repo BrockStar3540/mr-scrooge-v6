@@ -89,7 +89,8 @@ tapes, or contributed — walks the same ladder:
    indistinguishable from zero — with real multiple-testing control because the family is
    scored, not assumed.
    **Admission buys a 0.20× PROBE seat, not ACTIVE**: full size is earned by GRADUATION on
-   completed broker family cycles, and a hard ceiling caps live audition seats across both
+   completed broker family cycles (≥6, positive edge LCB, and since v6.30.13 the record must
+   survive one phantom full stop — [B-140](docs/BOOK_OF_BUGS.md)), and a hard ceiling caps live audition seats across both
    admission lanes. Trials are scored on **executable prices** (entry at the stamped
    ask/bid, the setup's own exit geometry replayed worst-case intrabar), never frictionless
    mid drift — and a stamp still open at its horizon is **followed to its real exit**

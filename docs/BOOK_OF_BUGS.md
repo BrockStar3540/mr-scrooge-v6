@@ -1150,6 +1150,33 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ---
 
+### B-140 — a perfect record graduated itself: the edge LCB of an all-green sample cannot see the stop
+
+- **Discovered:** 2026-10-01, owner question: "are we missing something with the ones that show
+  perfect win rates?"
+- **Area:** `ops/governor.py` PROBE → ACTIVE graduation (`edge_lcb` from `core/family_cycle.py`).
+- **Symptom / chain:** graduation needed ≥6 completed broker cycles and `edge_lcb > 0`, a t-based
+  90% lower bound on the mean cycle. An all-green record has almost no spread, so the bound sits
+  at the mean: six cycles of +7/+8/+6/+9/+7/+8 score **+6.9** and graduate. The live exit geometry
+  wins about +9p and loses a full 40–60p stop, so a driftless entry wins ~80% of cycles; at that
+  rate a no-edge setup runs 6-for-6 ~38% of the time. Broker tape since 2026-07-29: of 40
+  families that opened with ≥3 straight winning cycles, **22 later broke**, and the first loss
+  gave back a median **133%** of the whole streak (`USD_JPY/ny fvg_fill_short` +57.5p → −282.7p;
+  `AUD_USD/ny control_atrconc_60` +98.9p → −135.2p). The 2026-10-01 cut of PROBE size to 0.20×
+  made the gap bigger: graduation became a 5× size step instead of 2×.
+- **Root cause:** the stop is the tail of the distribution and an unbroken streak has not sampled
+  it, so no statistic computed only from the observed cycles can price it.
+- **Fix (v6.30.13, operator-approved):** `graduation_ready()` adds `phantom_stop_cleared()`: the
+  record must survive ONE phantom full stop, `mean(cycles + [−sl_pips]) > 0`, i.e. the completed
+  cycles have banked more than one of the setup's own stops (`phantom_stop_default_pips` 60 when a
+  setup has none). `book()` now carries each setup's `sl_pips`. Config switch
+  `graduate_phantom_stop` (default on). A candidate that passes the old gates but not this one
+  prints `GRADUATE-HELD-PHANTOM` in the governor log. Setups already ACTIVE are not re-judged.
+- **Lesson:** a confidence bound only covers the outcomes the sample contains. When the payoff is
+  many small wins against one large loss, price the large loss in explicitly.
+
+---
+
 # Records not recovered
 
 As of this consolidation (2026-07-16), **every id in the B-001 → B-090 range has a recoverable

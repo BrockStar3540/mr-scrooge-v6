@@ -172,7 +172,7 @@ def save_state(st):
 
 
 def book():
-    """(pair, session, setup_id) -> {status, side, manual_only}."""
+    """(pair, session, setup_id) -> {status, side, manual_only, cfg_hash, sl_pips}."""
     out = {}
     for f in CELLS.glob("*.json"):
         try:
@@ -189,6 +189,7 @@ def book():
                     "status": su.get("status", "?"), "side": su.get("side"),
                     "manual_only": bool(su.get("manual_only", False)),
                     "cfg_hash": mechanics_hash(su),
+                    "sl_pips": (su.get("exit") or {}).get("sl_pips"),
                 }
     return out
 
@@ -613,6 +614,33 @@ def probe_leash_breached(cycle_nets, c: dict) -> bool:
         or (len(cyc) >= 2 and cyc[-1] < 0 and cyc[-2] < 0)))
 
 
+def phantom_stop_cleared(cycle_nets, stop_pips, c: dict) -> bool:
+    """B-140: an all-green record carries no information about the stop.
+    The exit geometry wins ~+9p and loses a full stop, so a driftless entry
+    wins ~80% of cycles by construction, and the t-LCB of six +8p cycles is
+    +6.9 (no spread, no tail). Graduation therefore also requires the record
+    to survive ONE phantom full stop: mean(cycles + [-stop]) > 0, i.e. the
+    completed cycles have banked more than one stop. Stop = the parent
+    setup's sl_pips (fallback phantom_stop_default_pips)."""
+    if not c.get("graduate_phantom_stop", True):
+        return True
+    try:
+        stop = float(stop_pips) if stop_pips else float(c.get("phantom_stop_default_pips", 60.0))
+    except (TypeError, ValueError):
+        stop = float(c.get("phantom_stop_default_pips", 60.0))
+    cyc = list(cycle_nets or [])
+    return bool(cyc) and (sum(cyc) - stop) / (len(cyc) + 1) > 0
+
+
+def graduation_ready(cycle_nets, edge_lcb_val, stop_pips, c: dict) -> bool:
+    """PROBE -> ACTIVE: enough completed broker cycles, positive conservative
+    edge, and (B-140) the record survives one phantom full stop."""
+    cyc = list(cycle_nets or [])
+    return (len(cyc) >= int(c.get("cheater_graduate_cycles", 6))
+            and (edge_lcb_val or 0) > 0
+            and phantom_stop_cleared(cyc, stop_pips, c))
+
+
 def build_cheater_candidates(book_map, eras, default_era, db, min_cycles,
                              record_fn=None):
     """Candidate scan sourced only from raw, era-clocked episode records."""
@@ -802,12 +830,19 @@ def main():
                 if probe_leash_breached(cyc, c):
                     demote = True
                 # GRADUATION: enough completed broker cycles + positive
-                # conservative edge earns the full-size seat
+                # conservative edge + one phantom stop survived (B-140)
+                # earns the full-size seat
+                if (not demote
+                        and graduation_ready(cyc, f.get("edge_lcb"),
+                                             meta.get("sl_pips"), c)):
+                    graduations.append((key, e, f))
+                    continue
                 if (not demote
                         and len(cyc) >= int(c.get("cheater_graduate_cycles", 6))
                         and (f.get("edge_lcb") or 0) > 0):
-                    graduations.append((key, e, f))
-                    continue
+                    print(f"governor: GRADUATE-HELD-PHANTOM {'|'.join(key)} "
+                          f"cycles={len(cyc)} net={sum(cyc):+.1f}p "
+                          f"stop={meta.get('sl_pips')} (B-140)")
             if demote:
                 demotions.append((key, e, f))
 
