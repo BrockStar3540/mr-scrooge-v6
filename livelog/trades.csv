@@ -751,3 +751,6 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-01T01:21:21Z,USD_JPY,short,2402,-9.22,parent
 2026-10-01T01:30:27Z,CAD_JPY,short,2468,-7.92,parent
 2026-10-01T02:10:37Z,NZD_USD,short,7297,8.03,parent
+2026-10-01T03:57:15Z,AUD_JPY,long,6721,2.90,parent
+2026-10-01T04:08:39Z,AUD_JPY,long,6775,2.54,parent
+2026-10-01T04:08:46Z,AUD_USD,long,11420,7.99,parent
