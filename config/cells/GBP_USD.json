@@ -5936,7 +5936,7 @@
           "id": "fvg_fill_counter_short",
           "side": "short",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
@@ -6124,7 +6124,7 @@
           }
         }
       ],
-      "notes": "5 PROBE, 70 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "6 PROBE, 69 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,

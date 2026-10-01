@@ -85,7 +85,9 @@
     "AUD_USD|london|shark_fade_mid_long": false,
     "GBP_USD|ny|echo_box_fade_counter_long_g_dial_counter_short": false,
     "EUR_JPY|ny|ps_ceil_fade_short_g_appr": false,
-    "AUD_JPY|ny|shark_fade_mid_counter_short": false
+    "AUD_JPY|ny|shark_fade_mid_counter_short": false,
+    "USD_JPY|ny|control_atr5m_60_counter_short": false,
+    "CAD_JPY|ny|echo_box_fade_counter_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
