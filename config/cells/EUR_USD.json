@@ -2235,7 +2235,7 @@
           "id": "liq_sweep_fade_long_m_counter_short",
           "side": "short",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -3276,7 +3276,7 @@
           "id": "es_trend_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
