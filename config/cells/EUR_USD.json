@@ -7879,7 +7879,7 @@
           "id": "shark_momo_run_short",
           "side": "short",
           "class": "control",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [

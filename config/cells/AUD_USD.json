@@ -6935,7 +6935,7 @@
           "id": "shark_adr_late_short",
           "side": "short",
           "class": "control",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -8248,7 +8248,7 @@
           "wired": "2026-07-31"
         }
       ],
-      "notes": "3 PROBE, 55 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
+      "notes": "4 PROBE, 55 SHADOW, 4 DISABLED setups. Tier=3 ev_gross_long=-6.169 ev_gross_short=-3.743."
     }
   }
 }
