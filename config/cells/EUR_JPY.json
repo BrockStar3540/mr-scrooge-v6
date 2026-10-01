@@ -5023,7 +5023,7 @@
           "id": "ps_ceil_fade_short_g_appr",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5950,7 +5950,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "2 PROBE, 44 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
+      "notes": "1 PROBE, 45 SHADOW setups. Tier=2 ev_gross_long=-1.53 ev_gross_short=-0.824."
     }
   }
 }
