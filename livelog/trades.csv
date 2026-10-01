@@ -764,3 +764,10 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-01T11:53:11Z,GBP_USD,long,692,0.61,parent
 2026-10-01T12:18:15Z,EUR_USD,short,2024,1.21,parent
 2026-10-01T13:15:58Z,EUR_JPY,short,811,0.36,parent
+2026-10-01T14:21:42Z,USD_CHF,short,1595,2.39,parent
+2026-10-01T14:27:41Z,EUR_JPY,short,812,0.27,parent
+2026-10-01T14:28:05Z,USD_JPY,short,919,0.52,parent
+2026-10-01T14:32:59Z,EUR_JPY,short,815,2.03,parent
+2026-10-01T14:34:49Z,EUR_JPY,short,816,0.09,parent
+2026-10-01T14:44:59Z,EUR_JPY,short,816,0.36,parent
+2026-10-01T15:07:55Z,NZD_USD,short,2717,1.63,parent
