@@ -48,7 +48,7 @@ Most bots wager that some indicator reveals *which way* price will go. We spent 
 - **Wide stops, after a hard lesson.** The old tighten-to-winners'-MAE dial-in was **survivorship-biased** — MAE was measured only on trades that survived to win, blind to the ones a tight stop would have killed first. An 8-yr head-to-head: tight book blew up, wide book profited.
 - **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+8.5 → lock +6 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
 - **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired at laddered adverse levels, each with its own 60p server-side SL and its own ratchet. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in toll — this deployment is the live test of exactly that claim ([full paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). A grid lives only as long as its parent: once the parent closes it fires nothing new and retires with its last leg ([B-138](docs/BOOK_OF_BUGS.md), v6.30.12). Global kill switch + per-cell opt-outs on the dashboard.
-- **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers; poppers fire only while the book holds fewer than 4 trades, so seats 5–8 are parent-only — B-138), `max_per_currency_direction = 4`, 20% of balance margin per trade (PROBE seats 0.5×), 160% total margin budget. (The practice test ran 10%/8; the live gearing compensates for the smaller stake — declared in the [protocol](docs/FORWARD_TEST_PROTOCOL.md) before cutover.)
+- **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers; poppers fire only while the book holds fewer than 4 trades, so seats 5–8 are parent-only — B-138), `max_per_currency_direction = 4`, 20% of balance margin per trade (PROBE seats 0.20× since 2026-10-01; were 0.5×), 160% total margin budget. (The practice test ran 10%/8; the live gearing compensates for the smaller stake — declared in the [protocol](docs/FORWARD_TEST_PROTOCOL.md) before cutover.)
 
 ## The patience game — red for days is the design
 
@@ -88,7 +88,7 @@ tapes, or contributed — walks the same ladder:
    docket. Margins are set by the measured execution toll — any sub-1p claimed edge is
    indistinguishable from zero — with real multiple-testing control because the family is
    scored, not assumed.
-   **Admission buys a 0.33× PROBE seat, not ACTIVE**: full size is earned by GRADUATION on
+   **Admission buys a 0.20× PROBE seat, not ACTIVE**: full size is earned by GRADUATION on
    completed broker family cycles, and a hard ceiling caps live audition seats across both
    admission lanes. Trials are scored on **executable prices** (entry at the stamped
    ask/bid, the setup's own exit geometry replayed worst-case intrabar), never frictionless
