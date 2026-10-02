@@ -4077,7 +4077,7 @@
           "id": "shark_fade_mid_counter_short",
           "side": "short",
           "class": "control",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -4285,7 +4285,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "46 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
+      "notes": "1 PROBE, 45 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
     },
     "ny": {
       "enabled": true,
