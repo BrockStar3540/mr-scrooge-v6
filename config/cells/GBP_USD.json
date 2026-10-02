@@ -2655,7 +2655,7 @@
           "id": "timing_lean_30_counter_long",
           "side": "long",
           "class": "TIMING",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 30,
           "conditions": [
             {
@@ -6223,7 +6223,7 @@
           "watch": "\ud83c\udf40"
         }
       ],
-      "notes": "6 PROBE, 69 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "5 PROBE, 72 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
