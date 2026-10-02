@@ -801,3 +801,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-02T13:56:33Z,EUR_JPY,short,818,-3.15,popper
 2026-10-02T14:15:31Z,USD_CHF,short,7675,5.42,parent
 2026-10-02T15:07:58Z,USD_CAD,long,11486,4.71,parent
+2026-10-02T15:26:07Z,AUD_USD,short,2197,3.30,parent
+2026-10-02T15:28:03Z,USD_CAD,long,11560,7.15,parent
