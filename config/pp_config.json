@@ -90,7 +90,10 @@
     "CAD_JPY|ny|echo_box_fade_counter_short": false,
     "EUR_USD|london|es_trend_long": false,
     "USD_JPY|ny|shark_adr_late_counter_short": false,
-    "USD_JPY|ny|control_atr5m_60_t20s": false
+    "USD_JPY|ny|control_atr5m_60_t20s": false,
+    "AUD_USD|ny|shark_adr_late_short": false,
+    "NZD_USD|asia|echo_box_fade_counter_short": false,
+    "USD_JPY|london|ps_floor_fade_counter_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
