@@ -787,3 +787,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-02T10:17:59Z,EUR_USD,short,2023,1.21,parent
 2026-10-02T10:21:55Z,EUR_JPY,short,810,0.66,parent
 2026-10-02T10:36:04Z,EUR_JPY,short,812,0.30,parent
+2026-10-02T11:54:33Z,USD_CHF,short,7610,17.31,parent
