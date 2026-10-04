@@ -803,3 +803,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-02T15:07:58Z,USD_CAD,long,11486,4.71,parent
 2026-10-02T15:26:07Z,AUD_USD,short,2197,3.30,parent
 2026-10-02T15:28:03Z,USD_CAD,long,11560,7.15,parent
+2026-10-04T21:18:52Z,USD_JPY,short,4605,-10.94,parent
+2026-10-04T21:21:50Z,EUR_USD,short,2047,-3.52,parent
+2026-10-04T21:24:07Z,USD_CHF,short,7675,-7.02,parent
+2026-10-04T21:28:27Z,GBP_USD,short,694,-1.04,parent
