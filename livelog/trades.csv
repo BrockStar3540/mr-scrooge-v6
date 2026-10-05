@@ -814,3 +814,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-05T07:43:44Z,EUR_USD,long,2042,1.23,parent
 2026-10-05T07:53:28Z,USD_CHF,short,1525,1.26,parent
 2026-10-05T08:07:34Z,AUD_USD,long,10976,6.48,parent
+2026-10-05T08:25:14Z,GBP_USD,long,692,0.48,popper
+2026-10-05T08:27:44Z,USD_CAD,short,2287,0.94,parent
+2026-10-05T08:48:14Z,EUR_USD,long,2045,1.23,parent
+2026-10-05T08:50:12Z,USD_CAD,short,2309,0.96,parent
