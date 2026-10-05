@@ -818,3 +818,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-05T08:27:44Z,USD_CAD,short,2287,0.94,parent
 2026-10-05T08:48:14Z,EUR_USD,long,2045,1.23,parent
 2026-10-05T08:50:12Z,USD_CAD,short,2309,0.96,parent
+2026-10-05T09:46:56Z,GBP_USD,short,699,0.76,parent
