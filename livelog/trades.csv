@@ -822,3 +822,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-05T11:31:16Z,EUR_USD,long,2066,1.84,parent
 2026-10-05T12:48:15Z,GBP_USD,short,701,0.49,parent
 2026-10-05T13:13:36Z,GBP_USD,short,702,0.41,parent
+2026-10-05T13:32:26Z,GBP_USD,short,702,0.42,parent
