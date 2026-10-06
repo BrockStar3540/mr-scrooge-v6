@@ -97,7 +97,8 @@
     "GBP_USD|london|timing_lean_30_counter_long": false,
     "EUR_JPY|london|shark_fade_mid_counter_short": false,
     "EUR_USD|asia|ps_floor_fade_long": false,
-    "AUD_USD|ny|echo_box_fade_short": false
+    "AUD_USD|ny|echo_box_fade_short": false,
+    "GBP_USD|ny|impulse_ob_long_nt_counter_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,

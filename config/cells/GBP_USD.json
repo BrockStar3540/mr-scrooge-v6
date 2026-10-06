@@ -10191,7 +10191,7 @@
           "id": "impulse_ob_long_nt_counter_short",
           "side": "short",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 60,
           "conditions": [
             {
@@ -10551,7 +10551,7 @@
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "5 PROBE, 72 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "4 PROBE, 73 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
