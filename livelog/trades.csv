@@ -862,3 +862,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T11:05:23Z,USD_CAD,long,11206,6.94,popper
 2026-10-07T11:41:16Z,EUR_USD,short,2003,1.18,parent
 2026-10-07T11:58:18Z,NZD_USD,short,13294,7.98,parent
+2026-10-07T12:25:49Z,USD_CAD,long,11165,11.63,parent
+2026-10-07T13:09:03Z,USD_JPY,long,4593,1.72,parent
