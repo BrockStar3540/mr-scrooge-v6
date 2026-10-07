@@ -865,3 +865,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T12:25:49Z,USD_CAD,long,11165,11.63,parent
 2026-10-07T13:09:03Z,USD_JPY,long,4593,1.72,parent
 2026-10-07T13:29:28Z,USD_JPY,long,4600,2.01,parent
+2026-10-07T15:14:16Z,AUD_USD,long,2147,1.25,parent
