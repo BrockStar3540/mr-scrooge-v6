@@ -848,3 +848,12 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T01:13:39Z,EUR_USD,short,1988,1.39,parent
 2026-10-07T02:13:52Z,AUD_USD,short,2142,1.93,parent
 2026-10-07T02:33:58Z,GBP_USD,short,673,0.61,parent
+2026-10-07T07:37:49Z,EUR_JPY,short,806,0.45,parent
+2026-10-07T07:42:24Z,EUR_USD,short,2016,1.81,parent
+2026-10-07T07:54:24Z,EUR_JPY,short,807,1.56,parent
+2026-10-07T07:56:37Z,AUD_JPY,long,6456,-20.62,parent
+2026-10-07T07:57:11Z,USD_JPY,short,4490,1.66,parent
+2026-10-07T07:57:19Z,EUR_JPY,short,811,1.07,parent
+2026-10-07T08:02:17Z,EUR_JPY,short,798,0.48,parent
+2026-10-07T08:08:13Z,EUR_JPY,short,798,0.30,parent
+2026-10-07T08:14:55Z,USD_CAD,long,11226,5.47,popper
