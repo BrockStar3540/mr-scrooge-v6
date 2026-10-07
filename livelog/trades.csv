@@ -857,3 +857,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T08:02:17Z,EUR_JPY,short,798,0.48,parent
 2026-10-07T08:08:13Z,EUR_JPY,short,798,0.30,parent
 2026-10-07T08:14:55Z,USD_CAD,long,11226,5.47,popper
+2026-10-07T08:15:41Z,EUR_JPY,short,799,0.75,parent
+2026-10-07T09:02:29Z,EUR_JPY,short,803,-3.09,parent
