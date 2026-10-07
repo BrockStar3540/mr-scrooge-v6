@@ -1523,7 +1523,7 @@
           "id": "ps_floor_break_short",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
