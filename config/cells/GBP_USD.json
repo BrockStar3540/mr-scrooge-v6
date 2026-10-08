@@ -169,7 +169,7 @@
           "id": "ps_floor_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2000,7 +2000,7 @@
           "wired": "2026-07-10"
         }
       ],
-      "notes": "2 ACTIVE, 1 PROBE, 33 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+      "notes": "1 ACTIVE, 1 PROBE, 34 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
     },
     "london": {
       "enabled": true,
@@ -3228,7 +3228,7 @@
           "id": "es_breakout_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-01",
           "horizon_min": 240,
           "conditions": [
@@ -6223,7 +6223,7 @@
           "watch": "\ud83c\udf40"
         }
       ],
-      "notes": "5 PROBE, 72 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "4 PROBE, 73 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,

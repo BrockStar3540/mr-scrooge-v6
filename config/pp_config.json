@@ -101,7 +101,10 @@
     "GBP_USD|ny|impulse_ob_long_nt_counter_short": false,
     "EUR_JPY|london|ps_floor_break_short": false,
     "USD_JPY|ny|control_atr5m_60": false,
-    "EUR_USD|london|ninja_flag_short": false
+    "EUR_USD|london|ninja_flag_short": false,
+    "AUD_USD|london|alpha_extended_fade_long_g_a10": false,
+    "GBP_USD|london|es_breakout_long": false,
+    "GBP_USD|asia|ps_floor_fade_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
