@@ -868,3 +868,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T15:14:16Z,AUD_USD,long,2147,1.25,parent
 2026-10-07T15:17:55Z,AUD_CHF,long,2204,2.88,popper
 2026-10-07T23:49:29Z,AUD_CHF,long,2144,-3.82,parent
+2026-10-08T00:40:08Z,USD_JPY,long,4608,-17.85,parent
+2026-10-08T00:50:25Z,AUD_USD,short,2212,1.99,parent
