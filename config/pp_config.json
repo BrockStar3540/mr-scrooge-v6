@@ -100,7 +100,8 @@
     "AUD_USD|ny|echo_box_fade_short": false,
     "GBP_USD|ny|impulse_ob_long_nt_counter_short": false,
     "EUR_JPY|london|ps_floor_break_short": false,
-    "USD_JPY|ny|control_atr5m_60": false
+    "USD_JPY|ny|control_atr5m_60": false,
+    "EUR_USD|london|ninja_flag_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
