@@ -870,3 +870,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-07T23:49:29Z,AUD_CHF,long,2144,-3.82,parent
 2026-10-08T00:40:08Z,USD_JPY,long,4608,-17.85,parent
 2026-10-08T00:50:25Z,AUD_USD,short,2212,1.99,parent
+2026-10-08T04:10:37Z,AUD_USD,short,2168,1.95,parent
