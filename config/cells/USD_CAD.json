@@ -1428,7 +1428,7 @@
           "id": "shark_fade_mid_counter_long",
           "side": "long",
           "class": "control",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
