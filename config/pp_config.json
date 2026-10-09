@@ -104,7 +104,8 @@
     "EUR_USD|london|ninja_flag_short": false,
     "AUD_USD|london|alpha_extended_fade_long_g_a10": false,
     "GBP_USD|london|es_breakout_long": false,
-    "GBP_USD|asia|ps_floor_fade_long": false
+    "GBP_USD|asia|ps_floor_fade_long": false,
+    "EUR_JPY|ny|shark_fade_mid_counter_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
