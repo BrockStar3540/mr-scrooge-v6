@@ -106,7 +106,8 @@
     "GBP_USD|london|es_breakout_long": false,
     "GBP_USD|asia|ps_floor_fade_long": false,
     "EUR_JPY|ny|shark_fade_mid_counter_short": false,
-    "EUR_USD|asia|ps_ceil_fade_short_g_appr": false
+    "EUR_USD|asia|ps_ceil_fade_short_g_appr": false,
+    "USD_CHF|london|orb_fade_counter_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
