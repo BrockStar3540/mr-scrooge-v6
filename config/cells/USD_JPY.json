@@ -127,7 +127,7 @@
           "id": "box_pdl_short",
           "side": "short",
           "class": "box",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1781,7 +1781,7 @@
           "notes": "Counterpart of shark_fade_mid_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "1 PROBE, 33 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "34 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-1.349 ev_gross_short=-1.204. was locked \ud83d\udd12 -> priority_analysis."
     },
     "london": {
       "enabled": true,
@@ -4077,7 +4077,7 @@
           "id": "shark_fade_mid_counter_short",
           "side": "short",
           "class": "control",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -4285,7 +4285,7 @@
           "watch": "\ud83c\udfaf"
         }
       ],
-      "notes": "1 PROBE, 45 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
+      "notes": "46 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
     },
     "ny": {
       "enabled": true,
@@ -4393,7 +4393,7 @@
           "id": "classic_box_fade_short",
           "side": "short",
           "class": "classic",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -4827,7 +4827,7 @@
           "id": "echo_box_fade_short",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5297,7 +5297,7 @@
           "id": "orb_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
@@ -5531,7 +5531,7 @@
           "id": "shark_momo_run_short",
           "side": "short",
           "class": "control",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -6264,7 +6264,7 @@
           "id": "ninja_flag_long",
           "side": "long",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-30",
           "horizon_min": 240,
           "conditions": [
@@ -6813,7 +6813,7 @@
           "notes": "Counterpart of shark_momo_run_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "2 ACTIVE, 3 PROBE, 45 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "1 ACTIVE, 1 PROBE, 48 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }

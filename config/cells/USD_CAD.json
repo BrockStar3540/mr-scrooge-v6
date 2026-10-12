@@ -1428,7 +1428,7 @@
           "id": "shark_fade_mid_counter_long",
           "side": "long",
           "class": "control",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-19",
           "horizon_min": 240,
           "conditions": [
@@ -3057,7 +3057,7 @@
           "id": "fvg_fill_long",
           "side": "long",
           "class": "market_structure",
-          "status": "SHADOW",
+          "status": "PROBE",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
@@ -5127,7 +5127,7 @@
           "id": "echo_box_fade_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {

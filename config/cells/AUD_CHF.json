@@ -284,7 +284,7 @@
           "id": "mr2_bb_reversion_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -703,7 +703,7 @@
           "id": "mr2_bb_reversion_short_g_spr1_counter_long",
           "side": "long",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
