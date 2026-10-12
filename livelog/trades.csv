@@ -905,3 +905,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-12T08:12:16Z,EUR_USD,short,1993,1.79,parent
 2026-10-12T08:14:49Z,GBP_USD,short,676,0.41,parent
 2026-10-12T10:02:51Z,EUR_USD,short,2004,1.80,parent
+2026-10-12T12:42:05Z,NZD_USD,short,13315,7.72,parent
