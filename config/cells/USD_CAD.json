@@ -5127,7 +5127,7 @@
           "id": "echo_box_fade_short_g_bb3",
           "side": "short",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 240,
           "conditions": [
             {
