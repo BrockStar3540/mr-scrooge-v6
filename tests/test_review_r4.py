@@ -291,8 +291,10 @@ def test_commissioning_config_is_locked_to_one_seat():
     cfg = json.loads((Path(__file__).parents[1]
                       / "config" / "governor_config.json").read_text())
     # Parent-metric lane switched ON by operator decision 2026-08-03
-    # (bar 10 episodes / 5 days). The CODE default stays fail-closed.
-    assert cfg["allow_promotions"] is True
+    # (bar 10 episodes / 5 days); PAUSED by operator 2026-10-12 (book cut to
+    # 19 seats). The live value is the operator's call, so pin only that it
+    # is an explicit boolean. The CODE default stays fail-closed.
+    assert isinstance(cfg["allow_promotions"], bool)
     assert DEFAULT_CFG["allow_promotions"] is False
     # `cheater_promotion_enabled` is the COMMISSIONER's switch, not a constant:
     # it legitimately flips to true on reaching COMMISSIONED_1 (first observed

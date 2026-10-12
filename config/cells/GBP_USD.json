@@ -8411,7 +8411,7 @@
           "id": "fvg_fill_short",
           "side": "short",
           "class": "market_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-16",
           "horizon_min": 240,
           "conditions": [
@@ -10551,7 +10551,7 @@
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "1 PROBE, 76 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "77 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
