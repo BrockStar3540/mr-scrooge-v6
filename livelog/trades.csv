@@ -900,3 +900,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-11T21:28:43Z,NZD_USD,short,13516,-7.30,parent
 2026-10-11T21:29:25Z,USD_JPY,short,4536,-3.59,parent
 2026-10-11T22:05:03Z,EUR_USD,short,2025,0.91,parent
+2026-10-12T05:24:50Z,AUD_USD,short,2131,2.34,parent
