@@ -141,7 +141,8 @@
     "GBP_USD|ny|fvg_fill_long_g_dial_counter_short": false,
     "GBP_USD|asia|orb_fade_counter_long": false,
     "AUD_CHF|asia|mr2_bb_reversion_counter_long": false,
-    "USD_JPY|ny|orb_fade_short": false
+    "USD_JPY|ny|orb_fade_short": false,
+    "USD_CHF|ny|orb_break_counter_short": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
