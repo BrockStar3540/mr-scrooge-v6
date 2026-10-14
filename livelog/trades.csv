@@ -932,3 +932,5 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-14T12:32:01Z,NZD_USD,short,13695,17.80,parent
 2026-10-14T12:36:13Z,USD_CAD,short,2294,-8.14,parent
 2026-10-14T12:38:10Z,AUD_USD,short,2188,1.53,parent
+2026-10-14T13:59:59Z,USD_CAD,short,2420,-10.27,popper
+2026-10-14T14:01:52Z,EUR_USD,short,2163,2.38,parent
