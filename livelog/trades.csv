@@ -921,3 +921,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-13T13:26:38Z,AUD_JPY,long,6564,2.87,popper
 2026-10-13T14:00:34Z,EUR_USD,short,2038,1.81,parent
 2026-10-13T14:05:11Z,GBP_USD,short,690,0.62,popper
+2026-10-14T03:35:47Z,USD_JPY,short,912,0.34,parent
