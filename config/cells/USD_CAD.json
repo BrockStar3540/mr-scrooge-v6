@@ -2931,7 +2931,7 @@
           "id": "orb_break_short",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
