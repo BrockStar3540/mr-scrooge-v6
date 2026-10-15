@@ -943,3 +943,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-14T23:04:52Z,USD_CAD,short,2385,2.49,popper
 2026-10-15T00:33:29Z,AUD_USD,long,2305,2.07,popper
 2026-10-15T02:10:53Z,EUR_USD,short,2163,-12.98,popper
+2026-10-15T03:47:05Z,AUD_USD,long,2308,1.59,popper
