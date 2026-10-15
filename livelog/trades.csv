@@ -946,3 +946,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-15T03:47:05Z,AUD_USD,long,2308,1.59,popper
 2026-10-15T07:19:47Z,AUD_USD,long,2301,-9.20,parent
 2026-10-15T08:31:37Z,EUR_USD,long,10540,6.22,parent
+2026-10-15T12:30:15Z,GBP_USD,short,714,0.77,parent
