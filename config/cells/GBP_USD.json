@@ -5036,7 +5036,7 @@
           "id": "echo_box_fade_short_g_dial",
           "side": "short",
           "class": "book_replay",
-          "status": "PROBE",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -6223,7 +6223,7 @@
           "watch": "\ud83c\udf40"
         }
       ],
-      "notes": "1 PROBE, 76 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 ACTIVE, 76 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
