@@ -968,3 +968,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-19T12:43:30Z,GBP_USD,short,726,0.93,parent
 2026-10-19T23:52:54Z,AUD_USD,short,2270,-2.86,parent
 2026-10-20T04:02:18Z,USD_JPY,short,4847,1.79,parent
+2026-10-20T07:24:37Z,USD_CHF,short,7927,-2.04,parent
