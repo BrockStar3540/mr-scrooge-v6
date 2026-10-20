@@ -974,3 +974,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-20T10:40:21Z,USD_CAD,long,12119,-52.36,parent
 2026-10-20T11:15:02Z,USD_CHF,short,7881,6.63,parent
 2026-10-20T12:00:20Z,AUD_USD,short,2306,1.36,parent
+2026-10-20T12:27:39Z,AUD_USD,long,2172,1.28,parent
