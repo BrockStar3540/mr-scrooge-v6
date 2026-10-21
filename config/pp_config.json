@@ -145,7 +145,8 @@
     "USD_CHF|ny|orb_break_counter_short": false,
     "USD_CAD|london|orb_break_short": false,
     "EUR_USD|ny|ps_floor_fade_counter_short": false,
-    "USD_JPY|ny|classic_box_fade_short": false
+    "USD_JPY|ny|classic_box_fade_short": false,
+    "USD_CAD|ny|orb_break_long": false
   },
   "engage_pips": 7.5,
   "engage_lock_pips": 6.0,
