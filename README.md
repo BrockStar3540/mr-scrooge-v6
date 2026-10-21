@@ -20,11 +20,24 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,286.14_(--51.45%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-776/986_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-4_(−%249)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,284.36_(--51.37%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-776/986_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-4_(−%247)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
 </div>
+
+#### Win rate: all-time vs. recent
+
+| Window | Trades | Win rate | vs all-time | Net P/L |
+|---|---:|---:|---:|---:|
+| **All-time** | 986 | **78.7%** | — | −$1,276.95 |
+| Last 90 days | 986 | **78.7%** | ＝ +0.0 pts | −$1,276.95 |
+| Last 60 days | 715 | **78.6%** | ▼ −0.1 pts | −$777.48 |
+| Last 30 days | 371 | **77.1%** | ▼ −1.6 pts | −$149.02 |
+| Last 15 days | 141 | **73.8%** | ▼ −4.9 pts | −$11.64 |
+| Last 7 days | 47 | **68.1%** | ▼ −10.6 pts | −$99.70 |
+
+<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-10-21 20:51 UTC by close time; refreshed hourly with each new close.</sub>
 
 > **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +7.5 → lock +6, steps +9/+11/… → lock −2 + Party Package popper grids · 15%/trade · 6 max (403 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).
 <!-- LIVE_BALANCE_END -->
