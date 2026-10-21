@@ -1,0 +1,2901 @@
+{
+ "generated": "2026-10-21T21:04:48.040624+00:00",
+ "spec": "research/deflation/PREREGISTRATION.md",
+ "inputs": {
+  "episodes_sha256": "e389bfd0c51603acc8298176fb727a1bdb9cfe3cd52b1af2fa1582a2ef33ac19",
+  "registry_sha256": "795a50a259b8f3d628384cf5608ce16d9cfaf275846be3a1357968825fd5912e",
+  "decisions_sha256": "f0c7c04ec031d42ccb04ecee73d67c7d6e542df26e7731aafb82f40afb33594b",
+  "cutoff_exclusive": "2026-10-21",
+  "first_day": "2026-07-28",
+  "last_day": "2026-10-20",
+  "market_days": 85,
+  "episodes_used": 70097,
+  "episodes_dropped_retired_side": 0,
+  "slippage_pips": 0.5,
+  "bar_replica": {
+   "min_raw_episodes": 10.0,
+   "min_independent_days": 5.0,
+   "bar_avg": 2.0,
+   "lcb_min": 0.0,
+   "fdr_q": 0.1,
+   "bootstrap_confidence": 0.95
+  },
+  "min_days_dsr": 10,
+  "min_days_per_cscv_half": 5
+ },
+ "registry": {
+  "M_ever": 1701,
+  "trials_with_data": 1667,
+  "config_versions": 2915,
+  "effective_N": 42.4,
+  "var_sr_daily": 0.038673,
+  "trials_in_var": 1656,
+  "expected_max_sr_by_N": {
+   "M_ever (primary)": 0.6693,
+   "trials_with_data": 0.6682,
+   "config_versions": 0.6977,
+   "effective_N (participation ratio)": 0.4351
+  }
+ },
+ "promoted_set": {
+  "ever_seated_with_data": 163,
+  "ever_seated_without_data": 0,
+  "bar_promoted_with_data": 133,
+  "dsr_all_ever_seated": {
+   "n": 163,
+   "median_dsr": 0.0,
+   "median_excess_sr": -0.5409,
+   "n_dsr_ge_0.95": 0,
+   "n_dsr_gt_0.5": 2,
+   "median_psr": 0.8047,
+   "median_dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0101
+   }
+  },
+  "dsr_bar_promoted_only": {
+   "n": 133,
+   "median_dsr": 0.0,
+   "median_excess_sr": -0.5409,
+   "n_dsr_ge_0.95": 0,
+   "n_dsr_gt_0.5": 2,
+   "median_psr": 0.8047,
+   "median_dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0123
+   }
+  }
+ },
+ "book_equal_weight": {
+  "T": 85,
+  "mean_pips_day": 2.282,
+  "sr_daily": 0.3642,
+  "psr": 0.9994,
+  "dsr_M_ever": 0.0034
+ },
+ "best_trial": {
+  "key": "GBP_USD|ny|mr2_bb_reversion_short_g_spr1",
+  "sr_daily": 1.2882,
+  "T": 36,
+  "dsr_M_ever": 0.9994
+ },
+ "cscv_S16": {
+  "splits": 12870,
+  "splits_scored": 12870,
+  "pbo_max_sr": 0.18997668997668998,
+  "median_logit_max_sr": 5.404606022778687,
+  "p_oos_sr_star_le_0": 0.17226107226107226,
+  "median_oos_sr_star": 1.0041199186379066,
+  "pbo_bar": 0.031701631701631705,
+  "median_logit_bar": 0.3496334741671973,
+  "splits_with_selection": 12870,
+  "splits_without_selection": 0,
+  "median_selected": 205.0,
+  "mean_oos_sr_selected": 0.1790117946198488,
+  "mean_oos_sr_rest": 0.07450011360011406,
+  "p_selected_oos_sr_le_0": 0.0
+ },
+ "cscv_S8": {
+  "splits": 70,
+  "splits_scored": 70,
+  "pbo_max_sr": 0.18571428571428572,
+  "median_logit_max_sr": 5.088264824124196,
+  "p_oos_sr_star_le_0": 0.18571428571428572,
+  "median_oos_sr_star": 1.0023843169750624,
+  "pbo_bar": 0.05714285714285714,
+  "median_logit_bar": 0.3148807983985964,
+  "splits_with_selection": 70,
+  "splits_without_selection": 0,
+  "median_selected": 203.0,
+  "mean_oos_sr_selected": 0.17377613590960744,
+  "mean_oos_sr_rest": 0.07899745310134626,
+  "p_selected_oos_sr_le_0": 0.0
+ },
+ "cscv_S16_complete_series_only": {
+  "splits": 12870,
+  "splits_scored": 12870,
+  "pbo_max_sr": 0.3278166278166278,
+  "median_logit_max_sr": 0.5978370007556204,
+  "p_oos_sr_star_le_0": 0.2846153846153846,
+  "median_oos_sr_star": 0.13487279363556454,
+  "trials": 124
+ },
+ "verdict": "MEASURES THE SEARCH",
+ "per_setup": [
+  {
+   "key": "GBP_USD|ny|echo_box_fade_counter_long_g_dial_counter_short",
+   "T": 50,
+   "episodes": 39,
+   "mean_pips_day": 6.25,
+   "sr_daily": 0.7453,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.7976,
+   "excess_sr": 0.076,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.7976,
+    "trials_with_data": 0.8009,
+    "config_versions": 0.6989,
+    "effective_N (participation ratio)": 0.9997
+   }
+  },
+  {
+   "key": "GBP_USD|ny|fvg_fill_counter_short",
+   "T": 46,
+   "episodes": 50,
+   "mean_pips_day": 8.935,
+   "sr_daily": 0.6893,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.5786,
+   "excess_sr": 0.02,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.5786,
+    "trials_with_data": 0.5828,
+    "config_versions": 0.4667,
+    "effective_N (participation ratio)": 0.9941
+   }
+  },
+  {
+   "key": "AUD_CHF|asia|mr2_bb_reversion_counter_long",
+   "T": 74,
+   "episodes": 72,
+   "mean_pips_day": 6.865,
+   "sr_daily": 0.6493,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.3937,
+   "excess_sr": -0.02,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.3937,
+    "trials_with_data": 0.3993,
+    "config_versions": 0.2567,
+    "effective_N (participation ratio)": 0.9981
+   }
+  },
+  {
+   "key": "GBP_USD|ny|impulse_ob_long_nt_counter_short",
+   "T": 43,
+   "episodes": 88,
+   "mean_pips_day": 10.419,
+   "sr_daily": 0.4862,
+   "bar_promoted": true,
+   "psr": 0.9448,
+   "dsr": 0.274,
+   "excess_sr": -0.183,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.274,
+    "trials_with_data": 0.2751,
+    "config_versions": 0.2438,
+    "effective_N (participation ratio)": 0.5667
+   }
+  },
+  {
+   "key": "USD_JPY|ny|control_atr5m_60_counter_short",
+   "T": 41,
+   "episodes": 64,
+   "mean_pips_day": 12.488,
+   "sr_daily": 0.4701,
+   "bar_promoted": true,
+   "psr": 0.9526,
+   "dsr": 0.2396,
+   "excess_sr": -0.1992,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.2396,
+    "trials_with_data": 0.2408,
+    "config_versions": 0.2094,
+    "effective_N (participation ratio)": 0.5495
+   }
+  },
+  {
+   "key": "AUD_CHF|asia|mr2_bb_reversion_short_g_spr1_counter_long",
+   "T": 56,
+   "episodes": 42,
+   "mean_pips_day": 5.518,
+   "sr_daily": 0.6031,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.2097,
+   "excess_sr": -0.0662,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.2097,
+    "trials_with_data": 0.2135,
+    "config_versions": 0.1242,
+    "effective_N (participation ratio)": 0.9798
+   }
+  },
+  {
+   "key": "GBP_USD|ny|fvg_fill_long_g_dial_counter_short",
+   "T": 46,
+   "episodes": 38,
+   "mean_pips_day": 6.739,
+   "sr_daily": 0.5845,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.1658,
+   "excess_sr": -0.0848,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.1658,
+    "trials_with_data": 0.1689,
+    "config_versions": 0.0974,
+    "effective_N (participation ratio)": 0.9564
+   }
+  },
+  {
+   "key": "GBP_USD|ny|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 37,
+   "mean_pips_day": 4.956,
+   "sr_daily": 0.5845,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.1389,
+   "excess_sr": -0.0848,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.1389,
+    "trials_with_data": 0.142,
+    "config_versions": 0.0736,
+    "effective_N (participation ratio)": 0.9722
+   }
+  },
+  {
+   "key": "GBP_USD|london|echo_box_fade_counter_long_g_dial_counter_short",
+   "T": 42,
+   "episodes": 28,
+   "mean_pips_day": 4.548,
+   "sr_daily": 0.4101,
+   "bar_promoted": true,
+   "psr": 0.9704,
+   "dsr": 0.1166,
+   "excess_sr": -0.2591,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.1166,
+    "trials_with_data": 0.1176,
+    "config_versions": 0.0929,
+    "effective_N (participation ratio)": 0.4543
+   }
+  },
+  {
+   "key": "EUR_USD|ny|orb_break_counter_short",
+   "T": 50,
+   "episodes": 41,
+   "mean_pips_day": 5.85,
+   "sr_daily": 0.4561,
+   "bar_promoted": true,
+   "psr": 0.9968,
+   "dsr": 0.1013,
+   "excess_sr": -0.2131,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.1013,
+    "trials_with_data": 0.1025,
+    "config_versions": 0.0743,
+    "effective_N (participation ratio)": 0.5501
+   }
+  },
+  {
+   "key": "GBP_USD|london|echo_box_fade_short_g_dial",
+   "T": 57,
+   "episodes": 36,
+   "mean_pips_day": 4.719,
+   "sr_daily": 0.4105,
+   "bar_promoted": true,
+   "psr": 0.9879,
+   "dsr": 0.0777,
+   "excess_sr": -0.2588,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0777,
+    "trials_with_data": 0.0786,
+    "config_versions": 0.0575,
+    "effective_N (participation ratio)": 0.4463
+   }
+  },
+  {
+   "key": "USD_CAD|asia|shark_fade_mid_counter_long",
+   "T": 51,
+   "episodes": 26,
+   "mean_pips_day": 4.078,
+   "sr_daily": 0.5421,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0595,
+   "excess_sr": -0.1271,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0595,
+    "trials_with_data": 0.061,
+    "config_versions": 0.0282,
+    "effective_N (participation ratio)": 0.9054
+   }
+  },
+  {
+   "key": "GBP_USD|london|orb_break_long",
+   "T": 66,
+   "episodes": 52,
+   "mean_pips_day": 5.318,
+   "sr_daily": 0.3964,
+   "bar_promoted": true,
+   "psr": 0.9932,
+   "dsr": 0.0449,
+   "excess_sr": -0.2729,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0449,
+    "trials_with_data": 0.0455,
+    "config_versions": 0.0305,
+    "effective_N (participation ratio)": 0.405
+   }
+  },
+  {
+   "key": "USD_CAD|ny|echo_box_fade_short_g_bb3",
+   "T": 82,
+   "episodes": 24,
+   "mean_pips_day": 2.232,
+   "sr_daily": 0.5526,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0411,
+   "excess_sr": -0.1167,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0411,
+    "trials_with_data": 0.0425,
+    "config_versions": 0.0153,
+    "effective_N (participation ratio)": 0.96
+   }
+  },
+  {
+   "key": "EUR_USD|ny|fvg_fill_long_g_dial_counter_short",
+   "T": 48,
+   "episodes": 35,
+   "mean_pips_day": 5.49,
+   "sr_daily": 0.524,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0408,
+   "excess_sr": -0.1453,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0408,
+    "trials_with_data": 0.042,
+    "config_versions": 0.0187,
+    "effective_N (participation ratio)": 0.8566
+   }
+  },
+  {
+   "key": "NZD_USD|london|ps_floor_fade_counter_short",
+   "T": 74,
+   "episodes": 59,
+   "mean_pips_day": 6.128,
+   "sr_daily": 0.4999,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0311,
+   "excess_sr": -0.1693,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0311,
+    "trials_with_data": 0.032,
+    "config_versions": 0.0147,
+    "effective_N (participation ratio)": 0.7624
+   }
+  },
+  {
+   "key": "USD_CAD|ny|orb_break_long",
+   "T": 66,
+   "episodes": 68,
+   "mean_pips_day": 6.924,
+   "sr_daily": 0.3197,
+   "bar_promoted": true,
+   "psr": 0.9568,
+   "dsr": 0.0305,
+   "excess_sr": -0.3495,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0305,
+    "trials_with_data": 0.0309,
+    "config_versions": 0.0213,
+    "effective_N (participation ratio)": 0.2681
+   }
+  },
+  {
+   "key": "EUR_JPY|london|shark_fade_mid_counter_short",
+   "T": 43,
+   "episodes": 22,
+   "mean_pips_day": 4.93,
+   "sr_daily": 0.3437,
+   "bar_promoted": true,
+   "psr": 0.9777,
+   "dsr": 0.0286,
+   "excess_sr": -0.3255,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0286,
+    "trials_with_data": 0.029,
+    "config_versions": 0.0193,
+    "effective_N (participation ratio)": 0.2968
+   }
+  },
+  {
+   "key": "USD_JPY|ny|classic_box_fade_short",
+   "T": 85,
+   "episodes": 183,
+   "mean_pips_day": 13.924,
+   "sr_daily": 0.4122,
+   "bar_promoted": false,
+   "psr": 0.9989,
+   "dsr": 0.0286,
+   "excess_sr": -0.2571,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0286,
+    "trials_with_data": 0.0292,
+    "config_versions": 0.0174,
+    "effective_N (participation ratio)": 0.4328
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|shark_fade_mid_short",
+   "T": 63,
+   "episodes": 40,
+   "mean_pips_day": 4.159,
+   "sr_daily": 0.3637,
+   "bar_promoted": true,
+   "psr": 0.9888,
+   "dsr": 0.0276,
+   "excess_sr": -0.3056,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0276,
+    "trials_with_data": 0.028,
+    "config_versions": 0.018,
+    "effective_N (participation ratio)": 0.3271
+   }
+  },
+  {
+   "key": "AUD_USD|ny|mr2_bb_reversion_short",
+   "T": 85,
+   "episodes": 61,
+   "mean_pips_day": 4.806,
+   "sr_daily": 0.4423,
+   "bar_promoted": true,
+   "psr": 0.9999,
+   "dsr": 0.0273,
+   "excess_sr": -0.2269,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0273,
+    "trials_with_data": 0.0279,
+    "config_versions": 0.0153,
+    "effective_N (participation ratio)": 0.5245
+   }
+  },
+  {
+   "key": "AUD_USD|asia|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 37,
+   "mean_pips_day": 5.605,
+   "sr_daily": 0.4112,
+   "bar_promoted": true,
+   "psr": 0.9996,
+   "dsr": 0.0175,
+   "excess_sr": -0.2581,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0175,
+    "trials_with_data": 0.0179,
+    "config_versions": 0.0096,
+    "effective_N (participation ratio)": 0.4226
+   }
+  },
+  {
+   "key": "GBP_USD|ny|fvg_fill_short",
+   "T": 66,
+   "episodes": 102,
+   "mean_pips_day": 7.591,
+   "sr_daily": 0.2552,
+   "bar_promoted": true,
+   "psr": 0.9059,
+   "dsr": 0.0164,
+   "excess_sr": -0.4141,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0164,
+    "trials_with_data": 0.0166,
+    "config_versions": 0.0112,
+    "effective_N (participation ratio)": 0.1767
+   }
+  },
+  {
+   "key": "AUD_USD|ny|mr2_bb_reversion_short_g_spr1",
+   "T": 82,
+   "episodes": 55,
+   "mean_pips_day": 4.53,
+   "sr_daily": 0.4132,
+   "bar_promoted": true,
+   "psr": 0.9998,
+   "dsr": 0.0143,
+   "excess_sr": -0.2561,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0143,
+    "trials_with_data": 0.0146,
+    "config_versions": 0.0075,
+    "effective_N (participation ratio)": 0.4258
+   }
+  },
+  {
+   "key": "EUR_USD|ny|ps_floor_fade_counter_short",
+   "T": 74,
+   "episodes": 49,
+   "mean_pips_day": 6.061,
+   "sr_daily": 0.4974,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0143,
+   "excess_sr": -0.1719,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0143,
+    "trials_with_data": 0.0148,
+    "config_versions": 0.0054,
+    "effective_N (participation ratio)": 0.7861
+   }
+  },
+  {
+   "key": "GBP_USD|ny|mr2_bb_reversion_short",
+   "T": 85,
+   "episodes": 58,
+   "mean_pips_day": 4.42,
+   "sr_daily": 0.4068,
+   "bar_promoted": true,
+   "psr": 0.9997,
+   "dsr": 0.0133,
+   "excess_sr": -0.2625,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0133,
+    "trials_with_data": 0.0136,
+    "config_versions": 0.007,
+    "effective_N (participation ratio)": 0.4054
+   }
+  },
+  {
+   "key": "USD_JPY|ny|orb_fade_short",
+   "T": 66,
+   "episodes": 84,
+   "mean_pips_day": 6.303,
+   "sr_daily": 0.2914,
+   "bar_promoted": false,
+   "psr": 0.963,
+   "dsr": 0.0103,
+   "excess_sr": -0.3779,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0103,
+    "trials_with_data": 0.0104,
+    "config_versions": 0.0064,
+    "effective_N (participation ratio)": 0.1891
+   }
+  },
+  {
+   "key": "AUD_USD|ny|echo_box_fade_short",
+   "T": 85,
+   "episodes": 96,
+   "mean_pips_day": 6.506,
+   "sr_daily": 0.2532,
+   "bar_promoted": true,
+   "psr": 0.923,
+   "dsr": 0.0096,
+   "excess_sr": -0.4161,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0096,
+    "trials_with_data": 0.0097,
+    "config_versions": 0.0062,
+    "effective_N (participation ratio)": 0.1529
+   }
+  },
+  {
+   "key": "EUR_USD|london|orb_break_short",
+   "T": 66,
+   "episodes": 50,
+   "mean_pips_day": 7.621,
+   "sr_daily": 0.5209,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0085,
+   "excess_sr": -0.1484,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0085,
+    "trials_with_data": 0.0089,
+    "config_versions": 0.0022,
+    "effective_N (participation ratio)": 0.9162
+   }
+  },
+  {
+   "key": "GBP_USD|london|fvg_fill_counter_short",
+   "T": 34,
+   "episodes": 43,
+   "mean_pips_day": 6.397,
+   "sr_daily": 0.2097,
+   "bar_promoted": true,
+   "psr": 0.8618,
+   "dsr": 0.0085,
+   "excess_sr": -0.4596,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0085,
+    "trials_with_data": 0.0086,
+    "config_versions": 0.0056,
+    "effective_N (participation ratio)": 0.121
+   }
+  },
+  {
+   "key": "AUD_JPY|asia|rg1_range_scalp_counter_long",
+   "T": 74,
+   "episodes": 67,
+   "mean_pips_day": 6.372,
+   "sr_daily": 0.4749,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0082,
+   "excess_sr": -0.1943,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0082,
+    "trials_with_data": 0.0085,
+    "config_versions": 0.003,
+    "effective_N (participation ratio)": 0.6889
+   }
+  },
+  {
+   "key": "EUR_USD|asia|liq_sweep_fade_long_m_counter_short",
+   "T": 47,
+   "episodes": 24,
+   "mean_pips_day": 2.851,
+   "sr_daily": 0.2619,
+   "bar_promoted": true,
+   "psr": 0.9414,
+   "dsr": 0.0074,
+   "excess_sr": -0.4073,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0074,
+    "trials_with_data": 0.0076,
+    "config_versions": 0.0046,
+    "effective_N (participation ratio)": 0.1502
+   }
+  },
+  {
+   "key": "USD_JPY|ny|shark_fade_mid_short",
+   "T": 63,
+   "episodes": 53,
+   "mean_pips_day": 6.087,
+   "sr_daily": 0.3502,
+   "bar_promoted": true,
+   "psr": 0.9962,
+   "dsr": 0.0074,
+   "excess_sr": -0.3191,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0074,
+    "trials_with_data": 0.0076,
+    "config_versions": 0.004,
+    "effective_N (participation ratio)": 0.2584
+   }
+  },
+  {
+   "key": "USD_JPY|ny|echo_box_fade_short",
+   "T": 74,
+   "episodes": 87,
+   "mean_pips_day": 6.736,
+   "sr_daily": 0.3249,
+   "bar_promoted": true,
+   "psr": 0.9946,
+   "dsr": 0.0035,
+   "excess_sr": -0.3444,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0035,
+    "trials_with_data": 0.0035,
+    "config_versions": 0.0017,
+    "effective_N (participation ratio)": 0.1937
+   }
+  },
+  {
+   "key": "AUD_USD|ny|shark_adr_late_short",
+   "T": 63,
+   "episodes": 23,
+   "mean_pips_day": 1.754,
+   "sr_daily": 0.2028,
+   "bar_promoted": true,
+   "psr": 0.8811,
+   "dsr": 0.0033,
+   "excess_sr": -0.4664,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0033,
+    "trials_with_data": 0.0034,
+    "config_versions": 0.002,
+    "effective_N (participation ratio)": 0.0882
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|echo_box_fade_counter_short",
+   "T": 64,
+   "episodes": 35,
+   "mean_pips_day": 4.383,
+   "sr_daily": 0.2901,
+   "bar_promoted": true,
+   "psr": 0.9816,
+   "dsr": 0.0032,
+   "excess_sr": -0.3792,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0032,
+    "trials_with_data": 0.0032,
+    "config_versions": 0.0017,
+    "effective_N (participation ratio)": 0.1483
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 44,
+   "mean_pips_day": 3.386,
+   "sr_daily": 0.1693,
+   "bar_promoted": true,
+   "psr": 0.8229,
+   "dsr": 0.0031,
+   "excess_sr": -0.5,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0031,
+    "trials_with_data": 0.0032,
+    "config_versions": 0.0019,
+    "effective_N (participation ratio)": 0.0729
+   }
+  },
+  {
+   "key": "USD_JPY|ny|classic_willr_fade_short",
+   "T": 85,
+   "episodes": 196,
+   "mean_pips_day": 16.507,
+   "sr_daily": 0.3999,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0031,
+   "excess_sr": -0.2693,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0031,
+    "trials_with_data": 0.0032,
+    "config_versions": 0.0012,
+    "effective_N (participation ratio)": 0.3603
+   }
+  },
+  {
+   "key": "USD_CHF|london|liq_sweep_fade_short_t",
+   "T": 75,
+   "episodes": 56,
+   "mean_pips_day": 4.787,
+   "sr_daily": 0.3022,
+   "bar_promoted": true,
+   "psr": 0.9883,
+   "dsr": 0.003,
+   "excess_sr": -0.3671,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.003,
+    "trials_with_data": 0.003,
+    "config_versions": 0.0015,
+    "effective_N (participation ratio)": 0.1596
+   }
+  },
+  {
+   "key": "USD_JPY|london|timing_lean_30_short",
+   "T": 35,
+   "episodes": 30,
+   "mean_pips_day": 4.8,
+   "sr_daily": 0.1716,
+   "bar_promoted": false,
+   "psr": 0.8319,
+   "dsr": 0.0026,
+   "excess_sr": -0.4977,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0026,
+    "trials_with_data": 0.0027,
+    "config_versions": 0.0016,
+    "effective_N (participation ratio)": 0.0698
+   }
+  },
+  {
+   "key": "GBP_USD|london|fvg_fill_long_g_dial_counter_short",
+   "T": 47,
+   "episodes": 33,
+   "mean_pips_day": 2.543,
+   "sr_daily": 0.1286,
+   "bar_promoted": true,
+   "psr": 0.7495,
+   "dsr": 0.0023,
+   "excess_sr": -0.5407,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0023,
+    "trials_with_data": 0.0024,
+    "config_versions": 0.0014,
+    "effective_N (participation ratio)": 0.0544
+   }
+  },
+  {
+   "key": "USD_CHF|london|orb_fade_counter_long",
+   "T": 53,
+   "episodes": 38,
+   "mean_pips_day": 5.075,
+   "sr_daily": 0.3653,
+   "bar_promoted": true,
+   "psr": 0.9998,
+   "dsr": 0.0018,
+   "excess_sr": -0.304,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0018,
+    "trials_with_data": 0.0019,
+    "config_versions": 0.0007,
+    "effective_N (participation ratio)": 0.2524
+   }
+  },
+  {
+   "key": "AUD_USD|ny|rg1_range_scalp_short",
+   "T": 85,
+   "episodes": 53,
+   "mean_pips_day": 4.938,
+   "sr_daily": 0.4916,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0017,
+   "excess_sr": -0.1776,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0017,
+    "trials_with_data": 0.0018,
+    "config_versions": 0.0003,
+    "effective_N (participation ratio)": 0.8243
+   }
+  },
+  {
+   "key": "AUD_USD|london|kc_up_long_lean",
+   "T": 85,
+   "episodes": 100,
+   "mean_pips_day": 6.635,
+   "sr_daily": 0.3571,
+   "bar_promoted": false,
+   "psr": 0.9997,
+   "dsr": 0.0013,
+   "excess_sr": -0.3122,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0013,
+    "trials_with_data": 0.0014,
+    "config_versions": 0.0005,
+    "effective_N (participation ratio)": 0.2268
+   }
+  },
+  {
+   "key": "NZD_USD|asia|echo_box_fade_counter_short",
+   "T": 55,
+   "episodes": 16,
+   "mean_pips_day": 1.473,
+   "sr_daily": 0.1963,
+   "bar_promoted": true,
+   "psr": 0.8946,
+   "dsr": 0.0013,
+   "excess_sr": -0.473,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0013,
+    "trials_with_data": 0.0013,
+    "config_versions": 0.0007,
+    "effective_N (participation ratio)": 0.064
+   }
+  },
+  {
+   "key": "USD_CHF|ny|ps_ceil_fade_short",
+   "T": 85,
+   "episodes": 68,
+   "mean_pips_day": 4.424,
+   "sr_daily": 0.2226,
+   "bar_promoted": true,
+   "psr": 0.9408,
+   "dsr": 0.0009,
+   "excess_sr": -0.4467,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0009,
+    "trials_with_data": 0.0009,
+    "config_versions": 0.0004,
+    "effective_N (participation ratio)": 0.0681
+   }
+  },
+  {
+   "key": "AUD_CAD|asia|echo_box_fade_long",
+   "T": 74,
+   "episodes": 32,
+   "mean_pips_day": 2.027,
+   "sr_daily": 0.1458,
+   "bar_promoted": true,
+   "psr": 0.8115,
+   "dsr": 0.0008,
+   "excess_sr": -0.5234,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0008,
+    "trials_with_data": 0.0008,
+    "config_versions": 0.0004,
+    "effective_N (participation ratio)": 0.0398
+   }
+  },
+  {
+   "key": "USD_JPY|ny|shark_adr_late_counter_short",
+   "T": 46,
+   "episodes": 21,
+   "mean_pips_day": 6.924,
+   "sr_daily": 0.4307,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0008,
+   "excess_sr": -0.2386,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0008,
+    "trials_with_data": 0.0009,
+    "config_versions": 0.0002,
+    "effective_N (participation ratio)": 0.4769
+   }
+  },
+  {
+   "key": "AUD_USD|ny|control_atrconc_60",
+   "T": 85,
+   "episodes": 76,
+   "mean_pips_day": 3.527,
+   "sr_daily": 0.2018,
+   "bar_promoted": false,
+   "psr": 0.9172,
+   "dsr": 0.0007,
+   "excess_sr": -0.4674,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0007,
+    "trials_with_data": 0.0007,
+    "config_versions": 0.0003,
+    "effective_N (participation ratio)": 0.0545
+   }
+  },
+  {
+   "key": "USD_JPY|ny|ninja_flag_long",
+   "T": 52,
+   "episodes": 24,
+   "mean_pips_day": 1.615,
+   "sr_daily": 0.1326,
+   "bar_promoted": true,
+   "psr": 0.7866,
+   "dsr": 0.0007,
+   "excess_sr": -0.5366,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0007,
+    "trials_with_data": 0.0007,
+    "config_versions": 0.0004,
+    "effective_N (participation ratio)": 0.035
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|shark_fade_mid_counter_short",
+   "T": 40,
+   "episodes": 20,
+   "mean_pips_day": 1.45,
+   "sr_daily": 0.1039,
+   "bar_promoted": true,
+   "psr": 0.7236,
+   "dsr": 0.0006,
+   "excess_sr": -0.5653,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0006,
+    "trials_with_data": 0.0006,
+    "config_versions": 0.0003,
+    "effective_N (participation ratio)": 0.0293
+   }
+  },
+  {
+   "key": "EUR_USD|london|ninja_flag_short",
+   "T": 52,
+   "episodes": 22,
+   "mean_pips_day": 1.981,
+   "sr_daily": 0.1197,
+   "bar_promoted": true,
+   "psr": 0.7606,
+   "dsr": 0.0006,
+   "excess_sr": -0.5495,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0006,
+    "trials_with_data": 0.0006,
+    "config_versions": 0.0003,
+    "effective_N (participation ratio)": 0.0311
+   }
+  },
+  {
+   "key": "CAD_JPY|ny|trend_pullback_counter_short",
+   "T": 57,
+   "episodes": 21,
+   "mean_pips_day": 1.974,
+   "sr_daily": 0.1048,
+   "bar_promoted": true,
+   "psr": 0.7339,
+   "dsr": 0.0004,
+   "excess_sr": -0.5645,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0004,
+    "trials_with_data": 0.0004,
+    "config_versions": 0.0002,
+    "effective_N (participation ratio)": 0.0244
+   }
+  },
+  {
+   "key": "EUR_USD|ny|orb_fade_counter_short",
+   "T": 49,
+   "episodes": 40,
+   "mean_pips_day": 6.755,
+   "sr_daily": 0.326,
+   "bar_promoted": true,
+   "psr": 0.9993,
+   "dsr": 0.0004,
+   "excess_sr": -0.3433,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0004,
+    "trials_with_data": 0.0004,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.143
+   }
+  },
+  {
+   "key": "GBP_JPY|london|echo_box_fade_long",
+   "T": 74,
+   "episodes": 34,
+   "mean_pips_day": 1.986,
+   "sr_daily": 0.1748,
+   "bar_promoted": true,
+   "psr": 0.884,
+   "dsr": 0.0004,
+   "excess_sr": -0.4945,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0004,
+    "trials_with_data": 0.0004,
+    "config_versions": 0.0002,
+    "effective_N (participation ratio)": 0.0376
+   }
+  },
+  {
+   "key": "GBP_USD|ny|willr_recovery_short",
+   "T": 85,
+   "episodes": 175,
+   "mean_pips_day": 6.335,
+   "sr_daily": 0.1848,
+   "bar_promoted": false,
+   "psr": 0.8983,
+   "dsr": 0.0004,
+   "excess_sr": -0.4845,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0004,
+    "trials_with_data": 0.0004,
+    "config_versions": 0.0002,
+    "effective_N (participation ratio)": 0.0425
+   }
+  },
+  {
+   "key": "USD_JPY|ny|echo_box_fade_counter_short",
+   "T": 62,
+   "episodes": 34,
+   "mean_pips_day": 3.532,
+   "sr_daily": 0.2495,
+   "bar_promoted": true,
+   "psr": 0.9763,
+   "dsr": 0.0004,
+   "excess_sr": -0.4197,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0004,
+    "trials_with_data": 0.0004,
+    "config_versions": 0.0002,
+    "effective_N (participation ratio)": 0.0703
+   }
+  },
+  {
+   "key": "EUR_JPY|london|ps_floor_break_short",
+   "T": 85,
+   "episodes": 43,
+   "mean_pips_day": 6.771,
+   "sr_daily": 0.3426,
+   "bar_promoted": true,
+   "psr": 0.9998,
+   "dsr": 0.0003,
+   "excess_sr": -0.3266,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0003,
+    "trials_with_data": 0.0003,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.1677
+   }
+  },
+  {
+   "key": "USD_CHF|ny|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 26,
+   "mean_pips_day": 1.316,
+   "sr_daily": 0.114,
+   "bar_promoted": true,
+   "psr": 0.7683,
+   "dsr": 0.0002,
+   "excess_sr": -0.5553,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0002,
+    "trials_with_data": 0.0002,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0195
+   }
+  },
+  {
+   "key": "USD_JPY|london|mr2_bb_reversion_short_g_dial",
+   "T": 57,
+   "episodes": 16,
+   "mean_pips_day": 2.175,
+   "sr_daily": 0.4073,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0002,
+   "excess_sr": -0.262,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0002,
+    "trials_with_data": 0.0003,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.3555
+   }
+  },
+  {
+   "key": "AUD_USD|london|shark_fade_mid_long",
+   "T": 63,
+   "episodes": 41,
+   "mean_pips_day": 1.817,
+   "sr_daily": 0.08,
+   "bar_promoted": true,
+   "psr": 0.6996,
+   "dsr": 0.0001,
+   "excess_sr": -0.5893,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0101
+   }
+  },
+  {
+   "key": "EUR_USD|asia|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 24,
+   "mean_pips_day": 1.211,
+   "sr_daily": 0.1336,
+   "bar_promoted": true,
+   "psr": 0.8177,
+   "dsr": 0.0001,
+   "excess_sr": -0.5357,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0204
+   }
+  },
+  {
+   "key": "EUR_USD|london|orb_break_long",
+   "T": 66,
+   "episodes": 34,
+   "mean_pips_day": 2.045,
+   "sr_daily": 0.1185,
+   "bar_promoted": true,
+   "psr": 0.7857,
+   "dsr": 0.0001,
+   "excess_sr": -0.5508,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0172
+   }
+  },
+  {
+   "key": "GBP_USD|ny|echo_box_fade_long",
+   "T": 85,
+   "episodes": 37,
+   "mean_pips_day": 1.571,
+   "sr_daily": 0.1437,
+   "bar_promoted": false,
+   "psr": 0.8426,
+   "dsr": 0.0001,
+   "excess_sr": -0.5256,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0207
+   }
+  },
+  {
+   "key": "USD_CHF|asia|mr2_bb_reversion_short",
+   "T": 75,
+   "episodes": 95,
+   "mean_pips_day": 4.62,
+   "sr_daily": 0.1089,
+   "bar_promoted": true,
+   "psr": 0.7686,
+   "dsr": 0.0001,
+   "excess_sr": -0.5603,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.014
+   }
+  },
+  {
+   "key": "USD_CHF|asia|mr2_bb_reversion_short_g_spr1",
+   "T": 75,
+   "episodes": 74,
+   "mean_pips_day": 4.467,
+   "sr_daily": 0.1672,
+   "bar_promoted": true,
+   "psr": 0.8876,
+   "dsr": 0.0001,
+   "excess_sr": -0.5021,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0259
+   }
+  },
+  {
+   "key": "USD_CHF|asia|orb_fade_long",
+   "T": 66,
+   "episodes": 41,
+   "mean_pips_day": 2.174,
+   "sr_daily": 0.1284,
+   "bar_promoted": true,
+   "psr": 0.8051,
+   "dsr": 0.0001,
+   "excess_sr": -0.5409,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0001,
+    "effective_N (participation ratio)": 0.0199
+   }
+  },
+  {
+   "key": "USD_CHF|ny|orb_break_counter_short",
+   "T": 57,
+   "episodes": 43,
+   "mean_pips_day": 2.728,
+   "sr_daily": 0.1102,
+   "bar_promoted": true,
+   "psr": 0.7742,
+   "dsr": 0.0001,
+   "excess_sr": -0.5591,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0132
+   }
+  },
+  {
+   "key": "USD_JPY|london|ps_floor_fade_counter_short",
+   "T": 74,
+   "episodes": 51,
+   "mean_pips_day": 7.561,
+   "sr_daily": 0.309,
+   "bar_promoted": true,
+   "psr": 0.9991,
+   "dsr": 0.0001,
+   "excess_sr": -0.3603,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0001,
+    "trials_with_data": 0.0001,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.1019
+   }
+  },
+  {
+   "key": "AUD_CAD|asia|ps_ceil_fade_counter_long",
+   "T": 75,
+   "episodes": 61,
+   "mean_pips_day": -1.967,
+   "sr_daily": -0.0642,
+   "bar_promoted": true,
+   "psr": 0.2756,
+   "dsr": 0.0,
+   "excess_sr": -0.7335,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "AUD_JPY|asia|mr2_bb_reversion_counter_long",
+   "T": 74,
+   "episodes": 77,
+   "mean_pips_day": 1.236,
+   "sr_daily": 0.0471,
+   "bar_promoted": true,
+   "psr": 0.6445,
+   "dsr": 0.0,
+   "excess_sr": -0.6222,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0011
+   }
+  },
+  {
+   "key": "AUD_JPY|london|rg1_range_scalp_short",
+   "T": 74,
+   "episodes": 43,
+   "mean_pips_day": 0.453,
+   "sr_daily": 0.0169,
+   "bar_promoted": true,
+   "psr": 0.5561,
+   "dsr": 0.0,
+   "excess_sr": -0.6523,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0002
+   }
+  },
+  {
+   "key": "AUD_JPY|london|shark_fade_mid_counter_short",
+   "T": 49,
+   "episodes": 16,
+   "mean_pips_day": -0.959,
+   "sr_daily": -0.069,
+   "bar_promoted": true,
+   "psr": 0.3004,
+   "dsr": 0.0,
+   "excess_sr": -0.7383,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "AUD_JPY|london|shark_momo_run_short",
+   "T": 63,
+   "episodes": 14,
+   "mean_pips_day": 2.492,
+   "sr_daily": 0.2521,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.4171,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "AUD_JPY|ny|regime_short_240",
+   "T": 85,
+   "episodes": 15,
+   "mean_pips_day": -0.582,
+   "sr_daily": -0.0557,
+   "bar_promoted": false,
+   "psr": 0.286,
+   "dsr": 0.0,
+   "excess_sr": -0.725,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "AUD_JPY|ny|shark_fade_mid_counter_short",
+   "T": 48,
+   "episodes": 31,
+   "mean_pips_day": -0.552,
+   "sr_daily": -0.0218,
+   "bar_promoted": true,
+   "psr": 0.4398,
+   "dsr": 0.0,
+   "excess_sr": -0.6911,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0008
+   }
+  },
+  {
+   "key": "AUD_JPY|ny|timing_lean_30",
+   "T": 85,
+   "episodes": 36,
+   "mean_pips_day": 5.129,
+   "sr_daily": 0.3171,
+   "bar_promoted": false,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.3521,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.066
+   }
+  },
+  {
+   "key": "AUD_USD|asia|ps_floor_fade_long",
+   "T": 74,
+   "episodes": 70,
+   "mean_pips_day": 0.351,
+   "sr_daily": 0.013,
+   "bar_promoted": false,
+   "psr": 0.543,
+   "dsr": 0.0,
+   "excess_sr": -0.6563,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0002
+   }
+  },
+  {
+   "key": "AUD_USD|london|alpha_extended_fade_long_g_a10",
+   "T": 82,
+   "episodes": 30,
+   "mean_pips_day": -0.756,
+   "sr_daily": -0.0397,
+   "bar_promoted": true,
+   "psr": 0.3417,
+   "dsr": 0.0,
+   "excess_sr": -0.7089,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "AUD_USD|london|classic_extension_fade_long",
+   "T": 85,
+   "episodes": 165,
+   "mean_pips_day": 6.535,
+   "sr_daily": 0.1937,
+   "bar_promoted": false,
+   "psr": 0.9542,
+   "dsr": 0.0,
+   "excess_sr": -0.4755,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0178
+   }
+  },
+  {
+   "key": "AUD_USD|london|impulse_ob_counter_long",
+   "T": 57,
+   "episodes": 76,
+   "mean_pips_day": -2.93,
+   "sr_daily": -0.0728,
+   "bar_promoted": true,
+   "psr": 0.2618,
+   "dsr": 0.0,
+   "excess_sr": -0.7421,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "AUD_USD|london|kc_up_short_lean",
+   "T": 85,
+   "episodes": 123,
+   "mean_pips_day": -2.124,
+   "sr_daily": -0.0682,
+   "bar_promoted": false,
+   "psr": 0.252,
+   "dsr": 0.0,
+   "excess_sr": -0.7375,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "AUD_USD|ny|alpha_extended_fade_short",
+   "T": 85,
+   "episodes": 16,
+   "mean_pips_day": 2.365,
+   "sr_daily": 0.2467,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.4226,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "AUD_USD|ny|alpha_extended_fade_short_g_a10",
+   "T": 82,
+   "episodes": 36,
+   "mean_pips_day": 4.512,
+   "sr_daily": 0.3296,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.3397,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0103
+   }
+  },
+  {
+   "key": "AUD_USD|ny|echo_box_fade_long",
+   "T": 85,
+   "episodes": 40,
+   "mean_pips_day": -1.294,
+   "sr_daily": -0.0616,
+   "bar_promoted": true,
+   "psr": 0.2657,
+   "dsr": 0.0,
+   "excess_sr": -0.7309,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "CAD_JPY|asia|ps_ceil_fade_short",
+   "T": 85,
+   "episodes": 91,
+   "mean_pips_day": 1.115,
+   "sr_daily": 0.0329,
+   "bar_promoted": true,
+   "psr": 0.6209,
+   "dsr": 0.0,
+   "excess_sr": -0.6364,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "CAD_JPY|ny|echo_box_fade_counter_short",
+   "T": 60,
+   "episodes": 28,
+   "mean_pips_day": -1.667,
+   "sr_daily": -0.0725,
+   "bar_promoted": true,
+   "psr": 0.2618,
+   "dsr": 0.0,
+   "excess_sr": -0.7418,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "CAD_JPY|ny|ps_ceil_fade_counter_long",
+   "T": 78,
+   "episodes": 65,
+   "mean_pips_day": 2.045,
+   "sr_daily": 0.0743,
+   "bar_promoted": true,
+   "psr": 0.7089,
+   "dsr": 0.0,
+   "excess_sr": -0.5949,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0038
+   }
+  },
+  {
+   "key": "EUR_CAD|ny|rg1_range_scalp_short_g_bb3",
+   "T": 74,
+   "episodes": 12,
+   "mean_pips_day": 1.392,
+   "sr_daily": 0.3535,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.3157,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0881
+   }
+  },
+  {
+   "key": "EUR_CHF|asia|rg1_range_scalp_counter_long",
+   "T": 74,
+   "episodes": 44,
+   "mean_pips_day": 1.797,
+   "sr_daily": 0.0771,
+   "bar_promoted": false,
+   "psr": 0.7195,
+   "dsr": 0.0,
+   "excess_sr": -0.5921,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0035
+   }
+  },
+  {
+   "key": "EUR_CHF|london|ps_floor_fade_long",
+   "T": 74,
+   "episodes": 46,
+   "mean_pips_day": 2.297,
+   "sr_daily": 0.1471,
+   "bar_promoted": false,
+   "psr": 0.8921,
+   "dsr": 0.0,
+   "excess_sr": -0.5221,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0077
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|shark_adr_late_counter_short",
+   "T": 41,
+   "episodes": 14,
+   "mean_pips_day": 4.268,
+   "sr_daily": 0.3093,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.36,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0147
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|timing_lean_30",
+   "T": 85,
+   "episodes": 39,
+   "mean_pips_day": 4.671,
+   "sr_daily": 0.1346,
+   "bar_promoted": false,
+   "psr": 0.9548,
+   "dsr": 0.0,
+   "excess_sr": -0.5347,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "EUR_JPY|ny|timing_lean_30_t20s",
+   "T": 85,
+   "episodes": 36,
+   "mean_pips_day": -0.153,
+   "sr_daily": -0.004,
+   "bar_promoted": false,
+   "psr": 0.4855,
+   "dsr": 0.0,
+   "excess_sr": -0.6733,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "EUR_USD|asia|echo_box_fade_counter_long",
+   "T": 74,
+   "episodes": 111,
+   "mean_pips_day": 0.723,
+   "sr_daily": 0.0236,
+   "bar_promoted": true,
+   "psr": 0.5778,
+   "dsr": 0.0,
+   "excess_sr": -0.6457,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0003
+   }
+  },
+  {
+   "key": "EUR_USD|asia|es_trend_long",
+   "T": 81,
+   "episodes": 68,
+   "mean_pips_day": -1.543,
+   "sr_daily": -0.0631,
+   "bar_promoted": true,
+   "psr": 0.2743,
+   "dsr": 0.0,
+   "excess_sr": -0.7324,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "EUR_USD|asia|ps_floor_fade_long",
+   "T": 85,
+   "episodes": 65,
+   "mean_pips_day": -1.622,
+   "sr_daily": -0.069,
+   "bar_promoted": false,
+   "psr": 0.2487,
+   "dsr": 0.0,
+   "excess_sr": -0.7383,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "EUR_USD|london|es_trend_long",
+   "T": 81,
+   "episodes": 53,
+   "mean_pips_day": 2.265,
+   "sr_daily": 0.1596,
+   "bar_promoted": true,
+   "psr": 0.8929,
+   "dsr": 0.0,
+   "excess_sr": -0.5096,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.016
+   }
+  },
+  {
+   "key": "EUR_USD|london|shark_momo_run_short",
+   "T": 63,
+   "episodes": 16,
+   "mean_pips_day": 2.397,
+   "sr_daily": 0.3559,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.3134,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.1123
+   }
+  },
+  {
+   "key": "EUR_USD|ny|echo_box_fade_counter_long",
+   "T": 83,
+   "episodes": 77,
+   "mean_pips_day": -3.608,
+   "sr_daily": -0.0971,
+   "bar_promoted": true,
+   "psr": 0.145,
+   "dsr": 0.0,
+   "excess_sr": -0.7664,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "EUR_USD|ny|mr2_bb_reversion_short_g_spr1",
+   "T": 82,
+   "episodes": 44,
+   "mean_pips_day": 1.122,
+   "sr_daily": 0.0864,
+   "bar_promoted": true,
+   "psr": 0.7357,
+   "dsr": 0.0,
+   "excess_sr": -0.5829,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0055
+   }
+  },
+  {
+   "key": "EUR_USD|ny|ninja_flag_short",
+   "T": 52,
+   "episodes": 21,
+   "mean_pips_day": 0.183,
+   "sr_daily": 0.0142,
+   "bar_promoted": true,
+   "psr": 0.5397,
+   "dsr": 0.0,
+   "excess_sr": -0.6551,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0015
+   }
+  },
+  {
+   "key": "EUR_USD|ny|rg1_range_scalp_short",
+   "T": 85,
+   "episodes": 31,
+   "mean_pips_day": 0.826,
+   "sr_daily": 0.0583,
+   "bar_promoted": true,
+   "psr": 0.6691,
+   "dsr": 0.0,
+   "excess_sr": -0.611,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0023
+   }
+  },
+  {
+   "key": "EUR_USD|ny|shark_momo_run_short",
+   "T": 63,
+   "episodes": 22,
+   "mean_pips_day": 0.984,
+   "sr_daily": 0.0962,
+   "bar_promoted": true,
+   "psr": 0.7516,
+   "dsr": 0.0,
+   "excess_sr": -0.5731,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0083
+   }
+  },
+  {
+   "key": "GBP_JPY|ny|mr2_bb_reversion_counter_long",
+   "T": 74,
+   "episodes": 64,
+   "mean_pips_day": -3.446,
+   "sr_daily": -0.1089,
+   "bar_promoted": true,
+   "psr": 0.1576,
+   "dsr": 0.0,
+   "excess_sr": -0.7781,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|asia|orb_fade_counter_long",
+   "T": 43,
+   "episodes": 20,
+   "mean_pips_day": -1.465,
+   "sr_daily": -0.0826,
+   "bar_promoted": true,
+   "psr": 0.2782,
+   "dsr": 0.0,
+   "excess_sr": -0.7519,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "GBP_USD|asia|ps_floor_fade_long",
+   "T": 85,
+   "episodes": 67,
+   "mean_pips_day": 2.36,
+   "sr_daily": 0.1201,
+   "bar_promoted": false,
+   "psr": 0.8133,
+   "dsr": 0.0,
+   "excess_sr": -0.5492,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0098
+   }
+  },
+  {
+   "key": "GBP_USD|asia|timing_lean_30",
+   "T": 85,
+   "episodes": 25,
+   "mean_pips_day": -0.276,
+   "sr_daily": -0.0279,
+   "bar_promoted": false,
+   "psr": 0.3951,
+   "dsr": 0.0,
+   "excess_sr": -0.6972,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|asia|timing_lean_30_long",
+   "T": 85,
+   "episodes": 23,
+   "mean_pips_day": 0.119,
+   "sr_daily": 0.0109,
+   "bar_promoted": false,
+   "psr": 0.5393,
+   "dsr": 0.0,
+   "excess_sr": -0.6584,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "GBP_USD|london|classic_box_break_short",
+   "T": 85,
+   "episodes": 93,
+   "mean_pips_day": 3.819,
+   "sr_daily": 0.1442,
+   "bar_promoted": false,
+   "psr": 0.8651,
+   "dsr": 0.0,
+   "excess_sr": -0.5251,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.013
+   }
+  },
+  {
+   "key": "GBP_USD|london|classic_box_fade_long",
+   "T": 85,
+   "episodes": 94,
+   "mean_pips_day": 2.062,
+   "sr_daily": 0.0526,
+   "bar_promoted": true,
+   "psr": 0.6678,
+   "dsr": 0.0,
+   "excess_sr": -0.6166,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0008
+   }
+  },
+  {
+   "key": "GBP_USD|london|echo_box_fade_counter_long",
+   "T": 74,
+   "episodes": 66,
+   "mean_pips_day": -1.622,
+   "sr_daily": -0.0685,
+   "bar_promoted": true,
+   "psr": 0.2668,
+   "dsr": 0.0,
+   "excess_sr": -0.7377,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|es_breakout_long",
+   "T": 81,
+   "episodes": 34,
+   "mean_pips_day": 2.062,
+   "sr_daily": 0.1284,
+   "bar_promoted": true,
+   "psr": 0.8267,
+   "dsr": 0.0,
+   "excess_sr": -0.5409,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0123
+   }
+  },
+  {
+   "key": "GBP_USD|london|es_trend_long",
+   "T": 81,
+   "episodes": 53,
+   "mean_pips_day": -1.549,
+   "sr_daily": -0.0673,
+   "bar_promoted": true,
+   "psr": 0.2571,
+   "dsr": 0.0,
+   "excess_sr": -0.7366,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|liq_sweep_fade_long",
+   "T": 76,
+   "episodes": 132,
+   "mean_pips_day": -6.684,
+   "sr_daily": -0.1079,
+   "bar_promoted": false,
+   "psr": 0.1567,
+   "dsr": 0.0,
+   "excess_sr": -0.7772,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|mr2_bb_reversion_counter_long",
+   "T": 74,
+   "episodes": 50,
+   "mean_pips_day": -0.203,
+   "sr_daily": -0.0099,
+   "bar_promoted": true,
+   "psr": 0.4658,
+   "dsr": 0.0,
+   "excess_sr": -0.6792,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "GBP_USD|london|ps_ceil_fade_counter_long",
+   "T": 74,
+   "episodes": 55,
+   "mean_pips_day": 0.061,
+   "sr_daily": 0.0027,
+   "bar_promoted": true,
+   "psr": 0.509,
+   "dsr": 0.0,
+   "excess_sr": -0.6666,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "GBP_USD|london|rg1_range_scalp_short",
+   "T": 85,
+   "episodes": 48,
+   "mean_pips_day": -1.318,
+   "sr_daily": -0.0711,
+   "bar_promoted": true,
+   "psr": 0.2322,
+   "dsr": 0.0,
+   "excess_sr": -0.7403,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|rvol_low_240",
+   "T": 85,
+   "episodes": 151,
+   "mean_pips_day": 3.559,
+   "sr_daily": 0.0849,
+   "bar_promoted": true,
+   "psr": 0.7527,
+   "dsr": 0.0,
+   "excess_sr": -0.5844,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0024
+   }
+  },
+  {
+   "key": "GBP_USD|london|rvol_low_240_short",
+   "T": 85,
+   "episodes": 158,
+   "mean_pips_day": -2.425,
+   "sr_daily": -0.0439,
+   "bar_promoted": true,
+   "psr": 0.3343,
+   "dsr": 0.0,
+   "excess_sr": -0.7132,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|rvol_low_240_t20s",
+   "T": 85,
+   "episodes": 138,
+   "mean_pips_day": -7.253,
+   "sr_daily": -0.0888,
+   "bar_promoted": true,
+   "psr": 0.1909,
+   "dsr": 0.0,
+   "excess_sr": -0.7581,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|london|timing_lean_30",
+   "T": 85,
+   "episodes": 22,
+   "mean_pips_day": 0.882,
+   "sr_daily": 0.0798,
+   "bar_promoted": false,
+   "psr": 0.7372,
+   "dsr": 0.0,
+   "excess_sr": -0.5894,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0024
+   }
+  },
+  {
+   "key": "GBP_USD|london|timing_lean_30_counter_long",
+   "T": 82,
+   "episodes": 18,
+   "mean_pips_day": 2.61,
+   "sr_daily": 0.3895,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.2797,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.1977
+   }
+  },
+  {
+   "key": "GBP_USD|ny|control_rvol_60",
+   "T": 85,
+   "episodes": 123,
+   "mean_pips_day": 1.886,
+   "sr_daily": 0.0808,
+   "bar_promoted": false,
+   "psr": 0.7509,
+   "dsr": 0.0,
+   "excess_sr": -0.5885,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0015
+   }
+  },
+  {
+   "key": "GBP_USD|ny|control_rvol_60_counter_long",
+   "T": 78,
+   "episodes": 119,
+   "mean_pips_day": 3.66,
+   "sr_daily": 0.1102,
+   "bar_promoted": true,
+   "psr": 0.7943,
+   "dsr": 0.0,
+   "excess_sr": -0.559,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0077
+   }
+  },
+  {
+   "key": "GBP_USD|ny|control_rvol_60_t20s",
+   "T": 85,
+   "episodes": 106,
+   "mean_pips_day": 4.551,
+   "sr_daily": 0.0877,
+   "bar_promoted": false,
+   "psr": 0.7773,
+   "dsr": 0.0,
+   "excess_sr": -0.5816,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0012
+   }
+  },
+  {
+   "key": "GBP_USD|ny|echo_box_fade_counter_long",
+   "T": 83,
+   "episodes": 91,
+   "mean_pips_day": -7.354,
+   "sr_daily": -0.1748,
+   "bar_promoted": true,
+   "psr": 0.019,
+   "dsr": 0.0,
+   "excess_sr": -0.8441,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|ny|fvg_fill_long",
+   "T": 66,
+   "episodes": 84,
+   "mean_pips_day": -7.545,
+   "sr_daily": -0.1646,
+   "bar_promoted": true,
+   "psr": 0.0485,
+   "dsr": 0.0,
+   "excess_sr": -0.8339,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|ny|impulse_ob_long",
+   "T": 76,
+   "episodes": 92,
+   "mean_pips_day": -9.23,
+   "sr_daily": -0.2105,
+   "bar_promoted": true,
+   "psr": 0.0149,
+   "dsr": 0.0,
+   "excess_sr": -0.8797,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|ny|impulse_ob_long_adx",
+   "T": 75,
+   "episodes": 77,
+   "mean_pips_day": -6.64,
+   "sr_daily": -0.1566,
+   "bar_promoted": true,
+   "psr": 0.0614,
+   "dsr": 0.0,
+   "excess_sr": -0.8258,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|ny|impulse_ob_long_nt",
+   "T": 75,
+   "episodes": 161,
+   "mean_pips_day": -9.24,
+   "sr_daily": -0.1891,
+   "bar_promoted": true,
+   "psr": 0.0347,
+   "dsr": 0.0,
+   "excess_sr": -0.8584,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "GBP_USD|ny|mr2_bb_reversion_counter_long",
+   "T": 82,
+   "episodes": 46,
+   "mean_pips_day": -1.878,
+   "sr_daily": -0.0679,
+   "bar_promoted": true,
+   "psr": 0.236,
+   "dsr": 0.0,
+   "excess_sr": -0.7371,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "NZD_JPY|london|ps_ceil_fade_counter_long",
+   "T": 74,
+   "episodes": 39,
+   "mean_pips_day": 1.385,
+   "sr_daily": 0.1306,
+   "bar_promoted": true,
+   "psr": 0.8414,
+   "dsr": 0.0,
+   "excess_sr": -0.5387,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0099
+   }
+  },
+  {
+   "key": "NZD_USD|asia|ps_ceil_fade_short",
+   "T": 85,
+   "episodes": 54,
+   "mean_pips_day": 0.706,
+   "sr_daily": 0.0412,
+   "bar_promoted": true,
+   "psr": 0.6396,
+   "dsr": 0.0,
+   "excess_sr": -0.628,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0003
+   }
+  },
+  {
+   "key": "NZD_USD|london|ps_floor_fade_long",
+   "T": 74,
+   "episodes": 55,
+   "mean_pips_day": -2.345,
+   "sr_daily": -0.0884,
+   "bar_promoted": true,
+   "psr": 0.1908,
+   "dsr": 0.0,
+   "excess_sr": -0.7576,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "NZD_USD|ny|trend_pullback_long",
+   "T": 85,
+   "episodes": 18,
+   "mean_pips_day": -1.553,
+   "sr_daily": -0.1163,
+   "bar_promoted": true,
+   "psr": 0.0888,
+   "dsr": 0.0,
+   "excess_sr": -0.7855,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|asia|echo_box_fade_short",
+   "T": 74,
+   "episodes": 109,
+   "mean_pips_day": -16.601,
+   "sr_daily": -0.2963,
+   "bar_promoted": true,
+   "psr": 0.0003,
+   "dsr": 0.0,
+   "excess_sr": -0.9656,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|london|echo_box_fade_short",
+   "T": 85,
+   "episodes": 98,
+   "mean_pips_day": -4.753,
+   "sr_daily": -0.1174,
+   "bar_promoted": true,
+   "psr": 0.0896,
+   "dsr": 0.0,
+   "excess_sr": -0.7866,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|london|fvg_fill_long",
+   "T": 66,
+   "episodes": 114,
+   "mean_pips_day": 12.045,
+   "sr_daily": 0.2522,
+   "bar_promoted": false,
+   "psr": 0.9975,
+   "dsr": 0.0,
+   "excess_sr": -0.4171,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0211
+   }
+  },
+  {
+   "key": "USD_CAD|london|mr2_bb_reversion_short_g_spr1",
+   "T": 82,
+   "episodes": 67,
+   "mean_pips_day": -7.128,
+   "sr_daily": -0.1737,
+   "bar_promoted": true,
+   "psr": 0.0116,
+   "dsr": 0.0,
+   "excess_sr": -0.843,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|london|orb_break_short",
+   "T": 66,
+   "episodes": 36,
+   "mean_pips_day": 1.667,
+   "sr_daily": 0.1187,
+   "bar_promoted": true,
+   "psr": 0.8047,
+   "dsr": 0.0,
+   "excess_sr": -0.5506,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.011
+   }
+  },
+  {
+   "key": "USD_CAD|ny|alpha_extended_fade_short_g_a10",
+   "T": 82,
+   "episodes": 67,
+   "mean_pips_day": -6.518,
+   "sr_daily": -0.1765,
+   "bar_promoted": true,
+   "psr": 0.0239,
+   "dsr": 0.0,
+   "excess_sr": -0.8457,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|ny|echo_box_fade_short",
+   "T": 85,
+   "episodes": 115,
+   "mean_pips_day": -9.568,
+   "sr_daily": -0.1964,
+   "bar_promoted": true,
+   "psr": 0.0109,
+   "dsr": 0.0,
+   "excess_sr": -0.8657,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|ny|mr2_bb_reversion_short",
+   "T": 85,
+   "episodes": 91,
+   "mean_pips_day": -10.347,
+   "sr_daily": -0.228,
+   "bar_promoted": false,
+   "psr": 0.0023,
+   "dsr": 0.0,
+   "excess_sr": -0.8972,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|ny|mr2_bb_reversion_short_g_spr1",
+   "T": 82,
+   "episodes": 75,
+   "mean_pips_day": -7.945,
+   "sr_daily": -0.1934,
+   "bar_promoted": true,
+   "psr": 0.0082,
+   "dsr": 0.0,
+   "excess_sr": -0.8627,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CAD|ny|rg1_range_scalp_short",
+   "T": 85,
+   "episodes": 68,
+   "mean_pips_day": -8.024,
+   "sr_daily": -0.1983,
+   "bar_promoted": true,
+   "psr": 0.0064,
+   "dsr": 0.0,
+   "excess_sr": -0.8676,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CHF|asia|echo_box_fade_short",
+   "T": 75,
+   "episodes": 122,
+   "mean_pips_day": 3.227,
+   "sr_daily": 0.0775,
+   "bar_promoted": true,
+   "psr": 0.7347,
+   "dsr": 0.0,
+   "excess_sr": -0.5918,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0019
+   }
+  },
+  {
+   "key": "USD_CHF|asia|ps_ceil_fade_short_g_appr",
+   "T": 57,
+   "episodes": 25,
+   "mean_pips_day": 0.254,
+   "sr_daily": 0.0173,
+   "bar_promoted": true,
+   "psr": 0.5501,
+   "dsr": 0.0,
+   "excess_sr": -0.652,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0012
+   }
+  },
+  {
+   "key": "USD_CHF|asia|rg1_range_scalp_short",
+   "T": 75,
+   "episodes": 65,
+   "mean_pips_day": 1.487,
+   "sr_daily": 0.0376,
+   "bar_promoted": true,
+   "psr": 0.6141,
+   "dsr": 0.0,
+   "excess_sr": -0.6317,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0011
+   }
+  },
+  {
+   "key": "USD_CHF|london|fvg_fill_long_g_dial",
+   "T": 57,
+   "episodes": 64,
+   "mean_pips_day": -1.877,
+   "sr_daily": -0.0438,
+   "bar_promoted": true,
+   "psr": 0.3622,
+   "dsr": 0.0,
+   "excess_sr": -0.7131,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "USD_CHF|london|ps_ceil_fade_short",
+   "T": 85,
+   "episodes": 96,
+   "mean_pips_day": -3.432,
+   "sr_daily": -0.0902,
+   "bar_promoted": true,
+   "psr": 0.1596,
+   "dsr": 0.0,
+   "excess_sr": -0.7594,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_CHF|london|rg1_range_scalp_short",
+   "T": 74,
+   "episodes": 47,
+   "mean_pips_day": 0.858,
+   "sr_daily": 0.048,
+   "bar_promoted": true,
+   "psr": 0.6515,
+   "dsr": 0.0,
+   "excess_sr": -0.6213,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0008
+   }
+  },
+  {
+   "key": "USD_CHF|ny|fvg_fill_short",
+   "T": 66,
+   "episodes": 85,
+   "mean_pips_day": -0.598,
+   "sr_daily": -0.0138,
+   "bar_promoted": true,
+   "psr": 0.4539,
+   "dsr": 0.0,
+   "excess_sr": -0.6831,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0001
+   }
+  },
+  {
+   "key": "USD_CHF|ny|mr2_bb_reversion_short",
+   "T": 74,
+   "episodes": 65,
+   "mean_pips_day": 0.466,
+   "sr_daily": 0.0158,
+   "bar_promoted": true,
+   "psr": 0.5517,
+   "dsr": 0.0,
+   "excess_sr": -0.6535,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0003
+   }
+  },
+  {
+   "key": "USD_JPY|asia|box_pdl_short",
+   "T": 85,
+   "episodes": 19,
+   "mean_pips_day": 3.394,
+   "sr_daily": 0.2172,
+   "bar_promoted": true,
+   "psr": 0.9996,
+   "dsr": 0.0,
+   "excess_sr": -0.4521,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0004
+   }
+  },
+  {
+   "key": "USD_JPY|asia|kc_breakout_long",
+   "T": 85,
+   "episodes": 49,
+   "mean_pips_day": -0.406,
+   "sr_daily": -0.0187,
+   "bar_promoted": false,
+   "psr": 0.4305,
+   "dsr": 0.0,
+   "excess_sr": -0.688,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_JPY|asia|rg1_range_scalp_short",
+   "T": 74,
+   "episodes": 41,
+   "mean_pips_day": 4.466,
+   "sr_daily": 0.1867,
+   "bar_promoted": true,
+   "psr": 0.9689,
+   "dsr": 0.0,
+   "excess_sr": -0.4825,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0066
+   }
+  },
+  {
+   "key": "USD_JPY|london|shark_fade_mid_counter_short",
+   "T": 50,
+   "episodes": 27,
+   "mean_pips_day": 6.57,
+   "sr_daily": 0.2253,
+   "bar_promoted": true,
+   "psr": 0.9976,
+   "dsr": 0.0,
+   "excess_sr": -0.4439,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0044
+   }
+  },
+  {
+   "key": "USD_JPY|london|timing_lean_30",
+   "T": 85,
+   "episodes": 32,
+   "mean_pips_day": 2.1,
+   "sr_daily": 0.1759,
+   "bar_promoted": false,
+   "psr": 0.9287,
+   "dsr": 0.0,
+   "excess_sr": -0.4934,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0154
+   }
+  },
+  {
+   "key": "USD_JPY|ny|control_atr5m_60",
+   "T": 85,
+   "episodes": 137,
+   "mean_pips_day": -2.249,
+   "sr_daily": -0.0657,
+   "bar_promoted": false,
+   "psr": 0.2563,
+   "dsr": 0.0,
+   "excess_sr": -0.735,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_JPY|ny|control_atr5m_60_t20s",
+   "T": 85,
+   "episodes": 119,
+   "mean_pips_day": -0.415,
+   "sr_daily": -0.0075,
+   "bar_promoted": true,
+   "psr": 0.4725,
+   "dsr": 0.0,
+   "excess_sr": -0.6768,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  },
+  {
+   "key": "USD_JPY|ny|fvg_fill_short",
+   "T": 51,
+   "episodes": 94,
+   "mean_pips_day": 2.0,
+   "sr_daily": 0.0393,
+   "bar_promoted": true,
+   "psr": 0.608,
+   "dsr": 0.0,
+   "excess_sr": -0.63,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0029
+   }
+  },
+  {
+   "key": "USD_JPY|ny|shark_momo_run_short",
+   "T": 63,
+   "episodes": 13,
+   "mean_pips_day": 4.675,
+   "sr_daily": 0.23,
+   "bar_promoted": true,
+   "psr": 1.0,
+   "dsr": 0.0,
+   "excess_sr": -0.4392,
+   "dsr_by_N": {
+    "M_ever (primary)": 0.0,
+    "trials_with_data": 0.0,
+    "config_versions": 0.0,
+    "effective_N (participation ratio)": 0.0
+   }
+  }
+ ]
+}
