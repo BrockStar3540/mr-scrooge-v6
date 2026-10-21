@@ -1,5 +1,13 @@
 # The Bar Governor — autonomous promote & demote
 
+> **2026-10-21: the STANDARD lane now decides every seat.** Seats are judged only on their own real
+> broker family cycles (last 20, judged at 10+) against the profile of the five best live setups; any
+> cycle worse than -90p demotes at once; PROBE auditions run at 0.20x with the simulator only ordering
+> the queue. While `standard.enabled` is true in `config/governor_config.json`, the bar promotion,
+> simulator demotion, cheater and old graduation lanes described below **do not execute**. Why: the
+> simulator's per-setup verdicts correlated 0.07 with real fills over 75 setups. Rules and thresholds:
+> [`ops/standard.py`](../ops/standard.py) and the README section *How a setup keeps its seat*.
+
 **What it is:** the closing loop of the trial system. Every strategy setup in this bot runs
 as a **shadow** first — stamped on live markets, scored on the forward price path, ranked on
 the Shadowboard. The Bar Governor (`ops/governor.py`) is the daemon that acts on that

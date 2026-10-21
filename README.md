@@ -2,20 +2,13 @@
 
 # Mr. Scrooge V6
 
-### A forex bot that puts strategies on trial.
+### A forex bot that puts strategies on trial, and keeps only the ones that win with real money.
 
-*Every strategy and entry/exit indicator runs as a **shadow** first — stamped on live markets, scored against forward broker-verified movement, and **promoted to live capital only when it clears an evidence bar**. Setups that degrade get demoted by the same evidence — **autonomously, daily, by a published standard**. The book is whatever survives.*
+*An open-source **Python** trading bot for **OANDA**, trading a **real-money account** since 2026-07-29. About 1,600 mechanical setups stamp live markets as zero-risk shadows across 18 pairs. A setup holds a live seat only while **its own broker fills** keep up with the standard set by the bot's best live performers. The record below is broker-verified and updates every hour.*
 
-*Six versions · 8 years of data · **18 pairs scanning · 1,000+ setups on trial** · 100+ strategies tried · 50+ indicators — and one falsifiable core finding:*
-**you can't predict direction, but you can price movement, size the stop to the room the market actually gives, and refuse to give a winner back.**
-
-*An open-source algorithmic **forex trading bot** for **OANDA**, written in **Python** — with a live control-panel dashboard, an autonomous promote/demote governor, a full backtesting research program, and an honest, broker-verified track record.*
-
-![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_LIVE_·_real_money-f85149) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![release](https://img.shields.io/github/v/release/BrockStar3540/mr-scrooge-v6?color=3fb950&label=release)](https://github.com/BrockStar3540/mr-scrooge-v6/releases) &nbsp; [![governor](https://img.shields.io/badge/bar_governor-autonomous-58a6ff)](docs/GOVERNOR.md) &nbsp; **[`practice test complete: +10.54% · now live`](docs/FORWARD_TEST_100_REPORT.md)**
+![license](https://img.shields.io/badge/license-Apache--2.0-808a94) &nbsp; ![account](https://img.shields.io/badge/account-OANDA_LIVE_·_real_money-f85149) &nbsp; [![tests](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml/badge.svg)](https://github.com/BrockStar3540/mr-scrooge-v6/actions/workflows/tests.yml) &nbsp; [![governor](https://img.shields.io/badge/governor-broker--truth_standard-58a6ff)](#how-a-setup-keeps-its-seat) &nbsp; [![practice test](https://img.shields.io/badge/100--trade_practice_test-%2B10.54%25-3fb950)](docs/FORWARD_TEST_100_REPORT.md)
 
 </div>
-
-[![The 100-trade forward test: +10.54%, 100 trades, 90.0% win rate, max drawdown −10.1% — and yes, it paid the spread](docs/images/forward_test_card.svg)](docs/FORWARD_TEST_100_REPORT.md)
 
 <!-- LIVE_BALANCE_START -->
 <div align="center">
@@ -44,289 +37,125 @@
 
 ---
 
-## The tape — what the tuition cost
+## What's running now
 
-![The tape: practice-account balance from $100k through the $15,598 low to today](docs/images/account_tape.svg)
+*As of 2026-10-21. Live statuses sit in [`config/cells/`](config/cells), and every seat change is in the governor ledger.*
 
-Everything here was paid for on one practice account, and we publish its tape rather than curate it. It opened at **$100,000 (Mar 22, 2026)** and bottomed at **$15,598** (July 10 by daily closing balance) — an **−84% drawdown** across the V1→V4 strategy eras. That number is the strongest argument in this repo: five versions of increasingly careful research could not out-predict the market. V5's measurement overhaul (broker-fill truth, cell-era falsification discipline) stopped the bleeding; the V6 trial system is the climb attempt. The chart is generated from broker transaction balances (`research/tools/account_tape.py`) — it can't be curated. The practice account **concluded 2026-07-29 at $18,421.85** (the [100-trade forward test](docs/FORWARD_TEST_100_REPORT.md) closed it +10.54% from its window start) and is retired. **Proof of the entire tape:** the complete raw broker export — **11,564 transactions from account creation (2026-02-21) to close**, every era including the −84% tuition — is public in [the archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) under `proof-of-tape/`.
+| | |
+|---|---|
+| **Account** | OANDA live, $2,500 stake since 2026-07-29. The 100-trade practice test ended at +10.54% and set up the cutover ([report](docs/FORWARD_TEST_100_REPORT.md)). |
+| **Book** | 18 pairs × 3 sessions (Asia, London, New York). About 1,600 setups stamp as shadows. **17 ACTIVE + 3 PROBE** hold live seats. |
+| **Entries** | A seat trades only when its setup fires: explicit, mechanical conditions on standard indicators. No setup, no trade. |
+| **Exit** | Server-side stop of 40 / 50 / 60 pips, sized to the session's typical swing. Two-phase ratchet: at +7.5 it locks +6, then every +2 it steps up to lock peak −2. No take-profit and no timeout. |
+| **Poppers** | Each parent hangs a grid of same-direction add-on trades at 25 / 35 / 45 / 55 pips adverse. Each has its own 60p stop and the same ratchet. Grids fire only while the book holds fewer than 4 trades, and they retire when the parent closes. |
+| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 24 hours. |
 
-## The game — house, not gambler
+## How a setup keeps its seat
 
-Most bots wager that some indicator reveals *which way* price will go. We spent five versions proving it doesn't: **across three independent methods, entry features predicted WHEN price moves and HOW FAR — never WHICH WAY** (0 of 144 feature×cell combos carried signed direction). So V6 plays the house's game:
+**The standard, live since 2026-10-21.** The earlier governor promoted and demoted on simulated results. The simulation didn't match real trading:
+- Across the 75 setups with both simulated and real cycles, the correlation between them was **0.07**.
+- The two agreed on whether a setup made money **37 times out of 75**.
+- The simulation never showed the deep losing cycles that cost real money.
 
-- **Trade only where the table is measured.** The unit is the **cell** — one (pair × session), profiled from 8 years of broker-anchored fills: how far price travels, how often, how fast, what the round-trip toll costs.
-- **Enter on presumed *movement*, never presumed *direction*.** A cell trades only when a **validated setup** fires — explicit, mechanical conditions on standard indicators. No setup → no trade. That's the whole "strategy."
-- **Names never lie about direction.** A setup keeps its name-true side forever. When a losing setup's adverse excursion outsizes its favorable (the MAE-flip signature), a daily audit automatically wires a **counterpart** setup firing the opposite direction at the same trigger — its own name, its own record, its own trial.
-- **Let the exit earn — and give it room.** The only edge that survived audit lives in stops wide enough that noise doesn't kill a slow winner, plus a ratchet that locks green once a move proves itself.
-- **Wide stops, after a hard lesson.** The old tighten-to-winners'-MAE dial-in was **survivorship-biased** — MAE was measured only on trades that survived to win, blind to the ones a tight stop would have killed first. An 8-yr head-to-head: tight book blew up, wide book profited.
-- **One exit engine, everywhere.** A range-sized wide-stop ratchet: SL **40 / 50 / 60 pips** by session swing; trigger **+8.5 → lock +6 → trail 2.5 fixed**; **no timeout**. Brackets removed so runners can express. ([B-090](docs/BOOK_OF_BUGS.md) killed an ATR-scaled trail that gave green back as red.)
-- **Party Package (V6.1, forward experiment).** Every parent trade hangs a **re-arming grid of "poppers"**: independent same-direction trades fired at laddered adverse levels, each with its own 60p server-side SL and its own ratchet. Simulated verdict on our cost model: the grid gross-harvests ~+100–150p/parent and pays *more* than that in toll — this deployment is the live test of exactly that claim ([full paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)). A grid lives only as long as its parent: once the parent closes it fires nothing new and retires with its last leg ([B-138](docs/BOOK_OF_BUGS.md), v6.30.12). Global kill switch + per-cell opt-outs on the dashboard.
-- **Portfolio caps are risk only, no alpha:** `max_concurrent = 8` (parents + poppers; poppers fire only while the book holds fewer than 4 trades, so seats 5–8 are parent-only — B-138), `max_per_currency_direction = 4`, 20% of balance margin per trade (PROBE seats 0.20× since 2026-10-01; were 0.5×), 160% total margin budget. (The practice test ran 10%/8; the live gearing compensates for the smaller stake — declared in the [protocol](docs/FORWARD_TEST_PROTOCOL.md) before cutover.)
+So seats are now judged **only on their own broker fills**. The yardstick is the profile of the five best live setups:
 
-## The patience game — red for days is the design
+| Top-5 live profile (real fills) | |
+|---|---|
+| win rate | 85–96% |
+| pips per cycle | +7 to +15 |
+| profit factor | 2.7 or better |
+| worst cycle | no deeper than one stop (−60p) |
+| losses | 1.5 or fewer per 10 cycles |
 
-This is **not a high-speed sniper bot**, and the dashboard will regularly look "wrong" to
-anyone expecting one. The stops are wide (40–60 pips by session swing) and there is no
-timeout — which means **a trade can sit red for days** before the move it entered on
-finally develops, engages the ratchet, and exits green. That is the strategy working,
-not failing: the 100-trade test's geometry was a **90.0% win rate against a breakeven
-requirement of 82.2%** — many small harvested greens (avg **+$41**) paid for by rare, large,
-patient stops (avg **−$189**). The wide stop is the price of not letting noise kill a slow
-winner; the open-positions panel spending most of its life underwater is what buying that
-patience looks like. If a red position for three days reads as an emergency to you, this
-bot will be very uncomfortable to watch — the drawdown between entry and harvest is part
-of the machine, and when a wide stop does hit, it takes a real bite.
+A **cycle** is a parent plus the poppers its grid fired, scored as one unit in broker net pips. Every hour, each seat is scored on its last 20 cycles:
 
-## The trial system — how a strategy earns (and loses) its seat
+| | rule |
+|---|---|
+| **Stay** (judged at 10+ cycles) | ≥ 80% wins, ≥ +3 pips/cycle, profit factor ≥ 1.5, no cycle worse than −90p |
+| **Graduate** PROBE → ACTIVE (10+ cycles) | ≥ 85% wins, ≥ +5 pips/cycle, profit factor ≥ 2.5, worst cycle ≥ −65p (the top-5 profile) |
+| **Tripwire** | any cycle worse than −90p demotes at once, at any sample size |
+| **Probe limit** | a PROBE that reaches 20 cycles without the standard goes back to shadow |
+| **Auditions** | up to 3 shadows at a time audition as 0.20× PROBEs. The simulator only orders the queue, and a setup's own past real fills veto it. |
+| **Three strikes** | every demotion is a permanent strike, and the third retires the setup to DISABLED |
 
-Nothing in this repo trades because we believe in it. Every setup — ours, resurrected from old
-tapes, or contributed — walks the same ladder:
+**Why cycles, not days.** A top setup fires 2–3 cycles a week, so ten days is only 3–4 cycles. One normal stop in 4 cycles would fail a genuine 90% setup about a third of the time. Twenty cycles at an 80% floor misjudges it about 4% of the time. The great ones still lose; the standard scores how often, how much, and what they net.
 
-1. **Shadow.** The setup is wired into a cell with explicit entry conditions and stamps a
-   `CELLSHADOW` line every time it would have fired — zero orders, zero risk. Stamps are
-   episode-deduped and scored on the **forward M5 path** (net pips at 240m) — market truth,
-   not our own exit luck.
-2. **The Shadowboard.** Every setup, ACTIVE and SHADOW alike, is scored on the identical
-   metric and **sorted exactly as the governor acts** — defended actives at the top, then
-   holding/deferred, promote-ready shadows, shadows building evidence (ranked by how many
-   bar conditions they already pass), queued ⏳ rows, and demote-due at the bottom. Each
-   row's **verdict** (DEFENDED / HOLDING / DEFERRED / PROMOTE READY / BUILDING / DEMOTE
-   DUE) is computed by the governor's own code, so the board can never disagree with the
-   :35Z run — the whole docket is visible, waiting is a state, not an absence.
-3. **Promotion — an audition, not a seat.** The **[Bar Governor](docs/GOVERNOR.md)**
-   (`ops/governor.py`, **hourly at :35Z** since 2026-08-26) admits a shadow when its **current-era** evidence clears
-   the whole predicate: **n ≥ 10 executable-exit episodes over ≥ 5 independent day/session
-   blocks, ≥ +2.0 net pips/episode, a positive day-block bootstrap lower bound, a
-   non-negative last-7-days, and Benjamini–Hochberg q ≤ 0.10** across the candidate
-   docket. Margins are set by the measured execution toll — any sub-1p claimed edge is
-   indistinguishable from zero — with real multiple-testing control because the family is
-   scored, not assumed.
-   **Admission buys a 0.20× PROBE seat, not ACTIVE**: full size is earned by GRADUATION on
-   completed broker family cycles (≥6, positive edge LCB, and since v6.30.13 the record must
-   survive one phantom full stop — [B-140](docs/BOOK_OF_BUGS.md)), and a hard ceiling caps live audition seats across both
-   admission lanes. Trials are scored on **executable prices** (entry at the stamped
-   ask/bid, the setup's own exit geometry replayed worst-case intrabar), never frictionless
-   mid drift — and a stamp still open at its horizon is **followed to its real exit**
-   rather than discarded ([B-121](docs/BOOK_OF_BUGS.md): censoring at the horizon deleted
-   27% of all evidence and deleted losers preferentially). A setup that fails re-tests only
-   on *new* independent evidence. No human in the loop; the dashboard trophy is the **same
-   predicate** the governor promotes on — they can never disagree.
-4. **Demotion — the FAMILY RULE: net loss is the key.** A parent setup and the poppers its
-   grid fired are **one economic unit**, tracked in **broker net pips** (every popper fill
-   carries its parent's setup id). Family n ≥ 5 at **−60p or worse** → demoted and the
-   cell's poppers switched off with it; **+60p or better defends the seat** — real broker
-   green outranks the worst-case stamp simulator. Only unfamilied actives fall back to the
-   stamp bar — and since v6.30.12 the stamp bar alone can never demote a family whose
-   broker record is green at all (any completed cycle, net > 0; [B-139](docs/BOOK_OF_BUGS.md)).
-   Judged against the broker, never our own journal.
-   - **Judge-when-flat.** While any family trade is open there is no verdict at all: a
-     parent can stop −60p while its poppers ride toward +30p, so a family is scored only
-     once it completes, never mid-scale-in.
-   - **Three strikes.** Every demotion is a permanent 🔻 strike. A struck cell re-promotes
-     only over a stricter redemption bar (20 episodes / 10 days); the third strike retires
-     it to DISABLED — manual re-enable only.
-   - **Truth-check gate.** A shadow whose virtual family-cycle sim contradicts its own
-     broker fills cannot promote. Proven-wrong sim never spends money.
-   - **Eras never blend.** Every flip restarts that setup's evidence clock, and every
-     decision is written to a public ledger (`data/governor_ledger.jsonl`).
+Code: [`ops/standard.py`](ops/standard.py) (scoring), [`ops/governor.py`](ops/governor.py) (runs hourly at :35Z). Each decision is written to the governor ledger with its numbers, and machine-written seat changes are committed to this repo hourly at :20.
 
-   Rails: max 2 promotions + 4 demotions per run, a durable ceiling on total live audition
-   seats, sides never flipped, `manual_only` respected. Demoted setups keep stamping as
-   shadows and can re-earn the seat.
+## How we got here
 
-**The autonomous day:** `06:30Z` the [counterpart audit](research/tools/counterpart_audit.py)
-wires opposite-direction twins for any MAE-heavy loser → the governor promotes and demotes by
-the bar **hourly** (`:35Z`) → `06:45Z` a change-gated, twice-verified backup
-snapshots the result, and hourly at `:20` a [state committer](ops/state_commit.py) commits any
-machine-written config flips with a per-setup summary, so the repo never drifts from the
-running state ([B-126](docs/BOOK_OF_BUGS.md)). A separate **Commissioner** decides when a second, family-evidence
-admission lane may open at all. The humans set the standard; the bot flips the switches.
+![The tape: practice-account balance from $100k through the $15,598 low](docs/images/account_tape.svg)
 
-**Currently on trial (1,292 setups):**
-- **The ER / FVG / weekly-level slate (2026-08-16)** — three concepts mined from the
-  August TradingView feed: a Kaufman efficiency-ratio chop gate laid over the live
-  mean-reversion families (judged against their own parents), three-candle fair value
-  gaps completing the SMC trio next to sweep pools and impulse blocks, and prev-week
-  high/low fades — the box_pdl idea one horizon up. 42 cells, zero authority, the
-  usual bar.
-- **The ORB slate (2026-08-15)** — session opening-range breakouts and fades on the six
-  majors, translated from the open-source Máximo NQ/MNQ scalping toolkit. The honest
-  prior is WEAK: FX session opens are softer than an equity cash open, and the wiring
-  says so — zero authority, standard bar, the range gate fail-closes while the first
-  15 minutes are still forming.
-- **The replay shadow book** — 10 pairs the book never traded (CAD, CHF, NZD crosses +
-  GBP/JPY), resurrected from this account's own March/April 2026 tapes where session-extreme
-  fades and trend-pullback entries kept winning. The standing prior: cross spread toll kills
-  most of them — and that verdict would be the system working.
-- **The Strategy-Book five** — the strongest threshold-translatable strategies from the
-  retired June-era book (extended-move fades both sides, band fades both sides, Bollinger
-  reversion, range scalps), thresholds verbatim, on their original 4-major backtest universe.
-  Their claimed EVs are known upper bounds (a corpus look-ahead was found and fixed later);
-  the current-era stamps are the re-measurement, and errata now ship inside the archived
-  originals.
-- **Strategy E** — the June white paper's trend-pullback short, re-adjudicated forward under
-  the live exit after its numbers were superseded ([errata in the archive](docs/DATA_AND_MODELS.md)).
-- **The t20 wider-engage gears** — the one material positive in the falsification ledger,
-  running as scored shadow twins on the majors.
+- **The tuition, V1 to V4 (Mar–Jul 2026).** A $100,000 practice account fell to **$15,598, −84%**. Five versions of increasingly careful research couldn't out-predict the market: entry features predicted *when* and *how far* price moves, never *which way* (0 of 144 feature×cell combinations carried direction). The complete raw broker export, 11,564 transactions, is public in [the archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) under `proof-of-tape/`.
+- **V5 and V6, the measurement turn.** Broker fills became the only truth. Wide stops replaced a survivorship-biased tight-stop dial-in, and every strategy became a shadow that had to earn a seat.
+- **The 100-trade practice test (2026-07-16 → 07-29).** $16,665 → $18,421, **+10.54%, 90 wins / 10 losses**, pre-registered endpoint ([protocol](docs/FORWARD_TEST_PROTOCOL.md), [report](docs/FORWARD_TEST_100_REPORT.md), [tape](forward-test-100/)). As registered, the same code went live with $2,500.
+- **Live (07-29 →).** An autonomous governor promoted and demoted on simulated evidence, and the live account drew down; the record above shows every trade. On 10-12 the book was cut to its proven seats. On 10-21 the simulator lost its vote: the seats became every setup at **85%+ cycle wins with positive pips over 5+ real cycles**, plus three practice-test winners that had never traded live, and the broker-truth standard took over.
 
-**Until a strategy cell has proven its edge, this is a forward-testing bot** — the live book
-is only the setups currently holding the bar.
-
-## The pipeline
-
-```mermaid
-flowchart LR
-    A[OANDA feed<br/>18 pairs] --> B{cells<br/>pair × session}
-    B -- "ACTIVE setup fires" --> C[portfolio caps<br/>risk only] --> D[order +<br/>server-side wide SL] --> E[ratchet exit<br/>engage +8.5 → lock +6 → trail 2.5] --> F[broker fills<br/>= the only truth]
-    B -. "every setup stamps<br/>(zero risk)" .-> S[Shadowboard<br/>LCB-ranked evidence]
-    F -- "fills audit" --> G{{Bar Governor<br/>daily · autonomous}}
-    S -- "era evidence" --> G
-    G -- "bar met → promote" --> B
-    G -- "bar lost → demote" --> B
-    S -- "MAE ≫ MFE loser" --> H[counterpart audit<br/>opposite-direction twin] -.-> B
-    style G fill:#1f6feb,stroke:#58a6ff,color:#fff
-```
-
-*Book today (2026-08-19): 18 pairs · **1,292 setups stamping** (incl. the 2026-08-25 🎯 dial slate: 140 narrowed-gate twins from the range harvests — winners cluster inside gates; strikes were edge-of-range kills around live cores) (incl. the 2026-08-19 🦈 eater slate: 96 state-gated cells — dead-vol filter + heat/mid-heat dials from the churn-map session) · 6 ACTIVE + 20 PROBE seats (audition ceiling 20), everything else earning evidence as shadows · an 80-cell docket past the counting gates. **THE CHAMBER (v6.33.0, operator 2026-08-24):** entry selection is RANKED, not first-come — ExecutionScore (broker heat + trust) now carries a live stamp-FORM term (7d shadow-sample avg, era fallback, ±10p saturates) refreshed every board rebuild; the hottest evidence fires first at both the cross-pair and within-cell pick, and a cell that loses while waiting sinks in the queue. Every losing candidate is logged (SELECTOR-X). *(2026-09-14 audit: in practice poppers held most seats and skipped this ranking entirely — over four days 93% of live firings met a full book and the ranking decided twice. Addressed in v6.30.12, [B-138](docs/BOOK_OF_BUGS.md).)* Live exit gear (seats + poppers, operator 2026-08-18): **two-phase ratchet — engage +7.5 → lock +6.0, then steps at +9/+11/+13… locking peak−2** (t20 trial twins keep their own gear; shadows adopt at promotion). Nothing is DISABLED — under the governor, nothing is beyond the reach of evidence.*
-
-**The current standouts, broker-verified:** the **USD_JPY/ny atr5m complex** (parent 7-0 cycles, +$30 era; its wider-engage t20s twin graduated the same test the [t20 ledger](docs/BOOK_OF_BUGS.md) pre-registered in July) · **USD_CHF/asia echo_box_fade_short** — a cell found by honestly backfilling a session block that had sat disabled (+11.1p avg, 32-0 on reconstruction, now auditioning) · **GBP_USD/ny impulse_ob_long** — the market-structure order-block setup, the strongest candidate the docket has produced (LCB +18.9, q≈0) · and the 🎭 MAE-flip cohort, which keeps turning demoted cells' funerals into seats (14 of 15 early flips green).*
-
-## The dashboard
-
-A self-contained local control panel (`127.0.0.1:8084` — [bind elsewhere](docs/DASHBOARD.md) with `DASHBOARD_HOST`): live account + open trades, per-pair signal cards, the cell book, live exit tuning, popper switches, credentials, and the trading pause — plus `/signals`, the **Signal Command Center**: a manual-trading watch page where every firing setup (ACTIVE, PROBE and SHADOW alike) appears grouped by pair + direction while its trigger window is open, each contributing evidence-weighted pips to a per-pair confidence score with expected distance and a realized median time-in-trade estimate — and a self-grading track record: every consensus call is snapshotted and scored against forward executable price at +30m to +8h, so the page shows its own hit-rate and calibration per confidence band. Two tabs worth showing:
-
-**SHADOW — the trial courtroom.** The Bar Governor card states the full standard — the
-promotion bar, the family rule, judge-when-flat — above a Shadowboard sorted exactly as the
-governor acts (defended seats first, demote-due last), with each row carrying the governor's
-own verdict, its broker family net pips, and promote/demote controls:
-
-![The SHADOW tab: the governor's standard + the verdict-ranked Shadowboard](docs/images/dashboard-shadow.png)
-
-**INDICATORS — why is/isn't it firing.** Every pair leads with its current session's ACTIVE
-setups as live condition bars — green zone + marker when in range, the blocking condition
-named when not, a READY glow when a setup is armed:
-
-![The INDICATORS tab: per-pair why-not-firing condition bars](docs/images/dashboard-indicators.png)
+Every version, the edge hunt and the wide-stop turn: [History V1→V6](docs/SCROOGE_HISTORY.md). Every defect and dead end, on purpose: [Book of Bugs](docs/BOOK_OF_BUGS.md) (B-001 → B-140).
 
 ## What we falsified
 
-Five edge families died at the same wall — on retail OANDA majors, no price-*prediction* edge cleared cost — then a sixth move revised the exit itself. Full write-ups: **[docs/papers/PAPER_edge_hunt_falsifications_2026-07-14.md](docs/papers/PAPER_edge_hunt_falsifications_2026-07-14.md)**. When later findings superseded our own published numbers (a corpus H1 look-ahead, a winner-capping exit family), we shipped **errata into the archived originals** rather than quietly moving on.
+On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/papers/PAPER_edge_hunt_falsifications_2026-07-14.md)). Where later findings overturned our own numbers, the errata ship inside the archived originals.
 
 | edge family | verdict |
 |---|---|
 | M5 scalping | edge ≈ its own transaction cost |
 | Single-pair daily trend | a coin flip |
-| Diversified retail TSM | real edge, but needs institutional breadth/cheap execution — net Sharpe −0.22 on our venue |
-| Symmetric both-sides straddle | you always own the loser |
-| Tight-stop-and-reverse | the "asymmetry" was realized direction, not a selectable property |
-| **→ the turn** | tighten-to-MAE dial-in was **survivorship-biased** → the wide-stop book |
-| Wide-stop book (H6, pre-registered WF) | gross Sharpe 1.26 real, **net 0.03** — the edge equals the execution toll ([paper](docs/papers/PAPER_h6_walkforward_2026-07-16.md)) |
-| Scale-in / popper grids (10 rounds) | gross harvest ~+100–150p/parent is **real**; toll ~130–190p is bigger; the majors are **first-passage fair** at every lock level ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
+| Diversified retail TSM | real, but net Sharpe −0.22 on our venue |
+| Symmetric straddle | you always own the loser |
+| Tight-stop-and-reverse | the "asymmetry" was realized direction |
+| Tight stop dialed to winners' MAE | survivorship-biased, so we moved to the wide-stop book |
+| Wide-stop book (pre-registered walk-forward) | gross Sharpe 1.26, **net 0.03**: the edge equals the toll ([paper](docs/papers/PAPER_h6_walkforward_2026-07-16.md)) |
+| Popper grids (10 rounds) | the gross harvest is real; the toll is bigger in simulation ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
+| Simulator-scored promotion | per-setup correlation with real fills 0.07; replaced by the broker-truth standard (2026-10-21) |
+| The old evidence bar, deflated | median deflated Sharpe 0.00: its selection measured the search ([issue #9](https://github.com/BrockStar3540/mr-scrooge-v6/issues/9), [registry](research/registry/README.md)) |
 
-## The forward tests — one concluded, one live
+## Red for days is the design
 
-The practice-account experiment is **concluded**: [the 100-trade forward test](docs/FORWARD_TEST_100_REPORT.md)
-ran $16,665.12 → **$18,421.85 (+10.54%)** over its 100-trade window — **90 wins, 10
-losses, 90.0%** (the single post-window operator close is asterisked) — and its full record is archived in-repo
-([forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100)) and in the
-public archive (`proof-of-tape/`, the complete raw export). As pre-registered, the same code
-now trades **$2,500 of real money** — the live record at the top of this page updates hourly
-from broker fills. Everything below is scored against **broker fills** (never our own logs),
-per configuration, at n≥20 before any verdict — no aggregate blending across eras.
+The stops are wide and there is no timeout, so a trade can sit red until its move develops, the ratchet engages, and it exits green, or until the 24-hour reaper cuts it. The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
 
-> **📜 The 100-trade protocol — pre-registered 2026-07-28, EXECUTED 2026-07-29:** the
-> endpoint, the consequences, and the live gearing were declared at trade 93, before the
-> result was known; the [final report](docs/FORWARD_TEST_100_REPORT.md) and the live
-> cutover followed the protocol to the letter:
-> [docs/FORWARD_TEST_PROTOCOL.md](docs/FORWARD_TEST_PROTOCOL.md). To be plain: **100
-> trades in two weeks is not proof of sustained edge** — it's enough for *us personally*
-> to try live with a small stake. Use your own discernment; results vary over time, and
-> when things go wrong the drawdown can be substantial.
+## The dashboard
 
-1. **The wide-stop parent book** — the decisive walk-forward
-   [falsified the level](docs/papers/PAPER_h6_walkforward_2026-07-16.md): gross Sharpe 1.26,
-   **net 0.03** after realistic slippage. The edge is real and exactly the size of the toll;
-   the practice tape is the standing measurement of that knife-edge.
-2. **The t20 wider-engage shadow** — the one material positive in the ledger (blind-test
-   Sharpe +0.57, avg green +8 → +22p, zero overfit gap), running as scored shadow twins.
-3. **The Party Package (V6.1)** — re-arming popper grids, deployed *against* their own sim
-   verdict on purpose: real fills will confirm or refute the *cost model itself* — the one
-   variable no offline sim can settle ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)).
-   First 12 days of tape (90 fills): one family produced the entire net loss — GBP/USD-long
-   parents+poppers −$858 while every other family ran green — which is what motivated the
-   **family rule** (v6.7): the parent and its poppers are judged as one unit, in broker net
-   pips, only when the episode is flat.
-4. **The replay shadow book (v6.3)** — 10 never-traded pairs running the shapes that won on
-   them in the March/April 2026 tapes, shadows only, activation bar as the sole judge.
-5. **The arraigned record (v6.4)** — Strategy E and the Strategy-Book five, re-tested forward
-   under the live exit after errata superseded their backtest numbers.
-6. **The Bar Governor itself (v6.5)** — the autonomy loop is the newest experiment: does an
-   evidence-gated, self-governing book outperform a hand-curated one? Its every decision is
-   in the [public ledger](data/governor_ledger.jsonl).
+A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere](docs/DASHBOARD.md)). It shows the live account and open trades, the cell book with every setup's status and broker record, live exit tuning, popper switches, the trading pause, and `/signals`: a manual-trading watch page that grades its own calls against forward price.
 
-Details: [docs/RESEARCH_PROGRAM.md](docs/RESEARCH_PROGRAM.md), [docs/ROADMAP.md](docs/ROADMAP.md).
+![The SHADOW tab](docs/images/dashboard-shadow.png)
 
 ## 🏆 The $10,000 Strategy Contest
 
 <div align="center"><a href="CONTEST.md"><img src="docs/images/contest_badge.png" alt="$10,000 Contest Prize" width="300"></a></div>
 
-Think you have a strategy that can survive this harness? **Our sponsor has put $10,000 on
-it.** Submit a fully mechanical strategy — pairs, sessions, exact entry indicators, exact exit
-rules, plus your own evidence it works — and we'll put it on trial in the same forward-testing
-harness everything here faces. Run **90% winners (profitably)** or **net +500 pips in 30
-days** under our measurement and the prize is yours. Standing contest until someone wins;
-if two qualify in the same window, best takes $10,000 and the runner-up $5,000.
-
-**Read the full rules: [CONTEST.md](CONTEST.md)** · submit via the
-[contest issue template](.github/ISSUE_TEMPLATE/contest_submission.md).
+Submit a fully mechanical strategy (pairs, sessions, exact entry and exit rules, and your evidence), and it goes on trial in the same harness. Run **90% winners profitably** or **net +500 pips in 30 days** under our measurement and our sponsor pays **$10,000**. Rules: **[CONTEST.md](CONTEST.md)** · [submit](.github/ISSUE_TEMPLATE/contest_submission.md).
 
 ## Read the research
 
 | | |
 |---|---|
-| 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | **start here** — the falsification method, the activation-bar doctrine, open dockets |
-| 🤖 **[The Bar Governor](docs/GOVERNOR.md)** | the autonomous promote/demote loop — the standard, why the numbers, the rails, the ledger, the ON/OFF switch |
-| 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup the governor has ever scored (M_ever), every decision and its scores, refreshed hourly. The multiple-testing denominator, in public. Plus the pre-registered [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) of the promoted set |
+| 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | the falsification method and open dockets |
+| 🤖 **[Governor](docs/GOVERNOR.md)** | the promote/demote machinery, the rails, the ledger, the switches |
+| 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup ever scored and every decision, refreshed hourly, plus the [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
-| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-112 — every dead end and defect, on purpose |
-| 📄 **[Papers index](docs/papers/)** | incl. the [cost-aware exit-classes paper](docs/PAPER_cost_aware_exit_classes_2026-07-05.md) (the chapter the wide-stop turn revised) |
+| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001 → B-140 |
+| 📄 **[Papers](docs/papers/)** | the full paper index |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
-| 📦 **[The Archive (Dropbox)](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | the readable research record — papers, session notes, backtest results & version history, **with errata where later findings superseded them**, plus `proof-of-tape/` — the practice account's complete raw broker export (raw corpora / models / code privately archived, available on request) |
-| ⚙️ **[Setup](docs/SETUP.md)** | from-zero install: OANDA **practice** account, venv, credentials (dashboard **or** env vars), run |
-| 📊 **[Dashboard](docs/DASHBOARD.md)** | the local control panel at `:8084` — every tab, every switch, `DASHBOARD_HOST` for LAN use |
-| 🏆 **[Contest Terms](CONTEST.md)** | the standing $10,000 strategy challenge — rules, criteria, how to submit |
-| 🤝 **[Contributing](CONTRIBUTING.md)** | external ideas welcome, treated as untrusted input — same falsification gauntlet our own ideas face |
-| ⚖️ **[License](LICENSE)** | Apache-2.0 |
-
-*Think we're wrong? Good. [The archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) holds the papers, notes, and backtest results; the raw corpora are available on request so you can re-run the analysis and attack the conclusions — leak-checked corpus → walk-forward → fired-trade sim → shadow → capital. Nothing reaches the live path without passing that gauntlet.*
-
-## The version freeze — V6 is complete
-
-With the live cutover, **this repository is feature-frozen.** It will be modified only to
-**fix reported bugs** (open an issue). The hourly live record keeps publishing regardless —
-the tape doesn't need new features to keep being honest. Significant future development —
-new strategy machinery, new trial systems, anything beyond a bug fix — will ship as
-**Mr. Scrooge V7**, a separate release with its own record, so this repo stays exactly what
-it is: the complete, closed story of how V6 was built, tested, and sent to work with real
-money.
+| 📦 **[The Archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | papers, session notes, backtests with errata, and `proof-of-tape/` |
+| ⚙️ **[Setup](docs/SETUP.md)** | install from zero on an OANDA **practice** account |
+| 🤝 **[Contributing](CONTRIBUTING.md)** | outside ideas welcome, through the same gauntlet ours face |
 
 ## ☕ Support this work
 
-I built this in the open over **hundreds of hours and millions of paid AI-coding tokens** — and I'm not rich. There's no fund or company behind it, just me putting the whole thing out there, losses and all.
-
-If you got value from it, learned something from the falsifications, or just appreciate a trading project that shows its −84% tape instead of hiding it — consider buying me a coffee. Every bit genuinely helps, and the more support there is, the more inclined I am to keep building public projects like this one.
+Built in the open over hundreds of hours and millions of paid AI-coding tokens, with no fund or company behind it, just one person putting the whole thing out there, losses and all. If it taught you something, [buy me a coffee](https://buymeacoffee.com/BrockStar3540).
 
 [![Buy Me a Coffee](https://img.shields.io/badge/☕_Buy_me_a_coffee-BrockStar3540-ffdd00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/BrockStar3540)
 
 ---
 
-> ⚠️ **Research software on an OANDA practice account. Not financial advice. The wide-stop result is a simulation with known inflators and its live verdict is pending. Leveraged forex can lose more than your deposit. If you run this, the outcomes are yours.**
+> ⚠️ **This bot trades real money, and its live record is shown above as it stands. Not financial advice. Leveraged forex can lose more than your deposit. If you run this, the outcomes are yours.**
 
 ## Development
 
-### The pipe guard (required for contributors)
+V6 is the live trader. Since cutover, changes are fixes and seat-policy changes, each recorded in the Book of Bugs or the governor ledger. New strategy machinery goes to **Mr. Scrooge V7**.
 
-One-time per clone:
+**The pipe guard (required for contributors), once per clone:**
 
 ```
 git config core.hooksPath ops/hooks
@@ -334,15 +163,4 @@ python3 -m venv --system-site-packages .venv-test
 .venv-test/bin/pip install -r requirements-dev.txt
 ```
 
-Every `git push` then runs the full suite **twice — fixed order and randomised, matching
-CI** (unpiped: the exit code is the verdict) plus a secrets sweep over the outgoing diff,
-and blocks the push on any failure. The one exception: a push whose every changed file is
-under `livelog/` or is `README.md` (the hourly live-balance commits), which no test reads,
-skips the suite; the secrets sweep still runs on it. A new branch, an unknown base or any
-other path gets the full suite. The venv exists so the test plugins never enter the
-interpreter the live trader runs on; without it the hook refuses to run rather than test a
-weaker property than CI ([B-123](docs/BOOK_OF_BUGS.md)). History: B-111 documented that `pytest | tail -1` reports tail's
-exit code; B-118 proved the documented lesson gets recommitted without
-enforcement. This hook is the enforcement. `git push --no-verify` bypasses it
-— deliberately, visibly, on your head.
-
+Every `git push` runs the full suite twice (fixed and randomised order, matching CI) plus a secrets sweep, and blocks on any failure. Pushes that touch only `livelog/` or `README.md` skip the suite but keep the sweep. `git push --no-verify` bypasses it, deliberately and visibly ([B-111](docs/BOOK_OF_BUGS.md), [B-118](docs/BOOK_OF_BUGS.md), [B-123](docs/BOOK_OF_BUGS.md)).
