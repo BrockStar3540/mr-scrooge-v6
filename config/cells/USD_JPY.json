@@ -5297,7 +5297,7 @@
           "id": "orb_fade_short",
           "side": "short",
           "class": "session_structure",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
@@ -6872,7 +6872,7 @@
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "4 ACTIVE, 47 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
+      "notes": "3 ACTIVE, 48 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
     }
   }
 }
