@@ -1,19 +1,20 @@
 {
  "schema": 1,
  "about": "Public copy of the Bar Governor's hypothesis registry. See research/registry/README.md.",
- "registry_mtime": "2026-10-21T20:35:07.410711+00:00",
+ "registry_mtime": "2026-10-21T21:41:56.952466+00:00",
  "board_generated": "2026-10-21T21:19:20.373271+00:00",
  "counts": {
   "M_ever": 1701,
-  "M_live": 1624,
+  "M_live": 1621,
   "config_versions": 2915,
-  "ever_seated": 163,
+  "ever_seated": 166,
   "status": {
-   "ACTIVE": 19,
+   "ACTIVE": 17,
    "DISABLED": 77,
-   "SHADOW": 1605
+   "PROBE": 3,
+   "SHADOW": 1604
   },
-  "decisions_published": 9075,
+  "decisions_published": 9097,
   "dry_run_rows": 1597,
   "unparseable_rows": 0
  },
@@ -13039,10 +13040,10 @@
     "GOVERNOR-FLIP": 1,
     "OPERATOR-FLIP": 1,
     "PROMOTE": 1,
-    "PROMOTE-GATED": 216
+    "PROMOTE-GATED": 218
    },
    "last_decision": {
-    "t": "2026-10-21T20:39:08.654925+00:00",
+    "t": "2026-10-21T21:46:33.322977+00:00",
     "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
@@ -15056,10 +15057,10 @@
    "decisions": {
     "ERA-RESET": 1,
     "FAM-GEAR-CHANGE": 2,
-    "PROMOTE-GATED": 71
+    "PROMOTE-GATED": 73
    },
    "last_decision": {
-    "t": "2026-10-21T20:39:08.654925+00:00",
+    "t": "2026-10-21T21:46:33.322977+00:00",
     "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
@@ -20057,17 +20058,18 @@
     "d9fb01f495abce87",
     "e3c01f1c7215ea67"
    ],
-   "status": "SHADOW",
-   "ever_seated": false,
-   "first_seated": null,
-   "seated_source": null,
+   "status": "PROBE",
+   "ever_seated": true,
+   "first_seated": "2026-10-21T21:46:34.986611+00:00",
+   "seated_source": "ledger",
    "decisions": {
     "ERA-RESET": 2,
-    "FAM-GEAR-CHANGE": 3
+    "FAM-GEAR-CHANGE": 3,
+    "GOVERNOR-FLIP": 1
    },
    "last_decision": {
-    "t": "2026-09-14T13:35:02.996556+00:00",
-    "action": "FAM-GEAR-CHANGE"
+    "t": "2026-10-21T21:46:34.986611+00:00",
+    "action": "GOVERNOR-FLIP"
    },
    "snapshot_runs": {
     "runs": 1706,
@@ -36053,17 +36055,18 @@
     "f924dce0132c0384",
     "b5a095d488e3e7e0"
    ],
-   "status": "SHADOW",
-   "ever_seated": false,
-   "first_seated": null,
-   "seated_source": null,
+   "status": "PROBE",
+   "ever_seated": true,
+   "first_seated": "2026-10-21T21:46:34.444396+00:00",
+   "seated_source": "ledger",
    "decisions": {
     "ERA-RESET": 2,
-    "FAM-GEAR-CHANGE": 3
+    "FAM-GEAR-CHANGE": 3,
+    "GOVERNOR-FLIP": 1
    },
    "last_decision": {
-    "t": "2026-09-14T13:35:02.996556+00:00",
-    "action": "FAM-GEAR-CHANGE"
+    "t": "2026-10-21T21:46:34.444396+00:00",
+    "action": "GOVERNOR-FLIP"
    },
    "snapshot_runs": {
     "runs": 1706,
@@ -43919,10 +43922,10 @@
     "FAM-GEAR-CHANGE": 4,
     "GOVERNOR-FLIP": 2,
     "PROMOTE": 1,
-    "PROMOTE-GATED-TRUTH": 125
+    "PROMOTE-GATED-TRUTH": 127
    },
    "last_decision": {
-    "t": "2026-10-21T20:39:08.654925+00:00",
+    "t": "2026-10-21T21:46:33.322977+00:00",
     "action": "PROMOTE-GATED-TRUTH"
    },
    "snapshot_runs": {
@@ -46183,10 +46186,10 @@
     "OPERATOR-FLIP": 1,
     "PROMOTE": 1,
     "PROMOTE-GATED": 6,
-    "PROMOTE-GATED-TRUTH": 119
+    "PROMOTE-GATED-TRUTH": 121
    },
    "last_decision": {
-    "t": "2026-10-21T20:39:08.654925+00:00",
+    "t": "2026-10-21T21:46:33.322977+00:00",
     "action": "PROMOTE-GATED-TRUTH"
    },
    "snapshot_runs": {
@@ -55410,17 +55413,18 @@
     "f3252c9e67df30c7",
     "d9a6f70362bc5662"
    ],
-   "status": "SHADOW",
-   "ever_seated": false,
-   "first_seated": null,
-   "seated_source": null,
+   "status": "PROBE",
+   "ever_seated": true,
+   "first_seated": "2026-10-21T21:46:35.551116+00:00",
+   "seated_source": "ledger",
    "decisions": {
     "ERA-RESET": 2,
-    "FAM-GEAR-CHANGE": 3
+    "FAM-GEAR-CHANGE": 3,
+    "GOVERNOR-FLIP": 1
    },
    "last_decision": {
-    "t": "2026-09-14T13:35:02.996556+00:00",
-    "action": "FAM-GEAR-CHANGE"
+    "t": "2026-10-21T21:46:35.551116+00:00",
+    "action": "GOVERNOR-FLIP"
    },
    "snapshot_runs": {
     "runs": 1640,
@@ -57846,7 +57850,7 @@
     "ac49d8468f22fb9d",
     "2836f98b278ed3f4"
    ],
-   "status": "ACTIVE",
+   "status": "SHADOW",
    "ever_seated": true,
    "first_seated": "2026-08-29T00:36:14.981946+00:00",
    "seated_source": "ledger",
@@ -57854,15 +57858,15 @@
     "DEMOTE": 2,
     "ERA-RESET": 2,
     "FAM-GEAR-CHANGE": 6,
-    "GOVERNOR-FLIP": 4,
+    "GOVERNOR-FLIP": 5,
     "GRADUATE": 1,
     "OPERATOR-FLIP": 2,
     "OPERATOR-RESEAT-PREP": 1,
     "PROMOTE": 1
    },
    "last_decision": {
-    "t": "2026-10-21T21:05:08.676519+00:00",
-    "action": "OPERATOR-FLIP"
+    "t": "2026-10-21T21:46:33.708463+00:00",
+    "action": "GOVERNOR-FLIP"
    },
    "snapshot_runs": {
     "runs": 1640,
@@ -60852,11 +60856,12 @@
     "GOVERNOR-FLIP": 2,
     "GRADUATE": 1,
     "OPERATOR-FLIP": 1,
-    "PROMOTE": 1
+    "PROMOTE": 1,
+    "PROMOTE-GATED": 2
    },
    "last_decision": {
-    "t": "2026-10-21T21:05:09.435426+00:00",
-    "action": "OPERATOR-FLIP"
+    "t": "2026-10-21T21:46:33.322977+00:00",
+    "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
     "runs": 1711,
@@ -68212,10 +68217,10 @@
     "GOVERNOR-FLIP": 2,
     "PROMOTE": 1,
     "PROMOTE-GATED": 2,
-    "PROMOTE-GATED-TRUTH": 108
+    "PROMOTE-GATED-TRUTH": 110
    },
    "last_decision": {
-    "t": "2026-10-21T20:39:08.654925+00:00",
+    "t": "2026-10-21T21:46:33.322977+00:00",
     "action": "PROMOTE-GATED-TRUTH"
    },
    "snapshot_runs": {
@@ -69432,20 +69437,20 @@
     "f30e3f732b83261b",
     "d3ca11d81921fde4"
    ],
-   "status": "ACTIVE",
+   "status": "SHADOW",
    "ever_seated": true,
    "first_seated": "2026-09-08T05:05:15.549081+00:00",
    "seated_source": "ledger",
    "decisions": {
     "ERA-RESET": 2,
     "FAM-GEAR-CHANGE": 4,
-    "GOVERNOR-FLIP": 1,
+    "GOVERNOR-FLIP": 2,
     "GRADUATE": 1,
     "OPERATOR-FLIP": 3
    },
    "last_decision": {
-    "t": "2026-10-21T21:05:08.973866+00:00",
-    "action": "OPERATOR-FLIP"
+    "t": "2026-10-21T21:46:33.917015+00:00",
+    "action": "GOVERNOR-FLIP"
    },
    "snapshot_runs": {
     "runs": 1640,
