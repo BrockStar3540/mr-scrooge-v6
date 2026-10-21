@@ -1331,7 +1331,7 @@
           "id": "ps_ceil_fade_short_g_appr",
           "side": "short",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1635,7 +1635,7 @@
           "id": "kc_up_long_lean",
           "side": "long",
           "class": "LEAN",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -1736,7 +1736,7 @@
           "id": "classic_extension_fade_long",
           "side": "long",
           "class": "classic",
-          "status": "PROBE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2153,7 +2153,7 @@
           "id": "alpha_extended_fade_long_g_a10",
           "side": "long",
           "class": "book_replay",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5261,7 +5261,7 @@
           "notes": "Counterpart of ninja_amp_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "1 PROBE, 67 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "2 ACTIVE, 68 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,

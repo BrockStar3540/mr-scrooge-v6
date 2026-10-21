@@ -10,7 +10,7 @@
   "default_era_start": "2026-07-19T00:00:00+00:00",
   "per_test_z": 2.33,
   "allow_promotions": false,
-  "allow_demotions": true,
+  "allow_demotions": false,
   "min_raw_episodes": 10,
   "min_independent_days": 5,
   "bootstrap_reps": 10000,
@@ -39,5 +39,6 @@
   "_fdr_note": "fdr_q RAISED 0.05 -> 0.10 by operator decision 2026-08-06: accept ~10% of admissions being flukes in exchange for testing marginal ideas faster. Justified by what sits BEHIND admission \u2014 every promotion lands on a 0.33x PROBE, must earn completed broker family cycles to graduate, and a demotion costs a permanent strike (3 = disabled). The audition IS the second filter. fdr_family=docket: BH runs over setups that reached their counting gates.",
   "graduate_phantom_stop": true,
   "phantom_stop_default_pips": 60.0,
-  "_phantom_stop_note": "B-140 (operator 2026-10-01): graduation PROBE->ACTIVE also requires the broker record to survive ONE phantom full stop (mean of era cycles plus one -sl_pips cycle > 0, i.e. the cycles have banked more than one stop). Reason: the live exit geometry (~+9p wins, full-stop losses) makes a driftless entry win ~80% of cycles, so an all-green 6-cycle record has a t-LCB equal to its mean and graduated automatically; 22 of 40 families that opened with 3+ straight wins later broke, the first loss giving back a median 133% of the streak. Not applied to setups already ACTIVE."
+  "_phantom_stop_note": "B-140 (operator 2026-10-01): graduation PROBE->ACTIVE also requires the broker record to survive ONE phantom full stop (mean of era cycles plus one -sl_pips cycle > 0, i.e. the cycles have banked more than one stop). Reason: the live exit geometry (~+9p wins, full-stop losses) makes a driftless entry win ~80% of cycles, so an all-green 6-cycle record has a t-LCB equal to its mean and graduated automatically; 22 of 40 families that opened with 3+ straight wins later broke, the first loss giving back a median 133% of the streak. Not applied to setups already ACTIVE.",
+  "_demotions_note": "PAUSED 2026-10-21 21:10Z (Brock, in-chat): the sim-scored demotion bar was about to bench 3 of 19 operator-seated broker-proven setups (85% rule). Paused until the broker-truth governor redesign lands. Undo = set allow_demotions true."
 }

@@ -705,7 +705,7 @@
           "id": "orb_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "PROBE",
+          "status": "SHADOW",
           "wired": "2026-08-15",
           "horizon_min": 240,
           "conditions": [
@@ -1678,7 +1678,7 @@
           "id": "liq_sweep_fade_short_t",
           "side": "short",
           "class": "market_structure",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {

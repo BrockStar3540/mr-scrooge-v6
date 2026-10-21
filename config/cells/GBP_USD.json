@@ -169,7 +169,7 @@
           "id": "ps_floor_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2000,7 +2000,7 @@
           "wired": "2026-07-10"
         }
       ],
-      "notes": "36 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+      "notes": "1 ACTIVE, 35 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
     },
     "london": {
       "enabled": true,
@@ -2188,7 +2188,7 @@
           "id": "classic_box_fade_long",
           "side": "long",
           "class": "classic",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5036,7 +5036,7 @@
           "id": "echo_box_fade_short_g_dial",
           "side": "short",
           "class": "book_replay",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -6286,7 +6286,7 @@
           "id": "control_rvol_60",
           "side": "short",
           "class": "FORMULA",
-          "status": "SHADOW",
+          "status": "ACTIVE",
           "horizon_min": 60,
           "conditions": [
             {
@@ -10551,7 +10551,7 @@
           "notes": "Counterpart of ninja_flag_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "77 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
+      "notes": "1 ACTIVE, 76 SHADOW, 9 DISABLED setups. Tier=2 ev_gross_long=-2.789 ev_gross_short=-0.567. was locked \ud83d\udd12 -> priority_analysis."
     }
   }
 }
