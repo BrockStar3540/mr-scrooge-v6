@@ -40,5 +40,29 @@
   "graduate_phantom_stop": true,
   "phantom_stop_default_pips": 60.0,
   "_phantom_stop_note": "B-140 (operator 2026-10-01): graduation PROBE->ACTIVE also requires the broker record to survive ONE phantom full stop (mean of era cycles plus one -sl_pips cycle > 0, i.e. the cycles have banked more than one stop). Reason: the live exit geometry (~+9p wins, full-stop losses) makes a driftless entry win ~80% of cycles, so an all-green 6-cycle record has a t-LCB equal to its mean and graduated automatically; 22 of 40 families that opened with 3+ straight wins later broke, the first loss giving back a median 133% of the streak. Not applied to setups already ACTIVE.",
-  "_demotions_note": "PAUSED 2026-10-21 21:10Z (Brock, in-chat): the sim-scored demotion bar was about to bench 3 of 19 operator-seated broker-proven setups (85% rule). Paused until the broker-truth governor redesign lands. Undo = set allow_demotions true."
+  "_demotions_note": "PAUSED 2026-10-21 21:10Z (Brock, in-chat): the sim-scored demotion bar was about to bench 3 of 19 operator-seated broker-proven setups (85% rule). Paused until the broker-truth governor redesign lands. Undo = set allow_demotions true. Superseded the same night by the STANDARD lane (see _standard_note); allow_demotions now only governs the old sim lane.",
+  "standard": {
+    "enabled": true,
+    "window_cycles": 20,
+    "min_cycles": 10,
+    "stay": {
+      "wr": 0.8,
+      "exp_pips": 3.0,
+      "pf": 1.5,
+      "worst_pips": -90.0
+    },
+    "enter": {
+      "wr": 0.85,
+      "exp_pips": 5.0,
+      "pf": 2.5,
+      "worst_pips": -65.0
+    },
+    "tripwire_pips": -90.0,
+    "max_probe_cycles": 20,
+    "max_auditions": 3,
+    "audition_min_sim_cycles": 8,
+    "audition_min_sim_wr": 0.85,
+    "cooldown_days": 30
+  },
+  "_standard_note": "STANDARD LANE 2026-10-21 (Brock, in-chat): seats judged ONLY on their own real broker family cycles (last 20, judged at >=10) against the top-5 live profile; replaces every simulator lane (sim vs broker per-setup correlation 0.07 over 75 setups). Tripwire: any cycle < -90p demotes. PROBE auditions at 0.20x, simulator orders the queue only, own real fills veto. See ops/standard.py. Off switch: standard.enabled=false (old lanes then resume, subject to allow_promotions/allow_demotions)."
 }

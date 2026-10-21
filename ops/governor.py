@@ -657,6 +657,113 @@ def build_cheater_candidates(book_map, eras, default_era, db, min_cycles,
     return out
 
 
+def run_standard_lane(c, std_cfg, st, bmap, fams, cheater_seats, args, now):
+    """STANDARD LANE (Brock, 2026-10-21) — see ops/standard.py.
+
+    Seats are judged only on their own real broker cycles against the top-5
+    profile; the simulator only orders the audition queue. Replaces every
+    simulator lane (bar promotions, sim demotions, cheater, old graduation)
+    whenever config standard.enabled is true.
+    """
+    from ops import standard as S
+    sc = S.merged(std_cfg)
+    strikes = st.setdefault("demotion_counts", {})
+    cool = st.setdefault("standard_demoted", {})
+    limit = int(c.get("strike_disable_count", 3))
+    if not fams:
+        print("governor[standard]: broker fills unavailable — no seat changes this run",
+              file=sys.stderr)
+        return
+    seated = {k: m for k, m in bmap.items()
+              if m["status"] in ("ACTIVE", "PROBE") and not m["manual_only"]}
+    decisions = []
+    for key, m in sorted(seated.items()):
+        fam = fams.get(key) or {}
+        action, why = S.verdict(m["status"], fam.get("cycles") or [], sc)
+        if action in ("DEMOTE", "GRADUATE"):
+            decisions.append((action, key, why))
+        else:
+            print(f"governor[standard]: KEEP {'/'.join(key)} {m['status']} — {why}")
+
+    # Auditions: refill PROBE seats up to max_auditions from the SHADOW bench.
+    leaving = {k for a, k, _ in decisions}
+    probes_after = sum(1 for k, m in seated.items()
+                       if m["status"] == "PROBE" and k not in leaving)
+    open_slots = int(sc["max_auditions"]) - probes_after
+    if open_slots > 0:
+        try:
+            vc = json.loads((REPO / "data" / "virtual_cycles.json").read_text()).get("rows", {})
+        except Exception:
+            vc = {}
+        held = {(k[0], seated[k]["side"]) for k in seated if k not in leaving}
+        nowdt = datetime.fromisoformat(now)
+        cands = []
+        for key, m in bmap.items():
+            if m["status"] != "SHADOW" or m["manual_only"]:
+                continue
+            k2 = "|".join(key)
+            row = vc.get(f"{key[0]}/{key[1]}|{key[2]}|{m['side']}") or {}
+            t = cool.get(k2)
+            cands.append({
+                "key": key, "side": m["side"],
+                "sim_cycles": row.get("cycles"), "sim_wr": row.get("wr"),
+                "sim_net": row.get("net_mean"),
+                "cooldown": bool(t and (nowdt - datetime.fromisoformat(t)).days
+                                 < int(sc["cooldown_days"])),
+                "strikes_ok": int(strikes.get(k2, 0)) < limit,
+                "pair_side_seated": (key[0], m["side"]) in held,
+                "broker_cycles": (fams.get(key) or {}).get("cycles") or [],
+            })
+        for x in S.pick_auditions(cands, open_slots, sc):
+            decisions.append(("AUDITION", x["key"],
+                              f"audition at 0.20x on real fills (sim queue: "
+                              f"{x['sim_cycles']} cycles, wr {x['sim_wr']:.2f}, "
+                              f"{x['sim_net']:+.1f}p/cyc — ordering only)"))
+
+    with open(LEDGER, "a") as led:
+        for action, (pair, sess, sid), why in decisions:
+            k2 = "|".join((pair, sess, sid))
+            strike = None
+            if action == "DEMOTE":
+                target, strike = demote_target(int(strikes.get(k2, 0)), c)
+                why += f"; strike {strike}/{limit}" + (
+                    " -> DISABLED (three strikes)" if target == "DISABLED" else "")
+                grid_kind = "DEMOTE"
+            elif action == "GRADUATE":
+                target, grid_kind = "ACTIVE", "GRADUATE"
+            else:
+                target, grid_kind = "PROBE", "PROMOTE"
+            gt = prepare_grid_transition(grid_kind, pair, sess, sid, args.dry_run)
+            if not gt.get("ok"):
+                led.write(json.dumps({"t": now, "action": f"STANDARD-{action}-GRID-PREP-FAILED",
+                                      "pair": pair, "session": sess, "setup": sid,
+                                      "why": why, "dry_run": bool(args.dry_run),
+                                      "grid_transition": gt}) + "\n")
+                print(f"GOVERNOR[standard] {action} BLOCKED {pair}/{sess}/{sid} "
+                      f"[grid {gt.get('stage')} failed]")
+                continue
+            if not args.dry_run:
+                stage_era_reset(st, k2, now)
+                save_state(st)
+            res = flip(pair, sess, sid, target, args.dry_run)
+            line = {"t": now, "action": f"STANDARD-{action}", "pair": pair,
+                    "session": sess, "setup": sid, "why": why,
+                    "dry_run": bool(args.dry_run), "result": res, "new_status": target,
+                    "grid_transition": gt}
+            if strike is not None:
+                line["strikes"] = strike
+            if res.get("ok") and not args.dry_run:
+                if strike is not None:
+                    strikes[k2] = strike
+                    cool[k2] = now
+                update_cheater_seat_book(grid_kind if grid_kind != "PROMOTE" else "-",
+                                         cheater_seats, k2, now)
+                save_state(st)
+            led.write(json.dumps(line) + "\n")
+            print(f"GOVERNOR[standard] {action} {pair}/{sess}/{sid} -> {target}  [{why}]"
+                  f"{'  (dry-run)' if args.dry_run else ''}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -1104,6 +1211,15 @@ def main():
         promotions = []
     if not c.get("allow_demotions", True):
         demotions = []
+
+    # STANDARD LANE (Brock, 2026-10-21): when enabled it replaces every
+    # simulator lane above — nothing they queued executes.
+    std_cfg = c.get("standard") or {}
+    if std_cfg.get("enabled"):
+        run_standard_lane(c, std_cfg, st, bmap, fams, cheater_seats, args, now)
+        if not args.dry_run:
+            save_state(st)
+        return
 
     if not promotions and not demotions and not cheater_promos and not graduations:
         print(f"governor: no setups due ({len(ev_all)} era-scored v2, "
