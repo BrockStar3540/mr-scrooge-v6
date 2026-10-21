@@ -173,6 +173,50 @@ def _candles_ba(pair, t0, n_bars, url, tok):
     return out
 
 
+# A stamp is only an executable entry if the market was trading around it.
+# While FX is shut (Fri ~21:00 -> Sun ~21:00 UTC, plus holiday closes) the
+# scan loop keeps running on the frozen Friday quote; OANDA then hands back a
+# forward path that starts at the reopen, so the weekend gap was booked as P&L
+# on a fill the broker would have refused (MARKET_HALTED). Measured 2026-10-21:
+# 2,651 of 70,769 resolved v2 episodes, mean net240 -5.0p vs +0.3p.
+# Either side counts: no bar for 30 min AFTER the stamp (Fri after the close)
+# or none for 30 min BEFORE it (Sun just ahead of the reopen, still quoting
+# Friday's price).
+_EXEC_GAP_S = 1800
+
+
+def _bar_t(c):
+    return datetime.fromisoformat(c["time"][:19] + "+00:00")
+
+
+def _market_closed_at(t0, cs, prev=None) -> bool:
+    """True when no M5 bar opens within _EXEC_GAP_S after the stamp, or (given
+    prev, the bars up to t0) none closed within _EXEC_GAP_S before it. Pure."""
+    if cs and (_bar_t(cs[0]) - t0).total_seconds() > _EXEC_GAP_S:
+        return True
+    if prev:
+        last_close = _bar_t(prev[-1]) + timedelta(minutes=5)
+        if (t0 - last_close).total_seconds() > _EXEC_GAP_S:
+            return True
+    return False          # no data yet is "not scoreable", not "closed"
+
+
+def _bars_before(pair, t0, url, tok):
+    """The last two M5 bars at or before t0 (for _market_closed_at)."""
+    u = (f"{url}/v3/instruments/{pair}/candles?granularity=M5"
+         f"&to={t0.strftime('%Y-%m-%dT%H:%M:%SZ')}&count=2&price=BA")
+    return json.load(urllib.request.urlopen(urllib.request.Request(
+        u, headers={"Authorization": f"Bearer {tok}"}), timeout=20))["candles"]
+
+
+def _market_closed_score() -> dict:
+    """Not evidence: net240 None without "censored" keeps it out of every
+    aggregate and out of the re-score queue (_needs_score) for good."""
+    return {"mv": 2, "net240": None, "mfe240": None, "mae240": None,
+            "net60": None, "mfe60": None, "mae60": None,
+            "exit_reason": "market_closed", "market_closed": True}
+
+
 def _score_v2(ep, t0):
     """D-7 scorer: bid/ask candles + the setup's OWN exit, replayed from the
     STAMPED executable entry by core/shadow_execution. Spread is inside the
@@ -187,6 +231,8 @@ def _score_v2(ep, t0):
     cs = json.load(urllib.request.urlopen(urllib.request.Request(
         u, headers={"Authorization": f"Bearer {tok}"}), timeout=20))["candles"]
     cs = [c for c in cs if c.get("complete", True)]
+    if _market_closed_at(t0, cs, _bars_before(pair, t0, url, tok)):
+        return _market_closed_score()
     stamp = {"side": ep["side"], "entry": ep.get("entry"),
              "horizon_min": horizon, "exit_config": ep.get("exit_config") or {}}
     o = simulate_shadow_exit(stamp, cs, _pip(pair))

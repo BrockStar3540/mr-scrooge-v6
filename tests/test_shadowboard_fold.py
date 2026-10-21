@@ -95,3 +95,31 @@ def test_episode_net_legacy_pays_spread_and_slippage():
 def test_episode_net_legacy_fallback_spread():
     assert episode_net(10.0, None, "EUR_USD", slippage_pips=0.5) == pytest.approx(8.0)
     assert episode_net(10.0, None, "EUR_CHF", slippage_pips=0.5) == pytest.approx(6.5)
+
+
+def test_weekend_stamp_is_market_closed():
+    from datetime import datetime, timezone
+    from ops.shadowboard import _market_closed_at
+    sat = datetime(2026, 10, 17, 7, 3, 44, tzinfo=timezone.utc)
+    reopen = [{"time": "2026-10-18T21:00:00.000000000Z"}]
+    assert _market_closed_at(sat, reopen)
+
+
+def test_weekday_stamp_is_executable():
+    from datetime import datetime, timezone
+    from ops.shadowboard import _market_closed_at
+    wed = datetime(2026, 10, 21, 7, 3, 44, tzinfo=timezone.utc)
+    assert not _market_closed_at(wed, [{"time": "2026-10-21T07:05:00.000000000Z"}])
+    assert not _market_closed_at(wed, [])
+    prev = [{"time": "2026-10-21T06:55:00.000000000Z"}, {"time": "2026-10-21T07:00:00.000000000Z"}]
+    assert not _market_closed_at(wed, [{"time": "2026-10-21T07:05:00.000000000Z"}], prev)
+
+
+def test_sunday_pre_open_stamp_is_market_closed():
+    from datetime import datetime, timezone
+    from ops.shadowboard import _market_closed_at
+    sun = datetime(2026, 10, 18, 20, 45, 2, tzinfo=timezone.utc)
+    nxt = [{"time": "2026-10-18T21:00:00.000000000Z"}]          # 15 min later
+    fri = [{"time": "2026-10-16T20:50:00.000000000Z"}, {"time": "2026-10-16T20:55:00.000000000Z"}]
+    assert not _market_closed_at(sun, nxt)                       # forward alone misses it
+    assert _market_closed_at(sun, nxt, fri)
