@@ -284,6 +284,18 @@ b_open = badge("open", f"{opn} ({usign}${abs(upl):,.0f})", "58a6ff")
 b_live = badge("status", "LIVE", "3fb950")
 
 # ── README block ──────────────────────────────────────────────────────────────
+# Rolling win rate (Brock 2026-10-21): all-time + last 90/60/30/15/7 days, so
+# the README shows the trend. Fail-soft: a table error never blocks the record.
+try:
+    sys.path.insert(0, str(REPO))
+    from ops.rolling_winrate import rolling_table
+    rolling = (f"#### Win rate: all-time vs. recent\n\n{rolling_table(rows, now)}\n\n"
+               f"<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. "
+               f"Windows count back from {now.strftime('%Y-%m-%d %H:%M UTC')} by close time; "
+               f"refreshed hourly with each new close.</sub>\n\n")
+except Exception as e:
+    print(f"livelog: rolling win-rate table skipped ({e})", file=sys.stderr)
+    rolling = ""
 rec = f"{n_green}/{n_tr} green" + (f" ({n_red} red)" if n_red else ", 100% green so far")
 block = (
     f"<!-- LIVE_BALANCE_START -->\n"
@@ -291,6 +303,7 @@ block = (
     f"![status]({b_live}) ![P/L]({b_pl}) ![trades]({b_tr}) ![open]({b_open})\n\n"
     f"[![live track record](livelog/equity.svg)](livelog/trades.csv)\n\n"
     f"</div>\n\n"
+    + rolling
     + (f"> **Capital added since cutover: {'+' if net_transfers >= 0 else '−'}${abs(net_transfers):,.2f}** — "
        f"backed out of the record: deposits/withdrawals never count as trading P/L, and the headline % is "
        f"time-weighted against the capital actually at work.\n>\n" if abs(net_transfers) >= 0.01 else "")
