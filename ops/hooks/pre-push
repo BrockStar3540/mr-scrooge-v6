@@ -24,7 +24,9 @@ ZERO=0000000000000000000000000000000000000000
 # ran the whole suite twice there: 20–50 s of CPU an hour on the machine that
 # trades, to re-test code nobody changed. A push is data-only when EVERY file in
 # EVERY pushed range is under livelog/ or is README.md, which no test reads (CI
-# already ignores both). Anything else runs both unpiped suites exactly as
+# already ignores both). Since 2026-10-21 the public hypothesis registry the
+# :20 state commit writes (research/registry/, issue #9) is data too: no test
+# reads it and CI ignores it. Anything else runs both unpiped suites exactly as
 # before: code, config/ (state commits: ~14 test files read it), a new branch,
 # an unknown base, a rename, empty input. So the B-118 promise still holds for
 # every push that can change behaviour, and the secrets sweep below still runs
@@ -40,14 +42,14 @@ data_only_push() {
         while IFS= read -r f; do
             [ -n "$f" ] || continue
             seen=1
-            case "$f" in livelog/*|README.md) ;; *) return 1 ;; esac
+            case "$f" in livelog/*|README.md|research/registry/*) ;; *) return 1 ;; esac
         done <<< "$files"
     done <<< "$REFS"
     [ "$seen" -eq 1 ]
 }
 
 if data_only_push; then
-    echo "pre-push: data-only push (livelog/ and README.md only): suite skipped; the secrets sweep still runs."
+    echo "pre-push: data-only push (livelog/, README.md, research/registry/ only): suite skipped; the secrets sweep still runs."
 else
     # CI PARITY (2026-08-07). CI runs the suite TWICE — once with order fixed and
     # once RANDOMISED (pytest-randomly, requirements-dev.txt). This hook used to

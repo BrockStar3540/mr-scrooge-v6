@@ -5,8 +5,8 @@ as a **shadow** first — stamped on live markets, scored on the forward price p
 the Shadowboard. The Bar Governor (`ops/governor.py`) is the daemon that acts on that
 evidence: an enabled admission lane can move a shadow to a reduced-risk **PROBE**;
 completed broker family cycles then graduate it to ACTIVE or demote it to SHADOW.
-It runs every SIX HOURS (00:35/06:35/12:35/18:35 UTC). Humans set the standard and
-commission admission lanes; the bot applies it.
+It runs HOURLY at :35 UTC (six-hourly until an operator change in August 2026). Humans set
+the standard and commission admission lanes; the bot applies it.
 
 ## The standard (what it's tuned to)
 
@@ -23,7 +23,7 @@ never governs capital.
 | Switch | Fires when |
 |---|---|
 | **ADMIT (Cheater v4 — separate opt-in, default OFF)** SHADOW → PROBE | Independently qualify PARENT_ONLY and FAMILY_PP on complete virtual family cycles: ≥ **+1.25R** covered gain, ≥ **3 resolved cycles / 2 days**, ≥2 positive cycles, ≤60% single-cycle gain share, coverage ≥1.20. Missing or censored replay vetoes admission. FAMILY_PP additionally needs ≥3 paired cycles with **GridLift LCB90 > 0**. One 0.33× whole-family seat maximum. |
-| **ADMIT (ordinary lane — ON since 2026-08-03, operator decision)** SHADOW → PROBE | The D-7 parent/horizon predicate at the operator bar: **n ≥ 10 era v2 episodes / ≥ 5 independent day-blocks**, avg ≥ +2.0p, block LCB > 0, BH-FDR q ≤ 0.05. All admissions land on a 0.33× PROBE, max 2 per run, one seat per (pair, side) cluster. |
+| **ADMIT (ordinary lane — ON since 2026-08-03, operator decision)** SHADOW → PROBE | The D-7 parent/horizon predicate at the operator bar: **n ≥ 10 era v2 episodes / ≥ 5 independent day-blocks**, avg ≥ +2.0p, block LCB > 0, BH-FDR q ≤ 0.10 (`fdr_q`, raised from 0.05 by operator decision 2026-08-06). All admissions land on a reduced-size PROBE (`probe_sizing_mult` 0.20× since 2026-10-01), max 3 per run, one seat per (pair, side) cluster. **Switched OFF since 2026-10-12** (`allow_promotions: false`). |
 | **TRUTH-CHECK GATE (2026-08-04, operator)** | A shadow whose **virtual family-cycle** sign (parent + popper grid replayed over real M5 bid/ask candles, `data/virtual_cycles.json`, 6h batch) **contradicts its own broker fills** (full window — era resets never erase real fills) cannot promote: proven-wrong sim never spends money. Ledger action `PROMOTE-GATED-TRUTH`; the board mirrors it as **TRUTH BLOCKED** and a ❌ badge. Measured basis: parent/horizon sim agreed with broker sign 3/10, virtual family 5/10 — contradictions are flagged and gated, never averaged away. |
 | **THREE-STRIKES RULE (2026-08-03, operator)** | Every executed demotion is a **permanent strike** (`governor_state.demotion_counts`, 🔻 badge per strike on the dashboard, forever). An ever-demoted cell re-promotes only over the **redemption bar: n ≥ 20 / days ≥ 10** — the relaxed bar is for first offenders only. The **3rd strike retires the cell to DISABLED**: untouchable by every automation, manual re-enable only. |
 | **GRADUATE** PROBE → ACTIVE | ≥6 completed broker family cycles with positive family edge LCB. |
@@ -69,9 +69,11 @@ never award what the governor would reject.
   diagnostic only.
 - **Benjamini–Hochberg FDR (D-7).** With ~150 hypotheses live, per-test
   bounds are a false-discovery machine. Each run computes BH q-values across
-  the entire candidate docket; promotion requires **q ≤ 0.05**. The
-  hypothesis registry (`data/hypothesis_registry.json`) documents everything
-  ever examined.
+  the candidate docket (setups that reached their counting gates, `fdr_family:
+  docket`); promotion requires **q ≤ 0.10** in the shipped config (0.05 is the
+  code default). The hypothesis registry (`data/hypothesis_registry.json`)
+  documents everything ever examined; its public copy, with every setup's score
+  at each governor decision, is [research/registry/](../research/registry/README.md).
 - **Sequential-peeking guard (D-7).** A setup that fails the bar is not
   re-tested until it has at least one *new* independent block
   (`last_eval_blocks` in governor state) — daily re-rolls of unchanged
@@ -82,7 +84,7 @@ never award what the governor would reject.
   as one `METRIC-ERA-RESET` per live setup. That historical admission lane is now
   diagnostic-only by default (`allow_promotions: false`); Cheater v4 reads raw
   era-clocked episodes and performs its own family replay. Demotions run every
-  six hours regardless.
+  governor run (hourly) regardless.
 
 **Era clocks got stricter too:** any change to a setup's *mechanics*
 (conditions, exit, side, sizing, horizon — prose excluded) resets its
@@ -146,12 +148,12 @@ scoring, and the Shadowboard all keep running, but no statuses move. The switch 
 | `bar_avg` | `2.0` | net pips/episode bar |
 | `lcb_min` | `0.0` | required block-bootstrap lower bound to promote |
 | `bootstrap_reps` / `bootstrap_confidence` | `10000` / `0.95` | block bootstrap settings |
-| `fdr_q` | `0.05` | Benjamini–Hochberg q-value ceiling across the docket |
+| `fdr_q` | `0.05` | Benjamini–Hochberg q-value ceiling across the docket (shipped config: `0.10` since 2026-08-06) |
 | `recent_n` / `recent_min` | `5` / `0.0` | the 7-day guard |
 | `family_min_cycles` / `family_defend_cycles` | `2` / `3` | completed broker-cycle conviction / defense floors |
 | `family_demote_pips` | `-60.0` | family era net pips at/below this → demote + poppers off |
 | `family_defend_pips` | `60.0` | family era net pips at/above this → seat safe from bar_lost |
-| `max_promotions` / `max_demotions` | `2` / `4` | per-run rails |
+| `max_promotions` / `max_demotions` | `2` / `4` | per-run rails (shipped config: `3` / `4`) |
 | `slippage_pips` | `0.5` | slippage haircut per episode |
 | `per_test_z` | `2.33` | legacy-display LCB only — **not** a promotion input since D-7 |
 | `default_era_start` | *(era anchor)* | evidence floor for setups with no recorded clock |
@@ -171,5 +173,5 @@ and [the README's trial-system section](../README.md) for where this sits in the
 Manual rulings remain possible at any time through the same dashboard controls; the governor
 simply makes the default path evidence-driven rather than attention-driven.
 
-> ⚠️ Research software on an OANDA practice account. The governor promotes to live *practice*
-> trading; nothing here is financial advice.
+> ⚠️ Research software trading a live OANDA account with real money since the 2026-07-19
+> cutover. The governor's flips change what trades live. Nothing here is financial advice.

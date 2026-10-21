@@ -286,6 +286,7 @@ if two qualify in the same window, best takes $10,000 and the runner-up $5,000.
 |---|---|
 | 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | **start here** — the falsification method, the activation-bar doctrine, open dockets |
 | 🤖 **[The Bar Governor](docs/GOVERNOR.md)** | the autonomous promote/demote loop — the standard, why the numbers, the rails, the ledger, the ON/OFF switch |
+| 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup the governor has ever scored (M_ever), every decision and its scores, refreshed hourly. The multiple-testing denominator, in public. Plus the pre-registered [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) of the promoted set |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
 | 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001→B-112 — every dead end and defect, on purpose |
 | 📄 **[Papers index](docs/papers/)** | incl. the [cost-aware exit-classes paper](docs/PAPER_cost_aware_exit_classes_2026-07-05.md) (the chapter the wide-stop turn revised) |

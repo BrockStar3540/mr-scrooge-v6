@@ -11,6 +11,7 @@ on:
     # so a commit touching README *and* code still runs the suite.
     paths-ignore:
       - 'livelog/**'
+      - 'research/registry/**'
       - 'README.md'
       - 'docs/**'
       - '**/*.md'

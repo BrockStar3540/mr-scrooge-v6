@@ -4,6 +4,29 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.30.14] — 2026-10-21 — Issue #9: public hypothesis registry + pre-registered DSR/PBO test
+
+### Added
+- **The hypothesis registry is public** ([research/registry/](research/registry/README.md)).
+  It lists every setup ever scored (M_ever = 1,701), with first-seen dates, config hashes,
+  ever-seated flags, every governor/operator decision with its recorded scores, the bar
+  evidence of every setup (hourly from today), and the Cheater-lane score history (daily,
+  back to 2026-08-01). `ops/state_commit.py` refreshes it at :20 and commits it on its own.
+  The pre-push hook and CI treat registry-only pushes as data (no suite run).
+- **Pre-registered deflated Sharpe + PBO/CSCV test** of the promoted set
+  ([research/deflation/PREREGISTRATION.md](research/deflation/PREREGISTRATION.md),
+  `research/tools/deflation_test.py`). It is committed before being run. Results follow in
+  a separate commit.
+
+### Fixed (docs)
+- `docs/GOVERNOR.md`: BH-FDR is q ≤ 0.10 in the shipped config, not 0.05. The governor runs
+  hourly, not six-hourly. Max 3 promotions per run. PROBE size is 0.20×. Promotions are off
+  since 10-12. The account is live, not practice.
+
+### Tests
+- `tests/test_registry_publish.py`, `tests/test_state_commit_registry.py`,
+  `tests/test_deflation_test.py` (25 new).
+
 ## [6.30.13] — 2026-10-01 — B-140: graduation prices in one full stop; PROBE 0.20×; reaper 24h
 
 ### Changed (operator)

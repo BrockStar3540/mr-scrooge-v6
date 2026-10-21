@@ -15,6 +15,11 @@ Commits only ` M` (tracked, modified) paths under config/ — never untracked
 files, never anything another process staged. Fail-soft everywhere: an
 unreadable file (mid-write race) or a push failure leaves the tree for the
 next hourly run.
+
+Since 2026-10-21 (issue #9) the same run also refreshes the PUBLIC hypothesis
+registry (research/tools/registry_publish.py -> research/registry/) and commits
+that directory on its own, path-limited, so nothing else staged rides along.
+Registry-only pushes are data-only for the pre-push hook (no suite run).
 """
 import json
 import subprocess
@@ -120,31 +125,89 @@ def build_summary(paths):
     return head_line + "\n\n" + body, ok_paths
 
 
-def main():
+REGISTRY_DIR = "research/registry"
+_CODE_ROOT = Path(__file__).resolve().parents[1]
+
+
+def publish_registry():
+    """Refresh research/registry/ (issue #9). Fail-soft: a publisher error
+    never blocks the config commit."""
+    if str(_CODE_ROOT) not in sys.path:
+        sys.path.insert(0, str(_CODE_ROOT))
+    try:
+        from research.tools import registry_publish
+        return registry_publish.publish(repo=REPO)
+    except Exception as exc:  # noqa: BLE001 — fail-soft by contract
+        print(f"state_commit: registry publish failed: {exc}", file=sys.stderr)
+        return None
+
+
+def registry_paths():
+    """This run's own outputs under research/registry/ (new or modified)."""
+    out = _git("status", "--porcelain", "--untracked-files=all", "--",
+               REGISTRY_DIR).stdout
+    return [ln[3:].strip() for ln in out.splitlines()
+            if ln[:2] in (" M", "??", "M ", "A ", "AM", "MM")]
+
+
+def commit_registry(summary):
+    """Commit research/registry/ alone. Returns True if a commit landed."""
+    paths = registry_paths()
+    if not paths:
+        return False
+    _git("add", "--", *paths)
+    s = summary or {}
+    msg = (f"registry: M_ever={s.get('M_ever', '?')}, "
+           f"{s.get('bar_rows', 0)} bar-score change(s), "
+           f"{s.get('cheater_rows', 0)} cheater-score row(s), "
+           f"{s.get('decisions', '?')} decisions")
+    r = _git("commit", "-q", "-m", msg,
+             "-m", "Auto-committed by ops/state_commit.py (issue #9 public registry).",
+             "--", *paths)
+    if r.returncode != 0:
+        print(f"state_commit: registry commit failed: {r.stderr.strip()}",
+              file=sys.stderr)
+        return False
+    return True
+
+
+def commit_config():
+    """Commit machine-written config state. Returns True if a commit landed."""
     paths = modified_config_paths()
     if not paths:
         print("state_commit: clean")
-        return 0
+        return False
     msg, ok_paths = build_summary(paths)
     if not ok_paths:
         print("state_commit: all candidates unreadable this run — deferring")
-        return 0
+        return False
     _git("add", "--", *ok_paths)
     if _git("diff", "--cached", "--quiet").returncode == 0:
         print("state_commit: nothing staged")
-        return 0
+        return False
     r = _git("commit", "-q", "-m", msg,
              "-m", "Auto-committed by ops/state_commit.py (B-126).")
     if r.returncode != 0:
         print(f"state_commit: commit failed: {r.stderr.strip()}",
               file=sys.stderr)
+        return False
+    print(f"state_commit: committed {len(ok_paths)} file(s)")
+    return True
+
+
+def main():
+    committed = commit_config()
+    if commit_registry(publish_registry()):
+        print("state_commit: committed research/registry/")
+        committed = True
+    if not committed:
         return 0
     p = _git("push", "-q")
     if p.returncode != 0:
         print(f"state_commit: push failed (will retry via next commit): "
               f"{p.stderr.strip()}", file=sys.stderr)
         return 0
-    print(f"state_commit: committed+pushed {len(ok_paths)} file(s)")
+    print("state_commit: pushed")
     return 0
 
 
