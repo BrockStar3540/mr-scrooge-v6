@@ -1175,6 +1175,58 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 - **Lesson:** a confidence bound only covers the outcomes the sample contains. When the payoff is
   many small wins against one large loss, price the large loss in explicitly.
 
+
+### B-141 — closed-market stamps: the weekend gap scored as shadow evidence
+
+- **Discovered:** 2026-10-21, a data-quality note from the issue #9 DSR/PBO test (1,421 of
+  70,097 resolved v2 episodes had a Saturday entry time).
+- **Area:** `ops/shadowboard.py` `_score_v2`; the stamp source is `modules/cells/cell.py` (TRIALSTAMP).
+- **Symptom / chain:** the scan loop has no market-open gate, so it keeps evaluating all weekend
+  on the frozen Friday quote. EUR_USD stamped 1.12377/1.12397 from Fri 22h to Sun 13h UTC, and
+  each session start (07/13/22h UTC) opened fresh episodes. `_score_v2` asked OANDA for candles
+  `from=<Saturday>` and replayed from the Sunday reopen, so the weekend gap was booked as P&L on
+  an entry the broker would have refused (MARKET_HALTED). That came to 2,651 of 70,769 resolved
+  v2 episodes, mean net240 -5.0p vs +0.3p, 23% at -40p or worse vs 15%. Saturday blocks also
+  counted as independent days. Effect: 9 setups flipped promotability; no ACTIVE/PROBE
+  demotion verdict changed.
+- **Root cause:** a stamp was treated as executable whenever the bot emitted it. Nothing checked
+  that the market was trading.
+- **Fix (e08d47ce, operator-approved):** `_market_closed_at()` rules a stamp `market_closed`
+  (net240 None, never re-scored) when no M5 bar opens within 30 min after it or closed within
+  30 min before it. The backward side catches Sun 20:4x stamps that still carry Friday's price.
+  Four weeks of M5 bars on all 18 pairs show no weekday gap of 15 min or more.
+  `research/tools/mark_closed_market_2026-10-21.py` retro-marked 3,200 episodes (backup
+  `data/shadowboard.json.pre-closed-market-20261021`). The stamper is unchanged (trading path).
+- **Still open:** the Cheater lane's `family_cycle_replay.episode_records` replays raw episodes,
+  closed-market ones included (harmless while `cheater_promotion_enabled` is false). ACTIVE/PROBE
+  setups also attempt weekend entries and rely on MARKET_HALTED (operator's call).
+- **Lesson:** a timestamp from the bot proves the bot ran, not that the market traded. Check the
+  tape around the stamp.
+
+### B-142 — restart recovery re-keys a parent as "recovery", defeating per-cell popper opt-outs
+
+- **Discovered:** 2026-10-21 22:16Z, on the restart for the B-141 cleanup. **Status: OPEN** (not
+  fixed; operator OK needed, trading path).
+- **Area:** `core/engine.py` startup recovery (stub `TradeTicket(session="recovery")`) feeding
+  `modules/management/party_package.py` `on_parent_open` / `pp_cell_enabled`.
+- **Symptom / chain:** CAD_JPY long 38158 opened 21:10Z with
+  "PP GRID skipped CAD_JPY/ny setup=ps_ceil_fade_counter_long — poppers disabled for this cell"
+  (per_cell `CAD_JPY|ny|ps_ceil_fade_counter_long=false`). After the restart, recovery re-opened
+  it under session `recovery` with the setup id recovered from the truncated client extension
+  (`ps_ceil_fade_counter_lon`). `pp_cell_enabled` looked up `CAD_JPY|recovery|...`, found no
+  opt-out, defaulted to True, and armed a fresh grid (markers -25/-35/-45/-55). Popper 38176
+  (4,408u @ 112.398, SL 111.798) fired at 03:34:59Z. The operator retired the grid at 03:56Z;
+  `/api/pp/retire` refused while the parent was open and quiesced it instead (ledger
+  `OPERATOR-PP-RETIRE`). The same path produced the harmless `PP GRID OWNER MISMATCH` errors for
+  EUR_USD/USD_JPY, whose persisted grids kept their real owners.
+- **Root cause:** recovery rebuilds the ticket without the parent's real session, and the setup id
+  survives only as a 24-character truncation, so every exact-key lookup downstream misses.
+- **Fix:** none yet. Candidates: recover session + full setup id from persisted state (or the
+  cell config) instead of the stub; or fail closed in `on_parent_open` when the session is
+  `recovery` and no persisted grid exists.
+- **Lesson:** an opt-out keyed on identity fails open when identity is lost. Recovery paths must
+  restore identity or default to the conservative side.
+
 ---
 
 # Records not recovered
