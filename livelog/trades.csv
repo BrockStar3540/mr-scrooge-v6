@@ -1008,3 +1008,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-23T06:25:17Z,AUD_USD,long,10179,15.27,parent
 2026-10-23T08:30:58Z,GBP_CAD,long,649,0.41,popper
 2026-10-23T09:52:08Z,GBP_USD,long,3256,-7.23,parent
+2026-10-23T11:37:43Z,GBP_CAD,long,640,-2.31,parent
