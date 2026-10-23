@@ -1005,3 +1005,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-22T22:06:10Z,USD_CAD,short,10886,4.62,parent
 2026-10-22T23:47:00Z,USD_JPY,long,4354,-16.92,parent
 2026-10-23T03:00:34Z,AUD_USD,long,10468,-3.98,parent
+2026-10-23T06:25:17Z,AUD_USD,long,10179,15.27,parent
