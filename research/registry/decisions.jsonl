@@ -9343,3 +9343,6 @@
 {"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_JPY|ny|timing_lean_30_g_hot", "seq": 10980, "t": "2026-10-23T21:38:57.097331+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_USD|ny|alpha_extended_fade_short_g_a10", "seq": 10981, "t": "2026-10-23T21:38:57.097331+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "USD_JPY|ny|ninja_stab_fade_short", "seq": 10982, "t": "2026-10-23T21:38:57.097331+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_JPY|ny|timing_lean_30_g_hot", "seq": 10983, "t": "2026-10-23T22:38:26.939971+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_USD|ny|alpha_extended_fade_short_g_a10", "seq": 10984, "t": "2026-10-23T22:38:26.939971+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "USD_JPY|ny|ninja_stab_fade_short", "seq": 10985, "t": "2026-10-23T22:38:26.939971+00:00", "why": "allow_promotions=false"}
