@@ -595,3 +595,4 @@
 {"date": "2026-10-23", "eligible": false, "heat": null, "key": "USD_CHF|ny|ninja_amp_break_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-10-23", "eligible": false, "heat": -0.395, "key": "USD_JPY|ny|control_atr5m_60_t20s", "n_cycles": 1, "promoted": false, "status": "ACTIVE", "trust": -0.395}
 {"date": "2026-10-23", "eligible": true, "heat": null, "key": "USD_JPY|ny|shark_adr_late_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-24", "eligible": false, "heat": null, "key": "AUD_JPY|london|shark_momo_run_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
