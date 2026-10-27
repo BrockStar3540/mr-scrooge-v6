@@ -1034,3 +1034,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-27T14:01:53Z,USD_JPY,long,4270,1.87,parent
 2026-10-27T14:35:14Z,AUD_USD,long,10099,6.06,parent
 2026-10-27T16:20:00Z,GBP_USD,short,3230,1.94,parent
+2026-10-27T20:50:42Z,EUR_USD,long,9533,-38.42,parent
