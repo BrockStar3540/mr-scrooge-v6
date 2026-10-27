@@ -44,6 +44,9 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 BOARD_URL = "http://127.0.0.1:8084/api/shadowboard"
 SCHEMA = 1
+# First row of bar_scores/: before this, the governor logged bar evidence only
+# for setups it acted on, so every setup first seen earlier has a score gap.
+BAR_SCORES_SINCE = "2026-10-21T20:49:20+00:00"
 
 SEAT_STATUSES = ("PROBE", "ACTIVE")
 # ledger actions that are about a setup's evidence or seat
@@ -341,6 +344,17 @@ def load_state(path):
         return {}
 
 
+def score_gap(first_seen, bar_score):
+    """(score_missing, score_missing_before) for one setup. A gap is never a
+    zero: readers must skip the period, not score it (issue #9)."""
+    try:
+        early = datetime.fromisoformat(str(first_seen)) < datetime.fromisoformat(BAR_SCORES_SINCE)
+    except ValueError:
+        early = True                              # unknown first_seen: assume the gap
+    now_missing = not bar_score or bar_score.get("n") is None
+    return early or now_missing, (BAR_SCORES_SINCE if early else None)
+
+
 def publish(repo=REPO, now=None, board=None, fetch=fetch_board):
     """One publish pass. Returns a short summary dict, or None when this
     checkout has no governor registry (a test or contributor clone)."""
@@ -429,6 +443,8 @@ def publish(repo=REPO, now=None, board=None, fetch=fetch_board):
                            "net_avg": lb[4], "block_lcb": lb[5], "q": lb[6],
                            "promotable": lb[7], "codes": lb[8]} if lb else None),
         }
+        setups[k]["score_missing"], setups[k]["score_missing_before"] = score_gap(
+            setups[k]["first_seen"], setups[k]["bar_score"])
     sc = Counter(v["status"] for v in setups.values())
     doc = {
         "schema": SCHEMA,
@@ -437,11 +453,13 @@ def publish(repo=REPO, now=None, board=None, fetch=fetch_board):
         "registry_mtime": datetime.fromtimestamp(reg_path.stat().st_mtime,
                                                  timezone.utc).isoformat(),
         "board_generated": st.get("board_generated"),
+        "bar_scores_since": BAR_SCORES_SINCE,
         "counts": {
             "M_ever": len(reg),
             "M_live": sum(1 for v in setups.values() if v["status"] in ("ACTIVE", "SHADOW")),
             "config_versions": sum(len(v["cfg_hashes"]) for v in setups.values()),
             "ever_seated": sum(1 for v in setups.values() if v["ever_seated"]),
+            "score_missing": sum(1 for v in setups.values() if v["score_missing"]),
             "status": dict(sorted(sc.items())),
             "decisions_published": len(decisions),
             **dstats,

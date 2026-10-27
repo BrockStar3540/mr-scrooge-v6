@@ -26,6 +26,10 @@ this directory on its own. The governor runs hourly at :35. The live trading rec
   for setups it promoted, demoted or graduated. That is the `bar` field in
   `decisions.jsonl`. `PROMOTE-GATED` rows (the bar was met but promotions were switched off)
   don't carry scores. From 2026-10-21 every setup's bar score is published hourly.
+  `registry.json` marks the gap per setup so a re-run can't read a missing score as zero:
+  `score_missing` is true when the setup has any unscored period (first seen before
+  `bar_scores_since`, or no current bar score), and `score_missing_before` gives the time
+  before which its scores are missing. `counts.score_missing` totals them.
 * **Dry runs are counted, not published.** `counts.dry_run_rows` in `registry.json` is the
   number left out.
 * **Setups seated before the ledger existed** (hand-picked ACTIVE at the 2026-07-19 cutover)

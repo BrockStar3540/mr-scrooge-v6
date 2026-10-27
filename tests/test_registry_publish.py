@@ -192,3 +192,23 @@ def test_prepush_registry_only_push_is_data_only(tmp_path):
 def test_prepush_registry_plus_code_runs_the_suite(tmp_path):
     assert not _hook_data_only(tmp_path, ["research/registry/registry.json",
                                           "research/tools/registry_publish.py"])
+
+
+def test_score_gap_flags_setups_older_than_the_hourly_scores():
+    since = rp.BAR_SCORES_SINCE
+    scored = {"n": 12}
+    assert rp.score_gap(T0, scored) == (True, since)               # seen before scores began
+    assert rp.score_gap("2026-10-22T00:00:00+00:00", scored) == (False, None)
+    assert rp.score_gap("2026-10-22T00:00:00+00:00", None) == (True, None)
+    assert rp.score_gap("2026-10-22T00:00:00+00:00", {"n": None}) == (True, None)
+    assert rp.score_gap(None, scored) == (True, since)             # unknown first_seen
+
+
+def test_registry_marks_missing_scores_instead_of_leaving_them_implicit(repo):
+    rp.publish(repo=repo, now=NOW, board=BOARD)
+    doc = json.loads((repo / "research" / "registry" / "registry.json").read_text())
+    assert doc["bar_scores_since"] == rp.BAR_SCORES_SINCE
+    for v in doc["setups"].values():                                # all first seen 10-20
+        assert v["score_missing"] is True
+        assert v["score_missing_before"] == rp.BAR_SCORES_SINCE
+    assert doc["counts"]["score_missing"] == 3
