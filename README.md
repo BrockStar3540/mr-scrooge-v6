@@ -120,12 +120,6 @@ A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere
 
 ![The SHADOW tab](docs/images/dashboard-shadow.png)
 
-## 🏆 The $10,000 Strategy Contest
-
-<div align="center"><a href="CONTEST.md"><img src="docs/images/contest_badge.png" alt="$10,000 Contest Prize" width="300"></a></div>
-
-Submit a fully mechanical strategy (pairs, sessions, exact entry and exit rules, and your evidence), and it goes on trial in the same harness. Run **90% winners profitably** or **net +500 pips in 30 days** under our measurement and our sponsor pays **$10,000**. Rules: **[CONTEST.md](CONTEST.md)** · [submit](.github/ISSUE_TEMPLATE/contest_submission.md).
-
 ## Read the research
 
 | | |
