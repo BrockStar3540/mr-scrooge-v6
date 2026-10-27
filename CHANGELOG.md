@@ -26,9 +26,9 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
   median CSCV logit, 0.587, which is a median and not a mean.
 
 ### Tests
-- `tests/test_deflation_sensitivity.py` (14 new: the closed-market window in both DST
+- `tests/test_deflation_sensitivity.py` (13 new: the closed-market window in both DST
   regimes, the filters, the dropped-episode count, the logit inversion) and 2 new in
-  `tests/test_registry_publish.py`. Suite 678 → 694.
+  `tests/test_registry_publish.py`. Suite 679 → 694.
 
 ## [6.30.14] — 2026-10-21 — Issue #9: public hypothesis registry + pre-registered DSR/PBO test
 
