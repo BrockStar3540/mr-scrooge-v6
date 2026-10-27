@@ -604,3 +604,15 @@
 {"date": "2026-10-25", "eligible": false, "heat": -0.262, "key": "USD_CAD|ny|echo_box_fade_short", "n_cycles": 3, "promoted": false, "status": "ACTIVE", "trust": -0.154}
 {"date": "2026-10-25", "eligible": false, "heat": null, "key": "USD_CHF|asia|orb_fade_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-10-25", "eligible": false, "heat": -0.135, "key": "USD_JPY|ny|classic_willr_fade_short", "n_cycles": 20, "promoted": false, "status": "ACTIVE", "trust": 0.107}
+{"date": "2026-10-26", "eligible": false, "heat": 0.088, "key": "AUD_USD|asia|ps_floor_fade_long", "n_cycles": 9, "promoted": false, "status": "ACTIVE", "trust": 0.111}
+{"date": "2026-10-26", "eligible": false, "heat": null, "key": "AUD_USD|ny|fvg_fill_long_g_dial_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-26", "eligible": false, "heat": null, "key": "AUD_USD|ny|orb_break_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-26", "eligible": true, "heat": 0.046, "key": "EUR_CAD|ny|rg1_range_scalp_short_g_bb3", "n_cycles": 2, "promoted": false, "status": "SHADOW", "trust": 0.067}
+{"date": "2026-10-26", "eligible": false, "heat": null, "key": "EUR_JPY|london|shark_momo_run_short", "n_cycles": 0, "promoted": false, "status": "PROBE", "trust": null}
+{"date": "2026-10-26", "eligible": false, "heat": null, "key": "USD_CAD|asia|mr2_bb_reversion_short_g_dial_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-26", "eligible": false, "heat": 0.06, "key": "USD_CAD|london|echo_box_fade_short", "n_cycles": 2, "promoted": false, "status": "ACTIVE", "trust": 0.073}
+{"date": "2026-10-26", "eligible": false, "heat": -0.12, "key": "USD_CAD|ny|echo_box_fade_short", "n_cycles": 4, "promoted": false, "status": "ACTIVE", "trust": -0.095}
+{"date": "2026-10-26", "eligible": true, "heat": null, "key": "USD_CAD|ny|orb_break_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-26", "eligible": false, "heat": null, "key": "USD_CHF|asia|mr2_bb_reversion_short_g_dial_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-10-26", "eligible": false, "heat": -0.05, "key": "USD_JPY|ny|classic_willr_fade_short", "n_cycles": 21, "promoted": false, "status": "ACTIVE", "trust": 0.106}
+{"date": "2026-10-26", "eligible": false, "heat": 0.073, "key": "USD_JPY|ny|control_atr5m_60", "n_cycles": 1, "promoted": false, "status": "ACTIVE", "trust": 0.073}
