@@ -1025,3 +1025,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-26T17:38:22Z,USD_CAD,short,10484,5.19,parent
 2026-10-26T20:45:01Z,USD_CAD,short,10671,5.96,parent
 2026-10-26T23:44:37Z,USD_JPY,long,4247,1.81,parent
+2026-10-27T03:30:25Z,AUD_JPY,long,6120,2.31,parent
