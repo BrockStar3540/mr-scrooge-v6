@@ -4,6 +4,13 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.30.16] — 2026-10-27 — The $10,000 Strategy Contest is withdrawn
+
+### Removed
+- **The $10,000 Strategy Contest.** This removes `CONTEST.md`, the contest issue template,
+  `docs/images/contest_badge.png` and the README section. No entries were filed, so no
+  submission was under evaluation. Outside strategies are still welcome through the usual
+  idea and challenge templates ([CONTRIBUTING.md](CONTRIBUTING.md)), with no prize attached.
 ## [6.30.15] — 2026-10-27 — Issue #9 follow-up: public frozen input, closed-market sensitivity, score gaps flagged
 
 ### Added
@@ -1069,7 +1076,7 @@ pre-V5 era's public documents, and every salvageable claim from them re-filed as
 shadow trial. Plus the contest that invites the world to join the docket.
 
 ### Added
-- **The $10,000 Strategy Contest** ([CONTEST.md](CONTEST.md)): sponsor-funded standing
+- **The $10,000 Strategy Contest** (withdrawn 2026-10-27, see 6.30.16; no entries were received): sponsor-funded standing
   challenge — submit a fully mechanical, evidenced, novel strategy; it runs 30 days in the
   forward-test harness. Path A: >=90% WR and profitable with avg winner >= half the avg
   loser; Path B: net +500 pips; both >=20 trades, no >3-market-day gap. First qualifier
