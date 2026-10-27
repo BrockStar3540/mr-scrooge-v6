@@ -17,6 +17,38 @@ The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTO
 - The README research table, `docs/SCROOGE_HISTORY.md` (a new "Public code history" section,
   plus a **Code:** line per version) and `research/README.md` §4 now link to these repos.
   The Dropbox archive links stay until the data archive moves to GitHub.
+## [6.30.16] — 2026-10-27 — The $10,000 Strategy Contest is withdrawn
+
+### Removed
+- **The $10,000 Strategy Contest.** This removes `CONTEST.md`, the contest issue template,
+  `docs/images/contest_badge.png` and the README section. No entries were filed, so no
+  submission was under evaluation. Outside strategies are still welcome through the usual
+  idea and challenge templates ([CONTRIBUTING.md](CONTRIBUTING.md)), with no prize attached.
+## [6.30.15] — 2026-10-27 — Issue #9 follow-up: public frozen input, closed-market sensitivity, score gaps flagged
+
+### Added
+- **The frozen deflation input is public**
+  (`research/deflation/inputs/shadowboard_frozen_2026-10-21T2103Z.json.gz`, SHA-256 of the
+  gunzipped file `e389bfd0…`, matching `results.json`). It was scanned for credentials,
+  account ids, hosts and IPs before publishing. RESULTS.md gives the exact re-run command
+  against the registered commit `276ca5e0`.
+- **Closed-market sensitivity** (`research/tools/deflation_sensitivity.py`,
+  `research/deflation/sensitivity_closed_market.json`). It is post-hoc and runs the
+  registered script unchanged on filtered input. PBO_bar is 0.032 as registered, 0.034
+  with Saturday stamps dropped, and 0.041 with all 2,696 closed-market stamps dropped.
+  Median DSR stays 0.00 and the verdict doesn't change. See the RESULTS.md addendum.
+- **`registry.json` flags score gaps**: `score_missing`, `score_missing_before`,
+  top-level `bar_scores_since` and `counts.score_missing`. A re-run can no longer read a
+  pre-2026-10-21 gap as a zero score.
+
+### Fixed (docs)
+- The "59th percentile" in RESULTS.md is now derived explicitly: the inverse logit of the
+  median CSCV logit, 0.587, which is a median and not a mean.
+
+### Tests
+- `tests/test_deflation_sensitivity.py` (13 new: the closed-market window in both DST
+  regimes, the filters, the dropped-episode count, the logit inversion) and 2 new in
+  `tests/test_registry_publish.py`. Suite 679 → 694.
 
 ## [6.30.14] — 2026-10-21 — Issue #9: public hypothesis registry + pre-registered DSR/PBO test
 
@@ -1057,7 +1089,7 @@ pre-V5 era's public documents, and every salvageable claim from them re-filed as
 shadow trial. Plus the contest that invites the world to join the docket.
 
 ### Added
-- **The $10,000 Strategy Contest** ([CONTEST.md](CONTEST.md)): sponsor-funded standing
+- **The $10,000 Strategy Contest** (withdrawn 2026-10-27, see 6.30.16; no entries were received): sponsor-funded standing
   challenge — submit a fully mechanical, evidenced, novel strategy; it runs 30 days in the
   forward-test harness. Path A: >=90% WR and profitable with avg winner >= half the avg
   loser; Path B: net +500 pips; both >=20 trades, no >3-market-day gap. First qualifier
