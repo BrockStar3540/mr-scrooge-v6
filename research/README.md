@@ -128,6 +128,11 @@ The full research library — every corpus, session diary, and retired module �
 Entry points inside the archive: `00_MASTER_INDEX.md`, `00_HISTORY_V1-V6.md`,
 `00_BOOK_OF_BUGS_V4-V5.md`.
 
+The **code** of every retired version is public with full git history (secret-redacted):
+[V1+V2](https://github.com/BrockStar3540/mr-scrooge-v1), [V3](https://github.com/BrockStar3540/mr-scrooge-v3-archive),
+[V4](https://github.com/BrockStar3540/mr-scrooge-v4-archive), [V5](https://github.com/BrockStar3540/mr-scrooge-v5-archive). See
+[SCROOGE_HISTORY.md](../docs/SCROOGE_HISTORY.md#public-code-history-v1v5).
+
 ### Session diaries — `/SCROOGE ARCHIVE/session-notes/`
 The working record behind every CHANGELOG entry, dated 2026-03 (V1 daily notes) → present. The
 arcs a researcher will most want:
@@ -172,7 +177,7 @@ archived as tarballs):
 ### Retired modules & docs
 - **Retired signal stack (V5 legacy):** the `direction_v2`/`momentum_v3` "certainty" era was
   archived in-repo at cutover as `modules/archive/signals_legacy/` and is reachable in git
-  history at tag `pre-cell-cutover-2026-07-04`. Full V5 tree: `/SCROOGE ARCHIVE/V5/archives/`.
+  history at tag `pre-cell-cutover-2026-07-04` in [mr-scrooge-v5-archive](https://github.com/BrockStar3540/mr-scrooge-v5-archive). Full V5 tree: `/SCROOGE ARCHIVE/V5/archives/`.
 - **Retired V3/V4 repo docs:** `/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/` and
   `.../v4-repo-docs/` — ADRs, evolution timeline, the **strategy encyclopedia** (every strategy
   the strategy era tested and why it's retired), execution physics, research methodology, and the

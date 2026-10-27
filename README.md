@@ -134,6 +134,7 @@ Submit a fully mechanical strategy (pairs, sessions, exact entry and exit rules,
 | 🤖 **[Governor](docs/GOVERNOR.md)** | the promote/demote machinery, the rails, the ledger, the switches |
 | 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup ever scored and every decision, refreshed hourly, plus the [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
+| 🗃️ **Code history V1–V5** | full git history of every retired version, secret-redacted: [V1+V2](https://github.com/BrockStar3540/mr-scrooge-v1) · [V3](https://github.com/BrockStar3540/mr-scrooge-v3-archive) · [V4](https://github.com/BrockStar3540/mr-scrooge-v4-archive) · [V5](https://github.com/BrockStar3540/mr-scrooge-v5-archive) |
 | 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001 → B-140 |
 | 📄 **[Papers](docs/papers/)** | the full paper index |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |

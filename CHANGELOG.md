@@ -4,6 +4,20 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.30.17] — 2026-10-27 — V1–V5 code history is public
+
+### Added (docs)
+- **Every retired version's full git history is public**, with secrets redacted:
+  [mr-scrooge-v1](https://github.com/BrockStar3540/mr-scrooge-v1) (V1, plus V2 on branch `v2`),
+  [mr-scrooge-v3-archive](https://github.com/BrockStar3540/mr-scrooge-v3-archive),
+  [mr-scrooge-v4-archive](https://github.com/BrockStar3540/mr-scrooge-v4-archive) and
+  [mr-scrooge-v5-archive](https://github.com/BrockStar3540/mr-scrooge-v5-archive). That's 843 commits and 18 branches.
+  GitHub tokens, OANDA account ids, IPs and hostnames were redacted in every file version
+  and commit message, and every leaked token was revoked first.
+- The README research table, `docs/SCROOGE_HISTORY.md` (a new "Public code history" section,
+  plus a **Code:** line per version) and `research/README.md` §4 now link to these repos.
+  The Dropbox archive links stay until the data archive moves to GitHub.
+
 ## [6.30.14] — 2026-10-21 — Issue #9: public hypothesis registry + pre-registered DSR/PBO test
 
 ### Added

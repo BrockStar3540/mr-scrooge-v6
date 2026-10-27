@@ -4,7 +4,8 @@
 actually measured, what falsified or superseded it, and what carried forward. The git repo
 stays clean and current; the **Dropbox `/SCROOGE/SCROOGE ARCHIVE/` is the graveyard** — every retired
 version, corpus and session diary is filed there by era and referenced from this log, never
-copied back in. Full forensic bug history: [BOOK_OF_BUGS.md](BOOK_OF_BUGS.md).
+copied back in. The **full git history of V1–V5 is public** as secret-redacted archive repos
+(see [Public code history](#public-code-history-v1v5)). Full forensic bug history: [BOOK_OF_BUGS.md](BOOK_OF_BUGS.md).
 
 Every performance number below is scoped to how it was measured — **sim**, **live** (bot
 journal / intent), or **broker** (OANDA fills, the only trade-truth source). Those scopes are
@@ -70,6 +71,7 @@ repo README and is auto-updated on every push.)
   fixed-pip stops over equity-%; single-process enforcement; the no-reactive-market-order rule.
 - **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V3/archives/mr-scrooge-v1/` (code, Trade-Strategy PDFs, exec
   summaries, AUDIT.md) and `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-03-*` (daily notes).
+- **Code:** [`mr-scrooge-v1`](https://github.com/BrockStar3540/mr-scrooge-v1) (branch `main`).
 
 ## V2 — transitional agent era (Mar 21 – Apr 15, 2026)
 
@@ -85,6 +87,7 @@ repo README and is auto-updated on every push.)
 - **Carried forward:** the shared-state `TradeCoordinator` pattern; single-resource ownership
   protocols; live zero-signal counters.
 - **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V3/archives/legacy/.../mr-scrooge-v2/`.
+- **Code:** [`mr-scrooge-v1`](https://github.com/BrockStar3540/mr-scrooge-v1/tree/v2), branch `v2`.
 
 ## V3 — "The Matrix Era" (Apr 15 – 2026-06-16)
 
@@ -105,6 +108,7 @@ repo README and is auto-updated on every push.)
   matrix-era routing tables, a ~25 GB research corpus, the V1–V3 bug-catalog export). Retired
   V3/V4 repo docs (ADRs, evolution timeline, execution physics, research methodology) are
   harvested under `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v3-repo-docs/`.
+- **Code:** [`mr-scrooge-v3-archive`](https://github.com/BrockStar3540/mr-scrooge-v3-archive) (all 12 branches).
 
 ## V4 — "Bucket-Keyed" (2026-06-11 → 2026-06-18)
 
@@ -133,6 +137,7 @@ repo README and is auto-updated on every push.)
   code+data tarballs, verified 3,924 members intact after B-083; `backtest-sources/`). Retired
   V4 repo docs (strategy encyclopedia, backtest results, research methodology) are under
   `/SCROOGE/SCROOGE ARCHIVE/docs-harvest/v4-repo-docs/`.
+- **Code:** [`mr-scrooge-v4-archive`](https://github.com/BrockStar3540/mr-scrooge-v4-archive) (final state at tag `v4-final`).
 
 ## V5 — "Strategy-Free / The Cell Era" (2026-06-18 → present)
 
@@ -278,6 +283,8 @@ lock a stop within a spread of entry.
 - **Graveyard:** `/SCROOGE/SCROOGE ARCHIVE/V5/` (`SCROOGE_V5_INDEX.md`, archives, test data);
   session diaries under `/SCROOGE/SCROOGE ARCHIVE/session-notes/`; research corpora and truth-matrix
   parquets under `/SCROOGE/SCROOGE ARCHIVE/research-corpora/`.
+- **Code:** [`mr-scrooge-v5-archive`](https://github.com/BrockStar3540/mr-scrooge-v5-archive) (pre-cutover state at tag
+  `pre-cell-cutover-2026-07-04`).
 
 ## V6 — public rebuild (repo created 2026-07-05; pre-live)
 
@@ -296,6 +303,25 @@ lock a stop within a spread of entry.
   is referenced, not carried.
 
 ---
+
+## Public code history (V1–V5)
+
+Published 2026-10-27. Each repo carries its version's **complete git history**: every commit,
+every branch, original dates and messages. Before publishing, every file version and commit
+message was scanned, and these values were redacted in place: GitHub tokens, OANDA account
+ids, IP addresses, and Tailscale/EC2 hostnames. Nothing else changed, so commit hashes differ
+from the private originals only where a redaction touched a commit or one of its ancestors.
+Every leaked token was revoked before publication.
+
+| Version | Repo | Commits | Branches |
+|---|---|---:|---:|
+| V1 + V2 | [mr-scrooge-v1](https://github.com/BrockStar3540/mr-scrooge-v1) (`main` = V1, `v2` = V2) | 50 | 3 |
+| V3 | [mr-scrooge-v3-archive](https://github.com/BrockStar3540/mr-scrooge-v3-archive) | 483 | 12 |
+| V4 | [mr-scrooge-v4-archive](https://github.com/BrockStar3540/mr-scrooge-v4-archive) | 130 | 2 |
+| V5 | [mr-scrooge-v5-archive](https://github.com/BrockStar3540/mr-scrooge-v5-archive) | 180 | 1 |
+
+V3's `_audit/` folder holds raw transcripts and machine-config dumps from that era. They're
+kept as-is apart from the redactions, so expect operational noise.
 
 ## Graveyard map (Dropbox `/SCROOGE/SCROOGE ARCHIVE/`)
 
