@@ -1,0 +1,65 @@
+{
+ "about": "Post-hoc sensitivity for issue #9; not part of the pre-registered verdict.",
+ "generated": "2026-10-27T02:14:09.120884+00:00",
+ "inputs": {
+  "episodes_sha256": "e389bfd0c51603acc8298176fb727a1bdb9cfe3cd52b1af2fa1582a2ef33ac19",
+  "registry_sha256": "795a50a259b8f3d628384cf5608ce16d9cfaf275846be3a1357968825fd5912e",
+  "decisions_sha256": "f0c7c04ec031d42ccb04ecee73d67c7d6e542df26e7731aafb82f40afb33594b",
+  "cutoff_exclusive": "2026-10-21",
+  "first_day": "2026-07-28",
+  "last_day": "2026-10-20",
+  "market_days": 85,
+  "episodes_used": 70097,
+  "episodes_dropped_retired_side": 0,
+  "slippage_pips": 0.5,
+  "bar_replica": {
+   "min_raw_episodes": 10.0,
+   "min_independent_days": 5.0,
+   "bar_avg": 2.0,
+   "lcb_min": 0.0,
+   "fdr_q": 0.1,
+   "bootstrap_confidence": 0.95
+  },
+  "min_days_dsr": 10,
+  "min_days_per_cscv_half": 5
+ },
+ "baseline": {
+  "dropped_episodes": 0,
+  "episodes_used": 70097,
+  "median_dsr_ever_seated": 0.0,
+  "pbo_bar_S16": 0.031701631701631705,
+  "pbo_bar_S8": 0.05714285714285714,
+  "pbo_max_sr_S16": 0.18997668997668998,
+  "median_logit_bar_S16": 0.34964565699710703,
+  "selected_oos_rank_pct_S16": 0.5865316490256943,
+  "mean_oos_sr_selected_S16": 0.1790117946198488,
+  "mean_oos_sr_rest_S16": 0.07450011360011406,
+  "verdict_rule_output": "MEASURES THE SEARCH"
+ },
+ "saturday": {
+  "dropped_episodes": 1421,
+  "episodes_used": 68676,
+  "median_dsr_ever_seated": 0.0,
+  "pbo_bar_S16": 0.03364413364413364,
+  "pbo_bar_S8": 0.1,
+  "pbo_max_sr_S16": 0.17762237762237762,
+  "median_logit_bar_S16": 0.32904940442277003,
+  "selected_oos_rank_pct_S16": 0.581528064334425,
+  "mean_oos_sr_selected_S16": 0.19058874214106983,
+  "mean_oos_sr_rest_S16": 0.08256451824084844,
+  "verdict_rule_output": "MEASURES THE SEARCH"
+ },
+ "closed": {
+  "dropped_episodes": 2696,
+  "episodes_used": 67401,
+  "median_dsr_ever_seated": 0.0,
+  "pbo_bar_S16": 0.041025641025641026,
+  "pbo_bar_S8": 0.08571428571428572,
+  "pbo_max_sr_S16": 0.17606837606837608,
+  "median_logit_bar_S16": 0.3125485764594328,
+  "selected_oos_rank_pct_S16": 0.5775072175285867,
+  "mean_oos_sr_selected_S16": 0.18738900933871597,
+  "mean_oos_sr_rest_S16": 0.08428380720641054,
+  "verdict_rule_output": "MEASURES THE SEARCH"
+ }
+}

@@ -82,12 +82,58 @@ edge. That limit was registered in advance (§7).
 | Registry | `research/registry/registry.json` @ `276ca5e0` (SHA-256 `795a50a259b8f3d628384cf5608ce16d9cfaf275846be3a1357968825fd5912e`) |
 | Decisions | `research/registry/decisions.jsonl` @ `276ca5e0` (SHA-256 `f0c7c04ec031d42ccb04ecee73d67c7d6e542df26e7731aafb82f40afb33594b`) |
 
-The episode file is private because of its size, about 70 MB. The frozen copy (3.5 MB
-gzipped, hash verified after archiving) is kept in the research archive under
-`research-corpora/issue9-deflation-2026-10-21/` and is available on request, so anyone can
-re-run:
+The frozen episode file is public as of 2026-10-27:
+[`inputs/shadowboard_frozen_2026-10-21T2103Z.json.gz`](inputs/shadowboard_frozen_2026-10-21T2103Z.json.gz)
+(3.5 MB gzipped; the gunzipped file hashes to `e389bfd0…` above). It was scanned for
+credentials, account ids, hosts and IP addresses before publishing, and holds none. To re-run
+against the registered inputs:
 
 ```
-python research/tools/deflation_test.py --episodes shadowboard.json --cutoff 2026-10-21 \
-    --out results.json
+git show 276ca5e0:research/registry/registry.json   > registry.json
+git show 276ca5e0:research/registry/decisions.jsonl > decisions.jsonl
+mkdir cells && git archive 276ca5e0 config/cells config/setup_aliases.json | tar -x -C cells
+gunzip -k research/deflation/inputs/shadowboard_frozen_2026-10-21T2103Z.json.gz
+python research/tools/deflation_test.py \
+    --episodes research/deflation/inputs/shadowboard_frozen_2026-10-21T2103Z.json \
+    --registry registry.json --decisions decisions.jsonl \
+    --cells cells/config/cells --aliases cells/config/setup_aliases.json \
+    --cutoff 2026-10-21 --out results.json
 ```
+
+## Addendum (2026-10-27): reproduction and closed-market sensitivity
+
+Post-hoc, asked for on issue #9. Not part of the pre-registered verdict, and
+PREREGISTRATION.md is unchanged.
+
+**Reproduction.** The command above was re-run on Linux (Python 3.13, numpy 2.5) and the
+three input hashes all match. Every field of `results.json` reproduces except
+`median_logit_bar`, which differs in the fifth decimal (S = 16: 0.34963 published, 0.34965
+re-run). The likely cause is tie order in `argsort` between numpy builds. No verdict
+number moves.
+
+**The "59th percentile".** RESULTS.md says the selected set sits "at about the 59th
+percentile". That figure comes from inverting the median CSCV logit:
+1 / (1 + e^(−0.3496)) = 0.587. It is a median across splits, not an average as the issue
+#9 comment said. The sensitivity file now records it as `selected_oos_rank_pct_S16`.
+
+**Closed-market episodes dropped.** `research/tools/deflation_sensitivity.py` runs the
+registered `run()` unchanged on filtered copies of the frozen input. Output:
+[`sensitivity_closed_market.json`](sensitivity_closed_market.json).
+
+| Input | Episodes dropped | Median DSR | PBO_bar S=16 | PBO_bar S=8 | PBO_maxSR S=16 | Selected rank | Verdict rule |
+|---|---:|---:|---:|---:|---:|---:|---|
+| As registered | 0 | 0.00 | 0.032 | 0.057 | 0.190 | 0.587 | measures the search |
+| Saturday stamps dropped | 1,421 | 0.00 | 0.034 | 0.100 | 0.178 | 0.582 | measures the search |
+| All closed-market stamps dropped (NY Fri 16:55 → Sun 17:00) | 2,696 | 0.00 | 0.041 | 0.086 | 0.176 | 0.578 | measures the search |
+
+The closed-market window is the calendar form of the live scorer's fix
+(`ops/shadowboard._market_closed_at`, commit `e08d47ce`). On the live store, that fix marked
+2,651 resolved episodes. PBO_bar stays low, DSR stays at zero, and the verdict doesn't
+change. The weekend data issue doesn't drive either number.
+
+**On the reading of the verdict.** At N = 1,701 over 85 market days, the zero-skill best
+of N is about 0.67 daily Sharpe. Even the equal-weight book (0.36, PSR 0.999) deflates to
+0.003. So this sample can't separate a modest real edge from the search. "Measures the
+search" describes what the bar can certify at this length. It is not proof that the
+selected setups have no edge. The separate evidence on that question is the live broker
+record in `livelog/`, which these tests don't use.
