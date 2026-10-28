@@ -4810,7 +4810,7 @@
           "id": "echo_box_fade_short",
           "side": "short",
           "class": "book_replay",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
