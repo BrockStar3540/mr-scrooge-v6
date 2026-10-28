@@ -1,5 +1,7 @@
 # Data & Models — the Public Availability Catalog
 
+> **Moved to GitHub (2026-10-28):** the whole archive, corpora included, is now [BrockStar3540/mr-scrooge-archive](https://github.com/BrockStar3540/mr-scrooge-archive) (corpora as [release downloads](https://github.com/BrockStar3540/mr-scrooge-archive/releases/tag/research-corpora-2026-07-29), every file hashed in its `MANIFEST.json`). The Dropbox link below stays up as a mirror.
+
 > **Availability (updated 2026-07-18):** the public [archive link](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) now holds the **readable research record** — papers, session notes, backtest results, version history. The **raw corpora and trained-model binaries catalogued below are privately archived** (they are bulk data / code with no public-safe form) and are **available on request** — open a [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions) if you want a specific corpus or model to re-run the analysis. The catalog below documents each one (schema, era, leak status) as the reference of record.
 
 Everything the research rests on — every retired model and every corpus — is downloadable, testable,

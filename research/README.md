@@ -1,5 +1,7 @@
 # Research
 
+> **Moved to GitHub (2026-10-28):** the whole archive, corpora included, is now [BrockStar3540/mr-scrooge-archive](https://github.com/BrockStar3540/mr-scrooge-archive) (corpora as [release downloads](https://github.com/BrockStar3540/mr-scrooge-archive/releases/tag/research-corpora-2026-07-29), every file hashed in its `MANIFEST.json`). The Dropbox link below stays up as a mirror.
+
 This is the reading-order index for the Mr. Scrooge research corpus. It is written for a
 **public reader who has only this repo** — everything referenced here is either in-repo or in
 the Dropbox `/SCROOGE ARCHIVE/` research library, shared read-only at:

@@ -125,6 +125,7 @@ A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere
 
 | | |
 |---|---|
+| 📖 **[Strategy Book](docs/STRATEGY_BOOK.md)** | all 40 strategy families: what each trades, the indicators it reads, what the backtesting said, and how it did with real money |
 | 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | the falsification method and open dockets |
 | 🤖 **[Governor](docs/GOVERNOR.md)** | the promote/demote machinery, the rails, the ledger, the switches |
 | 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup ever scored and every decision, refreshed hourly, plus the [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) |
@@ -133,7 +134,7 @@ A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere
 | 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001 → B-145 |
 | 📄 **[Papers](docs/papers/)** | the full paper index |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
-| 📦 **[The Archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | papers, session notes, backtests with errata, and `proof-of-tape/` |
+| 📦 **[The Archive](https://github.com/BrockStar3540/mr-scrooge-archive)** | papers, session notes, backtests with errata, and `proof-of-tape/` Moved to GitHub 2026-10-28; corpora are [release downloads](https://github.com/BrockStar3540/mr-scrooge-archive/releases/tag/research-corpora-2026-07-29); [Dropbox mirror](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0). |
 | ⚙️ **[Setup](docs/SETUP.md)** | install from zero on an OANDA **practice** account |
 | 🤝 **[Contributing](CONTRIBUTING.md)** | outside ideas welcome, through the same gauntlet ours face |
 
