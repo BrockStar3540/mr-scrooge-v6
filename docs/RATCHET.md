@@ -57,6 +57,12 @@ If the peak NEVER reaches +7.5p, the SL stays at -20p and the trade either close
 
 See [../CHANGELOG.md](../CHANGELOG.md) for full chronology. Key retunes:
 
+- `[2026-10-28 07:06 UTC]` 6.31.0 (commits `5ba36414`..`a7089da2`) — **two-phase +5 → +4, then
+  steps of 2** (+7 locks +5, +9 locks +7, …): `step_engage_pips` 5.0 / `step_engage_lock_pips` 4.0 /
+  `step_trigger_pips` 7.0 / `step_size_pips` 2.0 / `step_trail_pips` 2.0. Operator order, parents
+  and poppers. Before it: +7.5 → +6 with steps from +9 (2026-08-18), and 8.5 / 2.5 single-phase
+  (2026-07-19). Poppers never actually ran the 08-18 early lock (B-143).
+
 - `[2026-06-19 06:15 UTC]` commit `249f970` — trigger 4.5 → 7.5, trail 1.5 → 2.5, size 5.0 → 2.5. Brock-requested. **Diagnosed same day as the cause of a -612 USD swing**: ~50% of historical winners peak in the +4.5-7.5p zone and now never arm. The launch-week smoke analysis is archived under `/SCROOGE/SCROOGE ARCHIVE/session-notes/2026-06-19_*` (indexed in [../research/README.md](../research/README.md) §4). Revert/redesign pending.
 
 - `[2026-06-18 EOD]` — `initial_sl_pips` widened 12 → 20. Trades were hitting -12p stops on noise that would have run to profit; the ratchet was supposed to do the tightening, the initial was over-aggressive.

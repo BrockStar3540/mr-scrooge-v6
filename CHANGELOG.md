@@ -4,7 +4,53 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
-## [6.30.17] — 2026-10-27 — V1–V5 code history is public
+## [6.31.0] — 2026-10-28 — Ratchet +5 → +4 for parents and poppers, 4-hour reaper, four bugs fixed
+
+Commit subjects for this release say v6.30.14–v6.30.17; those numbers were already used by the
+10-27 entries below, so the release is 6.31.0. Commits `5ba36414`, `6b4ba2f2`, `a93d8308`,
+`a7089da2` and this write-up.
+
+### Changed (operator orders)
+- **Ratchet, parents and poppers:** at +5 the stop locks +4, then every +2 it steps to peak −2
+  (+7 locks +5, +9 locks +7, …). Applied to `config/exit_config.json` defaults, the popper gear
+  and all 1,703 standard-gear setups (every status; the 12 custom t20s setups are untouched).
+  STANDARD-lane seats are judged on broker family cycles since the default era, which a gear
+  change does not reset. All four trades open at 07:06Z were verified on the new gear.
+- **Reaper 24h → 4h, any red** (2026-10-28 07:11Z, `/api/reaper`). On enable it closed AUD_JPY
+  −23.0p and USD_CAD −23.6p, and an AUD_JPY popper −0.8p a few minutes later.
+
+### What the replay said before the change
+M1 bid/ask replay of all 1,042 live trades (2026-07-29 → 10-28), entry price and initial stop from
+the broker, each trade run to its stop or lock. It reads about 0.6p/trade more favourably than real
+fills (75.6% of stop exits within 1.5p of actual).
+
+| Exit rule (new +5 → +4 gear) | Pips | Trades reaped | Win rate | Avg loss |
+|---|---:|---:|---:|---:|
+| no reaper | −862 | 0 | 88.7% | −55.4p |
+| 72h reaper | −573 | 34 | 87.4% | −47.2p |
+| 24h reaper | −521 | 116 | 82.7% | −32.5p |
+| 4h reaper (deployed) | −1,743 | 333 | 65.3% | −16.2p |
+
+Against the 08-18 gear (+7.5 → +6) with no reaper, the new gear scored −424p (95% range −1,101 to
++260). Of 26 exit gears tried (later engages, wider trails, fixed targets +6 to +30), none was
+positive; wider settings lost faster. The operator chose the tight gear and the 4h reaper knowing
+this. The record will show whether the replay was right; the first report is due 2026-11-04.
+
+### Fixed
+- **B-143** — `pp_config()` dropped `engage_pips`/`engage_lock_pips`, so no popper ever had the
+  08-18 early lock.
+- **B-144** — restarts stripped the early engage from recovered trades, and a comment truncated
+  inside the mode value fell back to 8.5/2.5.
+- **B-142** — a recovered parent armed a fresh popper grid past the per-cell opt-outs. It now
+  never arms a new one.
+- **B-145** — the dashboard's 5-slot listen queue is now 64. A full queue made the host monitor
+  read the bot as down.
+
+### Added
+- `livelog/detail/trades_detail_2026-10-28.csv` — every live trade with open/close time and price,
+  initial stop, exit type, hold, pips and USD (for issue #9).
+- `research/tools/exit_type_report.py` — pips by exit type (ratchet lock, stop-out, reaper, other)
+  for any window, with the window before it for comparison. Read-only.
 
 ### Added (docs)
 - **Every retired version's full git history is public**, with secrets redacted:

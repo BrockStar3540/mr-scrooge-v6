@@ -1657,7 +1657,13 @@ def start_dashboard(engine: "Engine", port: int = 8084,
     def handler_factory(*args, **kwargs):
         return _Handler(engine, *args, **kwargs)
 
-    srv = http.server.HTTPServer((host, port), handler_factory)
+    # B-145: one request at a time, and the stdlib listen queue is 5. A slow
+    # request plus routine pollers filled it; the next connect was refused and
+    # the host monitor read "port 8084 dead" while the bot traded normally.
+    class _Server(http.server.HTTPServer):
+        request_queue_size = 64
+
+    srv = _Server((host, port), handler_factory)
     srv.allowed_hosts = dashboard_allowed_hosts(host, port)
     t = threading.Thread(target=srv.serve_forever, daemon=True, name="dashboard")
     t.start()

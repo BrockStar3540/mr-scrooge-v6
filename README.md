@@ -48,7 +48,7 @@
 | **Entries** | A seat trades only when its setup fires: explicit, mechanical conditions on standard indicators. No setup, no trade. |
 | **Exit** | Server-side stop of 40 / 50 / 60 pips, sized to the session's typical swing. Two-phase ratchet: at +5 it locks +4, then every +2 it steps up to lock peak −2 (+7 locks +5, +9 locks +7). No take-profit and no timeout. |
 | **Poppers** | Each parent hangs a grid of same-direction add-on trades at 25 / 35 / 45 / 55 pips adverse. Each has its own 60p stop and the same ratchet. Grids fire only while the book holds fewer than 4 trades, and they retire when the parent closes. |
-| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 24 hours. |
+| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 4 hours. |
 
 ## How a setup keeps its seat
 
@@ -112,7 +112,7 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 
 ## Red for days is the design
 
-The stops are wide and there is no timeout, so a trade can sit red until its move develops, the ratchet engages, and it exits green, or until the 24-hour reaper cuts it. The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
+The stops are wide and there is no timeout, so a trade can sit red until its move develops, the ratchet engages, and it exits green, or until the 4-hour reaper cuts it. The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
 
 ## The dashboard
 

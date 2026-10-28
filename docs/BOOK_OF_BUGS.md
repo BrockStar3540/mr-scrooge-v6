@@ -1205,8 +1205,8 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 
 ### B-142 — restart recovery re-keys a parent as "recovery", defeating per-cell popper opt-outs
 
-- **Discovered:** 2026-10-21 22:16Z, on the restart for the B-141 cleanup. **Status: OPEN** (not
-  fixed; operator OK needed, trading path).
+- **Discovered:** 2026-10-21 22:16Z, on the restart for the B-141 cleanup. **Status: FIXED
+  2026-10-28** (`6b4ba2f2`), after it fired again on the 6.31.0 restart.
 - **Area:** `core/engine.py` startup recovery (stub `TradeTicket(session="recovery")`) feeding
   `modules/management/party_package.py` `on_parent_open` / `pp_cell_enabled`.
 - **Symptom / chain:** CAD_JPY long 38158 opened 21:10Z with
@@ -1221,11 +1221,63 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
   EUR_USD/USD_JPY, whose persisted grids kept their real owners.
 - **Root cause:** recovery rebuilds the ticket without the parent's real session, and the setup id
   survives only as a 24-character truncation, so every exact-key lookup downstream misses.
-- **Fix:** none yet. Candidates: recover session + full setup id from persisted state (or the
-  cell config) instead of the stub; or fail closed in `on_parent_open` when the session is
-  `recovery` and no persisted grid exists.
+- **Recurrence:** 2026-10-28 07:02Z. The 6.31.0 restart armed a grid on the open USD_CAD
+  `echo_box_fade_short` parent, whose poppers are off in all three sessions, about 4p from its
+  −25p marker. An exact opt-out for `USD_CAD|recovery|echo_box_fade_short` stopped it within a
+  minute, before any fire.
+- **Fix:** `on_parent_open` fails closed for session `recovery`: a recovered parent may keep a
+  grid persisted before the restart but never arms a new one. Test in `tests/test_gear_5_4.py`.
 - **Lesson:** an opt-out keyed on identity fails open when identity is lost. Recovery paths must
   restore identity or default to the conservative side.
+
+### B-143 — the popper loader dropped the early-engage keys: no popper ever had the 08-18 lock
+
+- **Discovered:** 2026-10-28, by the operator, from the dashboard: an AUD_JPY popper peaked
+  +8.8p (past the +7.5 engage) and still held its −60p stop, labelled "engage 9p".
+  **Status: FIXED 2026-10-28** (`5ba36414`).
+- **Area:** `modules/management/party_package.py` `pp_config()` / `_DEFAULTS`.
+- **Symptom / chain:** v6.30.0 added `engage_pips`/`engage_lock_pips` to `config/pp_config.json`
+  and `_popper_exit_params()` read them, but `pp_config()` keeps only keys listed in `_DEFAULTS`
+  (fail-closed loader, 2026-07-27), and the two keys were never listed. Every popper from
+  2026-08-18 to 2026-10-28 ran with no early lock; its first lock came at +9 (locking +7).
+  Popper recovery also hard-coded `engage_pips=0`.
+- **Effect, measured:** an M1 bid/ask replay of the 254 poppers since 08-18 says the missing lock
+  *helped*: the +6 lock would have saved 7 trades (+123p) and cut 84 winners at +6 that closed
+  higher (−276p), net −152p. The bug was costly in principle and cheap in practice.
+- **Fix:** both keys in `_DEFAULTS`; popper recovery restores the engage for legs stamped with the
+  current gear. `tests/test_gear_5_4.py` asserts every non-note key in the file survives the loader.
+- **Lesson:** a whitelist loader is a silent filter. Test that the file and the loaded dict agree.
+
+### B-144 — restarts stripped the early engage, and a truncated comment fell back to 8.5/2.5
+
+- **Discovered:** 2026-10-28, verifying 6.31.0 on the live dashboard. **Status: FIXED 2026-10-28**
+  (`a93d8308`, `a7089da2`).
+- **Area:** `core/engine.py` `_decode_exit_ext`, `modules/cells/cell.py` `migrate_stale_gear`.
+- **Symptom / chain:** recovery rebuilds a trade's ratchet from its broker comment, which carries
+  `tr`/`tp` but not the engage keys, so every parent adopted after a restart since 08-18 ran with
+  no early lock. Separately, OANDA returned `{"su":"kc_up_long_lean","m":"ra` for an open
+  AUD_USD parent: the regex took mode `"ra"`, migration skipped the non-`"ratchet"` mode, and
+  the trade managed on the 8.5/2.5 fallback.
+- **Fix:** migration restores the deployed engage for current trigger/trail with none; it also
+  maps the retired 9/2 + 7.5→6 gear and its engage-less twin onto the deployed gear. A truncated
+  mode is a bracket only if it starts with `b`. Tests pin the live comment.
+- **Lesson:** anything not in the persisted record is lost at restart; check every knob survives
+  a round trip through recovery.
+
+### B-145 — a 5-slot listen queue made a healthy bot look dead and phoned the operator at 3 AM
+
+- **Discovered:** 2026-10-28 07:20Z, after the ops city paged and then phoned the operator.
+  **Status: FIXED 2026-10-28** (dashboard queue here; host monitor retry in the ops vault).
+- **Area:** `ops/server.py` dashboard (`http.server.HTTPServer`, one request at a time, stdlib
+  listen queue 5); the host monitor's single 2-second connect to `127.0.0.1:8084`.
+- **Symptom / chain:** at 06:55Z the monitor's connect failed while the bot traded normally
+  (`ss` later showed the queue at 4/5). One failed connect marked the service RED, the ops feeder
+  held it for 10 min, three restarts for 6.31.0 kept it red, and the escalation ladder texted at
+  07:04Z and phoned at 07:14Z. The row was green again at 07:16Z.
+- **Fix:** queue 64 (`tests/test_dashboard_queue.py`); the monitor now needs three failed
+  connects 5 s apart.
+- **Lesson:** a liveness probe that can fail on a busy-but-healthy service will page someone.
+  Probe with retries, and size queues for every poller.
 
 ---
 
