@@ -1060,3 +1060,6 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-28T18:39:36Z,EUR_USD,short,9542,3.82,popper
 2026-10-28T18:46:56Z,EUR_USD,short,9566,6.60,popper
 2026-10-28T18:52:21Z,EUR_USD,short,9626,4.52,popper
+2026-10-28T19:27:29Z,EUR_USD,short,9667,3.77,popper
+2026-10-28T19:41:54Z,EUR_USD,short,9575,3.83,popper
+2026-10-28T20:03:31Z,EUR_USD,short,9735,3.70,popper
