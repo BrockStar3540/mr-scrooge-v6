@@ -57229,3 +57229,4 @@
 {"block_lcb": -9.46, "codes": ["LCB", "FDR"], "days": 43, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 96, "net_avg": 3.44, "promotable": false, "q": 0.94821, "status": "SHADOW", "strikes": 1, "t": "2026-10-28T08:10:21.824379+00:00"}
 {"block_lcb": null, "codes": [], "days": null, "key": "USD_CAD|asia|mr2_bb_reversion_short_g_dial_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": 0, "t": "2026-10-28T08:10:21.824379+00:00"}
 {"block_lcb": null, "codes": [], "days": null, "key": "USD_CAD|ny|echo_box_fade_short", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": 2, "t": "2026-10-28T08:10:21.824379+00:00"}
+{"block_lcb": -9.46, "codes": ["LCB", "FDR"], "days": 43, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 97, "net_avg": 3.62, "promotable": false, "q": 0.94821, "status": "SHADOW", "strikes": 1, "t": "2026-10-28T09:15:11.680547+00:00"}
