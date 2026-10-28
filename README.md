@@ -39,16 +39,17 @@
 
 ## What's running now
 
-*As of 2026-10-21. Live statuses sit in [`config/cells/`](config/cells), and every seat change is in the governor ledger.*
+*As of 2026-10-28. Live statuses sit in [`config/cells/`](config/cells), and every seat change is in the governor ledger.*
 
 | | |
 |---|---|
-| **Account** | OANDA live, $2,500 stake since 2026-07-29. The 100-trade practice test ended at +10.54% and set up the cutover ([report](docs/FORWARD_TEST_100_REPORT.md)). |
-| **Book** | 18 pairs × 3 sessions (Asia, London, New York). About 1,600 setups stamp as shadows. **17 ACTIVE + 3 PROBE** hold live seats. |
+| **Account** | OANDA live, $2,500 stake since 2026-07-29; NAV about $1,055 on 2026-10-28 (every trade in [`livelog/`](livelog/)). The 100-trade practice test ended at +10.54% and set up the cutover ([report](docs/FORWARD_TEST_100_REPORT.md)). |
+| **Book** | 18 pairs × 3 sessions (Asia, London, New York). 1,715 setups: 1,621 stamp as shadows, 77 are retired. **14 ACTIVE + 3 PROBE** hold live seats. |
 | **Entries** | A seat trades only when its setup fires: explicit, mechanical conditions on standard indicators. No setup, no trade. |
 | **Exit** | Server-side stop of 40 / 50 / 60 pips, sized to the session's typical swing. Two-phase ratchet: at +5 it locks +4, then every +2 it steps up to lock peak −2 (+7 locks +5, +9 locks +7). No take-profit and no timeout. |
 | **Poppers** | Each parent hangs a grid of same-direction add-on trades at 25 / 35 / 45 / 55 pips adverse. Each has its own 60p stop and the same ratchet. Grids fire only while the book holds fewer than 4 trades, and they retire when the parent closes. |
-| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 4 hours. |
+| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 4 hours (since 2026-10-28; it was 24 hours). |
+| **Public data** | Every live trade with entry, stop and exit ([`trades_detail`](livelog/detail/trades_detail_2026-10-28.csv)); the raw OANDA exports of the [live](livelog/detail/oanda_live_transactions_2026-02-21_to_2026-10-28.csv) and [practice](livelog/detail/oanda_practice_transactions_2026-02-21_to_2026-07-28.csv) accounts; every simulated shadow episode ([registry](research/registry/README.md)). |
 
 ## How a setup keeps its seat
 
@@ -89,9 +90,9 @@ Code: [`ops/standard.py`](ops/standard.py) (scoring), [`ops/governor.py`](ops/go
 - **The tuition, V1 to V4 (Mar–Jul 2026).** A $100,000 practice account fell to **$15,598, −84%**. Five versions of increasingly careful research couldn't out-predict the market: entry features predicted *when* and *how far* price moves, never *which way* (0 of 144 feature×cell combinations carried direction). The complete raw broker export, 11,564 transactions, is public in [the archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) under `proof-of-tape/`.
 - **V5 and V6, the measurement turn.** Broker fills became the only truth. Wide stops replaced a survivorship-biased tight-stop dial-in, and every strategy became a shadow that had to earn a seat.
 - **The 100-trade practice test (2026-07-16 → 07-29).** $16,665 → $18,421, **+10.54%, 90 wins / 10 losses**, pre-registered endpoint ([protocol](docs/FORWARD_TEST_PROTOCOL.md), [report](docs/FORWARD_TEST_100_REPORT.md), [tape](forward-test-100/)). As registered, the same code went live with $2,500.
-- **Live (07-29 →).** An autonomous governor promoted and demoted on simulated evidence, and the live account drew down; the record above shows every trade. On 10-12 the book was cut to its proven seats. On 10-21 the simulator lost its vote: the seats became every setup at **85%+ cycle wins with positive pips over 5+ real cycles**, plus three practice-test winners that had never traded live, and the broker-truth standard took over.
+- **Live (07-29 →).** An autonomous governor promoted and demoted on simulated evidence, and the live account drew down; the record above shows every trade. On 10-12 the book was cut to its proven seats. On 10-21 the simulator lost its vote: the seats became every setup at **85%+ cycle wins with positive pips over 5+ real cycles**, plus three practice-test winners that had never traded live, and the broker-truth standard took over. On 10-28 the ratchet was tightened to lock +4 at +5 (parents and poppers; poppers had never actually had the early lock) and the reaper went from 24 hours to 4: we're back to dialing in the exit ([6.31.0](CHANGELOG.md)).
 
-Every version, the edge hunt and the wide-stop turn: [History V1→V6](docs/SCROOGE_HISTORY.md). Every defect and dead end, on purpose: [Book of Bugs](docs/BOOK_OF_BUGS.md) (B-001 → B-140).
+Every version, the edge hunt and the wide-stop turn: [History V1→V6](docs/SCROOGE_HISTORY.md). Every defect and dead end, on purpose: [Book of Bugs](docs/BOOK_OF_BUGS.md) (B-001 → B-145).
 
 ## What we falsified
 
@@ -110,9 +111,9 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 | Simulator-scored promotion | per-setup correlation with real fills 0.07; replaced by the broker-truth standard (2026-10-21) |
 | The old evidence bar, deflated | median deflated Sharpe 0.00: its selection measured the search ([issue #9](https://github.com/BrockStar3540/mr-scrooge-v6/issues/9), [registry](research/registry/README.md)) |
 
-## Red for days is the design
+## Red for hours, not days
 
-The stops are wide and there is no timeout, so a trade can sit red until its move develops, the ratchet engages, and it exits green, or until the 4-hour reaper cuts it. The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
+The stops are wide and there is no take-profit, so a trade can sit red until its move develops, the ratchet engages, and it exits green. Since 2026-10-28 the 4-hour reaper cuts any trade still red after 4 hours (it was 24 hours, and before 10-01 it was 72). The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
 
 ## The dashboard
 
@@ -129,7 +130,7 @@ A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere
 | 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup ever scored and every decision, refreshed hourly, plus the [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) |
 | 📜 **[History V1→V6](docs/SCROOGE_HISTORY.md)** | every version, the edge-hunt arc, the survivorship turn |
 | 🗃️ **Code history V1–V5** | full git history of every retired version, secret-redacted: [V1+V2](https://github.com/BrockStar3540/mr-scrooge-v1) · [V3](https://github.com/BrockStar3540/mr-scrooge-v3-archive) · [V4](https://github.com/BrockStar3540/mr-scrooge-v4-archive) · [V5](https://github.com/BrockStar3540/mr-scrooge-v5-archive) |
-| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001 → B-140 |
+| 🐛 **[Book of Bugs](docs/BOOK_OF_BUGS.md)** | B-001 → B-145 |
 | 📄 **[Papers](docs/papers/)** | the full paper index |
 | 🔬 **[Research & data index](research/README.md)** | corpora, retired modules, the strategy graveyard |
 | 📦 **[The Archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)** | papers, session notes, backtests with errata, and `proof-of-tape/` |
