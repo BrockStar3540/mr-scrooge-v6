@@ -81,3 +81,11 @@ def test_recovered_parent_never_arms_a_new_grid():
                           oanda_trade_id="39438")
     pp.on_parent_open(pos, setup_id="echo_box_fade_short")
     assert pp.grids == {}
+
+
+def test_current_gear_recovers_its_engage():
+    """Broker comments carry tr/tp only: a parent opened on the current gear
+    must not lose its +5 -> +4 early lock across a restart."""
+    from modules.cells.cell import ExitParams, migrate_stale_gear
+    ep = migrate_stale_gear(ExitParams(sl_pips=50.0, trigger_pips=7.0, trail_pips=2.0))
+    assert (ep.engage_pips, ep.engage_lock_pips, ep.sl_pips) == (5.0, 4.0, 50.0)

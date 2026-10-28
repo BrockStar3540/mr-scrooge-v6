@@ -85,16 +85,27 @@ def migrate_stale_gear(ep: "ExitParams") -> "ExitParams":
     defaults from config/exit_config.json for management.
     Custom gear (t20s trials, per-setup tuning) passes through untouched, and
     sl_pips is NEVER touched — the server stop that was actually placed is a
-    fact, not a knob."""
+    fact, not a knob.
+
+    2026-10-28: the comment carries trigger/trail but not the early engage, so
+    a trade on the CURRENT gear also recovered with no engage (every restart
+    since 08-18 stripped it). Current trigger/trail with no engage now gets
+    the deployed engage back."""
     try:
-        if ep.mode != "ratchet" or (ep.trigger_pips, ep.trail_pips, ep.engage_pips,
-                                    ep.engage_lock_pips) not in _SUPERSEDED_GEAR:
+        if ep.mode != "ratchet":
             return ep
         import json as _json
         from pathlib import Path as _P
         _cfg = _json.loads((_P(__file__).resolve().parents[2] / "config"
                             / "exit_config.json").read_text())
         d = _cfg.get("defaults", {})
+        gear = (ep.trigger_pips, ep.trail_pips, ep.engage_pips, ep.engage_lock_pips)
+        current_minus_engage = (
+            not ep.engage_pips
+            and ep.trigger_pips == float(d.get("step_trigger_pips", -1))
+            and ep.trail_pips == float(d.get("step_trail_pips", -1)))
+        if gear not in _SUPERSEDED_GEAR and not current_minus_engage:
+            return ep
         ep.trigger_pips = float(d.get("step_trigger_pips", ep.trigger_pips))
         ep.trail_pips = float(d.get("step_trail_pips", ep.trail_pips))
         ep.engage_pips = float(d.get("step_engage_pips", 0.0) or 0.0)
