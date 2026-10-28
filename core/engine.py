@@ -120,10 +120,14 @@ def _decode_exit_ext(trade: dict):
             return None
         try:
             from modules.cells.cell import ExitParams
+            # A cut can land inside the mode value ("m":"ra): only a "b..."
+            # prefix is a bracket. Missing tr/tp fall to the retired 8.5/2.5
+            # standard, which migrate_stale_gear maps onto the deployed gear.
+            _m = mode_m.group(1) if mode_m else "ratchet"
             ep = ExitParams(
                 sl_pips=_f("sl") or 40.0, trigger_pips=_f("tr") or 8.5,
                 trail_pips=_f("tp") or 2.5,
-                mode=(mode_m.group(1) if mode_m else "ratchet"))
+                mode="bracket" if _m.startswith("b") else "ratchet")
             from modules.cells.cell import migrate_stale_gear
             return migrate_stale_gear(ep), (m_su.group(1) if m_su else "persisted-truncated")
         except Exception:

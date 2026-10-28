@@ -89,3 +89,12 @@ def test_current_gear_recovers_its_engage():
     from modules.cells.cell import ExitParams, migrate_stale_gear
     ep = migrate_stale_gear(ExitParams(sl_pips=50.0, trigger_pips=7.0, trail_pips=2.0))
     assert (ep.engage_pips, ep.engage_lock_pips, ep.sl_pips) == (5.0, 4.0, 50.0)
+
+
+def test_truncated_comment_mid_mode_gets_deployed_gear():
+    """Live 2026-10-28: OANDA returned '{"su":"kc_up_long_lean","m":"ra' for an
+    open parent; the partial mode skipped migration and it ran on 8.5/2.5."""
+    from core.engine import _decode_exit_ext
+    ep, su = _decode_exit_ext({"clientExtensions": {"comment": '{"su":"kc_up_long_lean","m":"ra'}})
+    assert su == "kc_up_long_lean" and ep.mode == "ratchet"
+    assert (ep.trigger_pips, ep.trail_pips, ep.engage_pips, ep.engage_lock_pips) == (7.0, 2.0, 5.0, 4.0)
