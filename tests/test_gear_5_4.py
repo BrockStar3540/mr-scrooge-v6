@@ -65,3 +65,19 @@ def test_standard_setups_all_on_deployed_gear():
                 assert g != (9.0, 2.0, 7.5, 6.0), f"{f.name} {su['id']} still on the 08-18 gear"
                 seen += g == (7.0, 2.0, 5.0, 4.0)
     assert seen > 0
+
+
+def test_recovered_parent_never_arms_a_new_grid():
+    """2026-10-28: a restart armed a popper grid for a recovered USD_CAD parent
+    whose setup has poppers off in every session (session reads "recovery")."""
+    from datetime import datetime, timezone
+    from types import SimpleNamespace
+    from modules.management.party_package import PartyPackage
+    pp = PartyPackage.__new__(PartyPackage)
+    pp.grids, pp.dry_run = {}, False
+    pp._save_state = lambda: None
+    pos = SimpleNamespace(ticket=SimpleNamespace(pair="USD_CAD", session="recovery", direction="short"),
+                          entry_price=1.40380, entry_time=datetime(2026, 10, 27, 15, 53, tzinfo=timezone.utc),
+                          oanda_trade_id="39438")
+    pp.on_parent_open(pos, setup_id="echo_box_fade_short")
+    assert pp.grids == {}

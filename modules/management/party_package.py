@@ -284,6 +284,19 @@ class PartyPackage:
             return
         pair = pos.ticket.pair
         session = pos.ticket.session or "?"
+        if session == "recovery":
+            # A parent adopted at startup has lost its session, so the per-cell
+            # opt-outs ("PAIR|session|setup") cannot be checked. It may rejoin
+            # a grid persisted before the restart, never arm a new one: on
+            # 2026-10-28 a restart armed a USD_CAD grid for a setup whose
+            # poppers are off in every session.
+            if pair in self.grids:
+                log.info("PP GRID persisted for %s — recovered parent keeps it "
+                         "(owner %s) | engine=pp_v1", pair, self.grids[pair].cell_key)
+            else:
+                log.info("PP GRID not armed for recovered parent %s setup=%s — "
+                         "no persisted grid | engine=pp_v1", pair, setup_id)
+            return
         if not pp_cell_enabled(cfg, pair, session, setup_id):
             log.info("PP GRID skipped %s/%s setup=%s — poppers disabled for this cell "
                      "| engine=pp_v1", pair, session, setup_id)
