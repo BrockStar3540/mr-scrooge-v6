@@ -1053,3 +1053,10 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-28T13:54:32Z,USD_JPY,long,4208,1.24,parent
 2026-10-28T14:11:15Z,USD_JPY,long,4213,1.05,parent
 2026-10-28T15:52:31Z,USD_JPY,long,4217,1.03,parent
+2026-10-28T18:25:50Z,USD_JPY,long,4221,1.32,parent
+2026-10-28T18:26:21Z,EUR_USD,short,9467,4.73,parent
+2026-10-28T18:33:29Z,GBP_USD,short,3174,1.59,parent
+2026-10-28T18:33:29Z,USD_JPY,long,4246,1.33,parent
+2026-10-28T18:39:36Z,EUR_USD,short,9542,3.82,popper
+2026-10-28T18:46:56Z,EUR_USD,short,9566,6.60,popper
+2026-10-28T18:52:21Z,EUR_USD,short,9626,4.52,popper
