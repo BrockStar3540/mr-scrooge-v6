@@ -35,8 +35,13 @@ this directory on its own. The governor runs hourly at :35. The live trading rec
 * **Setups seated before the ledger existed** (hand-picked ACTIVE at the 2026-07-19 cutover)
   are marked `seated_source: "episode_stamp"`. They were found once from the shadow episodes
   stamped while they were ACTIVE, using `registry_publish.py --seed-episode-seats`.
-* Raw episodes (`data/shadowboard.json`, about 70 MB) and the raw snapshot file stay private
-  because of their size. Everything the governor decided on is summarized here.
+* **Raw shadow episodes are public as a snapshot:**
+  [`shadowboard_2026-10-28.json.gz`](shadowboard_2026-10-28.json.gz) (3.9 MB gzipped, 73 MB raw),
+  every simulated episode the governor scored from 2026-07-06 to 2026-10-28 14:45Z: 94,312
+  episodes keyed `PAIR/session|setup|side|stamp time`, each with its status at the time and its
+  scores. It is a point-in-time copy, not refreshed hourly. The raw score-snapshot file
+  (`data/score_snapshots.jsonl`, about 500 MB) stays private because of its size; its daily
+  summary is `cheater_scores/`.
 
 ## What it's used for
 
