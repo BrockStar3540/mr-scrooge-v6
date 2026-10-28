@@ -42,14 +42,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -106,14 +106,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -163,14 +163,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -216,14 +216,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -275,14 +275,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -328,14 +328,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -378,14 +378,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -426,14 +426,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -476,14 +476,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -525,14 +525,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -574,14 +574,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -623,14 +623,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -672,14 +672,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -725,14 +725,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -767,14 +767,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -812,14 +812,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -853,14 +853,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -895,14 +895,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -941,14 +941,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -994,14 +994,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1049,14 +1049,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1098,14 +1098,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1146,14 +1146,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1195,14 +1195,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1244,14 +1244,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1295,14 +1295,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1348,14 +1348,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -1404,14 +1404,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1467,14 +1467,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1515,14 +1515,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1560,14 +1560,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1605,14 +1605,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1655,14 +1655,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1705,14 +1705,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1754,14 +1754,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1803,14 +1803,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1852,14 +1852,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1901,14 +1901,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -1958,14 +1958,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2022,14 +2022,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2079,14 +2079,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2132,14 +2132,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2191,14 +2191,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2244,14 +2244,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2294,14 +2294,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2342,14 +2342,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2392,14 +2392,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2441,14 +2441,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2490,14 +2490,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2543,14 +2543,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2585,14 +2585,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2627,14 +2627,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2669,14 +2669,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2714,14 +2714,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2755,14 +2755,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2789,14 +2789,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -2851,14 +2851,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2902,14 +2902,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2948,14 +2948,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -2994,14 +2994,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3033,14 +3033,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3081,14 +3081,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3132,14 +3132,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3194,14 +3194,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3249,14 +3249,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3298,14 +3298,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3346,14 +3346,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3400,14 +3400,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3439,14 +3439,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -3498,14 +3498,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3554,14 +3554,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3600,14 +3600,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3646,14 +3646,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3702,14 +3702,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3758,14 +3758,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3804,14 +3804,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3850,14 +3850,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -3890,14 +3890,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -3947,14 +3947,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4000,14 +4000,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4049,14 +4049,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4092,14 +4092,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4154,14 +4154,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4199,14 +4199,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4258,14 +4258,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4317,14 +4317,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -4372,14 +4372,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4428,14 +4428,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4492,14 +4492,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4549,14 +4549,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4602,14 +4602,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4661,14 +4661,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4714,14 +4714,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4764,14 +4764,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4812,14 +4812,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4862,14 +4862,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4911,14 +4911,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -4960,14 +4960,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5009,14 +5009,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 40.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5062,14 +5062,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5104,14 +5104,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5146,14 +5146,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5188,14 +5188,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5233,14 +5233,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5274,14 +5274,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5307,14 +5307,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5369,14 +5369,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5420,14 +5420,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5466,14 +5466,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5512,14 +5512,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5558,14 +5558,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5604,14 +5604,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -5651,14 +5651,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5690,14 +5690,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -5733,14 +5733,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5795,14 +5795,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5850,14 +5850,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5899,14 +5899,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -5947,14 +5947,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6001,14 +6001,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6040,14 +6040,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -6099,14 +6099,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6155,14 +6155,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6201,14 +6201,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6247,14 +6247,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6303,14 +6303,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6359,14 +6359,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6405,14 +6405,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6451,14 +6451,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": 0.0,
@@ -6493,14 +6493,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -6536,14 +6536,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6594,14 +6594,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6637,14 +6637,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -6687,14 +6687,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 60.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6737,14 +6737,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6801,14 +6801,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6860,14 +6860,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "sizing": {
             "risk_pct": 0.2
@@ -6927,14 +6927,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -6986,14 +6986,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,
@@ -7035,14 +7035,14 @@
           "exit": {
             "mode": "ratchet",
             "sl_pips": 50.0,
-            "trigger_pips": 9.0,
+            "trigger_pips": 7.0,
             "trail_pips": 2.0,
             "trail_mult": 0.0,
             "trail_min": 2.5,
             "trail_max": 10.0,
             "_class": "RANGE_SIZED",
-            "engage_pips": 7.5,
-            "engage_lock_pips": 6.0
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
           },
           "evidence": {
             "ev_seq": null,

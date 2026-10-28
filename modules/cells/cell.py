@@ -69,19 +69,26 @@ class ExitParams:
     trail_max:        float = 0.0
 
 
+# Retired standard ratchet gears (trigger, trail, engage, engage_lock):
+# 8.5/2.5 single-phase (07-19), the 08-18 two-phase 9/2 + 7.5->6, and the same
+# 9/2 without engage (poppers, whose loader dropped the engage keys until
+# 10-28; truncated parent comments can lose them too).
+_SUPERSEDED_GEAR = {(8.5, 2.5, 0.0, 0.0), (9.0, 2.0, 7.5, 6.0), (9.0, 2.0, 0.0, 0.0)}
+
+
 def migrate_stale_gear(ep: "ExitParams") -> "ExitParams":
     """v6.30.1: recovered/adopted trades carry ENTRY-TIME gear in their broker
     comment (B-112 design). When the operator changes the deployed standard
     gear, pre-existing open trades would keep managing under the superseded
-    knobs forever. Rule: iff the recovered RATCHET knobs are exactly the
-    superseded standard (trigger 8.5 / trail 2.5, no engage), swap in the
-    CURRENT deployed defaults from config/exit_config.json for management.
+    knobs forever. Rule: iff the recovered RATCHET knobs are exactly a
+    superseded standard (_SUPERSEDED_GEAR), swap in the CURRENT deployed
+    defaults from config/exit_config.json for management.
     Custom gear (t20s trials, per-setup tuning) passes through untouched, and
     sl_pips is NEVER touched — the server stop that was actually placed is a
     fact, not a knob."""
     try:
-        if (ep.mode != "ratchet" or ep.trigger_pips != 8.5
-                or ep.trail_pips != 2.5 or ep.engage_pips):
+        if ep.mode != "ratchet" or (ep.trigger_pips, ep.trail_pips, ep.engage_pips,
+                                    ep.engage_lock_pips) not in _SUPERSEDED_GEAR:
             return ep
         import json as _json
         from pathlib import Path as _P

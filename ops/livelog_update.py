@@ -31,7 +31,7 @@ SVG = LIVELOG / "equity.svg"
 # same book, gearing 15%/trade · 6 max for the smaller stake. The practice
 # record is archived at forward-test-100/.
 ANCHOR_TS = "2026-07-29T11:00:00Z"
-ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +7.5 → lock +6, steps +9/+11/… → lock −2 + Party Package popper grids · 15%/trade · 6 max"
+ANCHOR_LABEL = "range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +5 → lock +4, steps +7/+9/… → lock −2 + Party Package popper grids · 15%/trade · 6 max"
 ANCHOR_HUMAN = "2026-07-29"
 
 def secrets():
@@ -266,7 +266,7 @@ try:
        f'fill="#58a6ff"/>' if n_pts else ''),
       f'<text x="860" y="203" font-size="10" text-anchor="end" fill="{DIM}">'
       f'<tspan fill="{ACC}">━ realized</tspan>  <tspan fill="#58a6ff">─ NAV incl. open (hourly)</tspan></text>',
-      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +8.5 → lock +6 → trail 2.5 · poppers · 15%/trade · OANDA LIVE — real money · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
+      f'<text x="40" y="290" font-size="11" fill="#6e7681">range-sized wide-stop ratchet · engage +5 → lock +4 → trail 2 · poppers · 15%/trade · OANDA LIVE — real money · broker-verified · updated {now.strftime("%Y-%m-%d %H:%M UTC")}</text>',
       '</svg>\n',
     ]
     SVG.write_text("".join(parts))

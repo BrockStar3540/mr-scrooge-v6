@@ -77,8 +77,8 @@ def test_stale_standard_gear_migrates_on_adoption():
     trades that were already open (2026-08-18)."""
     from modules.cells.cell import migrate_stale_gear
     ep = migrate_stale_gear(_ep(8.5, 2.5))
-    assert ep.trigger_pips == 9.0 and ep.trail_pips == 2.0
-    assert ep.engage_pips == 7.5 and ep.engage_lock_pips == 6.0
+    assert ep.trigger_pips == 7.0 and ep.trail_pips == 2.0
+    assert ep.engage_pips == 5.0 and ep.engage_lock_pips == 4.0
     assert ep.sl_pips == 60.0            # the placed server stop is a fact
 
 
@@ -92,7 +92,20 @@ def test_custom_gear_never_migrated():
     assert br.trigger_pips == 8.5        # brackets have no ratchet to migrate
 
 
-def test_already_two_phase_untouched():
+def test_current_gear_untouched():
     from modules.cells.cell import migrate_stale_gear
-    ep = migrate_stale_gear(_ep(9.0, 2.0, engage=7.5))
-    assert ep.trigger_pips == 9.0 and ep.engage_pips == 7.5
+    ep = _ep(7.0, 2.0, engage=5.0)
+    ep.engage_lock_pips = 4.0
+    ep = migrate_stale_gear(ep)
+    assert (ep.trigger_pips, ep.trail_pips, ep.engage_pips, ep.engage_lock_pips) == (7.0, 2.0, 5.0, 4.0)
+
+
+def test_retired_two_phase_gears_migrate():
+    """2026-10-28: the 08-18 standard (9/2 + 7.5->6) and its engage-less popper
+    twin (9/2, the loader bug) both move to the current deployed gear."""
+    from modules.cells.cell import migrate_stale_gear
+    old = _ep(9.0, 2.0, engage=7.5)
+    old.engage_lock_pips = 6.0
+    for ep in (migrate_stale_gear(old), migrate_stale_gear(_ep(9.0, 2.0))):
+        assert (ep.trigger_pips, ep.trail_pips, ep.engage_pips, ep.engage_lock_pips) == (7.0, 2.0, 5.0, 4.0)
+        assert ep.sl_pips == 60.0

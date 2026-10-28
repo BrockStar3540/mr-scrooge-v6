@@ -59,8 +59,13 @@ _DEFAULTS: dict = {
     # shallow chop, skip -50, one deep rung): adverse offsets in pips.
     "marker_pips":          [10.0, 15.0, 20.0, 30.0, 40.0, 60.0],
     "sl_pips":              60.0,   # popper server-side SL from ITS OWN fill
-    "trigger_pips":         8.5,    # popper ratchet engage (lock = trigger - trail = +6)
-    "trail_pips":           2.5,    # popper trail (lock = trigger - trail)
+    "trigger_pips":         7.0,    # popper step machine: at +7 lock +5, +9 lock +7, ...
+    "trail_pips":           2.0,    # popper trail (lock = step level - trail)
+    # Two-phase early engage (operator 2026-10-28: +5 locks +4). These keys
+    # MUST be listed here: pp_config() drops any key missing from _DEFAULTS,
+    # which is how every popper from 08-18 to 10-28 ran with no early lock.
+    "engage_pips":          5.0,
+    "engage_lock_pips":     4.0,
     "max_levels":           8,      # deepest grid level (8 x 15p = 120p below anchor)
     "max_total_trades":     8,      # parents + poppers, book-wide
     "max_margin_pct_total": 0.8,    # parents + poppers, fraction of balance
@@ -443,11 +448,16 @@ class PartyPackage:
                              timestamp=entry_time, reads={})
         from modules.cells.cell import ExitParams
         from modules.cells.cell import migrate_stale_gear
-        ep = ExitParams(engage_pips=0.0,
-                        engage_lock_pips=0.0,
+        _tr = float(d.get("tr", cfg["trigger_pips"]))
+        _tp = float(d.get("tp", cfg["trail_pips"]))
+        # The comment carries only tr/tp. A leg stamped with the CURRENT popper
+        # gear gets its early engage back (it used to recover with none);
+        # superseded gear is swapped by migrate_stale_gear below.
+        _cur = (_tr == float(cfg["trigger_pips"]) and _tp == float(cfg["trail_pips"]))
+        ep = ExitParams(engage_pips=float(cfg.get("engage_pips", 0.0) or 0.0) if _cur else 0.0,
+                        engage_lock_pips=float(cfg.get("engage_lock_pips", 0.0) or 0.0) if _cur else 0.0,
                         sl_pips=float(d.get("sl", cfg["sl_pips"])),
-                        trigger_pips=float(d.get("tr", cfg["trigger_pips"])),
-                        trail_pips=float(d.get("tp", cfg["trail_pips"])), mode="ratchet")
+                        trigger_pips=_tr, trail_pips=_tp, mode="ratchet")
         ep = migrate_stale_gear(ep)
         oanda_sl = (trade.get("stopLossOrder") or {}).get("price")
         pos = Position(ticket=ticket, entry_price=entry_price, entry_time=entry_time,
