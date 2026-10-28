@@ -1039,3 +1039,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-28T00:23:38Z,AUD_JPY,long,5918,3.23,parent
 2026-10-28T00:23:38Z,AUD_USD,long,9853,12.71,parent
 2026-10-28T00:30:54Z,AUD_JPY,long,6000,5.61,parent
+2026-10-28T01:43:52Z,AUD_JPY,long,6027,2.61,parent
