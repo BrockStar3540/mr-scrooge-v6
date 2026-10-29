@@ -1071,3 +1071,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-29T03:00:42Z,AUD_JPY,long,6000,1.47,popper
 2026-10-29T04:23:58Z,AUD_JPY,long,6015,1.43,popper
 2026-10-29T05:08:30Z,AUD_JPY,long,6013,1.51,popper
+2026-10-29T05:22:54Z,AUD_JPY,long,5997,-5.68,parent
