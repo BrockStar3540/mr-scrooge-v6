@@ -1076,3 +1076,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-29T08:56:32Z,USD_CAD,short,10607,3.68,parent
 2026-10-29T08:57:26Z,GBP_USD,long,3188,2.20,parent
 2026-10-29T11:14:15Z,AUD_USD,long,10012,-4.81,parent
+2026-10-29T11:50:48Z,EUR_USD,long,9490,-0.76,parent
