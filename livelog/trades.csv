@@ -1091,3 +1091,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-30T01:43:46Z,EUR_CAD,short,1847,0.92,parent
 2026-10-30T08:05:31Z,EUR_USD,long,9265,4.54,parent
 2026-10-30T08:21:51Z,EUR_USD,long,9303,3.72,parent
+2026-10-30T10:36:19Z,EUR_USD,long,9331,3.64,parent
+2026-10-30T11:07:57Z,EUR_JPY,short,746,0.52,parent
+2026-10-30T11:09:05Z,AUD_USD,long,9832,6.88,parent
+2026-10-30T11:12:24Z,EUR_JPY,short,749,0.17,parent
