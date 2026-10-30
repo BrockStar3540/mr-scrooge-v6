@@ -1088,3 +1088,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-10-29T20:03:06Z,USD_JPY,short,4176,1.05,parent
 2026-10-29T20:37:27Z,GBP_USD,short,3222,-5.74,parent
 2026-10-30T00:09:50Z,EUR_CAD,short,1849,0.90,parent
+2026-10-30T01:43:46Z,EUR_CAD,short,1847,0.92,parent
