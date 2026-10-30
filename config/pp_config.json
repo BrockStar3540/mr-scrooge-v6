@@ -149,7 +149,8 @@
     "USD_CAD|ny|orb_break_long": false,
     "GBP_CAD|asia|echo_box_fade_long": false,
     "USD_CAD|recovery|echo_box_fade_short": false,
-    "AUD_JPY|asia|rg1_range_scalp_counter_long": false
+    "AUD_JPY|asia|rg1_range_scalp_counter_long": false,
+    "EUR_USD|london|orb_break_long": false
   },
   "engage_pips": 5.0,
   "engage_lock_pips": 4.0,
