@@ -40,3 +40,4 @@
 {"block_lcb": 1.05, "codes": ["FDR"], "days": 37, "key": "AUD_USD|london|kc_up_long_lean_t20s", "n": 106, "net_avg": 5.94, "promotable": false, "q": 0.262, "status": "SHADOW", "strikes": 0, "t": "2026-11-01T21:16:10.132705+00:00"}
 {"block_lcb": -10.0, "codes": ["LCB", "FDR"], "days": 47, "key": "AUD_USD|ny|control_atrconc_60_t20s", "n": 74, "net_avg": 2.43, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 0, "t": "2026-11-01T21:16:10.132705+00:00"}
 {"block_lcb": -8.33, "codes": ["AVG", "LCB", "FDR"], "days": 48, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 121, "net_avg": 0.5, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 1, "t": "2026-11-01T21:16:10.132705+00:00"}
+{"block_lcb": -8.33, "codes": ["AVG", "LCB", "FDR"], "days": 48, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 122, "net_avg": -0.0, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 1, "t": "2026-11-01T22:10:08.127888+00:00"}
