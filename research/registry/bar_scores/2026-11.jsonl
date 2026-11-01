@@ -23,3 +23,4 @@
 {"block_lcb": -9.06, "codes": ["LCB", "FDR"], "days": 47, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 115, "net_avg": 2.21, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 1, "t": "2026-11-01T09:04:05.310121+00:00"}
 {"block_lcb": -12.61, "codes": ["AVG", "LCB", "FDR"], "days": 30, "key": "USD_JPY|asia|kc_breakout_long_t20s", "n": 52, "net_avg": -1.31, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 0, "t": "2026-11-01T09:04:05.310121+00:00"}
 {"block_lcb": -16.36, "codes": ["AVG", "LCB", "FDR"], "days": 31, "key": "GBP_USD|london|rvol_low_240_t20s", "n": 95, "net_avg": -4.97, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 1, "t": "2026-11-01T10:13:11.685023+00:00"}
+{"block_lcb": -8.42, "codes": ["LCB", "FDR"], "days": 48, "key": "GBP_USD|ny|control_rvol_60_t20s", "n": 116, "net_avg": 2.37, "promotable": false, "q": 0.90069, "status": "SHADOW", "strikes": 1, "t": "2026-11-01T12:13:12.285504+00:00"}
