@@ -4,6 +4,17 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.31.1] — 2026-11-01 — Reaper switched off
+
+Operational change, no code. Brock ordered the stale-red reaper off at 15:55Z
+(`POST /api/reaper {"enabled": false}`; `config/runtime.json`, which survives restarts).
+The 4-hour setting from 10-28 had ranked worst in pips in the full-record M1 replay
+(`research/tools/exit_type_report.py`), and at the moment of the order the reaper was
+retrying a close of a USD_JPY trade at −15.9p that the broker rejected as halted (Sunday);
+that trade stays open under the ratchet. Settings 4h / 0p are kept for a later re-enable,
+which in LIVE mode requires `confirm="REAP"`. README "What's running now" and
+"Red for hours, not days" updated.
+
 ## [6.31.0] — 2026-10-28 — Ratchet +5 → +4 for parents and poppers, 4-hour reaper, four bugs fixed
 
 Commit subjects for this release say v6.30.14–v6.30.17; those numbers were already used by the

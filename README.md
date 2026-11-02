@@ -48,7 +48,7 @@
 | **Entries** | A seat trades only when its setup fires: explicit, mechanical conditions on standard indicators. No setup, no trade. |
 | **Exit** | Server-side stop of 40 / 50 / 60 pips, sized to the session's typical swing. Two-phase ratchet: at +5 it locks +4, then every +2 it steps up to lock peak −2 (+7 locks +5, +9 locks +7). No take-profit and no timeout. |
 | **Poppers** | Each parent hangs a grid of same-direction add-on trades at 25 / 35 / 45 / 55 pips adverse. Each has its own 60p stop and the same ratchet. Grids fire only while the book holds fewer than 4 trades, and they retire when the parent closes. |
-| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The reaper closes any trade still red after 4 hours (since 2026-10-28; it was 24 hours). |
+| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The stale-red reaper is OFF since 2026-11-01 (it ran at 4 hours from 10-28, 24 hours from 10-01, 72 before that). |
 | **Public data** | Every live trade with entry, stop and exit ([`trades_detail`](livelog/detail/trades_detail_2026-10-28.csv)); the raw OANDA exports of the [live](livelog/detail/oanda_live_transactions_2026-02-21_to_2026-10-28.csv) and [practice](livelog/detail/oanda_practice_transactions_2026-02-21_to_2026-07-28.csv) accounts; every simulated shadow episode ([registry](research/registry/README.md)). |
 
 ## How a setup keeps its seat
@@ -113,7 +113,7 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 
 ## Red for hours, not days
 
-The stops are wide and there is no take-profit, so a trade can sit red until its move develops, the ratchet engages, and it exits green. Since 2026-10-28 the 4-hour reaper cuts any trade still red after 4 hours (it was 24 hours, and before 10-01 it was 72). The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
+The stops are wide and there is no take-profit, so a trade can sit red until its move develops, the ratchet engages, and it exits green. The stale-red reaper, which cut any trade still red after a set number of hours (72, then 24 from 10-01, then 4 from 10-28), was switched off on 2026-11-01: the full-record replay ranked the 4-hour setting worst in pips, and the record shows the reaper closing trades that would have ratcheted green. The winners are many and small, the losers rare and large. That is why the standard scores loss size and loss frequency, not win rate alone.
 
 ## The dashboard
 
