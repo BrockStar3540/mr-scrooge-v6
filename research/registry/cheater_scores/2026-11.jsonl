@@ -1,0 +1,17 @@
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "EUR_JPY|london|shark_momo_run_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "EUR_JPY|london|shark_momo_run_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "EUR_JPY|ny|shark_adr_late_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_CAD|asia|ps_floor_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_CAD|asia|ps_floor_fade_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_USD|london|es_breakout_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_USD|london|orb_break_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_USD|london|orb_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "GBP_USD|london|orb_fade_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "NZD_USD|asia|ps_floor_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "NZD_USD|asia|ps_floor_fade_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_CAD|asia|orb_fade_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_CAD|asia|orb_fade_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_JPY|london|shark_momo_run_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_JPY|ny|control_atr5m_60_t20s", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_JPY|ny|shark_adr_late_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-01", "eligible": true, "heat": null, "key": "USD_JPY|ny|shark_adr_late_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
