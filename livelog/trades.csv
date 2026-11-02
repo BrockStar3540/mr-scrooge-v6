@@ -1120,3 +1120,7 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-02T10:36:24Z,EUR_CAD,short,1773,0.45,popper
 2026-11-02T11:27:12Z,USD_CAD,short,9901,2.74,parent
 2026-11-02T13:57:19Z,EUR_USD,short,8846,3.54,parent
+2026-11-02T14:38:32Z,USD_JPY,short,3958,0.97,popper
+2026-11-02T14:46:00Z,EUR_USD,short,8880,6.13,parent
+2026-11-02T14:49:17Z,USD_JPY,short,4014,0.81,popper
+2026-11-02T14:55:17Z,EUR_CAD,short,1807,0.50,popper
