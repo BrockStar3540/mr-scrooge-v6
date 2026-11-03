@@ -13448,3 +13448,4 @@
 {"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15198, "t": "2026-11-03T07:36:44.292744+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15199, "t": "2026-11-03T08:36:09.776543+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15200, "t": "2026-11-03T09:36:07.418755+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15201, "t": "2026-11-03T10:36:42.657936+00:00", "why": "allow_promotions=false"}
