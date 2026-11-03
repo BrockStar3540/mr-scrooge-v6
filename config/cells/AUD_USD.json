@@ -1680,7 +1680,7 @@
           "id": "kc_up_long_lean",
           "side": "long",
           "class": "LEAN",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5306,7 +5306,7 @@
           "notes": "Counterpart of ninja_amp_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "2 ACTIVE, 68 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "1 ACTIVE, 69 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
