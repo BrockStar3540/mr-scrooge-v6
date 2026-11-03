@@ -169,7 +169,7 @@
           "id": "ps_floor_fade_long",
           "side": "long",
           "class": "session_structure",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -2000,7 +2000,7 @@
           "wired": "2026-07-10"
         }
       ],
-      "notes": "1 ACTIVE, 35 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
+      "notes": "36 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
     },
     "london": {
       "enabled": true,
