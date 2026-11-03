@@ -13447,3 +13447,4 @@
 {"action": "STANDARD-DEMOTE", "by": "governor", "key": "GBP_USD|asia|ps_floor_fade_long", "scope": "book", "seq": 15196, "status_after": "SHADOW", "strikes": 2, "t": "2026-11-03T06:36:11.487315+00:00", "why": "below STAY floor: 10 cycles wr=90% +2.6p/cyc pf=1.6 worst=-40.0p; strike 2/3"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15198, "t": "2026-11-03T07:36:44.292744+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15199, "t": "2026-11-03T08:36:09.776543+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "EUR_USD|asia|orb_fade_short", "seq": 15200, "t": "2026-11-03T09:36:07.418755+00:00", "why": "allow_promotions=false"}
