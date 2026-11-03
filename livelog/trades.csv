@@ -1128,3 +1128,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-02T18:22:10Z,GBP_USD,short,2998,1.47,parent
 2026-11-03T03:30:34Z,AUD_USD,long,9392,-37.66,parent
 2026-11-03T04:09:08Z,GBP_USD,long,2893,1.16,parent
+2026-11-03T05:35:40Z,GBP_USD,long,2896,1.45,parent
