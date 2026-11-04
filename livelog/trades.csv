@@ -1156,3 +1156,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-04T12:46:43Z,EUR_CAD,short,1670,1.15,popper
 2026-11-04T13:11:54Z,EUR_USD,short,8453,-50.72,popper
 2026-11-04T13:25:57Z,EUR_CAD,short,1581,0.56,popper
+2026-11-04T14:55:01Z,EUR_CAD,short,1582,0.71,popper
