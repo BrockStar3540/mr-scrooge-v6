@@ -13684,3 +13684,8 @@
 {"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|echo_box_fade_short_g_dial", "seq": 15473, "t": "2026-11-06T13:36:29.119775+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "USD_CAD|london|fvg_fill_long", "seq": 15474, "t": "2026-11-06T13:36:29.119775+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "USD_CHF|london|liq_sweep_fade_short_t", "seq": 15475, "t": "2026-11-06T13:36:29.119775+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|echo_box_fade_short_g_dial", "seq": 15476, "t": "2026-11-06T14:36:30.136741+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "USD_CAD|london|fvg_fill_long", "seq": 15477, "t": "2026-11-06T14:36:30.136741+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "USD_CHF|london|liq_sweep_fade_short_t", "seq": 15478, "t": "2026-11-06T14:36:30.136741+00:00", "why": "allow_promotions=false"}
+{"action": "GOVERNOR-FLIP", "by": "governor", "key": "USD_CAD|london|echo_box_fade_short", "seq": 15479, "status_after": "SHADOW", "t": "2026-11-06T14:36:30.258127+00:00", "why": "/api/cell/status: ACTIVE -> SHADOW"}
+{"action": "STANDARD-DEMOTE", "by": "governor", "key": "USD_CAD|london|echo_box_fade_short", "scope": "book", "seq": 15480, "status_after": "SHADOW", "strikes": 2, "t": "2026-11-06T14:36:30.136741+00:00", "why": "below STAY floor: 15 cycles wr=87% -0.1p/cyc pf=1.0 worst=-50.0p; strike 2/3"}
