@@ -30,7 +30,7 @@
 | Last 15 days | 164 | **75.0%** | ▼ −3.0 pts | −$301.15 |
 | Last 7 days | 57 | **77.2%** | ▼ −0.8 pts | −$235.39 |
 
-<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-07 04:15 UTC by close time; refreshed hourly with each new close.</sub>
+<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-07 05:15 UTC by close time; refreshed hourly with each new close.</sub>
 
 > **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +5 → lock +4, steps +7/+9/… → lock −2 + Party Package popper grids · 15%/trade · 6 max (442 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).
 <!-- LIVE_BALANCE_END -->
@@ -48,7 +48,7 @@
 | **Entries** | A seat trades only when its setup fires: explicit, mechanical conditions on standard indicators. No setup, no trade. |
 | **Exit** | Server-side stop of 40 / 50 / 60 pips, sized to the session's typical swing. Two-phase ratchet: at +5 it locks +4, then every +2 it steps up to lock peak −2 (+7 locks +5, +9 locks +7). No take-profit and no timeout. |
 | **Poppers** | Each parent hangs a grid of same-direction add-on trades at 25 / 35 / 45 / 55 pips adverse. Each has its own 60p stop and the same ratchet. Grids fire only while the book holds fewer than 4 trades, and they retire when the parent closes. |
-| **Risk** | 20% of balance in margin per trade (PROBE seats 0.20×). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The stale-red reaper is ON at 24 hours, any red, since 2026-11-07 (it was off from 11-01, ran at 4 hours from 10-28 and at 24 hours from 10-01, 72 before that). |
+| **Risk** | 4% of balance in margin per trade on every seat (full-size seats were cut to the probe size on 2026-11-07; before that ACTIVE seats used 20% and PROBE seats 0.20× of it). Max 8 open trades, max 4 per currency direction, 160% total margin budget. The stale-red reaper is ON at 24 hours, any red, since 2026-11-07 (it was off from 11-01, ran at 4 hours from 10-28 and at 24 hours from 10-01, 72 before that). |
 | **Public data** | Every live trade with entry, stop and exit ([`trades_detail`](livelog/detail/trades_detail_2026-10-28.csv)); the raw OANDA exports of the [live](livelog/detail/oanda_live_transactions_2026-02-21_to_2026-10-28.csv) and [practice](livelog/detail/oanda_practice_transactions_2026-02-21_to_2026-07-28.csv) accounts; every simulated shadow episode ([registry](research/registry/README.md)). |
 
 ## How a setup keeps its seat
