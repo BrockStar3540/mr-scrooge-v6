@@ -153,7 +153,8 @@
     "EUR_USD|london|orb_break_long": false,
     "AUD_USD|london|kc_up_long_lean": false,
     "USD_JPY|ny|classic_willr_fade_short": false,
-    "EUR_USD|ny|orb_break_counter_short": false
+    "EUR_USD|ny|orb_break_counter_short": false,
+    "AUD_USD|asia|ps_floor_fade_long": false
   },
   "engage_pips": 5.0,
   "engage_lock_pips": 4.0,
