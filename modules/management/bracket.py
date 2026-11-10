@@ -4,7 +4,7 @@ Cost-aware slicer exits (2026-07-05, Brock live order):
   * TP = server-side limit placed on fill (takeProfitOnFill) — cannot slip.
   * SL = server-side stop placed on fill (standard V5 path).
   * timeout_min: if neither side hit, flat at market.
-  * Rollover: force-flat 20:45–20:55 UTC; inside the 20:55–22:05 blowout window
+  * Rollover: force-flat 16:45–16:55 New York (20:45 UTC summer / 21:45 UTC winter); inside the 16:55–18:05 blowout window
     NO bot-initiated closes (server orders stay armed).
 No trailing — trailing stops are what produced +5-lock→wash fills at rollover.
 Lineage: research/sessions/2026-07-04_cell_transaction_costs (spread/slippage/
@@ -15,12 +15,12 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from .base import Position, ExitSignal, TradeManager, in_rollover_freeze
+from .base import Position, ExitSignal, TradeManager, in_rollover_freeze, in_rollover_guard_window
 
 log = logging.getLogger("v5.bracket")
 
-_FLAT_START = 20 * 60 + 45   # 20:45 UTC — brackets go flat before rollover
-_FLAT_END   = 20 * 60 + 55   # 20:55 UTC — after this the freeze owns the window
+# Brackets go flat in the 10 minutes before the freeze (16:45-16:55 New York,
+# DST-aware via in_rollover_guard_window); after that the freeze owns the window.
 
 
 class BracketManager(TradeManager):
@@ -60,8 +60,7 @@ class BracketManager(TradeManager):
         if in_rollover_freeze(current_time):
             return None
 
-        hm = current_time.hour * 60 + current_time.minute
-        if _FLAT_START <= hm < _FLAT_END:
+        if in_rollover_guard_window(current_time):
             return self._make_exit(current_price, current_time, "rollover_flat")
 
         if self.timeout_min > 0:

@@ -4,6 +4,24 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.31.2] — 2026-11-10 — Rollover guard follows New York time
+
+The daily spread blowout follows New York 17:00: 21:00 UTC in summer, 22:00 UTC in winter. The
+rollover freeze (no stop tightening, no bot-side closes), the pre-rollover guard flat and the
+bracket flat were fixed at 20:55-22:05 and 20:45-20:55 UTC. After the 2026-11-01 clock change the
+real blowout (M1 bid/ask median spread 12-14 pips against about 2 normally, 22:00-23:00 UTC) sat
+outside the freeze, and the guard flattened 75 minutes early. `in_rollover_freeze` is now
+16:55-18:05 New York time, and the new `in_rollover_guard_window` is 16:45-16:55 New York time
+(`modules/management/base.py`); `ratchet.py` and `bracket.py` use it. Summer behaviour is unchanged.
+Three new tests in `tests/test_rollover_dst.py`; suite 721 passed. No realized damage found for
+2026-11-01..11-06 (no exits between 21:00 and 23:00 UTC). Deployed 2026-11-10 00:39Z; the open
+EUR_CHF parent was recovered on restart with its persisted gear and grid.
+
+Operational notes from 2026-11-07, no code: the reaper was re-enabled at 24 h any-red (full-record M1
+replay: the only exit change ahead in both halves of the record), and `account.margin_pct_per_trade`
+went 0.20 -> 0.04 with `probe_sizing_mult` 0.20 -> 1.0, so every seat risks 4% of balance in margin.
+First live order at the new size: EUR_CHF long, 2026-11-09 23:44Z, 29.35 margin on a 734.59 account.
+
 ## [6.31.1] — 2026-11-01 — Reaper switched off
 
 Operational change, no code. Brock ordered the stale-red reaper off at 15:55Z
