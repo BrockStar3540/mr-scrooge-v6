@@ -1279,6 +1279,24 @@ or renumber any B-id.** The B-001 → B-090 range remains intact and uninvented 
 - **Lesson:** a liveness probe that can fail on a busy-but-healthy service will page someone.
   Probe with retries, and size queues for every poller.
 
+### B-146 — the rollover freeze and pre-rollover flat were fixed UTC and missed the blowout after the clock change
+
+- **Discovered:** 2026-11-08 ~22:00Z, while checking why Sunday-reopen closes paid wide spreads;
+  confirmed on M1 bid/ask the same night. **Status: FIXED 2026-11-10** (6.31.2).
+- **Area:** `modules/management/base.py` (`in_rollover_freeze`), `ratchet.py` (guard flat),
+  `bracket.py` (rollover flat).
+- **Symptom / chain:** the daily spread blowout follows New York 17:00, so it moved from 21:00 to
+  22:00 UTC on 2026-11-01 (median spread 12-14 pips against about 2 normally). The freeze
+  (20:55-22:05 UTC) then covered a quiet hour and ended five minutes into the blowout, so stops
+  resting near price could be triggered by the widening and bot closes were allowed inside it,
+  while the guard flattened 75 minutes early. No exit landed in the window 11-01..11-06, so no
+  dollars were lost yet.
+- **Fix:** windows are 16:55-18:05 and 16:45-16:55 New York time (`zoneinfo`), new
+  `in_rollover_guard_window`; `tests/test_rollover_dst.py` covers a summer and a winter date.
+- **Lesson:** write a market-clock rule in the market's own local time and test one date in each
+  season. Cell `entry_cutoff_utc` and the session windows are still UTC hours: harmless in winter
+  (the cutoff just blocks an hour early) but worth re-checking at each clock change.
+
 ---
 
 # Records not recovered

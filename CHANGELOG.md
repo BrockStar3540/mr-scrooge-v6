@@ -15,7 +15,7 @@ outside the freeze, and the guard flattened 75 minutes early. `in_rollover_freez
 (`modules/management/base.py`); `ratchet.py` and `bracket.py` use it. Summer behaviour is unchanged.
 Three new tests in `tests/test_rollover_dst.py`; suite 721 passed. No realized damage found for
 2026-11-01..11-06 (no exits between 21:00 and 23:00 UTC). Deployed 2026-11-10 00:39Z; the open
-EUR_CHF parent was recovered on restart with its persisted gear and grid.
+EUR_CHF parent was recovered on restart with its persisted gear and grid. Book of Bugs: B-146.
 
 Operational notes from 2026-11-07, no code: the reaper was re-enabled at 24 h any-red (full-record M1
 replay: the only exit change ahead in both halves of the record), and `account.margin_pct_per_trade`
