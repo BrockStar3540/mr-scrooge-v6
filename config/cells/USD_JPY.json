@@ -4473,6 +4473,55 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "ninja_stab_fade_counter_long",
+          "side": "long",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "wired": "2026-08-30",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "atr_h1_relative",
+              "max": 0.85,
+              "note": "stabilising regime (p25) \u2014 the positive-gamma ANALOGUE: price mean-reverts at the level"
+            },
+            {
+              "feature": "efficiency_10",
+              "max": 0.13,
+              "note": "chop (p25): nothing is carrying, so fade not break"
+            },
+            {
+              "feature": "ps_high_dist",
+              "min": -6.0,
+              "max": 6.0,
+              "note": "AT the prior-session ceiling \u2014 fade back down"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: ninja_stab_fade_short (short) ran 5 eps @ -39.5p/ep with medMFE/MAE 1.6/50.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\ud83e\udd77",
+          "notes": "Counterpart of ninja_stab_fade_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "46 SHADOW, 3 DISABLED setups. Tier=1 ev_gross_long=-0.838 ev_gross_short=-0.297."
@@ -7243,6 +7292,70 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of orb_break_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "mr2_bb_reversion_short_g_dial_counter_long",
+          "side": "long",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "zscore_5m",
+              "min": 1.6,
+              "note": "book: z>=1.2 | dial 2026-08-25"
+            },
+            {
+              "feature": "bb_pos",
+              "min": 0.9,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "rsi14",
+              "min": 66.0,
+              "note": "dial 2026-08-25"
+            },
+            {
+              "feature": "ret_5m",
+              "max": 0.0
+            },
+            {
+              "feature": "spread_pips",
+              "note": "added by dial slate | dial 2026-08-25",
+              "max": 1.8
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: mr2_bb_reversion_short_g_dial (short) ran 6 eps @ -12.5p/ep with medMFE/MAE 2.7/11.7 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of mr2_bb_reversion_short_g_dial (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "52 SHADOW, 1 DISABLED setups. Tier=2 ev_gross_long=-0.894 ev_gross_short=-2.582."
