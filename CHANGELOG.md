@@ -17,6 +17,8 @@ no day rule beat random day-skipping with confidence (about 5% chance) and exemp
 worse out of sample. Judge it on the live book; skipped intents are logged as `DAYGATE skip`. Seven tests in
 `tests/test_day_gate.py`. Deployed 2026-11-13 03:11Z at Brock's instruction.
 
+Docs: [theory paper](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md), [live test](docs/LIVE_TEST_BAD_DAY_GATE.md) with its frozen decision rule, and the [entry-filter forward test](docs/FORWARD_TEST_FILTERS_2026-11-10.md); README section "The theory, and the live test".
+
 ## [6.31.2] — 2026-11-10 — Rollover guard follows New York time
 
 The daily spread blowout follows New York 17:00: 21:00 UTC in summer, 22:00 UTC in winter. The

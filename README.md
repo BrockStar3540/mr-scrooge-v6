@@ -110,6 +110,14 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 | Popper grids (10 rounds) | the gross harvest is real; the toll is bigger in simulation ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
 | Simulator-scored promotion | per-setup correlation with real fills 0.07; replaced by the broker-truth standard (2026-10-21) |
 | The old evidence bar, deflated | median deflated Sharpe 0.00: its selection measured the search ([issue #9](https://github.com/BrockStar3540/mr-scrooge-v6/issues/9), [registry](research/registry/README.md)) |
+| Skip the bad days (Thu/Fri/event days), exempt the families that hold up | the pattern is real in the record but not distinguishable from random day-skipping (about 5%); exemptions picked in advance did worse out of sample. **Running live as a pre-registered experiment** ([test](docs/LIVE_TEST_BAD_DAY_GATE.md)) |
+| Tighter stops (×0.3 to ×0.75, or a flat 3 to 10 pips) | replay of 1,170 real entries: −1,745 to −2,335 pips against −1,380 for the live stops ([theory](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md)) |
+
+## The theory, and the live test
+
+**V6 is an insurance seller.** 78% of trades win, but the average win is +8.7 pips and the average loss is −40.4, so break-even needs a **82.3%** win rate: the book is about **4.3 points short**. The losses cluster (the ten worst days are 108% of the net loss), so the only ways to win are a direction signal worth about +4.3 points of win rate, or fewer and smaller claims. Tighter stops and fixed targets lose in replay; the 24-hour reaper helped. [Read the theory and every lever we tested.](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md)
+
+**Live since 2026-11-13: the bad-day gate** skips new entries on FX trading Thursdays, Fridays and listed event days, except four families that held up on those days. Pass/fail was frozen before the first gate-era trade: keep it only if the kept trades are positive and beat random day-skipping (p < 0.05) over 150 trades or 12 weeks. [The live test.](docs/LIVE_TEST_BAD_DAY_GATE.md) Also running: the [entry-filter forward test](docs/FORWARD_TEST_FILTERS_2026-11-10.md), six rules registered on 2026-11-10.
 
 ## Red for hours, not days
 
@@ -126,6 +134,8 @@ A local control panel (`127.0.0.1:8084`; set `DASHBOARD_HOST` to [bind elsewhere
 | | |
 |---|---|
 | 📖 **[Strategy Book](docs/STRATEGY_BOOK.md)** | all 40 strategy families: what each trades, the indicators it reads, what the backtesting said, and how it did with real money |
+| 🧠 **[The theory](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md)** | why the book loses and what would make it win, with every lever tested on the live tape |
+| 🧪 **[Live test](docs/LIVE_TEST_BAD_DAY_GATE.md)** | the bad-day gate, its pre-registered pass/fail rule, and the entry-filter forward test |
 | 🧭 **[Research Program](docs/RESEARCH_PROGRAM.md)** | the falsification method and open dockets |
 | 🤖 **[Governor](docs/GOVERNOR.md)** | the promote/demote machinery, the rails, the ledger, the switches |
 | 🧮 **[Hypothesis registry](research/registry/README.md)** | every setup ever scored and every decision, refreshed hourly, plus the [deflated Sharpe / PBO test](research/deflation/PREREGISTRATION.md) |
