@@ -2198,6 +2198,50 @@
           },
           "watch": "\ud83e\udd88",
           "notes": "Counterpart of shark_fade_mid_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "pwl_fade_counter_short",
+          "side": "short",
+          "class": "box",
+          "status": "SHADOW",
+          "wired": "2026-08-16",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "pwl_dist",
+              "min": -5.0,
+              "max": 5.0,
+              "note": "at previous completed week's low"
+            },
+            {
+              "feature": "rsi14",
+              "max": 40.0,
+              "note": "stretched into the weekly level"
+            }
+          ],
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: pwl_fade_long (long) ran 6 eps @ -10.5p/ep with medMFE/MAE 6.1/10.3 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 40.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "watch": "\u26bd",
+          "notes": "Counterpart of pwl_fade_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
       "notes": "36 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-2.784 ev_gross_short=-1.803."
