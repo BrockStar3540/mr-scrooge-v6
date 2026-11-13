@@ -13,7 +13,7 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,638.10_(--65.52%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-922/1180_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-2_(−%244)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,638.17_(--65.53%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-922/1180_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-2_(−%244)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
@@ -27,10 +27,10 @@
 | Last 90 days | 981 | **78.5%** | ▲ +0.4 pts | −$1,092.20 |
 | Last 60 days | 664 | **76.7%** | ▼ −1.5 pts | −$792.56 |
 | Last 30 days | 258 | **74.4%** | ▼ −3.7 pts | −$396.48 |
-| Last 15 days | 112 | **77.7%** | ▼ −0.5 pts | −$317.90 |
+| Last 15 days | 111 | **77.5%** | ▼ −0.7 pts | −$319.40 |
 | Last 7 days | 14 | **64.3%** | ▼ −13.8 pts | −$135.96 |
 
-<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-13 01:15 UTC by close time; refreshed hourly with each new close.</sub>
+<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-13 02:15 UTC by close time; refreshed hourly with each new close.</sub>
 
 > **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +5 → lock +4, steps +7/+9/… → lock −2 + Party Package popper grids · 15%/trade · 6 max (445 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).
 <!-- LIVE_BALANCE_END -->
