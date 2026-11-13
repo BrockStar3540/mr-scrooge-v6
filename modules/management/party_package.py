@@ -676,6 +676,12 @@ class PartyPackage:
                     continue
                 if in_rollover_freeze(now):
                     continue
+                try:
+                    from config import day_gate as _day_gate
+                    if _day_gate.blocked(now, pair, g.parent_setup):
+                        continue     # day gate (2026-11-13): no new popper fires on a gated day
+                except Exception:
+                    pass             # fail-open
                 if spread_pips <= 0.0:
                     log.info("PP SKIP fire %s marker=-%sp reason=bad_tick | engine=pp_v1",
                              pair, key)

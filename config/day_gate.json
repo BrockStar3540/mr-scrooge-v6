@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "note": "Experiment 2026-11-13 (Brock: just try it). Skip new entries on FX trading Thursday/Friday (ET+7h) and on event days for the pair's currency, except exempt families. Not a proven edge; see trade-book-2026-11-06/skip_days_fam.py. Set enabled=false to turn off (hot-reload).",
+  "skip_weekdays": [3, 4],
+  "exempt_families": ["liq_sweep_fade", "classic_willr_fade", "control_atr5m_60", "rg1_range_scalp"],
+  "event_days": {
+    "2026-12-09": ["ALL"]
+  },
+  "event_days_sources": "FOMC 2026-12-09 per Fed calendar as reported by several calendars (federalreserve.gov calendar page checked 2026-11-08 listed through Oct). Other known Nov-Dec events (CPI/PPI/ECB/BoE/BoJ/NFP) fall on Thu/Fri and are covered by the weekday rule."
+}

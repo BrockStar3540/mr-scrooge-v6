@@ -535,6 +535,14 @@ class Engine:
                         log.warning('cells: evaluate %s/%s raised: %s',
                                     _pair_mod.pair, _cell.session, _ce)
 
+        # Day gate (2026-11-13 experiment): drop entries on bad FX trading days unless the family is exempt.
+        # Fail-open, hot-reloaded kill-switch in config/day_gate.json; shadow stamps already happened above.
+        try:
+            from config import day_gate as _day_gate
+            intents = _day_gate.filter_intents(intents, now)
+        except Exception as _dge:
+            log.warning('day_gate hook failed (trading unfiltered): %s', _dge)
+
         # Dashboard-compatible tickets from intents (TradeTicket shape retained)
         tickets = [self._ticket_from_intent(_it, now, rivals=len(intents) - 1)
                    for _it in intents]

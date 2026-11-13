@@ -4,6 +4,19 @@ Notable changes to Mr. Scrooge. Format loosely follows [Keep a Changelog](https:
 The full narrative history lives in [docs/SCROOGE_HISTORY.md](docs/SCROOGE_HISTORY.md) and the
 [Book of Bugs](docs/BOOK_OF_BUGS.md); this file tracks the public-repo era.
 
+## [6.32.0] — 2026-11-13 — Bad-day entry gate (experiment)
+
+New hot-reloaded filter, `config/day_gate.py` + `config/day_gate.json` ("enabled": false turns it off, no
+restart). New entries (cell parents in `core/engine.py`, popper fires in `modules/management/party_package.py`)
+are skipped on FX trading Thursdays and Fridays (New York clock + 7 h, rolling at 17:00 ET) and on listed
+event days for the pair's currency (FOMC 2026-12-09, all pairs), except setups of four exempt families:
+`liq_sweep_fade`, `classic_willr_fade`, `control_atr5m_60`, `rg1_range_scalp`. Open positions, the ratchet and
+the reaper are untouched; any config error fails open. Basis: in the 1,170 live V6 trades Thursday/Friday and
+event days averaged -3.4 pips per trade against -0.7 on other days. This is an experiment, not a proven edge:
+no day rule beat random day-skipping with confidence (about 5% chance) and exemptions picked in advance did
+worse out of sample. Judge it on the live book; skipped intents are logged as `DAYGATE skip`. Seven tests in
+`tests/test_day_gate.py`. Deployed 2026-11-13 03:11Z at Brock's instruction.
+
 ## [6.31.2] — 2026-11-10 — Rollover guard follows New York time
 
 The daily spread blowout follows New York 17:00: 21:00 UTC in summer, 22:00 UTC in winter. The
