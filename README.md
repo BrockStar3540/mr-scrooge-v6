@@ -117,7 +117,7 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 
 **V6 is an insurance seller.** 78% of trades win, but the average win is +8.7 pips and the average loss is −40.4, so break-even needs a **82.3%** win rate: the book is about **4.3 points short**. The losses cluster (the ten worst days are 108% of the net loss), so the only ways to win are a direction signal worth about +4.3 points of win rate, or fewer and smaller claims. Tighter stops and fixed targets lose in replay; the 24-hour reaper helped. [Read the theory and every lever we tested.](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md)
 
-**Live since 2026-11-13: the bad-day gate** skips new entries on FX trading Thursdays, Fridays and listed event days, except four families that held up on those days. Pass/fail was frozen before the first gate-era trade: keep it only if the kept trades are positive and beat random day-skipping (p < 0.05) over 150 trades or 12 weeks. [The live test.](docs/LIVE_TEST_BAD_DAY_GATE.md) Also running: the [entry-filter forward test](docs/FORWARD_TEST_FILTERS_2026-11-10.md), six rules registered on 2026-11-10.
+**Live since 2026-11-13: the bad-day gate** skips new entries on FX trading Thursdays, Fridays and listed event days, except four families that held up on those days. Pass/fail was frozen before the first gate-era trade: keep it only if the kept trades are positive and beat random day-skipping (p < 0.05) over 150 trades or 12 weeks. [The live test](docs/LIVE_TEST_BAD_DAY_GATE.md) and its [scorer](research/tools/gate_test.py). Also running: the [entry-filter forward test](docs/FORWARD_TEST_FILTERS_2026-11-10.md), six rules registered on 2026-11-10.
 
 ## Red for hours, not days
 

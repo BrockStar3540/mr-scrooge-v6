@@ -34,6 +34,17 @@ Read the result at **150 closed gate-era trades or 2027-02-05 (12 weeks), whiche
 - Fewer than 100 trades at 12 weeks means the result is inconclusive and the gate stays on until 150 trades.
 - Exemptions and weekdays are not edited during the test. A different rule gets a new ID and a new registration time.
 
+## Scoring implementation (added 2026-11-13, before any gate-era trade closed; the rule above is unchanged)
+
+The scorer is [`research/tools/gate_test.py`](../research/tools/gate_test.py). It reads the broker-built trade book, the `DAYGATE skip` journal lines and M1 bid/ask candles for the gate era.
+
+- Each skip line now carries the exact time, side and exit geometry (`t=`, `side=`, `sl=`, `trig=`, `trail=`, `eng=`, `englock=`; commit `f79577b4`, 2026-11-13 05:25 UTC, before the first skip). The first refused signal per pair, setup and day is logged.
+- A refused parent is replayed from the last complete minute before the signal: entry at that bar's ask (long) or bid (short), exit-side prices, the live ratchet gear and the 24-hour any-red reaper. Pairs on a bracket exit are not replayed.
+- Poppers of refused parents cannot be replayed. So the **positive-total criterion uses all kept trades (parents and poppers)**, and the **random-day benchmark uses parents only**: kept parents plus replayed skipped parents, with random sets of whole FX days (the same number of gated days as the real gate had) gated instead, removing the non-exempt parents on them.
+- Estimates, not fills: no concurrency, currency or cooldown cap is applied to replayed signals, and later same-day signals on a refused pair/setup are not replayed.
+- **Fidelity check.** On the 92 parents entered since the 2026-10-28 gear change, replaying from the signal minute with the approximated entry gave a mean difference of -0.22 pips against the real result, and 80% landed within 3 pips. The replay applies the reaper, which those trades did not have, so the exit-by-stop rows differ by design.
+- Until 150 closed gate-era trades or 2027-02-05 the scorer prints `INTERIM, no decision`.
+
 ## Interaction with the entry-filter forward test
 
 The [forward test registered on 2026-11-10](FORWARD_TEST_FILTERS_2026-11-10.md) scores rules from live trades. The live book has been filtered since 2026-11-13 03:11 UTC, so its rules that include a Thursday or a Monday-to-Friday cut are scored only on trades entered from 2026-11-10 08:30 UTC to that moment. The gate itself is judged by this document's rule.
