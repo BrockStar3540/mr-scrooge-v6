@@ -73,17 +73,29 @@ def reason(now: datetime, pair: str, setup_id: str, cfg: dict | None = None) -> 
     return None
 
 
-def blocked(now: datetime, pair: str, setup_id: str) -> bool:
+def blocked(now: datetime, pair: str, setup_id: str, extra: str = "") -> bool:
     r = reason(now, pair, setup_id)
     if r is None:
         return False
     key = (pair, setup_id, fx_trading_day(now))
-    if key not in _seen:                          # one log line per pair/setup/day
+    if key not in _seen:                          # one log line per pair/setup/day (first signal of the day)
         _seen.add(key)
-        log.info("DAYGATE skip %s setup=%s reason=%s | engine=day_gate", pair, setup_id, r)
+        if now.tzinfo is None:
+            now = now.replace(tzinfo=timezone.utc)
+        log.info("DAYGATE skip %s setup=%s reason=%s t=%s%s | engine=day_gate", pair, setup_id, r,
+                 now.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), extra)
     return True
+
+
+def _intent_extra(i) -> str:
+    """Side and exit geometry of a skipped CellIntent, so the gate test can replay what the gate refused."""
+    ep = getattr(i, "exit_params", None)
+    f = lambda n: getattr(ep, n, 0.0) if ep is not None else 0.0
+    return (f" side={getattr(i, 'side', '?')} h={getattr(i, 'horizon_min', 0)} sl={f('sl_pips')} trig={f('trigger_pips')}"
+            f" trail={f('trail_pips')} eng={f('engage_pips')} englock={f('engage_lock_pips')} mode={getattr(ep, 'mode', '?')}"
+            f" probe={int(bool(getattr(i, 'probe', False)))}")
 
 
 def filter_intents(intents: list, now: datetime) -> list:
     """Drop gated CellIntents (shadow stamps already happened inside evaluate)."""
-    return [i for i in intents if not blocked(now, i.pair, i.setup_id)]
+    return [i for i in intents if not blocked(now, i.pair, i.setup_id, _intent_extra(i))]

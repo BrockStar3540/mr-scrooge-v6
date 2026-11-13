@@ -41,3 +41,19 @@ def test_filter_intents():
         def __init__(s, p, sid): s.pair, s.setup_id = p, sid
     keep = dg.filter_intents([I("EUR_USD", "rg1_range_scalp_short"), I("EUR_USD", "echo_box_fade_long")], U(2026, 11, 11, 15, 0))
     assert len(keep) == 2                                                             # Wednesday: nothing gated
+
+
+def test_skip_log_carries_replay_fields(caplog):
+    import logging
+    class EP: sl_pips, trigger_pips, trail_pips, engage_pips, engage_lock_pips, mode = 50.0, 5.0, 2.0, 5.0, 4.0, "ratchet"
+    class I: pair, setup_id, side, horizon_min, exit_params, probe = "EUR_USD", "echo_box_fade_long", "long", 60, EP(), False
+    dg._seen.clear()
+    real = dg.reason; dg.reason = lambda now, pair, sid, cfg=None: real(now, pair, sid, CFG)
+    try:
+        with caplog.at_level(logging.INFO, logger="v6.daygate"):
+            out = dg.filter_intents([I()], U(2026, 11, 12, 15, 0))
+    finally:
+        dg.reason = real
+    assert out == []
+    line = [r.getMessage() for r in caplog.records if "DAYGATE skip" in r.getMessage()][0]
+    assert "t=2026-11-12T15:00:00Z" in line and "side=long" in line and "sl=50.0" in line and "trail=2.0" in line and "englock=4.0" in line
