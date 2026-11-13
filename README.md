@@ -13,7 +13,7 @@
 <!-- LIVE_BALANCE_START -->
 <div align="center">
 
-![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,639.47_(--65.58%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-922/1181_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-1_(%2B%240)-58a6ff?style=flat-square)
+![status](https://img.shields.io/badge/status-LIVE-3fb950?style=flat-square) ![P/L](https://img.shields.io/badge/P/L-−%241,638.89_(--65.56%25)-f85149?style=flat-square) ![trades](https://img.shields.io/badge/trades-923/1182_green-3fb950?style=flat-square) ![open](https://img.shields.io/badge/open-0_(%2B%240)-58a6ff?style=flat-square)
 
 [![live track record](livelog/equity.svg)](livelog/trades.csv)
 
@@ -23,14 +23,14 @@
 
 | Window | Trades | Win rate | vs all-time | Net P/L |
 |---|---:|---:|---:|---:|
-| **All-time** | 1181 | **78.1%** | — | −$1,639.41 |
-| Last 90 days | 982 | **78.4%** | ▲ +0.3 pts | −$1,097.35 |
-| Last 60 days | 663 | **76.8%** | ▼ −1.3 pts | −$715.84 |
-| Last 30 days | 256 | **74.2%** | ▼ −3.9 pts | −$402.35 |
-| Last 15 days | 107 | **76.6%** | ▼ −1.4 pts | −$326.20 |
-| Last 7 days | 13 | **69.2%** | ▼ −8.8 pts | −$105.56 |
+| **All-time** | 1182 | **78.1%** | — | −$1,638.67 |
+| Last 90 days | 983 | **78.4%** | ▲ +0.3 pts | −$1,096.61 |
+| Last 60 days | 663 | **76.9%** | ▼ −1.2 pts | −$686.24 |
+| Last 30 days | 256 | **74.2%** | ▼ −3.9 pts | −$406.23 |
+| Last 15 days | 106 | **76.4%** | ▼ −1.7 pts | −$331.34 |
+| Last 7 days | 14 | **71.4%** | ▼ −6.7 pts | −$104.82 |
 
-<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-13 08:15 UTC by close time; refreshed hourly with each new close.</sub>
+<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-13 09:15 UTC by close time; refreshed hourly with each new close.</sub>
 
 > **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +5 → lock +4, steps +7/+9/… → lock −2 + Party Package popper grids · 15%/trade · 6 max (445 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).
 <!-- LIVE_BALANCE_END -->

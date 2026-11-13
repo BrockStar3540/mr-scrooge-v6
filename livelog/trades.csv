@@ -1180,3 +1180,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-11T06:32:25Z,EUR_CAD,short,1322,0.36,parent
 2026-11-11T07:28:30Z,EUR_CHF,long,881,0.42,parent
 2026-11-13T07:03:19Z,AUD_USD,long,1442,-5.15,parent
+2026-11-13T08:43:23Z,EUR_CHF,long,891,0.74,parent
