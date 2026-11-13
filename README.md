@@ -110,7 +110,7 @@ On retail OANDA majors, no price-*prediction* edge cleared cost ([paper](docs/pa
 | Popper grids (10 rounds) | the gross harvest is real; the toll is bigger in simulation ([paper](docs/papers/PAPER_party_package_scale_in_2026-07-19.md)) |
 | Simulator-scored promotion | per-setup correlation with real fills 0.07; replaced by the broker-truth standard (2026-10-21) |
 | The old evidence bar, deflated | median deflated Sharpe 0.00: its selection measured the search ([issue #9](https://github.com/BrockStar3540/mr-scrooge-v6/issues/9), [registry](research/registry/README.md)) |
-| Skip the bad days (Thu/Fri/event days), exempt the families that hold up | the pattern is real in the record but not distinguishable from random day-skipping (about 5%); exemptions picked in advance did worse out of sample. **Running live as a pre-registered experiment** ([test](docs/LIVE_TEST_BAD_DAY_GATE.md)) |
+| Skip the bad days (Thu/Fri/event days), exempt the families that hold up | the pattern shows in the record but is not distinguishable from random day-skipping (about 5%); exemptions picked in advance did worse out of sample. **Running live as a pre-registered experiment** ([test](docs/LIVE_TEST_BAD_DAY_GATE.md)) |
 | Tighter stops (×0.3 to ×0.75, or a flat 3 to 10 pips) | replay of 1,170 real entries: −1,745 to −2,335 pips against −1,380 for the live stops ([theory](docs/papers/PAPER_insurance_seller_theory_2026-11-13.md)) |
 
 ## The theory, and the live test
