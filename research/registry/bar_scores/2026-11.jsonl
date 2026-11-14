@@ -63721,3 +63721,4 @@
 {"block_lcb": null, "codes": [], "days": null, "key": "EUR_JPY|london|ninja_flag_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": null, "t": "2026-11-14T07:04:20.419750+00:00"}
 {"block_lcb": null, "codes": [], "days": null, "key": "USD_CHF|london|mr2_bb_reversion_short_g_dial_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": null, "t": "2026-11-14T07:04:20.419750+00:00"}
 {"block_lcb": null, "codes": [], "days": null, "key": "USD_CHF|london|ninja_stab_fade_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": null, "t": "2026-11-14T07:04:20.419750+00:00"}
+{"block_lcb": null, "codes": [], "days": null, "key": "EUR_JPY|london|ninja_flag_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": 0, "t": "2026-11-14T11:16:10.678244+00:00"}
