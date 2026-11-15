@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "about": "Public copy of the Bar Governor's hypothesis registry. See research/registry/README.md.",
- "registry_mtime": "2026-11-14T23:35:05.436178+00:00",
+ "registry_mtime": "2026-11-15T00:35:05.541325+00:00",
  "board_generated": "2026-11-15T00:10:51.474856+00:00",
  "bar_scores_since": "2026-10-21T20:49:20+00:00",
  "counts": {
@@ -16,8 +16,8 @@
    "PROBE": 3,
    "SHADOW": 1713
   },
-  "decisions_published": 14424,
-  "dry_run_rows": 1911,
+  "decisions_published": 14429,
+  "dry_run_rows": 1916,
   "unparseable_rows": 0
  },
  "bar": {
@@ -12359,10 +12359,10 @@
    "first_seated": null,
    "seated_source": null,
    "decisions": {
-    "PROMOTE-GATED": 100
+    "PROMOTE-GATED": 101
    },
    "last_decision": {
-    "t": "2026-11-14T23:36:54.005081+00:00",
+    "t": "2026-11-15T00:36:58.293493+00:00",
     "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
@@ -15244,10 +15244,10 @@
     "FAM-GEAR-CHANGE": 5,
     "GOVERNOR-FLIP": 2,
     "METRIC-ERA-RESET": 1,
-    "PROMOTE-GATED-TRUTH": 29
+    "PROMOTE-GATED-TRUTH": 30
    },
    "last_decision": {
-    "t": "2026-11-14T23:36:54.005081+00:00",
+    "t": "2026-11-15T00:36:58.293493+00:00",
     "action": "PROMOTE-GATED-TRUTH"
    },
    "snapshot_runs": {
@@ -37888,10 +37888,10 @@
    "decisions": {
     "ERA-RESET": 1,
     "FAM-GEAR-CHANGE": 3,
-    "PROMOTE-GATED": 121
+    "PROMOTE-GATED": 122
    },
    "last_decision": {
-    "t": "2026-11-14T23:36:54.005081+00:00",
+    "t": "2026-11-15T00:36:58.293493+00:00",
     "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
@@ -60396,10 +60396,10 @@
    "decisions": {
     "ERA-RESET": 1,
     "FAM-GEAR-CHANGE": 3,
-    "PROMOTE-GATED": 89
+    "PROMOTE-GATED": 90
    },
    "last_decision": {
-    "t": "2026-11-14T23:36:54.005081+00:00",
+    "t": "2026-11-15T00:36:58.293493+00:00",
     "action": "PROMOTE-GATED"
    },
    "snapshot_runs": {
@@ -69538,10 +69538,10 @@
     "OPERATOR-FLIP": 1,
     "PROMOTE": 1,
     "PROMOTE-GATED": 101,
-    "PROMOTE-GATED-TRUTH": 82
+    "PROMOTE-GATED-TRUTH": 83
    },
    "last_decision": {
-    "t": "2026-11-14T23:36:54.005081+00:00",
+    "t": "2026-11-15T00:36:58.293493+00:00",
     "action": "PROMOTE-GATED-TRUTH"
    },
    "snapshot_runs": {
