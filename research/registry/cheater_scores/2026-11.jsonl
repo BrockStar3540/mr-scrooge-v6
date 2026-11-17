@@ -840,3 +840,9 @@
 {"date": "2026-11-14", "eligible": false, "heat": null, "key": "USD_CHF|london|ninja_stab_fade_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-15", "eligible": true, "heat": null, "key": "USD_JPY|london|shark_fade_mid_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-15", "eligible": true, "heat": null, "key": "USD_JPY|london|shark_fade_mid_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": false, "heat": null, "key": "AUD_JPY|london|ninja_stab_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": true, "heat": null, "key": "EUR_USD|london|orb_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": true, "heat": null, "key": "USD_CAD|london|mr2_bb_reversion_short_g_spr1_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": true, "heat": null, "key": "USD_CAD|ny|mr2_bb_reversion_short_g_spr1_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": true, "heat": null, "key": "USD_CAD|ny|ninja_stab_fade_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-16", "eligible": true, "heat": null, "key": "USD_CHF|london|liq_sweep_fade_short_v_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
