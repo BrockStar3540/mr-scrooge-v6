@@ -2248,7 +2248,7 @@
           "id": "alpha_extended_fade_long_g_a10",
           "side": "long",
           "class": "book_replay",
-          "status": "ACTIVE",
+          "status": "SHADOW",
           "horizon_min": 240,
           "conditions": [
             {
@@ -5700,7 +5700,7 @@
           "wired": "2026-07-13"
         }
       ],
-      "notes": "1 ACTIVE, 69 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
+      "notes": "77 SHADOW, 4 DISABLED setups. Tier=2 ev_gross_long=-1.755 ev_gross_short=-3.158."
     },
     "ny": {
       "enabled": true,
