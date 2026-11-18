@@ -1185,3 +1185,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-17T08:38:15Z,AUD_USD,long,1449,1.01,parent
 2026-11-17T09:48:04Z,AUD_USD,long,1451,0.57,parent
 2026-11-17T19:17:13Z,USD_CAD,long,1465,0.41,popper
+2026-11-18T05:37:01Z,USD_CAD,long,1462,0.40,parent
