@@ -6465,6 +6465,107 @@
           },
           "watch": "\u26bd",
           "notes": "Counterpart of fvg_fill_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
+        },
+        {
+          "id": "impulse_ob_long_adx_counter_short",
+          "side": "short",
+          "class": "market_structure",
+          "status": "SHADOW",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "ob_bull_dist_pips",
+              "min": -3.0,
+              "max": 3.0
+            },
+            {
+              "feature": "ema_trend_pips",
+              "min": 0.5
+            },
+            {
+              "feature": "adx14",
+              "min": 20.0,
+              "note": "H1 ADX-14 >= 20: take the zone retest only in a measurably TRENDING regime, not chop. Baseline gates direction but not trend STRENGTH."
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: impulse_ob_long_adx (long) ran 26 eps @ -11.77p/ep with medMFE/MAE 6.3/9.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of impulse_ob_long_adx (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "watch": "\ud83c\udf40",
+          "wired": "2026-08-07"
+        },
+        {
+          "id": "es_trend_counter_short",
+          "side": "short",
+          "class": "book_replay",
+          "status": "SHADOW",
+          "wired": "2026-08-01",
+          "horizon_min": 240,
+          "conditions": [
+            {
+              "feature": "adx14",
+              "min": 25.0,
+              "note": "EuroScope trend regime: ADX >= 25"
+            },
+            {
+              "feature": "trend_4h",
+              "min": 0.5,
+              "note": "4h trend up"
+            },
+            {
+              "feature": "ema20_dist_pct",
+              "min": 0.0,
+              "note": "price above EMA20"
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: es_trend_long (long) ran 20 eps @ -11.8p/ep with medMFE/MAE 5.2/8.6 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of es_trend_long (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "sizing": {
+            "risk_pct": 0.2
+          }
         }
       ],
       "notes": "NO-SIDE: no persistent lean (direction_lean.drift != PERSISTENT for both dirs). Cell remains in monthly discovery loop. A discovered setup enters as SHADOW, earns ACTIVE via the gauntlet."
