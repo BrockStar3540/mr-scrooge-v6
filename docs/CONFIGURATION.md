@@ -111,7 +111,7 @@ NEVER stored in config files or committed to the repo. Loaded from the environme
 - `OANDA_API_TOKEN`
 - `OANDA_ACCOUNT_ID`
 - `OANDA_API_URL` (practice vs live endpoint)
-- `DROPBOX_REFRESH_TOKEN` + `DROPBOX_APP_KEY` + `DROPBOX_APP_SECRET` (for the nightly backup cron)
+- `DROPBOX_REFRESH_TOKEN` + `DROPBOX_APP_KEY` + `DROPBOX_APP_SECRET` (only for the retired Dropbox backup cron, switched off 2026-11-20; not needed by the bot)
 
 If running locally for testing, copy the same file to `~/.openclaw/secrets.env` on your machine.
 

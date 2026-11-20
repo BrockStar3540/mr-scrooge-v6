@@ -4,8 +4,8 @@
 
 This is the reading-order index for the Mr. Scrooge research corpus. It is written for a
 **public reader who has only this repo** — everything referenced here is either in-repo or in
-the Dropbox `/SCROOGE ARCHIVE/` research library, shared read-only at:
-https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
+the research library, now on GitHub at:
+https://github.com/BrockStar3540/mr-scrooge-archive
 (per-artifact catalog with leak labels: [`../docs/DATA_AND_MODELS.md`](../docs/DATA_AND_MODELS.md)).
 Nothing points at a private machine or a private repo.
 

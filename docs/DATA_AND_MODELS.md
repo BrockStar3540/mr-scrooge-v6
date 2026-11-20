@@ -1,16 +1,16 @@
 # Data & Models — the Public Availability Catalog
 
-> **Moved to GitHub (2026-10-28):** the whole archive, corpora included, is now [BrockStar3540/mr-scrooge-archive](https://github.com/BrockStar3540/mr-scrooge-archive) (corpora as [release downloads](https://github.com/BrockStar3540/mr-scrooge-archive/releases/tag/research-corpora-2026-07-29), every file hashed in its `MANIFEST.json`). The Dropbox link below stays up as a mirror.
+> **Moved to GitHub (2026-10-28):** the whole archive, corpora included, is now [BrockStar3540/mr-scrooge-archive](https://github.com/BrockStar3540/mr-scrooge-archive) (corpora as [release downloads](https://github.com/BrockStar3540/mr-scrooge-archive/releases/tag/research-corpora-2026-07-29), every file hashed in its `MANIFEST.json`). The old Dropbox mirror was removed on 2026-11-20; GitHub is the only home.
 
-> **Availability (updated 2026-07-18):** the public [archive link](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0) now holds the **readable research record** — papers, session notes, backtest results, version history. The **raw corpora and trained-model binaries catalogued below are privately archived** (they are bulk data / code with no public-safe form) and are **available on request** — open a [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions) if you want a specific corpus or model to re-run the analysis. The catalog below documents each one (schema, era, leak status) as the reference of record.
+> **Availability (updated 2026-07-18):** the public [archive](https://github.com/BrockStar3540/mr-scrooge-archive) now holds the **readable research record** — papers, session notes, backtest results, version history. The **raw corpora and trained-model binaries catalogued below are privately archived** (they are bulk data / code with no public-safe form) and are **available on request** — open a [Discussion](https://github.com/BrockStar3540/mr-scrooge-v6/discussions) if you want a specific corpus or model to re-run the analysis. The catalog below documents each one (schema, era, leak status) as the reference of record.
 
 Everything the research rests on — every retired model and every corpus — is downloadable, testable,
 and modifiable. This page is the catalog: what each artifact is, what it was trained/built on, its era,
 and **its leak status**, so a public reader can re-run or challenge any result in
 [`RESEARCH_PROGRAM.md`](RESEARCH_PROGRAM.md), [`papers/`](papers/), or [`SCROOGE_HISTORY.md`](SCROOGE_HISTORY.md).
 
-> **Public archive (read-only Dropbox share):**
-> https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0
+> **Public archive (GitHub):**
+> https://github.com/BrockStar3540/mr-scrooge-archive
 >
 > Entry points inside the archive: `00_MASTER_INDEX.md` (updated 2026-07-29 — lists every private
 > holding with size + content hash), `00_MANIFEST.json` (machine-readable listing of every file in

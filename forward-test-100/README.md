@@ -16,6 +16,6 @@ the rules, declared before the result: [the protocol](../docs/FORWARD_TEST_PROTO
 
 The complete raw broker export (11,564 transactions, account creation → close, every era
 including the −84% research tuition) is public in
-[the archive](https://www.dropbox.com/scl/fo/uyjwoj274ndzqg98ol72p/AEB6zn4q-jFexhZxVmYFRyc?rlkey=a06ocaqxuyz4at1dfkjmww1i9&st=kup4s0x9&dl=0)
+[the archive](https://github.com/BrockStar3540/mr-scrooge-archive)
 under `proof-of-tape/`. This folder is immutable — the live real-money record lives at
 [livelog/](../livelog/) and updates hourly.
