@@ -89658,3 +89658,4 @@
 {"block_lcb": -3.81, "codes": ["LCB", "RECENT", "FDR"], "days": 18, "key": "USD_JPY|ny|classic_box_fade_short", "n": 59, "net_avg": 3.09, "promotable": false, "q": 0.97991, "status": "SHADOW", "strikes": 1, "t": "2026-11-21T07:10:09.398693+00:00"}
 {"block_lcb": -3.61, "codes": ["AVG", "LCB", "FDR"], "days": 14, "key": "USD_JPY|ny|echo_box_fade_short_g_dial", "n": 26, "net_avg": 1.04, "promotable": false, "q": 0.95309, "status": "SHADOW", "strikes": 0, "t": "2026-11-21T07:10:09.398693+00:00"}
 {"block_lcb": -3.61, "codes": ["LCB", "FDR"], "days": 17, "key": "USD_JPY|ny|fvg_fill_counter_short", "n": 75, "net_avg": 2.18, "promotable": false, "q": 0.96067, "status": "SHADOW", "strikes": 0, "t": "2026-11-21T07:10:09.398693+00:00"}
+{"block_lcb": null, "codes": [], "days": null, "key": "USD_CHF|london|liq_sweep_fade_counter_long", "n": null, "net_avg": null, "promotable": null, "q": null, "status": "SHADOW", "strikes": 0, "t": "2026-11-21T12:17:53.373098+00:00"}
