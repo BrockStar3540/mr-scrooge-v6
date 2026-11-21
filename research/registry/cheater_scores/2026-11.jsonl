@@ -901,3 +901,12 @@
 {"date": "2026-11-19", "eligible": true, "heat": null, "key": "USD_CHF|london|shark_fade_mid_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-19", "eligible": true, "heat": null, "key": "USD_CHF|ny|ninja_stab_fade_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-19", "eligible": true, "heat": null, "key": "USD_JPY|london|rg1_range_scalp_counter_long_g_dial", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": true, "heat": null, "key": "AUD_JPY|ny|ninja_amp_break_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": true, "heat": null, "key": "AUD_JPY|ny|ninja_amp_break_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": false, "heat": null, "key": "AUD_JPY|ny|timing_lean_30_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": true, "heat": null, "key": "EUR_JPY|london|ninja_amp_break_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": false, "heat": null, "key": "GBP_USD|asia|echo_box_fade_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": false, "heat": null, "key": "GBP_USD|ny|echo_box_fade_short_g_bb3_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": true, "heat": null, "key": "USD_CAD|asia|tc_vwapbb_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": true, "heat": null, "key": "USD_CAD|london|echo_box_fade_long_g_bb3", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-20", "eligible": false, "heat": null, "key": "USD_CHF|ny|ninja_amp_break_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
