@@ -910,3 +910,13 @@
 {"date": "2026-11-20", "eligible": true, "heat": null, "key": "USD_CAD|asia|tc_vwapbb_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-20", "eligible": true, "heat": null, "key": "USD_CAD|london|echo_box_fade_long_g_bb3", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-20", "eligible": false, "heat": null, "key": "USD_CHF|ny|ninja_amp_break_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "AUD_JPY|asia|echo_box_fade_short_g_dial_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "CAD_JPY|london|rg1_range_scalp_short_g_bb3_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": true, "heat": null, "key": "EUR_JPY|ny|ninja_amp_break_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": true, "heat": null, "key": "EUR_JPY|ny|ninja_amp_break_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "GBP_USD|london|ninja_flag_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": true, "heat": null, "key": "USD_CAD|ny|rg1_range_scalp_short_g_bb3_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_CHF|london|liq_sweep_fade_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_CHF|london|mr2_bb_reversion_short_g_spr1_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_JPY|london|mr2_bb_reversion_short_g_dial_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_JPY|london|ninja_flag_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
