@@ -2434,7 +2434,7 @@
           "id": "timing_lean_30",
           "side": "short",
           "class": "TIMING",
-          "status": "SHADOW",
+          "status": "PROBE",
           "horizon_min": 30,
           "conditions": [
             {
@@ -6729,7 +6729,7 @@
           "notes": "Counterpart of ninja_flag_short (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges."
         }
       ],
-      "notes": "78 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
+      "notes": "1 PROBE, 80 SHADOW, 6 DISABLED setups. Tier=1 ev_gross_long=0.403 ev_gross_short=-0.037."
     },
     "ny": {
       "enabled": true,
