@@ -920,3 +920,5 @@
 {"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_CHF|london|mr2_bb_reversion_short_g_spr1_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_JPY|london|mr2_bb_reversion_short_g_dial_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
 {"date": "2026-11-21", "eligible": false, "heat": null, "key": "USD_JPY|london|ninja_flag_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-22", "eligible": true, "heat": null, "key": "AUD_JPY|ny|timing_lean_30_counter_short", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
+{"date": "2026-11-22", "eligible": true, "heat": null, "key": "EUR_JPY|ny|shark_adr_late_counter_long", "n_cycles": 0, "promoted": false, "status": "SHADOW", "trust": null}
