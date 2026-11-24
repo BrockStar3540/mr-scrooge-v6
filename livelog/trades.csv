@@ -1189,3 +1189,4 @@ close_utc,instrument,direction,units,realized_usd,source
 2026-11-18T15:35:44Z,USD_CAD,long,1467,0.41,parent
 2026-11-23T10:11:27Z,USD_CAD,long,1468,0.51,parent
 2026-11-23T11:25:35Z,USD_CAD,long,1469,0.91,parent
+2026-11-24T14:13:44Z,USD_CAD,long,1471,-5.21,parent
