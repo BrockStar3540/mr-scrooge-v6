@@ -15724,3 +15724,8 @@
 {"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_JPY|ny|shark_fade_mid_counter_short", "seq": 17852, "t": "2026-11-25T03:38:12.347570+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "CAD_JPY|ny|mr2_bb_reversion_short", "seq": 17853, "t": "2026-11-25T03:38:12.347570+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|fvg_fill_long_g_dial_counter_short", "seq": 17854, "t": "2026-11-25T03:38:12.347570+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED-TRUTH", "by": "governor", "key": "AUD_USD|ny|echo_box_fade_short", "seq": 17855, "t": "2026-11-25T04:37:44.499205+00:00", "truth_gate": {"broker_usd": -0.97, "fills": 3, "virtual_pips_per_cycle": 11.2}, "why": "vc +11.2p/cyc CONTRADICTS broker $-0.97 over 3 fill(s) \u2014 sim proven wrong here"}
+{"action": "PROMOTE-GATED-TRUTH", "by": "governor", "key": "USD_JPY|ny|orb_fade_short", "seq": 17856, "t": "2026-11-25T04:37:44.499205+00:00", "truth_gate": {"broker_usd": -2.89, "fills": 17, "virtual_pips_per_cycle": 10.5}, "why": "vc +10.5p/cyc CONTRADICTS broker $-2.89 over 17 fill(s) \u2014 sim proven wrong here"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_JPY|ny|shark_fade_mid_counter_short", "seq": 17857, "t": "2026-11-25T04:37:44.499205+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "CAD_JPY|ny|mr2_bb_reversion_short", "seq": 17858, "t": "2026-11-25T04:37:44.499205+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|fvg_fill_long_g_dial_counter_short", "seq": 17859, "t": "2026-11-25T04:37:44.499205+00:00", "why": "allow_promotions=false"}
