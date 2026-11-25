@@ -6386,6 +6386,59 @@
           },
           "notes": "Counterpart of timing_lean_30 (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
           "wired": "2026-07-05"
+        },
+        {
+          "id": "timing_lean_30_g_hot_counter_short",
+          "side": "short",
+          "class": "TIMING",
+          "status": "SHADOW",
+          "horizon_min": 30,
+          "conditions": [
+            {
+              "feature": "atr_5m",
+              "min": 6.617985,
+              "max": null,
+              "note": "atr_5m >= p75 boundary (6.617985) from top5_per_cell_per_horizon.csv h=30 (plateau_ok=True). Above p75 = sufficient vol for 30m range harvest.",
+              "lineage": "range-harvest-2026-07-04/top5_per_cell_per_horizon.csv h=30 atr_5m AUD_JPY/ny/long"
+            },
+            {
+              "feature": "atr_h1_relative",
+              "note": "added by dial slate | dial 2026-08-25",
+              "min": 1.4
+            }
+          ],
+          "exit": {
+            "mode": "ratchet",
+            "sl_pips": 50.0,
+            "trigger_pips": 7.0,
+            "trail_pips": 2.0,
+            "trail_mult": 0.0,
+            "trail_min": 2.5,
+            "trail_max": 10.0,
+            "_class": "RANGE_SIZED",
+            "entry_cutoff_utc": 20.0,
+            "engage_pips": 5.0,
+            "engage_lock_pips": 4.0
+          },
+          "sizing": {
+            "risk_pct": 0.2
+          },
+          "tripwires": {
+            "fast": {
+              "last_n": 20,
+              "min_ev": -0.5,
+              "action": "suspend"
+            }
+          },
+          "evidence": {
+            "ev_seq": null,
+            "source": "MAE-flip counterpart audit 2026-07-27: timing_lean_30_g_hot (long) ran 10 eps @ -2.1p/ep with medMFE/MAE 6.7/10.8 \u2014 mirror is hypothesis, not validation",
+            "drift": "UNKNOWN",
+            "n_floor_status": "fresh era \u2014 activation bar governs promotion"
+          },
+          "notes": "Counterpart of timing_lean_30_g_hot (which keeps its name-true side): same trigger, opposite direction, per the no-in-place-flips policy. The governor judges.",
+          "wired": "2026-08-25",
+          "watch": "\ud83c\udfaf"
         }
       ],
       "notes": "48 SHADOW, 3 DISABLED setups. Tier=2 ev_gross_long=None ev_gross_short=None."
