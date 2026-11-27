@@ -26,11 +26,11 @@
 | **All-time** | 1197 | **78.1%** | — | −$1,644.08 |
 | Last 90 days | 834 | **76.9%** | ▼ −1.3 pts | −$1,186.44 |
 | Last 60 days | 491 | **75.8%** | ▼ −2.3 pts | −$413.73 |
-| Last 30 days | 132 | **76.5%** | ▼ −1.6 pts | −$347.49 |
+| Last 30 days | 131 | **77.1%** | ▼ −1.0 pts | −$327.89 |
 | Last 15 days | 17 | **76.5%** | ▼ −1.6 pts | −$9.82 |
 | Last 7 days | 9 | **77.8%** | ▼ −0.3 pts | −$4.95 |
 
-<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-27 22:15 UTC by close time; refreshed hourly with each new close.</sub>
+<sub>Every closed live trade (parents + poppers); a win = realized P/L > 0. Windows count back from 2026-11-27 23:15 UTC by close time; refreshed hourly with each new close.</sub>
 
 > **🔴 REAL-MONEY track record** — $2,500 live stake since 2026-07-29, cut over after the [100-trade practice test](docs/FORWARD_TEST_100_REPORT.md) (+10.54%, pre-registered protocol). range-sized wide-stop ratchet · SL 40/50/60 · two-phase: engage +5 → lock +4, steps +7/+9/… → lock −2 + Party Package popper grids · 15%/trade · 6 max (447 popper trades in the record), auto-updated hourly from **broker-verified fills** ([trades](livelog/trades.csv) · [equity](livelog/equity.csv)). Small sample, honest record — some trades sit red for days under the wide stops before exiting green; that is the design, not a malfunction. Prior configs and the −84% research tuition: [the history](docs/SCROOGE_HISTORY.md). The concluded practice record is archived at [forward-test-100/](https://github.com/BrockStar3540/mr-scrooge-v6/tree/main/forward-test-100).
 <!-- LIVE_BALANCE_END -->
