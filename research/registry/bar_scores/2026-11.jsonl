@@ -114395,3 +114395,4 @@
 {"block_lcb": -2.5, "codes": ["AVG", "LCB", "FDR"], "days": 6, "key": "USD_JPY|ny|shark_adr_late_long", "n": 13, "net_avg": 1.81, "promotable": false, "q": 0.93919, "status": "SHADOW", "strikes": 0, "t": "2026-11-28T02:03:20.694147+00:00"}
 {"block_lcb": 4.43, "codes": [], "days": 10, "key": "USD_JPY|ny|shark_fade_mid_long", "n": 22, "net_avg": 5.41, "promotable": true, "q": 0.00099, "status": "SHADOW", "strikes": 0, "t": "2026-11-28T02:03:20.694147+00:00"}
 {"block_lcb": 2.48, "codes": [], "days": 12, "key": "USD_JPY|ny|shark_fade_mid_short", "n": 28, "net_avg": 3.93, "promotable": true, "q": 0.01638, "status": "SHADOW", "strikes": 1, "t": "2026-11-28T02:03:20.694147+00:00"}
+{"block_lcb": -17.4, "codes": ["AVG", "LCB", "RECENT", "FDR"], "days": 10, "key": "EUR_JPY|asia|shark_fade_mid_short", "n": 17, "net_avg": -9.26, "promotable": false, "q": 1.0, "status": "SHADOW", "strikes": 0, "t": "2026-11-28T17:03:23.215453+00:00"}
