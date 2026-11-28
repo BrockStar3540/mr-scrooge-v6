@@ -16102,3 +16102,6 @@
 {"action": "PROMOTE-GATED", "by": "governor", "key": "CAD_JPY|ny|mr2_bb_reversion_short", "seq": 18291, "t": "2026-11-27T23:38:01.362973+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|alpha_extended_fade_long_g_a10_counter_short", "seq": 18292, "t": "2026-11-27T23:38:01.362973+00:00", "why": "allow_promotions=false"}
 {"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_USD|london|fvg_fill_long_g_dial_counter_short", "seq": 18293, "t": "2026-11-27T23:38:01.362973+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "CAD_JPY|ny|mr2_bb_reversion_short", "seq": 18294, "t": "2026-11-28T00:37:31.627014+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "GBP_USD|london|alpha_extended_fade_long_g_a10_counter_short", "seq": 18295, "t": "2026-11-28T00:37:31.627014+00:00", "why": "allow_promotions=false"}
+{"action": "PROMOTE-GATED", "by": "governor", "key": "AUD_USD|london|fvg_fill_long_g_dial_counter_short", "seq": 18296, "t": "2026-11-28T00:37:31.627014+00:00", "why": "allow_promotions=false"}
